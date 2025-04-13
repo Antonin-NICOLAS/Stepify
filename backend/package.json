@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "stepify-backend",
   "version": "1.0.0",
   "description": "server of stepify",
   "main": "server.js",
@@ -13,8 +13,10 @@
   "author": "Antonin NICOLAS",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2"
   },
   "devDependencies": {

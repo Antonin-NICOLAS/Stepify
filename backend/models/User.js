@@ -8,6 +8,7 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   avatarUrl: { type: String }, //TODO: add a default url
+  status: { type: String, default: "Salut, j'utilise Stepify !" },
 
   // Objectif et stats globales
   dailyGoal: { type: Number, default: 10000 }, // pas/jour
@@ -21,6 +22,7 @@ const userSchema = new Schema({
     unlockedAt: { type: Date, default: Date.now }
   }],
 
+  role: {type: String, enum: ['user', 'admin'], default: 'user'},
   createdAt: { type: Date, default: Date.now }
 })
 
