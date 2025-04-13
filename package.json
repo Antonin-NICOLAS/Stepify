@@ -1,5 +1,5 @@
 {
-  "name": "steptracker",
+  "name": "stepify",
   "version": "1.0.0",
   "description": "step tracker for the summer",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "StepTracker"
+    "url": "https://github.com/Antonin-NICOLAS/Stepify"
   },
   "keywords": [
     "sport",
