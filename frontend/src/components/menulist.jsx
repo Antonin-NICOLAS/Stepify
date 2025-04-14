@@ -3,10 +3,10 @@ import { HomeOutlined, GoldOutlined, AppstoreOutlined, GatewayOutlined, Question
 //CSS
 import "./menulist.css"
 
-function MenuList({darkTheme}) {
+function MenuList() {
     return (
         <>
-            <Menu theme={darkTheme ? 'dark' : 'light'} className="Menubar">
+            <Menu className="Menubar">
                 <Menu.Item key="home" icon={<HomeOutlined />}>Accueil</Menu.Item>
                 <Menu.Item key="ranking" icon={<GoldOutlined />}>Classement</Menu.Item>
                 <Menu.Item key="activities" icon={<AppstoreOutlined />}>Activités</Menu.Item>

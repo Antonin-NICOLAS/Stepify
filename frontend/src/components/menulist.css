@@ -1,9 +1,11 @@
 .Menubar{
-    height: 88vh;
-    margin-top: 2rem;
+    background-color: var(--Couleur1);
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 2vh;
     font-size: 1rem;
-    position: relative;
+}
+
+.Menubar *{
+    color: var(--Couleur);
 }

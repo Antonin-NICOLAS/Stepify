@@ -1,12 +1,10 @@
 .toggle-theme-button{
+    width: 100%;
+    height: 5vh;
     position: absolute;
-    bottom: 30px;
-    left: 20px;
+    bottom: 5%;
+    left: 0;
     display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 1rem;
-}
-.toggle-theme-button .toggle{
-    margin-left: 15px;
+    align-items: center;
 }
