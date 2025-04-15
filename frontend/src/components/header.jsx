@@ -1,30 +1,108 @@
-import { useState } from 'react';
-import { Button, Layout } from "antd";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import Logo from './logo.jsx';
-import MenuList from './menulist.jsx';
-import ToggleThemeButton from './toggletheme.jsx';
-import './header.css';
+import React, { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+import Account from "../assets/account.jpeg";
+import Logo from "../assets/icon.png";
+import {
+  RiPieChart2Fill,
+  RiBarChartBoxFill,
+  RiSettings3Fill,
+  RiLogoutBoxRFill,
+  RiMoonFill,
+  RiCalendarFill,
+  RiTrophyFill,
+  RiGroupFill,
+  RiInformationFill
+} from "react-icons/ri";
+import { GiHamburgerMenu } from "react-icons/gi";
+import "./Header.css";
 
-const { Sider } = Layout;
+function Header() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [darkTheme, setDarkTheme] = useState(false);
 
-function Navbar({ darkTheme, setDarkTheme, collapsed }) {
-  const ToggleTheme = () => setDarkTheme(!darkTheme);
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("selected-theme");
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark-theme");
+      setDarkTheme(true);
+    }
+  }, []);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(prev => !prev);
+  };
+
+  const toggleTheme = () => {
+    const newTheme = !darkTheme;
+    setDarkTheme(newTheme);
+    document.body.classList.toggle("dark-theme");
+    localStorage.setItem("selected-theme", newTheme ? "dark" : "light");
+  };
 
   return (
-    <Sider
-      trigger={null}
-      collapsible
-      collapsed={collapsed}
-      className="sidebar"
-      theme={darkTheme ? 'dark' : 'light'}
-      style={{ height: '100vh', position: 'fixed', left: 0, top: 0, zIndex: 1000 }}
-    >
-      <Logo />
-      <MenuList />
-      <ToggleThemeButton darkTheme={darkTheme} ChangeTheme={ToggleTheme} />
-    </Sider>
+    <>
+      <header className={`header ${sidebarOpen ? "left-pd" : ""}`} id="header">
+        <div className="header__container">
+          <NavLink to="/" className="header__logo">
+            <img src={Logo} alt="Logo" className="logo" />
+            <span>Stepify</span>
+          </NavLink>
+
+          <div className="header__actions">
+            <button className="header__toggle" onClick={toggleSidebar}>
+              <GiHamburgerMenu />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <nav className={`sidebar ${sidebarOpen ? "show-sidebar" : ""}`} id="sidebar">
+        <div className="sidebar__container">
+          <div className="sidebar__user">
+            <div className="sidebar__img">
+              <img src={Account} alt="profile" />
+            </div>
+            <div className="sidebar__info">
+              <h3>John Doe</h3>
+              <span>john@example.com</span>
+            </div>
+          </div>
+
+          <div className="sidebar__content">
+            <div>
+              <h3 className="sidebar__title nav">NAVIGATION</h3>
+              <div className="sidebar__list">
+                <NavLink to="/dashboard" className="sidebar__link"><RiPieChart2Fill /><span>Dashboard</span></NavLink>
+                <NavLink to="/challenges" className="sidebar__link"><RiTrophyFill /><span>Challenges</span></NavLink>
+                <NavLink to="/activities" className="sidebar__link"><RiCalendarFill /><span>Activities</span></NavLink>
+                <NavLink to="/leaderboard" className="sidebar__link"><RiGroupFill /><span>Leaderboard</span></NavLink>
+                <NavLink to="/statistics" className="sidebar__link"><RiBarChartBoxFill /><span>Statistics</span></NavLink>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="sidebar__title">GENERAL</h3>
+              <div className="sidebar__list">
+                <NavLink to="/settings" className="sidebar__link"><RiSettings3Fill /><span>Settings</span></NavLink>
+                <NavLink to="/about" className="sidebar__link"><RiInformationFill /><span>About</span></NavLink>
+              </div>
+            </div>
+          </div>
+
+          <div className="sidebar__actions">
+            <button className="sidebar__link sidebar__theme" onClick={toggleTheme}>
+              <RiMoonFill />
+              <span>Theme</span>
+            </button>
+            <button className="sidebar__link">
+              <RiLogoutBoxRFill />
+              <span>Log Out</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </>
   );
 }
 
-export default Navbar;
+export default Header;
