@@ -29,7 +29,9 @@ function Auth() {
     username: "",
   });
   const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showLPassword, setShowLPassword] = useState(false);
+  const [showRPassword, setShowRPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMeL, setRememberMeL] = useState(false);
   const [rememberMeR, setRememberMeR] = useState(false);
 
@@ -100,7 +102,7 @@ function Auth() {
         toast.error(response.data.error);
         console.log(response.data.error);
       } else {
-        setLoginData({})
+        setRegisterData({})
         toast.success("Compte créé avec succès");
         navigate("/dashboard");
       }
@@ -139,9 +141,9 @@ function Auth() {
               <div className="input-group">
                 <label>Password</label>
                 <div className="input-wrapper">
-                  <input type={showPassword ? "text" : "password"} placeholder="Enter your password" value={Logindata.password} onChange={(e) => setLoginData({ ...Logindata, password: e.target.value })} required />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)}>
-                    {showPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                  <input type={showLPassword ? "text" : "password"} placeholder="Enter your password" value={Logindata.password} onChange={(e) => setLoginData({ ...Logindata, password: e.target.value })} required />
+                  <button type="button" onClick={() => setShowLPassword(!showLPassword)}>
+                    {showLPassword ? <RiEyeOffFill /> : <RiEyeFill />}
                   </button>
                 </div>
               </div>
@@ -192,18 +194,18 @@ function Auth() {
               <div className="input-group">
                 <label>Password</label>
                 <div className="input-wrapper">
-                  <input type={showPassword ? "text" : "password"} placeholder="Your password" value={Registerdata.password} onChange={(e) => setRegisterData({ ...Registerdata, password: e.target.value })} required />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)}>
-                    {showPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                  <input type={showRPassword ? "text" : "password"} placeholder="Your password" value={Registerdata.password} onChange={(e) => setRegisterData({ ...Registerdata, password: e.target.value })} required />
+                  <button type="button" onClick={() => setShowRPassword(!showRPassword)}>
+                    {showRPassword ? <RiEyeOffFill /> : <RiEyeFill />}
                   </button>
                 </div>
               </div>
               <div className="input-group">
                 <label>Confirm your Password</label>
                 <div className="input-wrapper">
-                  <input type={showPassword ? "text" : "password"} placeholder="Confirm your password" value={Registerdata.confirmPassword} onChange={(e) => setRegisterData({ ...Registerdata, confirmPassword: e.target.value })} required />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)}>
-                    {showPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                  <input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm your password" value={Registerdata.confirmPassword} onChange={(e) => setRegisterData({ ...Registerdata, confirmPassword: e.target.value })} required />
+                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                    {showConfirmPassword ? <RiEyeOffFill /> : <RiEyeFill />}
                   </button>
                 </div>
               </div>

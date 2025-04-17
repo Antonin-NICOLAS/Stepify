@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+//context
+import { useUser } from "../context/UserContext.jsx";
+//images
 import Account from "../assets/account.jpeg";
 import Logo from "../assets/icon.png";
+//icons
 import {
   RiPieChart2Fill,
   RiBarChartBoxFill,
   RiSettings3Fill,
+  RiLoginBoxLine,
   RiLogoutBoxRFill,
   RiMoonFill,
   RiCalendarFill,
@@ -14,9 +19,11 @@ import {
   RiInformationFill
 } from "react-icons/ri";
 import { GiHamburgerMenu } from "react-icons/gi";
+//CSS
 import "./Header.css";
 
 function Header() {
+  const { user, loading } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkTheme, setDarkTheme] = useState(false);
 
@@ -83,7 +90,9 @@ function Header() {
             <div>
               <h3 className="sidebar__title">GENERAL</h3>
               <div className="sidebar__list">
-                <NavLink to="/settings" className="sidebar__link"><RiSettings3Fill /><span>Settings</span></NavLink>
+                {user ? (
+                  <NavLink to="/settings" className="sidebar__link"><RiSettings3Fill /><span>Settings</span></NavLink>
+                ) : (<></>)}
                 <NavLink to="/about" className="sidebar__link"><RiInformationFill /><span>About</span></NavLink>
               </div>
             </div>
@@ -94,10 +103,11 @@ function Header() {
               <RiMoonFill />
               <span>Theme</span>
             </button>
-            <button className="sidebar__link">
-              <RiLogoutBoxRFill />
-              <span>Log Out</span>
-            </button>
+            {user ? (
+              <button className="sidebar__link"><RiLogoutBoxRFill /><span>Log Out</span></button>
+            ) : (
+              <NavLink to="/login" className="sidebar__link"><RiLoginBoxLine /><span>Log In</span></NavLink>
+            )}
           </div>
         </div>
       </nav>

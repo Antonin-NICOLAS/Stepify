@@ -1,6 +1,8 @@
 const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
+const cookieParser = require('cookie-parser')
+//routes
 const AuthRoutes = require('./routes/AuthRoutes')
 //.env
 require('dotenv').config()
@@ -10,9 +12,14 @@ const app = express()
 
 //middleware
 app.use(express.json())
+app.use(cookieParser())
+app.use(express.urlencoded({ extended: false }))
 
 //cors plugin
-app.use(cors({credentials: true, origin: process.env.FRONTEND_SERVER}))
+app.use(cors({
+    credentials: true,
+    origin: process.env.FRONTEND_SERVER
+}))
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', process.env.FRONTEND_SERVER);
     res.header('Access-Control-Allow-Credentials', true)
@@ -27,12 +34,12 @@ app.use('/api/auth', AuthRoutes)
 
 //mongoDB connection
 mongoose.connect(process.env.MONGO_URI)
-.then(() => {
-    console.log("mongoDB connected")
-})
-.catch((err) => {
-    console.log("failed to connect", err)
-})
+    .then(() => {
+        console.log("mongoDB connected")
+    })
+    .catch((err) => {
+        console.log("failed to connect", err)
+    })
 
 const port = process.env.PORT || 8000;
 const host = process.env.NODE_ENV === "production" ? 'stepify.vercel.app' : 'localhost'; //TODO ajouter le domaine

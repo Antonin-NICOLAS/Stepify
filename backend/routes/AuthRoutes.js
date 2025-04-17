@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
 const UserModel = require('../models/User')
-const {    createUser,
+const { createUser,
     deleteUser,
     loginUser,
     logoutUser,
@@ -26,7 +26,6 @@ router.use(
     })
 );
 
-
 //routes
 router.post('/register', createUser)
 router.delete('/:userId/delete', deleteUser)
@@ -34,7 +33,13 @@ router.delete('/:userId/delete', deleteUser)
 router.post('/login', loginUser)
 //router.post('/forgotpassword', forgotPassword)
 router.post('/logout', logoutUser)
-router.get('/:userId/profile', getUserProfile)
+router.get('/profile', getUserProfile)
+const checkCookie = (req, res) => {
+    console.log("Cookies reçus :", req.cookies);
+    res.send("Vérifié !");
+};
+
+router.get("/check-cookie", checkCookie);
 
 router.patch('/:userId/avatar', updateAvatar)
 router.patch('/:userId/username', updateUsername)
