@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { generateVerificationCode } = require('../utils/GenerateCode')
 const { GenerateAuthCookie } = require('../utils/GenerateAuthCookie');
+const { sendVerificationEmail } = require('../utils/SendVerificationMail');
 //.env
 require('dotenv').config()
 
@@ -70,7 +71,11 @@ const createUser = async (req, res) => {
             password: hashedPassword,
             verificationToken: verificationCode,
             verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 heures
+            isVerified: false,
         })
+
+        // Envoi de l'email de vérification
+        await sendVerificationEmail(newUser.email, verificationCode);
 
         GenerateAuthCookie(res, newUser, stayLoggedIn);
         return res.status(201).json({
