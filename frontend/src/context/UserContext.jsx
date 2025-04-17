@@ -10,7 +10,12 @@ export const UserProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get("/api/auth/profile", { withCredentials: true });
+      const response = await axios.get("/api/auth/profile", {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       setUser(response.data);
     } catch (error) {
       const msg = error.response?.data?.error || error.message;
