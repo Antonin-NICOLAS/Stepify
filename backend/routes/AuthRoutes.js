@@ -1,6 +1,9 @@
 const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
+//middleware
+const { verifyToken } = require('../middlewares/VerifyToken')
+//controllers
 const { createUser,
     verifyEmail,
     deleteUser,
@@ -9,6 +12,7 @@ const { createUser,
     resetPassword,
     logoutUser,
     getUserProfile,
+    checkAuth,
     updateAvatar,
     updateUsername,
     updateEmail,
@@ -37,6 +41,8 @@ router.post('/login', loginUser)
 router.post('/forgot-password', forgotPassword)
 router.post('/reset-password/:token', resetPassword)
 router.post('/logout', logoutUser)
+
+router.get('/check-auth', verifyToken, checkAuth)
 router.get('/profile', getUserProfile)
 
 router.patch('/:userId/avatar', updateAvatar)

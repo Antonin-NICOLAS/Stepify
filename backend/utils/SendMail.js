@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer');
 const { WelcomeEmailTemplate, EmailVerificationTokenTemplate, EmailPasswordResetTemplate, ResetPasswordSuccessfulTemplate } = require('./EmailTemplates');
 
+//TODO : add a connection email
+
 const sendVerificationEmail = async (email, verificationCode) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',

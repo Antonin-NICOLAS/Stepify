@@ -19,7 +19,10 @@ require('dotenv').config()
 // - forgot password
 // - reset password
 // - logout
+
+//// CONTEXT ////
 // - get profile
+// - check auth
 
 //// UPDATE AN ACCOUNT ////
 // - change avatar
@@ -234,6 +237,7 @@ const logoutUser = async (req, res) => {
     }
 }
 
+//// CONTEXT ////
 // get profile
 const getUserProfile = (req, res) => {
     const { jwtauth } = req.cookies;
@@ -261,6 +265,20 @@ const getUserProfile = (req, res) => {
         }
     });
 };
+// check auth
+const checkAuth = async (req, res) => {
+    try {
+      const user = await UserModel.findById(req.userId);
+      if (!user) {
+        return res.status(400).json({ success: false, message: "Utilisateur non trouvé" });
+      }
+  
+      res.status(200).json({ success: true, user: { ...user._doc, password: undefined } });
+    } catch (error) {
+      console.log("erreur survenue lors de la vérification de la connection", error);
+      res.status(400).json({ success: false, message: error.message });
+    }
+  };
 
 //// UPDATE AN ACCOUNT ////
 
@@ -354,6 +372,7 @@ module.exports = {
     resetPassword,
     logoutUser,
     getUserProfile,
+    checkAuth,
     updateAvatar,
     updateUsername,
     updateEmail,
