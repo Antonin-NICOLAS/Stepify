@@ -19,10 +19,10 @@ import About from './pages/About.jsx';
 import './App.css';
 import './index.css';
 
-{/*TODO https://step-ify.vercel.app/privacy-policy et https://step-ify.vercel.app/settings*/}
+{/*TODO https://step-ify.vercel.app/privacy-policy et https://step-ify.vercel.app/settings*/ }
 
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_SERVER;
-axios.defaults.withCredentials = true;
+axios.defaults.baseURL = process.env.NODE_ENV === "production" ? '' : process.env.BACKEND_SERVER,
+  axios.defaults.withCredentials = true
 
 function App() {
   return (

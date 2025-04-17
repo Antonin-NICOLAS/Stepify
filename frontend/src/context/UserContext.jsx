@@ -10,7 +10,7 @@ export const UserProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get("/api/auth/profile", {
+      const response = await axios.get(process.env.NODE_ENV === "production" ? '/api/auth/profile' : '/auth/profile', {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json'

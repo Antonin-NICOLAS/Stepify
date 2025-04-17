@@ -43,7 +43,7 @@ function Auth() {
       return;
     }
     try {
-      const response = await axios.post('/api/auth/login', 
+      const response = await axios.post(process.env.NODE_ENV === "production" ? '/api/auth/login' : '/auth/login', 
         {
           email,
           password,
@@ -82,7 +82,7 @@ function Auth() {
       return;
     }
     try {
-      const response = await axios.post('/api/auth/register', 
+      const response = await axios.post(process.env.NODE_ENV === "production" ? '/api/auth/register' : '/auth/register', 
         {
           email,
           password,
