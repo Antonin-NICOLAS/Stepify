@@ -16,7 +16,7 @@ import Statistics from './pages/Statistics.jsx';
 import Settings from './pages/Settings.jsx';
 import About from './pages/About.jsx';
 //CSS
-import './app.css';
+import './App.css';
 import './index.css';
 
 {/*TODO https://stepify.vercel.app/privacy-policy et https://stepify.vercel.app/settings*/}
