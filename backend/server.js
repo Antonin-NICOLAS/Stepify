@@ -42,7 +42,7 @@ mongoose.connect(process.env.MONGO_URI)
     })
 
 const port = process.env.PORT || 8000;
-const host = process.env.NODE_ENV === "production" ? 'stepify.vercel.app' : 'localhost'; //TODO ajouter le domaine
+const host = process.env.NODE_ENV === "production" ? 'step-ify.vercel.app' : 'localhost';
 app.listen(port, function () {
     console.log("Server Has Started!");
     console.log(`Server is running at http://${host}:${port}`)

@@ -587,8 +587,8 @@ const WelcomeEmailTemplate = `
 													<table class="button_block block-5" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:10px;padding-top:10px;text-align:left;">
-																<div class="alignment" align="left"><a href="https://stepify.vercel.app" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
-<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="https://stepify.vercel.app"  style="height:52px;width:212px;v-text-anchor:middle;" arcsize="8%" fillcolor="#007a90">
+																<div class="alignment" align="left"><a href="https://step-ify.vercel.app" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="https://step-ify.vercel.app"  style="height:52px;width:212px;v-text-anchor:middle;" arcsize="8%" fillcolor="#007a90">
 <v:stroke dashstyle="Solid" weight="0px" color="#8a3b8f"/>
 <w:anchorlock/>
 <v:textbox inset="5px,0px,0px,0px">
@@ -704,8 +704,8 @@ const WelcomeEmailTemplate = `
 													<table class="button_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td class="pad" style="padding-bottom:10px;padding-left:25px;padding-right:10px;padding-top:10px;text-align:left;">
-																<div class="alignment" align="left"><a href="https://stepify.vercel.app" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
-<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="https://stepify.vercel.app"  style="height:52px;width:190px;v-text-anchor:middle;" arcsize="8%" fillcolor="#007a90">
+																<div class="alignment" align="left"><a href="https://step-ify.vercel.app" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="https://step-ify.vercel.app"  style="height:52px;width:190px;v-text-anchor:middle;" arcsize="8%" fillcolor="#007a90">
 <v:stroke dashstyle="Solid" weight="0px" color="#8a3b8f"/>
 <w:anchorlock/>
 <v:textbox inset="5px,0px,0px,0px">
@@ -752,8 +752,8 @@ const WelcomeEmailTemplate = `
 													<table class="button_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td class="pad" style="padding-bottom:10px;padding-left:25px;padding-right:10px;padding-top:10px;text-align:left;">
-																<div class="alignment" align="left"><a href="https://stepify.vercel.app" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
-<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="https://stepify.vercel.app"  style="height:52px;width:190px;v-text-anchor:middle;" arcsize="8%" fillcolor="#007a90">
+																<div class="alignment" align="left"><a href="https://step-ify.vercel.app" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="https://step-ify.vercel.app"  style="height:52px;width:190px;v-text-anchor:middle;" arcsize="8%" fillcolor="#007a90">
 <v:stroke dashstyle="Solid" weight="0px" color="#8a3b8f"/>
 <w:anchorlock/>
 <v:textbox inset="5px,0px,0px,0px">
@@ -802,8 +802,8 @@ const WelcomeEmailTemplate = `
 													<table class="button_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td class="pad" style="padding-bottom:10px;padding-left:25px;padding-right:10px;padding-top:10px;text-align:left;">
-																<div class="alignment" align="left"><a href="https://stepify.vercel.app" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
-<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="https://stepify.vercel.app"  style="height:52px;width:190px;v-text-anchor:middle;" arcsize="8%" fillcolor="#007a90">
+																<div class="alignment" align="left"><a href="https://step-ify.vercel.app" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"  href="https://step-ify.vercel.app"  style="height:52px;width:190px;v-text-anchor:middle;" arcsize="8%" fillcolor="#007a90">
 <v:stroke dashstyle="Solid" weight="0px" color="#8a3b8f"/>
 <w:anchorlock/>
 <v:textbox inset="5px,0px,0px,0px">
@@ -918,10 +918,10 @@ const WelcomeEmailTemplate = `
 															<td class="pad" style="padding-bottom:10px;padding-left:40px;padding-right:40px;padding-top:15px;">
 																<div style="color:#c7c7c7;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:12px;font-weight:400;line-height:1.5;text-align:left;mso-line-height-alt:18px;">
 																	<p style="margin: 0;">Vous recevez cet email car vous avez créé un compte sur Stepify. Si vous pensez avoir reçu cet email par erreur, vous pouvez ignorer ce message ou nous contacter à <a href="mailto:contact.stepify@gmail.com?subject=Stepify&body=Bonjour l'équipe Stepify," target="_self" title="contact.stepify@gmail.com" style="text-decoration: underline; color: #00a2ff;">contact.stepify@gmail.com</a>.</p>
-																	<p style="margin: 0;">Stepify s’engage à protéger vos données personnelles. Vous pouvez consulter notre <a href="https://stepify.vercel.app/privacy-policy" target="_self" style="text-decoration: underline; color: #00a2ff;">politique de confidentialité</a> pour en savoir plus sur la manière dont vos informations sont utilisées et stockées.</p>
+																	<p style="margin: 0;">Stepify s’engage à protéger vos données personnelles. Vous pouvez consulter notre <a href="https://step-ify.vercel.app/privacy-policy" target="_self" style="text-decoration: underline; color: #00a2ff;">politique de confidentialité</a> pour en savoir plus sur la manière dont vos informations sont utilisées et stockées.</p>
 																	<p style="margin: 0;">&nbsp;</p>
 																	<p style="margin: 0;">Cet email est envoyé automatiquement, merci de ne pas y répondre directement.</p>
-																	<p style="margin: 0;">Si vous ne souhaitez plus recevoir d’emails de notre part ou préférez modifier la fréquence de nos communications, vous pouvez <a href="https://stepify.vercel.app/settings" target="_self" style="text-decoration: underline; color: #00a2ff;">gérer vos préférences de notification</a> à tout moment depuis votre compte.</p>
+																	<p style="margin: 0;">Si vous ne souhaitez plus recevoir d’emails de notre part ou préférez modifier la fréquence de nos communications, vous pouvez <a href="https://step-ify.vercel.app/settings" target="_self" style="text-decoration: underline; color: #00a2ff;">gérer vos préférences de notification</a> à tout moment depuis votre compte.</p>
 																</div>
 															</td>
 														</tr>
@@ -1292,10 +1292,10 @@ const EmailPasswordResetTemplate = `
 															<td class="pad" style="padding-bottom:10px;padding-left:40px;padding-right:40px;padding-top:15px;">
 																<div style="color:#c7c7c7;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;font-size:12px;font-weight:400;line-height:1.5;text-align:left;mso-line-height-alt:18px;">
 																	<p style="margin: 0;">Vous recevez cet email car vous avez créé un compte sur Stepify. Si vous pensez avoir reçu cet email par erreur, vous pouvez ignorer ce message ou nous contacter à <a href="mailto:contact.stepify@gmail.com?subject=Stepify&body=Bonjour l'équipe Stepify," target="_self" title="contact.stepify@gmail.com" style="text-decoration: underline; color: #00a2ff;">contact.stepify@gmail.com</a>.</p>
-																	<p style="margin: 0;">Stepify s’engage à protéger vos données personnelles. Vous pouvez consulter notre <a href="https://stepify.vercel.app/privacy-policy" target="_self" style="text-decoration: underline; color: #00a2ff;">politique de confidentialité</a> pour en savoir plus sur la manière dont vos informations sont utilisées et stockées.</p>
+																	<p style="margin: 0;">Stepify s’engage à protéger vos données personnelles. Vous pouvez consulter notre <a href="https://step-ify.vercel.app/privacy-policy" target="_self" style="text-decoration: underline; color: #00a2ff;">politique de confidentialité</a> pour en savoir plus sur la manière dont vos informations sont utilisées et stockées.</p>
 																	<p style="margin: 0;">&nbsp;</p>
 																	<p style="margin: 0;">Cet email est envoyé automatiquement, merci de ne pas y répondre directement.</p>
-																	<p style="margin: 0;">Si vous ne souhaitez plus recevoir d’emails de notre part ou préférez modifier la fréquence de nos communications, vous pouvez <a href="https://stepify.vercel.app/settings" target="_self" style="text-decoration: underline; color: #00a2ff;">gérer vos préférences de notification</a> à tout moment depuis votre compte.</p>
+																	<p style="margin: 0;">Si vous ne souhaitez plus recevoir d’emails de notre part ou préférez modifier la fréquence de nos communications, vous pouvez <a href="https://step-ify.vercel.app/settings" target="_self" style="text-decoration: underline; color: #00a2ff;">gérer vos préférences de notification</a> à tout moment depuis votre compte.</p>
 																</div>
 															</td>
 														</tr>
@@ -1659,10 +1659,10 @@ const ResetPasswordSuccessfulTemplate = `
 															<td class="pad" style="padding-bottom:10px;padding-left:40px;padding-right:40px;padding-top:15px;">
 																<div style="color:#c7c7c7;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;font-size:12px;font-weight:400;line-height:1.5;text-align:left;mso-line-height-alt:18px;">
 																	<p style="margin: 0;">Vous recevez cet email car vous avez créé un compte sur Stepify. Si vous pensez avoir reçu cet email par erreur, vous pouvez ignorer ce message ou nous contacter à <a href="mailto:contact.stepify@gmail.com?subject=Stepify&body=Bonjour l'équipe Stepify," target="_self" title="contact.stepify@gmail.com" style="text-decoration: underline; color: #00a2ff;">contact.stepify@gmail.com</a>.</p>
-																	<p style="margin: 0;">Stepify s’engage à protéger vos données personnelles. Vous pouvez consulter notre <a href="https://stepify.vercel.app/privacy-policy" target="_self" style="text-decoration: underline; color: #00a2ff;">politique de confidentialité</a> pour en savoir plus sur la manière dont vos informations sont utilisées et stockées.</p>
+																	<p style="margin: 0;">Stepify s’engage à protéger vos données personnelles. Vous pouvez consulter notre <a href="https://step-ify.vercel.app/privacy-policy" target="_self" style="text-decoration: underline; color: #00a2ff;">politique de confidentialité</a> pour en savoir plus sur la manière dont vos informations sont utilisées et stockées.</p>
 																	<p style="margin: 0;">&nbsp;</p>
 																	<p style="margin: 0;">Cet email est envoyé automatiquement, merci de ne pas y répondre directement.</p>
-																	<p style="margin: 0;">Si vous ne souhaitez plus recevoir d’emails de notre part ou préférez modifier la fréquence de nos communications, vous pouvez <a href="https://stepify.vercel.app/settings" target="_self" style="text-decoration: underline; color: #00a2ff;">gérer vos préférences de notification</a> à tout moment depuis votre compte.</p>
+																	<p style="margin: 0;">Si vous ne souhaitez plus recevoir d’emails de notre part ou préférez modifier la fréquence de nos communications, vous pouvez <a href="https://step-ify.vercel.app/settings" target="_self" style="text-decoration: underline; color: #00a2ff;">gérer vos préférences de notification</a> à tout moment depuis votre compte.</p>
 																</div>
 															</td>
 														</tr>

@@ -229,7 +229,7 @@ const logoutUser = async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
-            domain: process.env.NODE_ENV === "production" ? 'stepify.vercel.app' : '', //TODO ajouter le domaine
+            domain: process.env.NODE_ENV === "production" ? 'step-ify.vercel.app' : '',
         })
         return res.status(200).json({ success: true, message: "Déconnecté" })
     } catch (error) {

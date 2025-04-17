@@ -19,7 +19,7 @@ const GenerateAuthCookie = (res, user, stayLoggedIn) => {
     sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
     maxAge: cookieDuration,
     expires: new Date(Date.now() + cookieDuration),
-    ...(process.env.NODE_ENV === "production" && { domain: 'stepify.vercel.app' })
+    ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
   };
 
   res.cookie('jwtauth', token, options);
