@@ -1,15 +1,18 @@
 const UserModel = require('../models/User')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+//.env
+require('dotenv').config()
 
 // SOMMAIRE
 //// ACCOUNT MANAGEMENT ////
-// - create new account
+// - register
 // - delete account
 
 //// ACCOUNT REQ ////
 // - login
-// - disconnect
+// - logout
+// - forgot password
 // - get profile
 
 //// UPDATE AN ACCOUNT ////
@@ -22,36 +25,36 @@ const jwt = require('jsonwebtoken')
 
 //// ACCOUNT MANAGEMENT ////
 
-// create new account
+// register
 const createUser = async (req, res) => {
-    const { firstName, lastName, username, email, password } = req.body
+    const { firstName, lastName, username, email, password, stayLoggedIn } = req.body
 
     // Vérifications
     if (!firstName) {
-        return res.json({ error: "Le prénom est requis" });
+        return res.status(400).json({ error: "Le prénom est requis" });
     }
     if (!lastName) {
-        return res.json({ error: "Le nom est requis" });
+        return res.status(400).json({ error: "Le nom est requis" });
     }
     if (!email) {
-        return res.json({ error: "L'email est requis" });
+        return res.status(400).json({ error: "L'email est requis" });
     }
     if (!username) {
-        return res.json({ error: "Le nom d'utilisateur est requis" });
+        return res.status(400).json({ error: "Le nom d'utilisateur est requis" });
     }
     if (!password || password.length < 6) {
-        return res.json({ error: "Un mot de passe est requis, d'une longueur de 6 caractères au moins" });
+        return res.status(400).json({ error: "Un mot de passe est requis, d'une longueur de 6 caractères au moins" });
     }
 
     // l'adresse mail doit être unique
     const emailexist = await UserModel.findOne({ email });
     if (emailexist) {
-        return res.json({ error: "L'email est déjà associé à un compte" });
+        return res.status(400).json({ error: "L'email est déjà associé à un compte" });
     }
     // le nom d'utilisateur doit être unique
     const usernameexist = await UserModel.findOne({ username });
     if (usernameexist) {
-        return res.json({ error: "Le nom d'utilisateur est déjà associé à un compte" });
+        return res.status(400).json({ error: "Le nom d'utilisateur est déjà associé à un compte" });
     }
 
     try {
@@ -64,25 +67,29 @@ const createUser = async (req, res) => {
             password: hashedPassword,
             role: 'user'
         })
+        // Générer un token JWT
+        const cookieDuration = stayLoggedIn ? 7 * 24 * 60 * 60 * 1000 : 2 * 24 * 60 * 60 * 1000;
+        const expiration = stayLoggedIn ? '7d' : '2d'
         const options = {
             secure: process.env.NODE_ENV === "production" ? true : false,
             httpOnly: process.env.NODE_ENV === "production" ? true : false,
             sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
-            maxAge: 2 * 24 * 60 * 60 * 1000,
-            expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+            maxAge: cookieDuration,
+            expires: new Date(Date.now() + cookieDuration),
             domain: process.env.NODE_ENV === "production" ? 'stepify.vercel.app' : '', //TODO ajouter le domaine
-          }
-          const token = jwt.sign({
-                id: newUser._id,
-                nom: newUser.lastName,
-                prenom: newUser.firstName,
-                email: newUser.email,
-                role: newUser.role
-          },
+        }
+        const token = jwt.sign({
+            id: newUser._id,
+            nom: newUser.lastName,
+            prenom: newUser.firstName,
+            username: newUser.username,
+            email: newUser.email,
+            role: newUser.role
+        },
             process.env.JWT_SECRET,
-            { expiresIn: '2d' })
-      
-          return res.status(201).cookie('jwtauth', token, options).json(newUser);
+            { expiresIn: expiration })
+
+        return res.status(201).cookie('jwtauth', token, options).json(newUser);
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
@@ -105,13 +112,13 @@ const deleteUser = async (req, res) => {
 
 // login
 const loginUser = async (req, res) => {
-    const { email, password, stayLoggedIn } = req.body //TODO vérifier le stayloggedin
+    const { email, password, stayLoggedIn } = req.body
 
     try {
         // Trouver l'utilisateur par son email
         const user = await UserModel.findOne({ email })
         if (!user) return res.status(400).json({ error: "L'email n'est associé à aucun compte" })
-
+            
         // Vérifier si le mot de passe est correct
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) return res.status(400).json({ error: 'Mot de passe incorrect' })
@@ -127,20 +134,19 @@ const loginUser = async (req, res) => {
             expires: new Date(Date.now() + cookieDuration),
             domain: process.env.NODE_ENV === "production" ? 'stepify.vercel.app' : '', //TODO ajouter le domaine
         }
-        jwt.sign({
+        const token = jwt.sign({
             id: user._id,
             nom: user.lastName,
             prenom: user.firstName,
+            username: user.username,
             email: user.email,
             role: user.role
         },
             process.env.JWT_SECRET,
-            { expiresIn: expiration }, (err, token) => {
-                if (err) throw err;
-                res.cookie('jwtauth', token, options).json(user)
-            })
+            { expiresIn: expiration })
 
-        res.status(200).json({ message: 'Connexion réussie', token })
+        return res.status(201).cookie('jwtauth', token, options).json(user);
+
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
@@ -149,17 +155,17 @@ const loginUser = async (req, res) => {
 // disconnect
 const logoutUser = async (req, res) => {
     try {
-      res.clearCookie("jwtauth", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
-        domain: process.env.NODE_ENV === "production" ? 'stepify.vercel.app' : '', //TODO ajouter le domaine
-      })
-      return res.status(200).json({ message: "Déconnexion réussie" })
+        res.clearCookie("jwtauth", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
+            domain: process.env.NODE_ENV === "production" ? 'stepify.vercel.app' : '', //TODO ajouter le domaine
+        })
+        return res.status(200).json({ message: "Déconnexion réussie" })
     } catch (error) {
-      res.status(400).json({ error: error.message })
+        res.status(400).json({ error: error.message })
     }
-  }
+}
 
 // get profile
 const getUserProfile = async (req, res) => {

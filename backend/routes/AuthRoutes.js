@@ -1,4 +1,6 @@
 const express = require('express')
+const cors = require('cors');
+require('dotenv').config();
 const UserModel = require('../models/User')
 const {    createUser,
     deleteUser,
@@ -11,16 +13,26 @@ const {    createUser,
     updatePassword,
     updateStatus,
     updateDailyGoal
-} = require('../controllers/UserCtrl')
+} = require('../controllers/AuthController')
 
 //router
 const router = express.Router()
+
+//middleware
+router.use(
+    cors({
+        credentials: true,
+        origin: process.env.FRONTEND_SERVER,
+    })
+);
+
 
 //routes
 router.post('/register', createUser)
 router.delete('/:userId/delete', deleteUser)
 
 router.post('/login', loginUser)
+//router.post('/forgotpassword', forgotPassword)
 router.post('/logout', logoutUser)
 router.get('/:userId/profile', getUserProfile)
 

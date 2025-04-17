@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/api/:path*",
-        "destination": "https://stepify-backend.vercel.app/:path*"
+        "destination": "https://stepify-backend.vercel.app/api/:path*"
       },
       {
         "source": "/(.*)",

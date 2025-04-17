@@ -1,0 +1,28 @@
+.main {
+  padding-top: calc(var(--header-height) + 3rem);
+  padding-left: 340px;
+  transition: all 0.4s ease;
+  min-height: 100vh;
+  background-color: var(--body-color);
+  color: var(--text-color);
+}
+.hide-sidebar ~ .main {
+  padding-left: 114px; /* sidebar étendue */
+}
+
+/* Quand la sidebar est ouverte (grand écran) */
+@media screen and (min-width: 1150px) {
+}
+
+/* Écran mobile */
+@media screen and (max-width: 1149px) {
+  .main {
+    padding-top: calc(var(--header-height) + 1.5rem);
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .hide-sidebar ~ .main {
+    padding-left: 1rem;
+  }
+}

@@ -1,0 +1,228 @@
+import React, { useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import Spline from "@splinetool/react-spline";
+//icons
+import {
+  RiMailLine, RiEyeFill, RiEyeOffFill,
+  RiIdCardLine, RiUser3Line, RiLogoutBoxRFill
+} from "react-icons/ri";
+import { LuLogIn } from "react-icons/lu";
+//CSS
+import "./Login.css";
+
+function Auth() {
+  const navigate = useNavigate();
+  //UseState
+  const [Logindata, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+  const [Registerdata, setRegisterData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    username: "",
+  });
+  const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMeL, setRememberMeL] = useState(false);
+  const [rememberMeR, setRememberMeR] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const { email, password } = Logindata;
+    if (!email || !password) {
+      toast("Remplissez tous les champs");
+      return;
+    }
+    try {
+      const response = await axios.post('/api/auth/login', 
+        {
+          email,
+          password,
+          stayLoggedIn: rememberMeL, 
+        },
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      if (response.data.error) {
+        toast.error(response.data.error);
+        console.log(response.data.error);
+      } else {
+        setLoginData({})
+        toast.success("Connecté avec succès");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error?.response?.data?.error || "Une erreur est survenue");
+    }
+  }
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    const { firstName, lastName, username, email, password, confirmPassword, rememberMeR } = Registerdata;
+    if (!email || !password || !firstName || !lastName || !username) {
+      toast("Remplissez tous les champs");
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Les mots de passe ne correspondent pas");
+      return;
+    }
+    try {
+      const response = await axios.post('/api/auth/register', 
+        {
+          email,
+          password,
+          firstName,
+          lastName,
+          username,
+          stayLoggedIn: rememberMeR, 
+        },
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      if (response.data.error) {
+        toast.error(response.data.error);
+        console.log(response.data.error);
+      } else {
+        setLoginData({})
+        toast.success("Compte créé avec succès");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error?.response?.data?.error || "Une erreur est survenue");
+    }
+  }
+
+  return (
+    <div className="auth-body">
+      <div className="auth-container">
+        <div className="auth-col col-spline">
+          <Spline scene="https://prod.spline.design/mXCYrxjtEUkHhzFi/scene.splinecode" />
+        </div>
+
+        <div className="auth-col col-form">
+          <div className="auth-toggle-buttons">
+            <button className={`form-switch ${isLogin ? "active" : ""}`} onClick={() => setIsLogin(true)}>Sign In</button>
+            <button className={`form-switch ${!isLogin ? "active" : ""}`} onClick={() => setIsLogin(false)}>Register</button>
+          </div>
+
+          <div className={`form-slide ${isLogin ? "slide-login" : "slide-register"}`}>
+            <form className="auth-form" onSubmit={handleLogin}>
+              <h2>Welcome Back 👋</h2>
+              <p className="subtitle">Log in to your Stepify account</p>
+
+              <div className="input-group">
+                <label>Email</label>
+                <div className="input-wrapper">
+                  <input type="email" placeholder="Enter your email" value={Logindata.email} onChange={(e) => setLoginData({ ...Logindata, email: e.target.value })} required />
+                  <RiMailLine />
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label>Password</label>
+                <div className="input-wrapper">
+                  <input type={showPassword ? "text" : "password"} placeholder="Enter your password" value={Logindata.password} onChange={(e) => setLoginData({ ...Logindata, password: e.target.value })} required />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="form-options">
+                <label><input type="checkbox" checked={rememberMeL} onChange={() => setRememberMeL(!rememberMeL)} /> Stay connected</label>
+                <Link to="/forgot-password">Forgot password?</Link>
+              </div>
+
+              <button type="submit" className="submit-btn">Log In <LuLogIn /></button>
+              <div className="form-footer">
+                <span>Pas de compte ?</span>
+                <button onClick={() => setIsLogin(false)}>Register</button>
+              </div>
+            </form>
+            <form className="auth-form" onSubmit={handleRegister}>
+              <h2>Nice to meet you 👋</h2>
+              <p className="subtitle">Create your Stepify account</p>
+
+              <div className="input-group">
+                <label>Prénom</label>
+                <div className="input-wrapper">
+                  <input type="text" placeholder="Your firstname" value={Registerdata.firstName} onChange={(e) => setRegisterData({ ...Registerdata, firstName: e.target.value })} required />
+                  <RiIdCardLine />
+                </div>
+              </div>
+              <div className="input-group">
+                <label>Nom</label>
+                <div className="input-wrapper">
+                  <input type="text" placeholder="Your lastname" value={Registerdata.lastName} onChange={(e) => setRegisterData({ ...Registerdata, lastName: e.target.value })} required />
+                  <RiIdCardLine />
+                </div>
+              </div>
+              <div className="input-group">
+                <label>Username</label>
+                <div className="input-wrapper">
+                  <input type="text" placeholder="Your username" value={Registerdata.username} onChange={(e) => setRegisterData({ ...Registerdata, username: e.target.value })} required />
+                  <RiUser3Line />
+                </div>
+              </div>
+              <div className="input-group">
+                <label>Email</label>
+                <div className="input-wrapper">
+                  <input type="email" placeholder="Your email" value={Registerdata.email} onChange={(e) => setRegisterData({ ...Registerdata, email: e.target.value })} required />
+                  <RiMailLine />
+                </div>
+              </div>
+              <div className="input-group">
+                <label>Password</label>
+                <div className="input-wrapper">
+                  <input type={showPassword ? "text" : "password"} placeholder="Your password" value={Registerdata.password} onChange={(e) => setRegisterData({ ...Registerdata, password: e.target.value })} required />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                  </button>
+                </div>
+              </div>
+              <div className="input-group">
+                <label>Confirm your Password</label>
+                <div className="input-wrapper">
+                  <input type={showPassword ? "text" : "password"} placeholder="Confirm your password" value={Registerdata.confirmPassword} onChange={(e) => setRegisterData({ ...Registerdata, confirmPassword: e.target.value })} required />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                  </button>
+                </div>
+              </div>
+              <div className="register-form-options">
+                <label><input type="checkbox" required /><a href="" target="_blank">Accepter les conditions d'utilisation</a></label> {/*TODO conditions d'utilisation*/}
+                <label><input type="checkbox" checked={rememberMeR} onChange={() => setRememberMeR(!rememberMeR)} />Rester connecté</label>
+              </div>
+
+              <button type="submit" className="submit-btn">Register <LuLogIn /></button>
+              <div className="form-footer">
+                <span>Déjà un compte ?</span>
+                <button onClick={() => setIsLogin(true)}>Login</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Auth;

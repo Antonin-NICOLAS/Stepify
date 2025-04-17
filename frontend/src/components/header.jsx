@@ -56,7 +56,7 @@ function Header() {
         </div>
       </header>
 
-      <nav className={`sidebar ${sidebarOpen ? "show-sidebar" : ""}`} id="sidebar">
+      <nav className={`sidebar ${sidebarOpen ? "hide-sidebar" : ""}`} id="sidebar">
         <div className="sidebar__container">
           <div className="sidebar__user">
             <div className="sidebar__img">

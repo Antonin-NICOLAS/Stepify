@@ -1,16 +1,56 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import axios from 'axios';
+import { Toaster } from "react-hot-toast"
+//CSS
 import './app.css';
-import Header from './components/Header.jsx';
+import './index.css';
+//layouts
+import MainLayout from './MainLayout.jsx';
+//pages
+import Login from './components/Auth/Login.jsx';
 import Home from './pages/Home.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import Challenges from './pages/Challenges.jsx';
+import Activities from './pages/Activities.jsx';
+import Leaderboard from './pages/Leaderboard.jsx';
+import Statistics from './pages/Statistics.jsx';
+import Settings from './pages/Settings.jsx';
+import About from './pages/About.jsx';
+
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_SERVER;
+axios.defaults.withCredentials = true;
 
 function App() {
-
   return (
     <div className="App">
       <BrowserRouter>
-        <Header />
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          toastOptions={{
+            className: '',
+            duration: 3000,
+            style: {
+              background: 'var(--body-color)',
+              color: '#000',
+            },
+          }}
+        />
         <Routes>
-          <Route path="/" element={<Home />} />
+          {/* Pages avec layout principal */}
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/challenges" element={<Challenges />} />
+            <Route path="/activities" element={<Activities />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/statistics" element={<Statistics />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/about" element={<About />} />
+          </Route>
+
+          {/* Pages sans header/sidebar */}
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </div>
