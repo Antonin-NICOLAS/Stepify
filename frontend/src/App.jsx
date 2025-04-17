@@ -19,6 +19,8 @@ import About from './pages/About.jsx';
 import './app.css';
 import './index.css';
 
+{/*TODO https://stepify.vercel.app/privacy-policy et https://stepify.vercel.app/settings*/}
+
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_SERVER;
 axios.defaults.withCredentials = true;
 

@@ -1,21 +1,24 @@
 const UserModel = require('../models/User')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
 const { generateVerificationCode } = require('../utils/GenerateCode')
 const { GenerateAuthCookie } = require('../utils/GenerateAuthCookie');
-const { sendVerificationEmail } = require('../utils/SendVerificationMail');
+const { sendVerificationEmail, sendWelcomeEmail, sendResetPasswordEmail, sendResetPasswordSuccessfulEmail } = require('../utils/SendMail');
 //.env
 require('dotenv').config()
 
 // SOMMAIRE
 //// ACCOUNT MANAGEMENT ////
 // - register
+// - verify email
 // - delete account
 
 //// ACCOUNT REQ ////
 // - login
-// - logout
 // - forgot password
+// - reset password
+// - logout
 // - get profile
 
 //// UPDATE AN ACCOUNT ////
@@ -88,6 +91,34 @@ const createUser = async (req, res) => {
     }
 }
 
+// verify email
+const verifyEmail = async (req, res) => {
+    const { code } = req.body;
+
+    try {
+        const user = await UserModel.findOne({ verificationToken: code });
+
+        if (!user) {
+            return res.status(404).json({ error: "Code de vérification invalide ou Email déjà vérifié" });
+        }
+
+        if (user.verificationTokenExpiresAt < Date.now()) {
+            return res.status(400).json({ error: "Le code de vérification a expiré" });
+        }
+
+        user.isVerified = true;
+        user.verificationToken = undefined;
+        user.verificationTokenExpiresAt = undefined;
+        await user.save();
+        await sendWelcomeEmail(user.email, user.firstName);
+
+        return res.status(200).json({ message: "Email vérifié avec succès" });
+    } catch (error) {
+        console.log("Erreur lors de la vérification de l'email :", error);
+        res.status(400).json({ success: false, error: error.message });
+    }
+};
+
 // delete an account
 const deleteUser = async (req, res) => {
     const { userId } = req.params
@@ -97,6 +128,7 @@ const deleteUser = async (req, res) => {
         if (!deletedUser) return res.status(404).json({ error: "Utilisateur introuvable" })
         res.status(200).json({ message: "Compte supprimé avec succès" })
     } catch (error) {
+        console.log("Le compte n'a pas pu être supprimé", error);
         res.status(400).json({ error: error.message })
     }
 }
@@ -116,16 +148,78 @@ const loginUser = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) return res.status(400).json({ error: 'Mot de passe incorrect' })
 
+        // Vérifier si l'utilisateur a un vérifié l'email
+        const isVerified = user.isVerified;
+        if (!isVerified) return res.status(401).json({ error: "Email non vérifié" });
         // Générer un token JWT
         GenerateAuthCookie(res, user, stayLoggedIn);
-        return res.status(201).json(user);
+        // Supprimer le mot de passe du résultat
+        user.password = undefined;
+        return res.status(201).json({
+            success: true,
+            message: "Vous êtes connecté"
+        });
 
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
 }
+// forgot password
+const forgotPassword = async (req, res) => {
+    const { email } = req.body
+    try {
+        const user = await UserModel.findOne({ email });
+        if (!user) return res.status(400).json({ error: "L'email n'est associé à aucun compte" })
+        
+            // Vérifier si l'utilisateur a un vérifié l'email
+        const isVerified = user.isVerified;
+        if (!isVerified) return res.status(401).json({ error: "Email non vérifié" });
 
-// disconnect
+        const resetPasswordToken = crypto.randomBytes(32).toString('hex');
+        const resetPasswordTokenExpiresAt = Date.now() + 3600000; // 1 heure
+        user.resetPasswordToken = resetPasswordToken;
+        user.resetPasswordTokenExpiresAt = resetPasswordTokenExpiresAt;
+
+        await user.save();
+        await sendResetPasswordEmail(user.email, `${process.env.FRONTEND_SERVER}/reset-password/${resetPasswordToken}`);
+
+        return res.status(200).json({ message: "Email de réinitialisation de mot de passe envoyé" });
+    } catch (error) {
+        console.log("Erreur lors de l'envoi du mail de réinitialisation du mot de passe :", error);
+        res.status(400).json({ error: error.message })
+    }
+}
+
+// reset password
+const resetPassword = async (req, res) => {
+    const { token } = req.params
+    const { password } = req.body
+    try {
+        const user = await UserModel.findOne({
+            resetPasswordToken: token, 
+            resetPasswordTokenExpiresAt: { $gt: Date.now() }
+        });
+        if (!user) return res.status(400).json({ error: "Lien invalide ou expiré. Veuillez renvoyer un email" })
+        
+        // Hash du nouveau mot de passe
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+
+        user.resetPasswordToken = undefined;
+        user.resetPasswordTokenExpiresAt = undefined;
+
+        await user.save();
+
+        await sendResetPasswordSuccessfulEmail(user.email, user.firstName);
+        
+        res.status(200).json({ message: "Mot de passe réinitialisé avec succès" })
+    } catch (error) {
+        console.log("Erreur lors de la réinitialisation du mot de passe :", error);
+        res.status(400).json({ error: error.message })
+    }
+}
+
+// logout
 const logoutUser = async (req, res) => {
     try {
         res.clearCookie("jwtauth", {
@@ -134,7 +228,7 @@ const logoutUser = async (req, res) => {
             sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
             domain: process.env.NODE_ENV === "production" ? 'stepify.vercel.app' : '', //TODO ajouter le domaine
         })
-        return res.status(200).json({ message: "Déconnexion réussie" })
+        return res.status(200).json({ success: true, message: "Déconnecté" })
     } catch (error) {
         res.status(400).json({ error: error.message })
     }
@@ -253,8 +347,11 @@ const updateDailyGoal = async (req, res) => {
 
 module.exports = {
     createUser,
+    verifyEmail,
     deleteUser,
     loginUser,
+    forgotPassword,
+    resetPassword,
     logoutUser,
     getUserProfile,
     updateAvatar,

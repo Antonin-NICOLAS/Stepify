@@ -16,7 +16,7 @@ const userSchema = new Schema({
   verificationToken: { type: String },
   verificationTokenExpiresAt: { type: Date },
   resetPasswordToken: { type: String },
-  resetPasswordTokenExpires: { type: Date },
+  resetPasswordTokenExpiresAt: { type: Date },
 
   // Objectif et stats globales
   dailyGoal: { type: Number, default: 10000 }, // pas/jour
