@@ -21,7 +21,7 @@ import './index.css';
 
 {/*TODO https://step-ify.vercel.app/privacy-policy et https://step-ify.vercel.app/settings*/}
 
-axios.defaults.baseURL =  import.meta.env.VITE_NODE_ENV === "development" ? import.meta.env.VITE_BACKEND_SERVER : "";
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_SERVER;
 axios.defaults.withCredentials = true;
 
 function App() {
