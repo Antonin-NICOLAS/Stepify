@@ -3,7 +3,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 //routes
-const AuthRoutes = require('./routes/AuthRoutes')
+const AuthRoutes = require('../routes/AuthRoutes')
 //.env
 require('dotenv').config()
 
@@ -33,7 +33,10 @@ app.use((req, res, next) => {
 });
 
 //routes
-app.use('/api/auth', AuthRoutes)
+app.get('/', (req, res) => {
+    res.send("Hello from Stepify API")
+})
+app.use('/auth', AuthRoutes)
 
 //mongoDB connection
 mongoose.connect(process.env.MONGO_URI)
