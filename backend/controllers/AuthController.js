@@ -51,9 +51,6 @@ const createUser = async (req, res) => {
     if (!username) {
         return res.status(400).json({ error: "Le nom d'utilisateur est requis" });
     }
-    if (!password || password.length < 6) {
-        return res.status(400).json({ error: "Un mot de passe est requis, d'une longueur de 6 caractères au moins" });
-    }
 
     // l'adresse mail doit être unique
     const emailexist = await UserModel.findOne({ email });
@@ -64,6 +61,10 @@ const createUser = async (req, res) => {
     const usernameexist = await UserModel.findOne({ username });
     if (usernameexist) {
         return res.status(400).json({ error: "Le nom d'utilisateur est déjà associé à un compte. Il doit être unique" });
+    }
+    // le mot de passe doit contenir au moins 6 caractères
+    if (!password || password.length < 6) {
+        return res.status(400).json({ error: "Un mot de passe est requis, d'une longueur de 6 caractères au moins" });
     }
 
     try {
@@ -154,7 +155,11 @@ const resendVerificationEmail = async (req, res) => {
     await user.save();
 
     await sendVerificationEmail(user.email, user.verificationToken);
-    return res.status(200).json({ message: "Email de vérification renvoyé" });
+    return res.status(200).json({
+        success: true,
+        message: "Email de vérification renvoyé",
+        user: { ...user._doc, password: undefined },
+    });
 };
 
 // delete an account
@@ -290,7 +295,8 @@ const checkAuth = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            user: { ...user._doc, password: undefined } });
+            user: { ...user._doc, password: undefined }
+        });
     } catch (error) {
         console.log("erreur survenue lors de la vérification de la connexion", error);
         res.status(400).json({ success: false, message: error.message });

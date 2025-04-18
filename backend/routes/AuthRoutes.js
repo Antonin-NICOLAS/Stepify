@@ -35,7 +35,7 @@ router.use(
 //routes
 router.post('/register', createUser)
 router.post('/verify-email', verifyEmail)
-router.post('/resend-verification-email', resendVerificationEmail)
+router.post('/resend-verification-code', resendVerificationEmail)
 router.delete('/:userId/delete', deleteUser)
 
 router.post('/login', loginUser)

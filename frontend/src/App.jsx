@@ -5,6 +5,13 @@ import axios from 'axios';
 import { Toaster } from "react-hot-toast"
 //layouts
 import MainLayout from './MainLayout.jsx';
+// routes
+import {
+  ProtectRoute,
+  AuthenticatedUserRoute,
+  RequireEmailVerification,
+  RequireAdmin
+} from './routes/RoutesGuards.jsx';
 //context
 //pages
 import Home from './pages/Home.jsx';
@@ -17,6 +24,7 @@ import Settings from './pages/Settings.jsx';
 import About from './pages/About.jsx';
 //components
 import Login from './components/Auth/Login.jsx';
+import EmailVerification from './components/Auth/EmailVerification.jsx';
 import ForgotPassword from './components/Auth/Forgot-pwd.jsx';
 import EmailSent from './components/Auth/EmailSent.jsx';
 import ResetPassword from './components/Auth/Reset-pwd.jsx';
@@ -28,25 +36,6 @@ import './index.css';
 
 axios.defaults.baseURL = process.env.NODE_ENV === "production" ? '' : process.env.BACKEND_SERVER,
   axios.defaults.withCredentials = true
-
-//Authentification
-const ProtectRoute = ({ children }) => {
-  const { isAuthenticated } = useAuthStore();
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-};
-
-const AuthenticatedUserRoute = ({ children }) => {
-  const { isAuthenticated, user } = useAuthStore();
-  if (isAuthenticated && user) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  return children;
-};
 
 function App() {
   const { checkAuth } = useAuthStore();
@@ -74,21 +63,24 @@ function App() {
         <Routes>
           {/* Pages avec layout principal */}
           <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/challenges" element={<Challenges />} />
-            <Route path="/activities" element={<Activities />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/statistics" element={<Statistics />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/about" element={<About />} />
+            <Route path="/" element={<RequireEmailVerification><Home /></RequireEmailVerification>} />
+            <Route path="/dashboard" element={<RequireEmailVerification><Dashboard /></RequireEmailVerification>} />
+            <Route path="/challenges" element={<RequireEmailVerification><Challenges /></RequireEmailVerification>} />
+            <Route path="/activities" element={<RequireEmailVerification><Activities /></RequireEmailVerification>} />
+            <Route path="/leaderboard" element={<RequireEmailVerification><Leaderboard /></RequireEmailVerification>} />
+            <Route path="/statistics" element={<RequireEmailVerification><Statistics /></RequireEmailVerification>} />
+            <Route path="/settings" element={<RequireEmailVerification><Settings /></RequireEmailVerification>} />
+            <Route path="/about" element={<RequireEmailVerification><About /></RequireEmailVerification>} />
+            <Route path="/admin" element={<RequireAdmin><Dashboard /></RequireAdmin>} /> {/* TODO : admin page */}
           </Route>
 
           {/* Pages sans header/sidebar */}
           <Route path="/login" element={<AuthenticatedUserRoute><Login /></AuthenticatedUserRoute>} />
-          <Route path="/forgot-password" element={<ProtectRoute><ForgotPassword /></ProtectRoute>} />
-          <Route path="/email-sent" element={<ProtectRoute><EmailSent /></ProtectRoute>} />
-          <Route path="/reset-password/:token" element={<ProtectRoute><ResetPassword /></ProtectRoute>} />
+          <Route path="/register" element={<AuthenticatedUserRoute><Login /></AuthenticatedUserRoute>} />
+          <Route path="/email-verification" element={<ProtectRoute><EmailVerification /></ProtectRoute>} />
+          <Route path="/forgot-password" element={<ProtectRoute><RequireEmailVerification><ForgotPassword /></RequireEmailVerification></ProtectRoute>} />
+          <Route path="/email-sent" element={<ProtectRoute><RequireEmailVerification><EmailSent /></RequireEmailVerification></ProtectRoute>} />
+          <Route path="/reset-password/:token" element={<ProtectRoute><RequireEmailVerification><ResetPassword /></RequireEmailVerification></ProtectRoute>} />
           {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
           {/* <Route path="/terms-of-service" element={<TermsOfService />} /> */}
         </Routes>

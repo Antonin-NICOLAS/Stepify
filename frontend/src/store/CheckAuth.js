@@ -81,7 +81,7 @@ export const useAuthStore = create((set, get) => ({
     },
 
     // --- Login ---
-    login: async (LformData, resetForm) => {
+    login: async (LformData, resetForm, navigate) => {
         const { email, password, stayLoggedIn } = LformData;
         if (!email || !password) {
             toast.error("Veuillez remplir tous les champs");
@@ -107,6 +107,11 @@ export const useAuthStore = create((set, get) => ({
             } else {
                 set({ isAuthenticated: true, user: data.user });
                 resetForm();
+                if (!data.user.isVerified) {
+                    navigate("/email-verification");
+                } else {
+                    navigate("/dashboard");
+                }
                 toast.success(data.message);
             }
         } catch (err) {
@@ -177,6 +182,10 @@ export const useAuthStore = create((set, get) => ({
 
     // --- Verify Email ---
     verifyEmail: async (code, onSuccess) => {
+        if (code.length !== 6) {
+            toast.error("Veuillez entrer le code complet à 6 chiffres")
+            return
+        }
         set({ isLoading: true });
         try {
             const res = await axios.post(`${API_AUTH}/verify-email`, {
@@ -196,6 +205,33 @@ export const useAuthStore = create((set, get) => ({
             }
         } catch (err) {
             toast.error(err.response?.data?.error || "Erreur de vérification");
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+
+    // --- Resend verification code ---
+    resendVerificationCode: async (OnError, onSuccess) => {
+
+        set({ isLoading: true });
+        try {
+            const res = await axios.post(`${API_AUTH}/resend-verification-code`, {}, {
+                withCredentials: true
+            });
+
+            const data = res.data;
+
+            if (data.error) {
+                toast.error(data.error);
+                OnError();
+            } else {
+                set({ isAuthenticated: true, user: data.user });
+                onSuccess();
+                toast.success(data.message);
+            }
+        } catch (err) {
+            OnError();
+            toast.error(err.response?.data?.error || "Erreur lors de l'envoi du code");
         } finally {
             set({ isLoading: false });
         }

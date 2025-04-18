@@ -44,8 +44,7 @@ function Auth() {
         password: "",
         stayLoggedIn: false
       }),
-        navigate("/dashboard");
-
+        navigate;
     });
   };
 
@@ -61,7 +60,7 @@ function Auth() {
         username: "",
         stayLoggedIn: false
       }),
-        navigate("/dashboard");
+        navigate("/email-verification");
     });
   };
 
