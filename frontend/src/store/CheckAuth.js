@@ -1,143 +1,218 @@
+// store/authStore.js
 import { create } from "zustand";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
-export const useAuthStore = create((set) => ({
+const API_AUTH = process.env.NODE_ENV === "production" ? "/api/auth" : "/auth";
+
+export const useAuthStore = create((set, get) => ({
+    // --- Auth State ---
     user: null,
     isLoading: false,
-    error: null,
     isAuthenticated: false,
-    isCheckingAuth: true,
-    message: null,
+    error: null,
 
-    signup: async (email, password, name) => {
-        set({ isLoading: true, error: null });
-        try {
-            const response = await fetch(`${API_URL}/signup`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({ email, password, name }),
-            });
-            const data = await response.json();
-            set({ isLoading: false, isAuthenticated: true, user: data.user });
-        } catch (error) {
-            set({ isLoading: false, error: error.message });
-            console.log(error);
-
-            throw error;
-        }
-    },
-    verifyEmail: async (code) => {
-        set({ isLoading: true, error: null });
-        try {
-            const response = await fetch(`${API_URL}/verify-email`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({ code }),
-            });
-            const data = await response.json();
-            set({ isLoading: false, isAuthenticated: true, user: data.user });
-        } catch (error) {
-            set({ isLoading: false, error: error.message });
-            console.log(error);
-        }
-    },
-    login: async (email, password) => {
-        set({ isLoading: true, error: null });
-        try {
-            const response = await fetch(`${API_URL}/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({ email, password }),
-            });
-            const data = await response.json();
-            set({ isLoading: false, isAuthenticated: true, user: data.user });
-        } catch (error) {
-            set({ isLoading: false, error: error.message });
-            console.log(error);
-            throw error;
-        }
-    },
+    // --- Auth Status ---
     checkAuth: async () => {
-        set({ isCheckingAuth: true, error: null });
+        set({ isLoading: true });
         try {
-            const response = await fetch(`${API_URL}/check-auth`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-            });
-            const data = await response.json();
+            const res = await axios.get(`${API_AUTH}/check-auth`, { withCredentials: true });
+            const data = res.data;
             if (data.user) {
-                set({ isAuthenticated: true, user: data.user, isCheckingAuth: false });
+                set({ isAuthenticated: true, user: data.user });
             } else {
-                set({ isAuthenticated: false, user: null, isCheckingAuth: false });
+                set({ isAuthenticated: false, user: null });
             }
-        } catch (error) {
-            set({ isCheckingAuth: false, isAuthenticated: false, user: null });
-            console.log(error);
+        } catch (err) {
+            set({ user: null, isAuthenticated: false });
+            console.error("error while checking auth:", err);
+        } finally {
+            set({ isLoading: false });
         }
     },
-    logout: async () => {
-        set({ isLoading: true, error: null });
+
+    // --- Register ---
+    register: async (RformData, resetForm) => {
+        const { firstName, lastName, username, email, password, confirmPassword, stayLoggedIn } = RformData;
+        if (!firstName || !lastName || !username || !email || !password) {
+            toast.error("Tous les champs sont requis");
+            return;
+        }
+        if (password !== confirmPassword) {
+            toast.error("Les mots de passe ne correspondent pas");
+            return;
+        }
+        if (password.length < 6) {
+            toast.error("Le mot de passe doit contenir au moins 6 caractères");
+            return;
+        }
+
+        set({ isLoading: true });
         try {
-            const response = await fetch(`${API_URL}/logout`, {
-                method: "POST",
+            const res = await axios.post(`${API_AUTH}/register`, {
+                firstName,
+                lastName,
+                username,
+                email,
+                password,
+                stayLoggedIn,
+            }, {
+                withCredentials: true,
                 headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
+                    'Content-Type': 'application/json'
+                }
             });
-            set({ isLoading: false, isAuthenticated: false, user: null });
-        } catch (error) {
-            set({ isLoading: false, error: error.message });
-            throw error;
+
+            const data = res.data;
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                set({ isAuthenticated: true, user: data.user });
+                resetForm();
+                toast.success(data.message);
+            }
+
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Erreur lors de l'inscription");
+        } finally {
+            set({ isLoading: false });
         }
     },
-    forgotPassword: async (email) => {
-        set({ isLoading: true, error: null });
+
+    // --- Login ---
+    login: async (LformData, resetForm) => {
+        const { email, password, stayLoggedIn } = LformData;
+        if (!email || !password) {
+            toast.error("Veuillez remplir tous les champs");
+            return;
+        }
+        set({ isLoading: true });
         try {
-            const response = await fetch(`${API_URL}/forgot-password`, {
-                method: "POST",
+            const res = await axios.post(`${API_AUTH}/login`, {
+                email,
+                password,
+                stayLoggedIn
+            }, {
+                withCredentials: true,
                 headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({ email }),
+                    'Content-Type': 'application/json'
+                }
             });
-            const data = await response.json();
-            console.log(data.message);
-            set({ isLoading: false, message: data.message });
-        } catch (error) {
-            set({ isLoading: false, error: error.message });
-            console.log(error);
+
+            const data = res.data;
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                set({ isAuthenticated: true, user: data.user });
+                resetForm();
+                toast.success(data.message);
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Erreur lors de la connexion");
+        } finally {
+            set({ isLoading: false });
         }
     },
-    resetPassword: async (token, password) => {
-        set({ isLoading: true, error: null });
+
+    // --- Forgot Password ---
+    forgotPassword: async (email, onSuccess) => {
+        if (!email) return toast("Veuillez entrer votre email");
+        set({ isLoading: true });
         try {
-            const response = await fetch(`${API_URL}/reset-password/${token}`, {
-                method: "POST",
+            const res = await axios.post(`${API_AUTH}/forgot-password`, {
+                email
+            }, {
+                withCredentials: true,
                 headers: {
                     "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({ password }),
+                }
             });
-            const data = await response.json();
-            set({ isLoading: false, message: data.message });
-        } catch (error) {
-            set({ isLoading: false, error: error.message });
-            console.log(error);
-            throw error;
+            const data = res.data;
+            if (data.error) {
+                toast.error(data.error)
+            } else {
+                onSuccess()
+                toast.success(data.message);
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Erreur lors de l'envoi de l'email");
+        } finally {
+            set({ isLoading: false });
         }
-    }
+    },
+
+    // --- Reset Password ---
+    resetPassword: async (token, password, confirmPassword, onSuccess) => {
+        if (!token) return toast.error("Lien invalide ou expiré");
+        if (password !== confirmPassword) return toast.error("Les mots de passe ne correspondent pas");
+        if (password.length < 6) return toast.error("Mot de passe trop court (min 6 caractères)");
+
+        set({ isLoading: true });
+        try {
+            const res = await axios.post(`${API_AUTH}/reset-password/${token}`, {
+                password,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = res.data;
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                onSuccess();
+                toast.success(data.message);
+                set({ isAuthenticated: false, user: null });
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Erreur lors de la réinitialisation");
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+
+    // --- Verify Email ---
+    verifyEmail: async (code, onSuccess) => {
+        set({ isLoading: true });
+        try {
+            const res = await axios.post(`${API_AUTH}/verify-email`, {
+                code
+            }, {
+                withCredentials: true
+            });
+
+            const data = res.data;
+
+            if (data.error) {
+                toast.error(data.error);
+            } else {
+                set({ isAuthenticated: true, user: data.user });
+                onSuccess();
+                toast.success(data.message);
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Erreur de vérification");
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+
+    // --- Logout ---
+    logout: async (onSuccess) => {
+        set({ isLoading: true });
+        try {
+            const res = await axios.post(`${API_AUTH}/logout`, {}, { withCredentials: true });
+            set({ user: null, isAuthenticated: false });
+            toast.success(res.data.message || "Déconnecté avec succès");
+            onSuccess();
+        } catch (err) {
+            toast.error("Erreur lors de la déconnexion");
+        } finally {
+            set({ isLoading: false });
+        }
+    },
 }));

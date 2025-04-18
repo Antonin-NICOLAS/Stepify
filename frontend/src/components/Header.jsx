@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 //context
-import { useUser } from "../context/UserContext.jsx";
+import { useAuthStore } from "../store/CheckAuth";
 //images
 import Account from "../assets/account.png";
 import Logo from "../assets/icon.png";
@@ -23,7 +23,8 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import "./Header.css";
 
 function Header() {
-  const { user, loading } = useUser();
+  const navigate = useNavigate();
+  const {user, isAuthenticated, logout} = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkTheme, setDarkTheme] = useState(false);
 
@@ -44,6 +45,13 @@ function Header() {
     setDarkTheme(newTheme);
     document.body.classList.toggle("dark-theme");
     localStorage.setItem("selected-theme", newTheme ? "dark" : "light");
+  };
+
+  const handleLogout = () => {
+    logout(() => {
+      navigate("/login");
+      setSidebarOpen(false);
+    });
   };
 
   return (
@@ -70,8 +78,8 @@ function Header() {
               <img src={Account} alt="profile" />
             </div>
             <div className="sidebar__info">
-              <h3>John Doe</h3>
-              <span>john@example.com</span>
+              <h3>{user ? (`${user.firstName} ${user.lastName}`) : ("Guest")}</h3>
+              <span>{user && user.email}</span>
             </div>
           </div>
 
@@ -103,8 +111,8 @@ function Header() {
               <RiMoonFill />
               <span>Theme</span>
             </button>
-            {user ? (
-              <button className="sidebar__link"><RiLogoutBoxRFill /><span>Log Out</span></button>
+            {isAuthenticated ? (
+              <button className="sidebar__link" onClick={handleLogout}><RiLogoutBoxRFill /><span>Log Out</span></button>
             ) : (
               <NavLink to="/login" className="sidebar__link"><RiLoginBoxLine /><span>Log In</span></NavLink>
             )}

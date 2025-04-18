@@ -22,7 +22,6 @@ require('dotenv').config()
 // - logout
 
 //// CONTEXT ////
-// - get profile
 // - check auth
 
 //// UPDATE AN ACCOUNT ////
@@ -128,7 +127,11 @@ const verifyEmail = async (req, res) => {
         await user.save();
         await sendWelcomeEmail(user.email, user.firstName);
 
-        return res.status(200).json({ message: "Email vérifié avec succès" });
+        return res.status(200).json({
+            success: true,
+            message: "Email vérifié",
+            user: { ...user._doc, password: undefined },
+        });
     } catch (error) {
         console.log("Erreur lors de la vérification de l'email :", error);
         res.status(400).json({ success: false, error: error.message });
@@ -192,7 +195,8 @@ const loginUser = async (req, res) => {
         user.password = undefined;
         return res.status(201).json({
             success: true,
-            message: "Vous êtes connecté"
+            message: "Vous êtes connecté",
+            user: { ...user._doc, password: undefined },
         });
 
     } catch (error) {
@@ -252,7 +256,7 @@ const resetPassword = async (req, res) => {
 
         await sendResetPasswordSuccessfulEmail(user.email, user.firstName);
 
-        res.status(200).json({ message: "Mot de passe réinitialisé avec succès" })
+        res.status(200).json({ message: "Mot de passe réinitialisé" })
     } catch (error) {
         console.log("Erreur lors de la réinitialisation du mot de passe :", error);
         res.status(400).json({ error: error.message })
@@ -263,10 +267,10 @@ const resetPassword = async (req, res) => {
 const logoutUser = async (req, res) => {
     try {
         res.clearCookie("jwtauth", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure: process.env.NODE_ENV === "production" ? true : false,
+            httpOnly: process.env.NODE_ENV === "production" ? true : false,
             sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
-            domain: process.env.NODE_ENV === "production" ? 'step-ify.vercel.app' : '',
+            ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
         })
         return res.status(200).json({ success: true, message: "Déconnecté" })
     } catch (error) {
@@ -276,33 +280,6 @@ const logoutUser = async (req, res) => {
 
 //// CONTEXT ////
 
-// get profile
-const getUserProfile = (req, res) => {
-    const { jwtauth } = req.cookies;
-    if (!jwtauth) return res.status(401).json({ error: "Non autorisé" });
-
-    jwt.verify(jwtauth, process.env.JWT_SECRET, async (err, decoded) => {
-        if (err) return res.status(401).json({ error: "Token invalide" });
-
-        try {
-            const user = await UserModel.findById(decoded.id).select('-password').lean();
-            if (!user) {
-                return res.status(404).json({ error: "Utilisateur non trouvé" });
-            }
-
-            const { firstName, lastName, ...rest } = user;
-            const responseData = {
-                ...rest,
-                nom: lastName,
-                prenom: firstName
-            };
-
-            return res.status(200).json(responseData);
-        } catch (error) {
-            res.status(500).json({ error: error.message });
-        }
-    });
-};
 // check auth
 const checkAuth = async (req, res) => {
     try {
@@ -311,9 +288,11 @@ const checkAuth = async (req, res) => {
             return res.status(400).json({ success: false, message: "Utilisateur non trouvé" });
         }
 
-        res.status(200).json({ success: true, user: { ...user._doc, password: undefined } });
+        res.status(200).json({
+            success: true,
+            user: { ...user._doc, password: undefined } });
     } catch (error) {
-        console.log("erreur survenue lors de la vérification de la connection", error);
+        console.log("erreur survenue lors de la vérification de la connexion", error);
         res.status(400).json({ success: false, message: error.message });
     }
 };
@@ -410,7 +389,6 @@ module.exports = {
     forgotPassword,
     resetPassword,
     logoutUser,
-    getUserProfile,
     checkAuth,
     updateAvatar,
     updateUsername,

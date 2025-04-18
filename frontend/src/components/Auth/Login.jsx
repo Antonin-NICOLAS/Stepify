@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useAuthStore } from "../../store/CheckAuth";
+import { useNavigate, Link } from "react-router-dom";
 import Spline from "@splinetool/react-spline";
 //icons
 import {
   RiMailLine, RiEyeFill, RiEyeOffFill,
-  RiIdCardLine, RiUser3Line, RiLogoutBoxRFill
+  RiIdCardLine, RiUser3Line
 } from "react-icons/ri";
 import { LuLogIn } from "react-icons/lu";
 //CSS
@@ -15,11 +13,14 @@ import "./Login.css";
 
 function Auth() {
   const navigate = useNavigate();
-  //UseState
+  const { login, register, isLoading } = useAuthStore();
+
   const [Logindata, setLoginData] = useState({
     email: "",
     password: "",
+    stayLoggedIn: false
   });
+
   const [Registerdata, setRegisterData] = useState({
     email: "",
     password: "",
@@ -27,90 +28,42 @@ function Auth() {
     firstName: "",
     lastName: "",
     username: "",
+    stayLoggedIn: false
   });
+
   const [isLogin, setIsLogin] = useState(true);
   const [showLPassword, setShowLPassword] = useState(false);
   const [showRPassword, setShowRPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [rememberMeL, setRememberMeL] = useState(false);
-  const [rememberMeR, setRememberMeR] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    const { email, password } = Logindata;
-    if (!email || !password) {
-      toast("Remplissez tous les champs");
-      return;
-    }
-    try {
-      const response = await axios.post(process.env.NODE_ENV === "production" ? '/api/auth/login' : '/auth/login', 
-        {
-          email,
-          password,
-          stayLoggedIn: rememberMeL, 
-        },
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      if (response.data.error) {
-        toast.error(response.data.error);
-        console.log(response.data.error);
-      } else {
-        setLoginData({})
-        toast.success("Connecté avec succès");
+    login(Logindata, () => {
+      setLoginData({
+        email: "",
+        password: "",
+        stayLoggedIn: false
+      }),
         navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error(error?.response?.data?.error || "Une erreur est survenue");
-    }
-  }
 
-  const handleRegister = async (e) => {
+    });
+  };
+
+  const handleRegister = (e) => {
     e.preventDefault();
-    const { firstName, lastName, username, email, password, confirmPassword, rememberMeR } = Registerdata;
-    if (!email || !password || !firstName || !lastName || !username) {
-      toast("Remplissez tous les champs");
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast.error("Les mots de passe ne correspondent pas");
-      return;
-    }
-    try {
-      const response = await axios.post(process.env.NODE_ENV === "production" ? '/api/auth/register' : '/auth/register', 
-        {
-          email,
-          password,
-          firstName,
-          lastName,
-          username,
-          stayLoggedIn: rememberMeR, 
-        },
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      if (response.data.error) {
-        toast.error(response.data.error);
-        console.log(response.data.error);
-      } else {
-        setRegisterData({})
-        toast.success("Compte créé avec succès");
+    register(Registerdata, () => {
+      setRegisterData({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        firstName: "",
+        lastName: "",
+        username: "",
+        stayLoggedIn: false
+      }),
         navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      toast.error(error?.response?.data?.error || "Une erreur est survenue");
-    }
-  }
+    });
+  };
 
   return (
     <div className="auth-body">
@@ -149,11 +102,11 @@ function Auth() {
               </div>
 
               <div className="form-options">
-                <label><input type="checkbox" checked={rememberMeL} onChange={() => setRememberMeL(!rememberMeL)} /> Stay connected</label>
+                <label><input type="checkbox" checked={Logindata.stayLoggedIn} onChange={() => setLoginData({ ...Logindata, stayLoggedIn: !Logindata.stayLoggedIn })} /> Stay connected</label>
                 <Link to="/forgot-password">Forgot password?</Link>
               </div>
 
-              <button type="submit" className="submit-btn">Log In <LuLogIn /></button>
+              <button type="submit" className="submit-btn" disabled={isLoading}>Log In <LuLogIn /></button>
               <div className="form-footer">
                 <span>Pas de compte ?</span>
                 <button onClick={() => setIsLogin(false)}>Register</button>
@@ -210,11 +163,11 @@ function Auth() {
                 </div>
               </div>
               <div className="register-form-options">
-                <label><input type="checkbox" required /><a href="" target="_blank">Accepter les conditions d'utilisation</a></label> {/*TODO conditions d'utilisation*/}
-                <label><input type="checkbox" checked={rememberMeR} onChange={() => setRememberMeR(!rememberMeR)} />Rester connecté</label>
+                <label><input type="checkbox" required /><Link to="/terms-of-service" target="_blank" rel="noopener noreferrer">Accepter les conditions d'utilisation</Link></label> {/*TODO conditions d'utilisation*/}
+                <label><input type="checkbox" checked={Registerdata.stayLoggedIn} onChange={() => setRegisterData({ ...Registerdata, stayLoggedIn: !Registerdata.stayLoggedIn })} />Rester connecté</label>
               </div>
 
-              <button type="submit" className="submit-btn">Register <LuLogIn /></button>
+              <button type="submit" className="submit-btn" disabled={isLoading}>Register <LuLogIn /></button>
               <div className="form-footer">
                 <span>Déjà un compte ?</span>
                 <button onClick={() => setIsLogin(true)}>Login</button>

@@ -12,7 +12,6 @@ const { createUser,
     forgotPassword,
     resetPassword,
     logoutUser,
-    getUserProfile,
     checkAuth,
     updateAvatar,
     updateUsername,
@@ -45,7 +44,6 @@ router.post('/reset-password/:token', resetPassword)
 router.post('/logout', logoutUser)
 
 router.get('/check-auth', verifyToken, checkAuth)
-router.get('/profile', getUserProfile)
 
 router.patch('/:userId/avatar', updateAvatar)
 router.patch('/:userId/username', updateUsername)

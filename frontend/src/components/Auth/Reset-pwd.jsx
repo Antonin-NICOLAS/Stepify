@@ -1,6 +1,5 @@
 import { useState } from "react"
-import axios from "axios"
-import toast from "react-hot-toast"
+import { useAuthStore } from "../../store/CheckAuth"
 import { useParams, Link } from "react-router-dom"
 //icons
 import { RiEyeFill, RiEyeOffFill, RiCheckLine } from "react-icons/ri"
@@ -14,55 +13,18 @@ function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const { resetPassword, isLoading } = useAuthStore();
 
-    if (!token) {
-      toast.error("Token invalide ou expiré")
-      return
-    }
-
-    if (password !== confirmPassword) {
-      toast.error("Les mots de passe ne correspondent pas")
-      return
-    }
-
-    if (password.length < 6) {
-      toast.error("Le mot de passe doit contenir au moins 6 caractères")
-      return
-    }
-
-    setIsLoading(true)
-    try {
-        const response = await axios.post(process.env.NODE_ENV === "production" ? `/api/auth/reset-password/${token}` : `/auth/reset-password/${token}`,
-            {
-                password,
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-        );
-        if (response.data.error) {
-            toast.error(response.data.error);
-            setIsSuccess(false);
-            console.log(response.data.error);
-        } else {
-            setPassword("")
-            setConfirmPassword("")
-            setIsSuccess(true)
-            toast.success("Mot de passe réinitialisé");
-        }
-    } catch (error) {
-        console.error("pwd reset error:", error);
-        setIsSuccess(false);
-        toast.error(error?.response?.data?.error || "Une erreur est survenue");
-    }
-}
+  const handleResetPwd = (e) => {
+    e.preventDefault();
+    resetPassword(token, password, confirmPassword, () => {
+      setPassword("");
+      setConfirmPassword("");
+      setIsSuccess(true);
+    });
+  };
 
   if (isSuccess) {
     return (
@@ -98,7 +60,7 @@ function ResetPassword() {
       <div className="auth-container reset-container">
         <div className="auth-col col-form reset-form-col">
           <div className="form-slide">
-            <form className="auth-form reset-form" onSubmit={handleSubmit}>
+            <form className="auth-form reset-form" onSubmit={handleResetPwd}>
               <h2>Réinitialiser le mot de passe 🔒</h2>
               <p className="subtitle">Créez un nouveau mot de passe pour votre compte</p>
 
