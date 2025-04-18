@@ -12,6 +12,7 @@ require('dotenv').config()
 //// ACCOUNT MANAGEMENT ////
 // - register
 // - verify email
+// - resend verification email
 // - delete account
 
 //// ACCOUNT REQ ////
@@ -97,12 +98,24 @@ const createUser = async (req, res) => {
 // verify email
 const verifyEmail = async (req, res) => {
     const { code } = req.body;
+    const { jwtauth } = req.cookies;
 
     try {
-        const user = await UserModel.findOne({ verificationToken: code });
+        // Vérifier le JWT pour obtenir l'ID utilisateur
+        const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET);
+        const user = await UserModel.findById(decoded.id);
 
         if (!user) {
-            return res.status(404).json({ error: "Code de vérification invalide ou Email déjà vérifié" });
+            return res.status(404).json({ error: "Utilisateur non trouvé" });
+        }
+
+        // Le reste de la logique reste identique...
+        if (user.isVerified) {
+            return res.status(400).json({ error: "Email déjà vérifié" });
+        }
+
+        if (user.verificationToken !== code) {
+            return res.status(400).json({ error: "Code de vérification invalide" });
         }
 
         if (user.verificationTokenExpiresAt < Date.now()) {
@@ -120,6 +133,25 @@ const verifyEmail = async (req, res) => {
         console.log("Erreur lors de la vérification de l'email :", error);
         res.status(400).json({ success: false, error: error.message });
     }
+};
+
+// resend verification email
+const resendVerificationEmail = async (req, res) => {
+    const { jwtauth } = req.cookies;
+    if (!jwtauth) return res.status(401).json({ error: "Non autorisé" });
+
+    const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET);
+    const email = decoded.email;
+
+    const user = await UserModel.findOne({ email });
+    if (!user || user.isVerified) return res.status(400).json({ error: "Déjà vérifié ou inexistant" });
+
+    user.verificationToken = generateVerificationCode();
+    user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000;
+    await user.save();
+
+    await sendVerificationEmail(user.email, user.verificationToken);
+    return res.status(200).json({ message: "Email de vérification renvoyé" });
 };
 
 // delete an account
@@ -173,8 +205,8 @@ const forgotPassword = async (req, res) => {
     try {
         const user = await UserModel.findOne({ email });
         if (!user) return res.status(400).json({ error: "L'email n'est associé à aucun compte" })
-        
-            // Vérifier si l'utilisateur a un vérifié l'email
+
+        // Vérifier si l'utilisateur a un vérifié l'email
         const isVerified = user.isVerified;
         if (!isVerified) return res.status(401).json({ error: "Email non vérifié" });
 
@@ -195,15 +227,20 @@ const forgotPassword = async (req, res) => {
 
 // reset password
 const resetPassword = async (req, res) => {
-    const { token } = req.params
-    const { password } = req.body
+    const { token } = req.params;
+    const { password } = req.body;
+
     try {
         const user = await UserModel.findOne({
-            resetPasswordToken: token, 
+            resetPasswordToken: token,
             resetPasswordTokenExpiresAt: { $gt: Date.now() }
         });
         if (!user) return res.status(400).json({ error: "Lien invalide ou expiré. Veuillez renvoyer un email" })
-        
+
+        if (!password || password.length < 6) {
+            return res.status(400).json({ error: "Le mot de passe doit contenir au moins 6 caractères" });
+        }
+
         // Hash du nouveau mot de passe
         const hashedPassword = await bcrypt.hash(password, 10);
         user.password = hashedPassword;
@@ -214,7 +251,7 @@ const resetPassword = async (req, res) => {
         await user.save();
 
         await sendResetPasswordSuccessfulEmail(user.email, user.firstName);
-        
+
         res.status(200).json({ message: "Mot de passe réinitialisé avec succès" })
     } catch (error) {
         console.log("Erreur lors de la réinitialisation du mot de passe :", error);
@@ -238,6 +275,7 @@ const logoutUser = async (req, res) => {
 }
 
 //// CONTEXT ////
+
 // get profile
 const getUserProfile = (req, res) => {
     const { jwtauth } = req.cookies;
@@ -268,17 +306,17 @@ const getUserProfile = (req, res) => {
 // check auth
 const checkAuth = async (req, res) => {
     try {
-      const user = await UserModel.findById(req.userId);
-      if (!user) {
-        return res.status(400).json({ success: false, message: "Utilisateur non trouvé" });
-      }
-  
-      res.status(200).json({ success: true, user: { ...user._doc, password: undefined } });
+        const user = await UserModel.findById(req.userId);
+        if (!user) {
+            return res.status(400).json({ success: false, message: "Utilisateur non trouvé" });
+        }
+
+        res.status(200).json({ success: true, user: { ...user._doc, password: undefined } });
     } catch (error) {
-      console.log("erreur survenue lors de la vérification de la connection", error);
-      res.status(400).json({ success: false, message: error.message });
+        console.log("erreur survenue lors de la vérification de la connection", error);
+        res.status(400).json({ success: false, message: error.message });
     }
-  };
+};
 
 //// UPDATE AN ACCOUNT ////
 
@@ -366,6 +404,7 @@ const updateDailyGoal = async (req, res) => {
 module.exports = {
     createUser,
     verifyEmail,
+    resendVerificationEmail,
     deleteUser,
     loginUser,
     forgotPassword,

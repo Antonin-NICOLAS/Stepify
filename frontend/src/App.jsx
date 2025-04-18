@@ -6,7 +6,6 @@ import MainLayout from './MainLayout.jsx';
 //context
 import { UserProvider } from './context/UserContext.jsx';
 //pages
-import Login from './components/Auth/Login.jsx';
 import Home from './pages/Home.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import Challenges from './pages/Challenges.jsx';
@@ -15,6 +14,11 @@ import Leaderboard from './pages/Leaderboard.jsx';
 import Statistics from './pages/Statistics.jsx';
 import Settings from './pages/Settings.jsx';
 import About from './pages/About.jsx';
+//components
+import Login from './components/Auth/Login.jsx';
+import ForgotPassword from './components/Auth/Forgot-pwd.jsx';
+import EmailSent from './components/Auth/EmailSent.jsx';
+import ResetPassword from './components/Auth/Reset-pwd.jsx';
 //CSS
 import './App.css';
 import './index.css';
@@ -36,8 +40,8 @@ function App() {
               className: '',
               duration: 3000,
               style: {
-                background: 'var(--body-color)',
-                color: '#000',
+                background: 'var(--bleu)',
+                color: '#fff',
               },
             }}
           />
@@ -56,6 +60,11 @@ function App() {
 
             {/* Pages sans header/sidebar */}
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/email-sent" element={<EmailSent />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
+            {/* <Route path="/terms-of-service" element={<TermsOfService />} /> */}
           </Routes>
         </BrowserRouter>
       </UserProvider>

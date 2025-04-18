@@ -19,8 +19,7 @@ export const UserProvider = ({ children }) => {
       setUser(response.data);
     } catch (error) {
       const msg = error.response?.data?.error || error.message;
-      console.error("Login error:", msg);
-      toast.error(msg);
+      console.error("Unauthorized:", msg);
       setUser(null);
     } finally {
       setLoading(false);

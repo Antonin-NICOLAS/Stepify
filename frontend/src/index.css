@@ -7,6 +7,17 @@
 
   /*========== Colors ==========*/
   /*Color mode HSL(hue, saturation, lightness)*/
+  --background: #F5F9FA;
+  --Couleur: #212E53;
+  --Couleur1: #4A919E;
+  --Couleur2: #BED3C3;
+  --Couleur3: #EBACA2;
+  --Couleur4: #CE6A6B;
+  --Noir: #1E1E2F;
+  --Gris: #4B4B6A;
+  --turquoise: #4AC9BE;
+  --bleu: #2B5A73;
+  --blanc: #E2E8F0;
   --first-color: hsl(228, 85%, 63%);
   --title-color: hsl(228, 18%, 16%);
   --text-color: hsl(228, 8%, 56%);
@@ -73,28 +84,6 @@ button {
 
 /*=============== VARIABLES DARK THEME ===============*/
 body.dark-theme {
-  --first-color: hsl(228, 70%, 63%);
-  --title-color: hsl(228, 18%, 96%);
-  --text-color: hsl(228, 12%, 61%);
-  --body-color: hsl(228, 24%, 16%);
-  --shadow-color: hsla(228, 80%, 4%, .3);
-}
-
-html {
-  --background: #F5F9FA;
-  --Couleur: #212E53;
-  --Couleur1: #4A919E;
-  --Couleur2: #BED3C3;
-  --Couleur3: #EBACA2;
-  --Couleur4: #CE6A6B;
-  --Noir: #1E1E2F;
-  --Gris: #4B4B6A;
-  --turquoise: #4AC9BE;
-  --bleu: #2B5A73;
-  --blanc: #E2E8F0;
-}
-
-html[data-theme='dark'] {
   --background: #0F1B21;   
   --Couleur: #dae9f7;     
   --Couleur1: #212E53;
@@ -105,5 +94,10 @@ html[data-theme='dark'] {
   --Gris: #AAB8C2;     
   --turquoise: #4AC9BE;     
   --bleu: #39728B;          
-  --blanc: #1C2C34;        
+  --blanc: #1C2C34;    
+  --first-color: hsl(228, 70%, 63%);
+  --title-color: hsl(228, 18%, 96%);
+  --text-color: hsl(228, 12%, 61%);
+  --body-color: hsl(228, 24%, 16%);
+  --shadow-color: hsla(228, 80%, 4%, .3);
 }

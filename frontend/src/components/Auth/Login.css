@@ -6,9 +6,7 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: url("../../assets/logo.png") no-repeat center center;
-  background-size: contain;
-  background-color: var(--shadow-color);
+  background-color: var(--Couleur1);
 }
 
 .auth-body .auth-container {
@@ -31,8 +29,8 @@
 /* =================== LEFT SPLINE SECTION =================== */
 .col-spline {
   flex: 1;
-  backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(30px);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 30px 25% 15% 30px;
 }
 
@@ -60,18 +58,20 @@
   padding: 5px 30px;
   border: none;
   border-radius: 30px;
-  background: var(--body-color);
+  background: var(--background);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
 
 .auth-toggle-buttons .form-switch:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--Couleur4);
+  color: white;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
+
 .auth-toggle-buttons .form-switch.active {
-  background: var(--first-color);
+  background: var(--Couleur3);
   color: white;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
@@ -94,7 +94,8 @@
   opacity: 0;
   transform: translateX(100%);
 }
-.slide-login{
+
+.slide-login {
   overflow: hidden;
 }
 
@@ -112,12 +113,12 @@
 
 .auth-form h2 {
   font-size: 2rem;
-  color: var(--title-color);
+  color: var(--Noir);
 }
 
 .auth-form .subtitle {
   font-size: 0.95rem;
-  color: var(--text-color);
+  color: var(--Couleur);
   margin-bottom: 1rem;
 }
 
@@ -142,9 +143,16 @@
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
-  border: 1px solid var(--text-color);
-  background-color: var(--body-color);
+  border: 1px solid var(--Couleur);
+  background-color: var(--background);
+  color: var(--Couleur);
   font-size: 1rem;
+}
+
+.input-wrapper input:focus {
+  border-color: var(--Couleur1);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 145, 158, 0.2);
 }
 
 .input-wrapper svg,
@@ -155,7 +163,7 @@
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: var(--text-color);
+  color: var(--Couleur);
   cursor: pointer;
 }
 
@@ -176,19 +184,24 @@
   gap: 0.5rem;
 }
 
-.form-options label, .register-form-options label {
+.form-options label,
+.register-form-options label {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  color: var(--Couleur);
 }
 
-.form-options a, .register-form-options a {
-  color: var(--first-color);
+.form-options a,
+.register-form-options a {
+  color: var(--Couleur3);
   text-decoration: none;
   font-weight: 600;
 }
-.form-options a:hover, .register-form-options a:hover {
+
+.form-options a:hover,
+.register-form-options a:hover {
   text-decoration: underline;
 }
 
@@ -201,7 +214,7 @@
 }
 
 .auth-body .auth-form .form-footer button {
-  color: var(--first-color);
+  color: var(--Couleur3);
   text-decoration: none;
   font-weight: 600;
   cursor: pointer;
@@ -211,8 +224,12 @@
   text-decoration: underline;
 }
 
+.auth-body .auth-form .form-footer span {
+  color: var(--Couleur);
+}
+
 .submit-btn {
-  background-color: var(--first-color);
+  background-color: var(--Couleur3);
   color: white;
   padding: 0.75rem;
   border: none;

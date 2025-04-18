@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 //context
 import { useUser } from "../context/UserContext.jsx";
 //images
-import Account from "../assets/account.jpeg";
+import Account from "../assets/account.png";
 import Logo from "../assets/icon.png";
 //icons
 import {

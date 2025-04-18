@@ -6,6 +6,7 @@ const { verifyToken } = require('../middlewares/VerifyToken')
 //controllers
 const { createUser,
     verifyEmail,
+    resendVerificationEmail,
     deleteUser,
     loginUser,
     forgotPassword,
@@ -35,6 +36,7 @@ router.use(
 //routes
 router.post('/register', createUser)
 router.post('/verify-email', verifyEmail)
+router.post('/resend-verification-email', resendVerificationEmail)
 router.delete('/:userId/delete', deleteUser)
 
 router.post('/login', loginUser)
