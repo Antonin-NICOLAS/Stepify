@@ -1,0 +1,106 @@
+/* =================== GLOBAL RESET STYLES =================== */
+.forgotpwd-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: var(--Couleur1);
+  }
+  
+  .forgotpwd-body .forgotpwd-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 90%;
+    max-width: 90%;
+    overflow-y: auto;
+    padding: 2rem;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px;
+  }
+  
+  /* =================== FORMS =================== */
+  
+  .forgotpwd-form {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+  }
+  
+  .forgotpwd-form h2 {
+    font-size: calc(15px + 0.8vh + 0.7vw);
+    color: var(--Noir);
+    text-align: center;
+  }
+  
+  .forgotpwd-form .subtitle {
+    font-size: calc(0.8vh + 0.7vw);
+    font-weight: 800;
+    color: var(--Couleur);
+    text-align: center;
+  }
+
+  /* ============= GENERAL STYLE INPUT ============= */
+  /* see input.css */
+  .forgotpwd-body .forgotpwd-form .form-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    font-size: calc(0.8vh + 0.7vw);
+    margin-top: 1rem;
+  }
+  
+  .forgotpwd-body .forgotpwd-form .form-footer a {
+    color: var(--Couleur3);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .forgotpwd-body .forgotpwd-form .form-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  .forgotpwd-body .forgotpwd-form .form-footer span {
+    color: var(--Couleur);
+  }
+  
+  .forgotpwd-body .forgotpwd-form .submit-btn {
+    background-color: var(--Couleur3);
+    color: white;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: calc(0.8vh + 0.7vw);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    text-align: center;
+  }
+  
+  .forgotpwd-body .forgotpwd-form .submit-btn:hover {
+    background-color: var(--Couleur4);
+  }
+  
+  .forgotpwd-body .forgotpwd-form .submit-btn:disabled {
+    background-color: var(--Gris);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+    /* =================== MEDIA QUERIES =================== */
+@media (max-width: 510px) {
+    .forgotpwd-body .forgotpwd-form .form-footer{
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+}

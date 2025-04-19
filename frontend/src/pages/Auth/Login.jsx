@@ -38,14 +38,11 @@ function Auth() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    login(Logindata, () => {
-      setLoginData({
-        email: "",
-        password: "",
-        stayLoggedIn: false
-      }),
-        navigate;
-    });
+    login(
+      Logindata,
+      () => setLoginData({ email: "", password: "", stayLoggedIn: false }),
+      navigate
+    );
   };
 
   const handleRegister = (e) => {

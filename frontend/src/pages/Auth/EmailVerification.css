@@ -1,0 +1,273 @@
+/* =================== GLOBAL RESET STYLES =================== */
+.verificationcode-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--Couleur1);
+}
+
+.verificationcode-body .verificationcode-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: 90%;
+  max-width: 90%;
+  overflow-y: auto;
+  padding: 3vw;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+}
+
+/* =================== FORMS =================== */
+.verificationcode-form {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vh;
+}
+
+.verificationcode-form h2 {
+  font-size: calc(15px + 0.8vh + 0.7vw);
+  color: var(--Noir);
+  text-align: center;
+}
+
+.verificationcode-form .subtitle {
+  font-size: calc(0.8vh + 0.7vw);
+  font-weight: 800;
+  color: var(--Couleur);
+  text-align: center;
+}
+.verificationcode-body .verificationcode-form .form-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-size: calc(0.8vh + 0.7vw);
+  margin-top: 1rem;
+}
+
+.verificationcode-body .verificationcode-form .form-footer a {
+  color: var(--Couleur3);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.verificationcode-body .verificationcode-form .form-footer a:hover {
+  text-decoration: underline;
+}
+
+.verificationcode-body .verificationcode-form .form-footer span {
+  color: var(--Couleur);
+}
+
+.verificationcode-body .verificationcode-form .submit-btn {
+  background-color: var(--Couleur3);
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-size: calc(0.8vh + 0.7vw);
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  text-align: center;
+}
+
+.verificationcode-body .verificationcode-form .submit-btn:hover {
+  background-color: var(--Couleur4);
+}
+
+.verificationcode-body .verificationcode-form .submit-btn:disabled {
+  background-color: var(--Gris);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* =================== SUCCESS PAGE =================== */
+.verificationcode-body .success-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(0.8vh + 0.7vw);
+  gap: 1vh;
+}
+
+.verificationcode-body .success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--Couleur2);
+}
+
+.verificationcode-body .success-icon svg {
+  width: 40px;
+  height: 40px;
+  color: var(--Couleur);
+}
+
+.verificationcode-body .success-message {
+  text-align: center;
+  font-size: calc(0.8vh + 0.7vw);
+  color: var(--Noir);
+  line-height: 1.6;
+}
+
+
+/* =================== OTP INPUT STYLES =================== */
+.verificationcode-body .verificationcode-form .otp-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 1.5vh 0;
+  width: 100%;
+}
+
+.verificationcode-body .verificationcode-form .otp-input {
+  width: 50px;
+  height: 60px;
+  border-radius: 12px;
+  border: 2px solid var(--Couleur2);
+  background-color: var(--background);
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--Noir);
+  transition: all 0.3s ease;
+}
+
+.verificationcode-body .verificationcode-form .otp-input:focus {
+  border-color: var(--Couleur1);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(74, 145, 158, 0.2);
+  transform: scale(1.05);
+}
+
+.otp-input::-webkit-inner-spin-button,
+.otp-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* =================== VERIFICATION MESSAGE =================== */
+.verification-message {
+  text-align: center;
+  font-size: calc(0.8vh + 0.7vw);
+  margin-bottom: 0.5rem;
+  color: var(--Noir);
+  line-height: 1.6;
+}
+
+/* =================== RESEND BUTTON =================== */
+.verificationcode-body .verificationcode-form .resend-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.verificationcode-body .verificationcode-form .resend-container p {
+  color: var(--Gris);
+  font-size: calc(0.8vh + 0.7vw);
+}
+
+.verificationcode-body .verificationcode-form .resend-btn {
+  background: none;
+  border: none;
+  color: var(--Couleur3);
+  font-size: calc(0.8vh + 0.7vw);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.verificationcode-body .verificationcode-form .resend-btn:hover {
+  background-color: rgba(235, 172, 162, 0.1);
+}
+
+.verificationcode-body .verificationcode-form .resend-btn.disabled {
+  color: var(--Gris);
+  cursor: not-allowed;
+}
+
+.verificationcode-body .verificationcode-form .resend-btn.disabled:hover {
+  background-color: transparent;
+}
+
+/* =================== ANIMATIONS =================== */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.verificationcode-body .verificationcode-form .email-icon-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.verificationcode-body .verificationcode-form .email-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--Couleur2);
+  animation: pulse 1.5s infinite;
+}
+
+.verificationcode-body .verificationcode-form .email-icon svg {
+  width: 40px;
+  height: 40px;
+  color: var(--Couleur);
+}
+
+/* =================== RESPONSIVE =================== */
+@media screen and (max-width: 600px) {
+  .verificationcode-body .verificationcode-form .otp-container {
+    gap: 6px;
+  }
+
+  .verificationcode-body .verificationcode-form .otp-input {
+    width: 40px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .verificationcode-body .verificationcode-form .otp-input {
+    width: 35px;
+    height: 45px;
+    font-size: 1.1rem;
+  }
+}

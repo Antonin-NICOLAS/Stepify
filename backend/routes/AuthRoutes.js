@@ -12,13 +12,7 @@ const { createUser,
     forgotPassword,
     resetPassword,
     logoutUser,
-    checkAuth,
-    updateAvatar,
-    updateUsername,
-    updateEmail,
-    updatePassword,
-    updateStatus,
-    updateDailyGoal
+    checkAuth
 } = require('../controllers/AuthController')
 
 //router
@@ -44,12 +38,5 @@ router.post('/reset-password/:token', resetPassword)
 router.post('/logout', logoutUser)
 
 router.get('/check-auth', verifyToken, checkAuth)
-
-router.patch('/:userId/avatar', updateAvatar)
-router.patch('/:userId/username', updateUsername)
-router.patch('/:userId/email', updateEmail)
-router.patch('/:userId/password', updatePassword)
-router.patch('/:userId/status', updateStatus)
-router.patch('/:userId/daily-goal', updateDailyGoal)
 
 module.exports = router

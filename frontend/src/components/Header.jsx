@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 //context
+import { useThemeStore } from "../store/Theme";
 import { useAuthStore } from "../store/CheckAuth";
 //images
 import Account from "../assets/account.png";
@@ -13,6 +14,7 @@ import {
   RiLoginBoxLine,
   RiLogoutBoxRFill,
   RiMoonFill,
+  RiSunFill,
   RiCalendarFill,
   RiTrophyFill,
   RiGroupFill,
@@ -24,27 +26,12 @@ import "./Header.css";
 
 function Header() {
   const navigate = useNavigate();
-  const {user, isAuthenticated, logout} = useAuthStore();
+  const { user, isAuthenticated, logout } = useAuthStore();
+  const { theme, toggleTheme } = useThemeStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [darkTheme, setDarkTheme] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("selected-theme");
-    if (savedTheme === "dark") {
-      document.body.classList.add("dark-theme");
-      setDarkTheme(true);
-    }
-  }, []);
 
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
-  };
-
-  const toggleTheme = () => {
-    const newTheme = !darkTheme;
-    setDarkTheme(newTheme);
-    document.body.classList.toggle("dark-theme");
-    localStorage.setItem("selected-theme", newTheme ? "dark" : "light");
   };
 
   const handleLogout = () => {
@@ -108,7 +95,7 @@ function Header() {
 
           <div className="sidebar__actions">
             <button className="sidebar__link sidebar__theme" onClick={toggleTheme}>
-              <RiMoonFill />
+              {theme === "dark" ? <RiSunFill /> : <RiMoonFill />}
               <span>Theme</span>
             </button>
             {isAuthenticated ? (
