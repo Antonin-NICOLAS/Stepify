@@ -198,7 +198,7 @@ function EmailVerification() {
 
                     <div className="form-footer">
                         <span>Mauvaise adresse email?</span>
-                        <Link to="/register">Changer d'email</Link>
+                        <Link to="/change-email">Changer d'email</Link>
                     </div>
                 </form>
             </div>

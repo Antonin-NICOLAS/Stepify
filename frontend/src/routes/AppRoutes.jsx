@@ -1,6 +1,7 @@
 // routes/AppRoutes.jsx
 import { Routes, Route } from 'react-router-dom';
-import MainLayout from '../MainLayout.jsx';
+import LoaderLayout from '../layouts/LoaderLayout.jsx';
+import MainLayout from '../layouts/MainLayout.jsx';
 
 // Route guards
 import {
@@ -19,38 +20,46 @@ import Leaderboard from '../pages/Leaderboard.jsx';
 import Statistics from '../pages/Statistics.jsx';
 import Settings from '../pages/Settings.jsx';
 import About from '../pages/About.jsx';
+//AUTH
 import Login from '../pages/Auth/Login.jsx';
 import EmailVerification from '../pages/Auth/EmailVerification.jsx';
+import ChangeVerificationEmail from '../pages/Auth/ChangeEmail.jsx';
 import ForgotPassword from '../pages/Auth/Forgot-pwd.jsx';
 import EmailSent from '../pages/Auth/EmailSent.jsx';
 import ResetPassword from '../pages/Auth/Reset-pwd.jsx';
+//OTHERS
+import Loader from '../components/Loader.jsx';
+import NotFound from '../components/NotFound.jsx';
 
 export default function AppRoutes() {
     return (
         <Routes>
-            {/* Pages avec layout */}
-            <Route element={<MainLayout />}>
-                <Route path="/" element={<RequireEmailVerification><Home /></RequireEmailVerification>} />
-                <Route path="/dashboard" element={<RequireEmailVerification><Dashboard /></RequireEmailVerification>} />
-                <Route path="/challenges" element={<RequireEmailVerification><Challenges /></RequireEmailVerification>} />
-                <Route path="/activities" element={<RequireEmailVerification><Activities /></RequireEmailVerification>} />
-                <Route path="/leaderboard" element={<RequireEmailVerification><Leaderboard /></RequireEmailVerification>} />
-                <Route path="/statistics" element={<RequireEmailVerification><Statistics /></RequireEmailVerification>} />
-                <Route path="/settings" element={<RequireEmailVerification><Settings /></RequireEmailVerification>} />
-                <Route path="/about" element={<RequireEmailVerification><About /></RequireEmailVerification>} />
-                <Route path="/admin" element={<RequireAdmin><Dashboard /></RequireAdmin>} /> {/* TODO : admin page */}
-                {/* TODO : not found page <Route path="*" element={<NotFound />} /> */}
-            </Route>
+            <Route element={<LoaderLayout />}>
+                {/* Pages avec header et sidebar */}
+                <Route element={<MainLayout />}>
+                    <Route path="/" element={<RequireEmailVerification><Home /></RequireEmailVerification>} />
+                    <Route path="/dashboard" element={<RequireEmailVerification><Dashboard /></RequireEmailVerification>} />
+                    <Route path="/challenges" element={<RequireEmailVerification><Challenges /></RequireEmailVerification>} />
+                    <Route path="/activities" element={<RequireEmailVerification><Activities /></RequireEmailVerification>} />
+                    <Route path="/leaderboard" element={<RequireEmailVerification><Leaderboard /></RequireEmailVerification>} />
+                    <Route path="/statistics" element={<RequireEmailVerification><Statistics /></RequireEmailVerification>} />
+                    <Route path="/settings" element={<RequireEmailVerification><Settings /></RequireEmailVerification>} />
+                    <Route path="/about" element={<RequireEmailVerification><About /></RequireEmailVerification>} />
+                    <Route path="/loader" element={<Loader />} />
+                    <Route path="/admin" element={<RequireAdmin><Dashboard /></RequireAdmin>} /> {/* TODO : admin page */}
+                    <Route path="*" element={<NotFound />} />
+                </Route>
 
-            {/* Pages sans header/sidebar */}
-            <Route path="/login" element={<AuthenticatedUserRoute><Login /></AuthenticatedUserRoute>} />
-            <Route path="/register" element={<AuthenticatedUserRoute><Login /></AuthenticatedUserRoute>} /> {/* TODO : dans email-verification je ne peux pas changer d'email car je suis considéré comme authentifié */}
-            <Route path="/email-verification" element={<ProtectRoute><EmailVerification /></ProtectRoute>} />
-            <Route path="/forgot-password" element={<RequireEmailVerification><ForgotPassword /></RequireEmailVerification>} />
-            <Route path="/email-sent" element={<RequireEmailVerification><EmailSent /></RequireEmailVerification>} />
-            <Route path="/reset-password/:token" element={<RequireEmailVerification><ResetPassword /></RequireEmailVerification>} />
-            {/* TODO : <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
-            {/* TODO : <Route path="/terms-of-service" element={<TermsOfService />} /> */}
+                {/* Pages sans header/sidebar */}
+                <Route path="/login" element={<AuthenticatedUserRoute><Login /></AuthenticatedUserRoute>} />
+                <Route path="/change-email" element={<ProtectRoute><ChangeVerificationEmail /></ProtectRoute>} />
+                <Route path="/email-verification" element={<ProtectRoute><EmailVerification /></ProtectRoute>} />
+                <Route path="/forgot-password" element={<RequireEmailVerification><ForgotPassword /></RequireEmailVerification>} />
+                <Route path="/email-sent" element={<RequireEmailVerification><EmailSent /></RequireEmailVerification>} />
+                <Route path="/reset-password/:token" element={<RequireEmailVerification><ResetPassword /></RequireEmailVerification>} /> {/* TODO : envoyer un toast quand on est redirigé vers la page de vérification d'email  */}
+                {/* TODO : <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
+                {/* TODO : <Route path="/terms-of-service" element={<TermsOfService />} /> */}
+            </Route>
         </Routes>
     );
 }

@@ -2,7 +2,7 @@
 import { create } from "zustand";
 
 export const useLoaderStore = create((set) => ({
-  isLoading: false,
+  isLoading: true,
   startLoading: () => set({ isLoading: true }),
   stopLoading: () => set({ isLoading: false }),
 }));

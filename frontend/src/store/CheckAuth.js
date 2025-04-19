@@ -19,7 +19,7 @@ export const useAuthStore = create((set, get) => ({
             const res = await axios.get(`${API_AUTH}/check-auth`, { withCredentials: true });
             const data = res.data;
             if (data.user) {
-                set({ isAuthenticated: true, user: data.user });
+                set({ isAuthenticated: data.success, user: data.user });
             } else {
                 set({ isAuthenticated: false, user: null });
             }

@@ -9,20 +9,20 @@ import "./Forgot-pwd.css"
 
 function ForgotPassword() {
   const navigate = useNavigate()
-  const { forgotPassword, isLoading } = useAuthStore();
+  const { ChangeVerificationEmail, isLoading } = useAuthStore();
   const [email, setEmail] = useState("")
 
-  const handleForgotPwd = (e) => {
+  const handleChangeVerificationEmail = (e) => {
     e.preventDefault();
-    forgotPassword(email, () => navigate("/email-sent"));
+    ChangeVerificationEmail(email, () => navigate("/email-verification"));
   };
 
   return (
     <div className="forgotpwd-body">
       <div className="forgotpwd-container">
-        <form className="forgotpwd-form" onSubmit={handleForgotPwd}>
-          <h2>Mot de passe oublié ? 🔑</h2>
-          <p className="subtitle">Entrez votre email pour réinitialiser votre mot de passe</p>
+        <form className="forgotpwd-form" onSubmit={handleChangeVerificationEmail}>
+          <h2>Mauvais email ?</h2>
+          <p className="subtitle">Entrez votre nouvel email pour le vérifier</p>
 
           <div className="input-group">
             <label>Email</label>
@@ -39,12 +39,12 @@ function ForgotPassword() {
           </div>
 
           <button type="submit" className="submit-btn" disabled={isLoading}>
-            {isLoading ? "Envoi en cours..." : "Envoyer le lien"} <LuSend />
+            {isLoading ? "Envoi en cours..." : "Envoyer le code"} <LuSend />
           </button>
 
           <div className="form-footer">
-            <span>Vous vous souvenez de votre mot de passe ?</span>
-            <Link to="/login">Se connecter</Link>
+            <span>Vous aviez renseigné le bon email ?</span>
+            <Link to="/email-verification">Retour</Link>
           </div>
         </form>
       </div>

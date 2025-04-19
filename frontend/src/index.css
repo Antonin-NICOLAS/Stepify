@@ -85,16 +85,16 @@ button {
 /*=============== VARIABLES DARK THEME ===============*/
 body.dark-theme {
   --background: #0F1B21;   
-  --Couleur: #dae9f7;     
+  --Couleur: #dae9f7;
   --Couleur1: #212E53;
-  --Couleur2: #89B4A1;     
-  --Couleur3: #E29B94;     
-  --Couleur4: #A65051;      
-  --Noir: #E2E8F0;          
-  --Gris: #AAB8C2;     
-  --turquoise: #4AC9BE;     
-  --bleu: #39728B;          
-  --blanc: #1C2C34;    
+  --Couleur2: #89B4A1;
+  --Couleur3: #E29B94;
+  --Couleur4: #A65051;
+  --Noir: #E2E8F0;
+  --Gris: #AAB8C2;
+  --turquoise: #4AC9BE;
+  --bleu: #39728B;
+  --blanc: #1C2C34;
   --first-color: hsl(228, 70%, 63%);
   --title-color: hsl(228, 18%, 96%);
   --text-color: hsl(228, 12%, 61%);

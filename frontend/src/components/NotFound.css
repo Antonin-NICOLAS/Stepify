@@ -1,0 +1,250 @@
+.not-found-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--background);
+    font-family: "Arial", sans-serif;
+    overflow: hidden;
+    position: relative;
+}
+
+.not-found-content {
+    text-align: center;
+    padding: 2rem;
+    max-width: 600px;
+    z-index: 2;
+}
+
+.error-code {
+    font-size: 10rem;
+    font-weight: bold;
+    color: var(--turquoise);
+    line-height: 1;
+    text-shadow: 0 0 10px rgba(74, 201, 190, 0.3);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.error-code::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(74, 201, 190, 0.1) 0%, rgba(15, 27, 33, 0) 70%);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
+
+.error-title {
+    font-size: 2.5rem;
+    color: var(--Couleur);
+    margin-bottom: 1.5rem;
+}
+
+.error-message {
+    font-size: 1.2rem;
+    color: var(--Gris);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.home-button {
+    background-color: var(--Couleur2);
+    color: var(--blanc);
+    border: none;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(137, 180, 161, 0.3);
+    margin-top: 2rem;
+}
+
+.home-button:hover {
+    background-color: var(--turquoise);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(74, 201, 190, 0.4);
+}
+
+.home-button:active {
+    transform: translateY(1px);
+}
+
+.error-illustration {
+    position: relative;
+    height: 200px;
+    margin: 2rem 0;
+}
+
+.planet {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: var(--Couleur1);
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: inset -30px -30px 0 rgba(15, 27, 33, 0.5), 0 0 20px rgba(33, 46, 83, 0.5);
+    overflow: hidden;
+}
+
+.planet::before {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    background: var(--Couleur4);
+    border-radius: 50%;
+    top: 30px;
+    left: 30px;
+    opacity: 0.7;
+}
+
+.planet::after {
+    content: "";
+    position: absolute;
+    width: 60px;
+    height: 15px;
+    background: var(--Couleur3);
+    border-radius: 50%;
+    bottom: 40px;
+    right: 20px;
+    opacity: 0.7;
+}
+
+.astronaut {
+    position: absolute;
+    width: 60px;
+    height: 80px;
+    left: calc(50% + 80px);
+    top: calc(50% - 40px);
+    animation: float 6s ease-in-out infinite;
+}
+
+.astronaut-body {
+    position: absolute;
+    width: 40px;
+    height: 55px;
+    background: var(--Noir);
+    border-radius: 20px;
+    top: 15px;
+    left: 10px;
+}
+
+.astronaut-head {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: var(--Noir);
+    border-radius: 50%;
+    top: 0;
+    left: 15px;
+    border: 3px solid var(--Gris);
+}
+
+.astronaut-arm {
+    position: absolute;
+    width: 10px;
+    height: 30px;
+    background: var(--Noir);
+    border-radius: 5px;
+}
+
+.astronaut-arm.left {
+    left: 5px;
+    top: 25px;
+    transform: rotate(-20deg);
+}
+
+.astronaut-arm.right {
+    right: 5px;
+    top: 25px;
+    transform: rotate(20deg);
+}
+
+.astronaut-leg {
+    position: absolute;
+    width: 12px;
+    height: 25px;
+    background: var(--Noir);
+    border-radius: 6px;
+    bottom: 0;
+}
+
+.astronaut-leg.left {
+    left: 14px;
+}
+
+.astronaut-leg.right {
+    right: 14px;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Add some stars to the background */
+.not-found-container::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, var(--Couleur) 1px, transparent 1px),
+        radial-gradient(circle, var(--Couleur) 1px, transparent 1px),
+        radial-gradient(circle, var(--Couleur) 1px, transparent 1px);
+    background-size: 100px 100px;
+    background-position: 0 0, 50px 50px, 25px 25px;
+    opacity: 0.2;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    .error-code {
+        font-size: 8rem;
+    }
+
+    .error-title {
+        font-size: 2rem;
+    }
+
+    .error-message {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .error-code {
+        font-size: 6rem;
+    }
+
+    .error-title {
+        font-size: 1.5rem;
+    }
+
+    .error-illustration {
+        height: 150px;
+    }
+
+    .planet {
+        width: 100px;
+        height: 100px;
+    }
+
+    .astronaut {
+        transform: scale(0.8);
+        left: calc(50% + 60px);
+    }
+}
