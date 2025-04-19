@@ -13,7 +13,7 @@ export const useAuthStore = create((set, get) => ({
 
     // --- Auth Status ---
     checkAuth: async () => {
-        const { startLoading, stopLoading } = useLoaderStore();
+        const { startLoading, stopLoading } = useLoaderStore.getState();
         startLoading();
         try {
             const res = await axios.get(`${API_AUTH}/check-auth`, { withCredentials: true });
@@ -33,7 +33,7 @@ export const useAuthStore = create((set, get) => ({
 
     // --- Register ---
     register: async (RformData, resetForm) => {
-        const { startLoading, stopLoading } = useLoaderStore();
+        const { startLoading, stopLoading } = useLoaderStore.getState();
         const { firstName, lastName, username, email, password, confirmPassword, stayLoggedIn } = RformData;
         if (!firstName || !lastName || !username || !email || !password) {
             toast.error("Tous les champs sont requis");
@@ -83,7 +83,7 @@ export const useAuthStore = create((set, get) => ({
 
     // --- Login ---
     login: async (LformData, resetForm, navigate) => {
-        const { startLoading, stopLoading } = useLoaderStore();
+        const { startLoading, stopLoading } = useLoaderStore.getState();
         const { email, password, stayLoggedIn } = LformData;
         if (!email || !password) {
             toast.error("Veuillez remplir tous les champs");
@@ -128,7 +128,7 @@ export const useAuthStore = create((set, get) => ({
 
     // --- Forgot Password ---
     forgotPassword: async (email, onSuccess) => {
-        const { startLoading, stopLoading } = useLoaderStore();
+        const { startLoading, stopLoading } = useLoaderStore.getState();
         if (!email) return toast("Veuillez entrer votre email");
         startLoading();
         try {
@@ -156,7 +156,7 @@ export const useAuthStore = create((set, get) => ({
 
     // --- Reset Password ---
     resetPassword: async (token, password, confirmPassword, onSuccess) => {
-        const { startLoading, stopLoading } = useLoaderStore();
+        const { startLoading, stopLoading } = useLoaderStore.getState();
         if (!token) return toast.error("Lien invalide ou expiré");
         if (password !== confirmPassword) return toast.error("Les mots de passe ne correspondent pas");
         if (password.length < 6) return toast.error("Mot de passe trop court (min 6 caractères)");
@@ -189,7 +189,7 @@ export const useAuthStore = create((set, get) => ({
 
     // --- Verify Email ---
     verifyEmail: async (code, onSuccess) => {
-        const { startLoading, stopLoading } = useLoaderStore();
+        const { startLoading, stopLoading } = useLoaderStore.getState();
         if (code.length !== 6) {
             toast.error("Veuillez entrer le code complet à 6 chiffres")
             return
@@ -220,7 +220,7 @@ export const useAuthStore = create((set, get) => ({
 
     // --- Resend verification code ---
     resendVerificationCode: async (OnError, onSuccess) => {
-        const { startLoading, stopLoading } = useLoaderStore();
+        const { startLoading, stopLoading } = useLoaderStore.getState();
         startLoading();
         try {
             const res = await axios.post(`${API_AUTH}/resend-verification-code`, {}, {
@@ -247,7 +247,7 @@ export const useAuthStore = create((set, get) => ({
 
     // --- Logout ---
     logout: async (onSuccess) => {
-        const { startLoading, stopLoading } = useLoaderStore();
+        const { startLoading, stopLoading } = useLoaderStore.getState();
         startLoading();
         try {
             const res = await axios.post(`${API_AUTH}/logout`, {}, { withCredentials: true });
