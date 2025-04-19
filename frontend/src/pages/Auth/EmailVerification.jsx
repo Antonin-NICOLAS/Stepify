@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react"
-import { useAuthStore } from "../../store/CheckAuth"
 import { useNavigate, Link } from "react-router-dom"
+//context
+import { useAuthStore } from "../../store/CheckAuth";
+import { useLoaderStore } from "../../store/Loading";
 //icons
 import { RiMailCheckLine, RiTimerLine, RiArrowRightLine } from "react-icons/ri"
 import { LuRefreshCw } from "react-icons/lu"
@@ -9,7 +11,8 @@ import "./EmailVerification.css"
 
 function EmailVerification() {
     const navigate = useNavigate()
-    const { user, isLoading, verifyEmail, resendVerificationCode } = useAuthStore();
+    const { user, verifyEmail, resendVerificationCode } = useAuthStore();
+    const { isLoading } = useLoaderStore()
     const [otp, setOtp] = useState(["", "", "", "", "", ""])
     const [resendDisabled, setResendDisabled] = useState(false)
     const [countdown, setCountdown] = useState(0)

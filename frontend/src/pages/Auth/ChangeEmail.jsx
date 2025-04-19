@@ -1,6 +1,8 @@
 import { useState } from "react"
-import { useAuthStore } from "../../store/CheckAuth";
 import { useNavigate, Link } from "react-router-dom"
+//context
+import { useAuthStore } from "../../store/CheckAuth";
+import { useLoaderStore } from "../../store/Loading";
 //icons
 import { RiMailLine } from "react-icons/ri"
 import { LuSend } from "react-icons/lu"
@@ -9,7 +11,8 @@ import "./Forgot-pwd.css"
 
 function ForgotPassword() {
   const navigate = useNavigate()
-  const { ChangeVerificationEmail, isLoading } = useAuthStore();
+  const { ChangeVerificationEmail } = useAuthStore();
+  const { isLoading } = useLoaderStore();
   const [email, setEmail] = useState("")
 
   const handleChangeVerificationEmail = (e) => {

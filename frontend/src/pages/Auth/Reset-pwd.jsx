@@ -1,6 +1,8 @@
 import { useState } from "react"
-import { useAuthStore } from "../../store/CheckAuth"
 import { useParams, Link } from "react-router-dom"
+//context
+import { useAuthStore } from "../../store/CheckAuth";
+import { useLoaderStore } from "../../store/Loading";
 //icons
 import { RiEyeFill, RiEyeOffFill, RiCheckLine } from "react-icons/ri"
 import { LuSave } from "react-icons/lu"
@@ -8,14 +10,15 @@ import { LuSave } from "react-icons/lu"
 import "./Reset-pwd.css"
 
 function ResetPassword() {
+  const { resetPassword } = useAuthStore();
+  const { isLoading } = useLoaderStore();
+  
   const { token } = useParams();
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-
-  const { resetPassword, isLoading } = useAuthStore();
 
   const handleResetPwd = (e) => {
     e.preventDefault();

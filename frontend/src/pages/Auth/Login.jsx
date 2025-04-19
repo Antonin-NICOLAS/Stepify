@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { useAuthStore } from "../../store/CheckAuth";
 import { useNavigate, Link } from "react-router-dom";
 import Spline from "@splinetool/react-spline";
+//context
+import { useAuthStore } from "../../store/CheckAuth";
+import { useLoaderStore } from "../../store/Loading";
 //icons
 import {
   RiMailLine, RiEyeFill, RiEyeOffFill,
@@ -13,7 +15,8 @@ import "./Login.css";
 
 function Auth() {
   const navigate = useNavigate();
-  const { login, register, isLoading } = useAuthStore();
+  const { login, register } = useAuthStore();
+  const { isLoading } = useLoaderStore();
 
   const [Logindata, setLoginData] = useState({
     email: "",
