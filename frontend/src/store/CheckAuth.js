@@ -111,8 +111,8 @@ export const useAuthStore = create((set, get) => ({
                 resetForm();
                 if (!data.user.isVerified) {
                     await resendVerificationCode(
-                        () => {toast.success("Un code vous a été envoyé pour vérifier votre adresse mail")},
-                        () => {toast.error(`Cliquez sur "renvoyer un mail" pour recevoir un nouveau code`)},);
+                        () => { toast.success("Un code vous a été envoyé pour vérifier votre adresse mail") },
+                        () => { toast.error(`Cliquez sur "renvoyer un mail" pour recevoir un nouveau code`) },);
                     navigate("/email-verification");
                 } else {
                     navigate("/dashboard");
@@ -240,6 +240,36 @@ export const useAuthStore = create((set, get) => ({
         } catch (err) {
             OnError();
             toast.error(err.response?.data?.error || "Erreur lors de l'envoi du code");
+        } finally {
+            stopLoading();
+        }
+    },
+
+    // --- Change verification email ---
+    changeVerificationEmail: async (newEmail, onSuccess) => {
+        const { startLoading, stopLoading } = useLoaderStore.getState();
+        if (!newEmail) return toast.error("Veuillez entrer votre email");
+
+        startLoading();
+        try {
+            const res = await axios.post(`${API_AUTH}/change-verification-email`, {
+                newEmail
+            }, {
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            const data = res.data;
+            if (data.error) {
+                toast.error(data.error)
+            } else {
+                set({ user: data.user });
+                onSuccess()
+                toast.success(data.message);
+            }
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Erreur lors de l'envoi de l'email");
         } finally {
             stopLoading();
         }

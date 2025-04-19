@@ -56,7 +56,7 @@ export default function AppRoutes() {
                 <Route path="/email-verification" element={<ProtectRoute><EmailVerification /></ProtectRoute>} />
                 <Route path="/forgot-password" element={<RequireEmailVerification><ForgotPassword /></RequireEmailVerification>} />
                 <Route path="/email-sent" element={<RequireEmailVerification><EmailSent /></RequireEmailVerification>} />
-                <Route path="/reset-password/:token" element={<RequireEmailVerification><ResetPassword /></RequireEmailVerification>} /> {/* TODO : envoyer un toast quand on est redirigé vers la page de vérification d'email  */}
+                <Route path="/reset-password/:token" element={<RequireEmailVerification><ResetPassword /></RequireEmailVerification>} />
                 {/* TODO : <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
                 {/* TODO : <Route path="/terms-of-service" element={<TermsOfService />} /> */}
             </Route>

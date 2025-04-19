@@ -13,6 +13,7 @@ require('dotenv').config()
 // - register
 // - verify email
 // - resend verification email
+// - change verification email
 // - delete account
 
 //// ACCOUNT REQ ////
@@ -32,31 +33,31 @@ const createUser = async (req, res) => {
 
     // Vérifications
     if (!firstName) {
-        return res.status(400).json({success: false, error: "Le prénom est requis" });
+        return res.status(400).json({ success: false, error: "Le prénom est requis" });
     }
     if (!lastName) {
-        return res.status(400).json({success: false, error: "Le nom est requis" });
+        return res.status(400).json({ success: false, error: "Le nom est requis" });
     }
     if (!email) {
-        return res.status(400).json({success: false, error: "L'email est requis" });
+        return res.status(400).json({ success: false, error: "L'email est requis" });
     }
     if (!username) {
-        return res.status(400).json({success: false, error: "Le nom d'utilisateur est requis" });
+        return res.status(400).json({ success: false, error: "Le nom d'utilisateur est requis" });
     }
 
     // l'adresse mail doit être unique
     const emailexist = await UserModel.findOne({ email });
     if (emailexist) {
-        return res.status(400).json({success: false, error: "L'email est déjà associé à un compte" });
+        return res.status(400).json({ success: false, error: "L'email est déjà associé à un compte" });
     }
     // le nom d'utilisateur doit être unique
     const usernameexist = await UserModel.findOne({ username });
     if (usernameexist) {
-        return res.status(400).json({success: false, error: "Le nom d'utilisateur est déjà associé à un compte. Il doit être unique" });
+        return res.status(400).json({ success: false, error: "Le nom d'utilisateur est déjà associé à un compte. Il doit être unique" });
     }
     // le mot de passe doit contenir au moins 6 caractères
     if (!password || password.length < 6) {
-        return res.status(400).json({success: false, error: "Un mot de passe est requis, d'une longueur de 6 caractères au moins" });
+        return res.status(400).json({ success: false, error: "Un mot de passe est requis, d'une longueur de 6 caractères au moins" });
     }
 
     try {
@@ -98,20 +99,20 @@ const verifyEmail = async (req, res) => {
         const user = await UserModel.findById(decoded.id);
 
         if (!user) {
-            return res.status(404).json({success: false, error: "Utilisateur non trouvé" });
+            return res.status(404).json({ success: false, error: "Utilisateur non trouvé" });
         }
 
         // Le reste de la logique reste identique...
         if (user.isVerified) {
-            return res.status(400).json({success: false, error: "Email déjà vérifié" });
+            return res.status(400).json({ success: false, error: "Email déjà vérifié" });
         }
 
         if (user.verificationToken !== code) {
-            return res.status(400).json({success: false, error: "Code de vérification invalide" });
+            return res.status(400).json({ success: false, error: "Code de vérification invalide" });
         }
 
         if (user.verificationTokenExpiresAt < Date.now()) {
-            return res.status(400).json({success: false, error: "Le code de vérification a expiré" });
+            return res.status(400).json({ success: false, error: "Le code de vérification a expiré" });
         }
 
         user.isVerified = true;
@@ -134,13 +135,13 @@ const verifyEmail = async (req, res) => {
 // resend verification email
 const resendVerificationEmail = async (req, res) => {
     const { jwtauth } = req.cookies;
-    if (!jwtauth) return res.status(401).json({success: false, error: "Non autorisé" });
+    if (!jwtauth) return res.status(401).json({ success: false, error: "Non autorisé" });
 
     const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET);
     const email = decoded.email;
 
     const user = await UserModel.findOne({ email });
-    if (!user || user.isVerified) return res.status(400).json({success: false, error: "Déjà vérifié ou inexistant" });
+    if (!user || user.isVerified) return res.status(400).json({ success: false, error: "Déjà vérifié ou inexistant" });
 
     user.verificationToken = generateVerificationCode();
     user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000;
@@ -154,17 +155,68 @@ const resendVerificationEmail = async (req, res) => {
     });
 };
 
+// change verification email
+const changeVerificationEmail = async (req, res) => {
+    const { newEmail } = req.body;
+
+    if (!newEmail) {
+        return res.status(400).json({ success: false, error: "Nouvel email requis" });
+    }
+
+    try {
+        const user = await UserModel.findById(req.userId);
+        if (!user) return res.status(404).json({ success: false, error: "Utilisateur introuvable" });
+
+        if (user.isVerified) {
+            return res.status(400).json({ success: false, error: "Votre compte est déjà vérifié" });
+        }
+
+        // Vérifier si l'email existe déjà
+        const emailExists = await UserModel.findOne({ email: newEmail });
+        if (emailExists) return res.status(400).json({ success: false, error: "L'email est déjà associé à un compte" });
+
+        user.email = newEmail;
+        user.isVerified = false;
+        user.verificationToken = generateVerificationCode();
+        user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 heures
+        await user.save();
+
+        // Supprimer le cookie de l'ancien email
+        res.clearCookie("jwtauth", {
+            secure: process.env.NODE_ENV === "production" ? true : false,
+            httpOnly: process.env.NODE_ENV === "production" ? true : false,
+            sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
+            ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
+        });
+
+        await sendVerificationEmail(user.email, user.verificationToken);
+
+        // Générer un nouveau cookie avec le nouvel email
+        GenerateAuthCookie(res, user, false);
+
+
+        return res.status(200).json({
+            success: true,
+            message: "Email mis à jour et nouveau code envoyé",
+            user: { ...user._doc, password: undefined },
+        });
+    } catch (error) {
+        console.log("Erreur lors du changement d'email :", error);
+        res.status(400).json({ success: false, error: error.message })
+    }
+}
+
 // delete an account
 const deleteUser = async (req, res) => {
     const { userId } = req.params
 
     try {
         const deletedUser = await UserModel.findByIdAndDelete(userId)
-        if (!deletedUser) return res.status(404).json({success: false, error: "Utilisateur introuvable" })
-        res.status(200).json({success: true, message: "Compte supprimé avec succès" })
+        if (!deletedUser) return res.status(404).json({ success: false, error: "Utilisateur introuvable" })
+        res.status(200).json({ success: true, message: "Compte supprimé avec succès" })
     } catch (error) {
         console.log("Le compte n'a pas pu être supprimé", error);
-        res.status(400).json({success: false, error: error.message })
+        res.status(400).json({ success: false, error: error.message })
     }
 }
 
@@ -177,15 +229,15 @@ const loginUser = async (req, res) => {
     try {
         // Trouver l'utilisateur par son email
         const user = await UserModel.findOne({ email })
-        if (!user) return res.status(400).json({success: false, error: "L'email n'est associé à aucun compte" })
+        if (!user) return res.status(400).json({ success: false, error: "L'email n'est associé à aucun compte" })
 
         // Vérifier si le mot de passe est correct
         const isMatch = await bcrypt.compare(password, user.password)
-        if (!isMatch) return res.status(400).json({success: false, error: 'Mot de passe incorrect' })
+        if (!isMatch) return res.status(400).json({ success: false, error: 'Mot de passe incorrect' })
 
         // Vérifier si l'utilisateur a un vérifié l'email
         const isVerified = user.isVerified;
-        if (!isVerified) return res.status(401).json({success: false, error: "Email non vérifié" });
+        if (!isVerified) return res.status(401).json({ success: false, error: "Email non vérifié" });
         // Générer un token JWT
         GenerateAuthCookie(res, user, stayLoggedIn);
         // Supprimer le mot de passe du résultat
@@ -197,7 +249,7 @@ const loginUser = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(400).json({success: false, error: error.message })
+        res.status(400).json({ success: false, error: error.message })
     }
 }
 // forgot password
@@ -205,11 +257,11 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body
     try {
         const user = await UserModel.findOne({ email });
-        if (!user) return res.status(400).json({success: false, error: "L'email n'est associé à aucun compte" })
+        if (!user) return res.status(400).json({ success: false, error: "L'email n'est associé à aucun compte" })
 
         // Vérifier si l'utilisateur a un vérifié l'email
         const isVerified = user.isVerified;
-        if (!isVerified) return res.status(401).json({success: false, error: "Email non vérifié" });
+        if (!isVerified) return res.status(401).json({ success: false, error: "Email non vérifié" });
 
         const resetPasswordToken = crypto.randomBytes(32).toString('hex');
         const resetPasswordTokenExpiresAt = Date.now() + 3600000; // 1 heure
@@ -219,10 +271,10 @@ const forgotPassword = async (req, res) => {
         await user.save();
         await sendResetPasswordEmail(user.email, `${process.env.FRONTEND_SERVER}/reset-password/${resetPasswordToken}`);
 
-        return res.status(200).json({success: true, message: "Email de réinitialisation de mot de passe envoyé" });
+        return res.status(200).json({ success: true, message: "Email de réinitialisation de mot de passe envoyé" });
     } catch (error) {
         console.log("Erreur lors de l'envoi du mail de réinitialisation du mot de passe :", error);
-        res.status(400).json({success: false, error: error.message })
+        res.status(400).json({ success: false, error: error.message })
     }
 }
 
@@ -236,10 +288,10 @@ const resetPassword = async (req, res) => {
             resetPasswordToken: token,
             resetPasswordTokenExpiresAt: { $gt: Date.now() }
         });
-        if (!user) return res.status(400).json({success: false, error: "Lien invalide ou expiré. Veuillez renvoyer un email" })
+        if (!user) return res.status(400).json({ success: false, error: "Lien invalide ou expiré. Veuillez renvoyer un email" })
 
         if (!password || password.length < 6) {
-            return res.status(400).json({success: false, error: "Le mot de passe doit contenir au moins 6 caractères" });
+            return res.status(400).json({ success: false, error: "Le mot de passe doit contenir au moins 6 caractères" });
         }
 
         // Hash du nouveau mot de passe
@@ -253,10 +305,10 @@ const resetPassword = async (req, res) => {
 
         await sendResetPasswordSuccessfulEmail(user.email, user.firstName);
 
-        res.status(200).json({success: true, message: "Mot de passe réinitialisé" })
+        res.status(200).json({ success: true, message: "Mot de passe réinitialisé" })
     } catch (error) {
         console.log("Erreur lors de la réinitialisation du mot de passe :", error);
-        res.status(400).json({success: false, error: error.message })
+        res.status(400).json({ success: false, error: error.message })
     }
 }
 
@@ -271,7 +323,7 @@ const logoutUser = async (req, res) => {
         })
         return res.status(200).json({ success: true, message: "Déconnecté" })
     } catch (error) {
-        res.status(400).json({success: false, error: error.message })
+        res.status(400).json({ success: false, error: error.message })
     }
 }
 
@@ -299,6 +351,7 @@ module.exports = {
     createUser,
     verifyEmail,
     resendVerificationEmail,
+    changeVerificationEmail,
     deleteUser,
     loginUser,
     forgotPassword,

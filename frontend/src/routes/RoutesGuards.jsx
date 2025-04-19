@@ -25,7 +25,7 @@ export const RequireEmailVerification = ({ children }) => {
   const { isLoading } = useLoaderStore();
 
   if (!isLoading) {
-    return user && !user.isVerified ? <Navigate to="/email-verification" replace /> : children;
+    return user && !user.isVerified ? <Navigate to="/email-verification" replace state={{ showToast: true }} /> : children;
   }
 };
 

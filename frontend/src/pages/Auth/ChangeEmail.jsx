@@ -9,7 +9,7 @@ import { LuSend } from "react-icons/lu"
 //CSS
 import "./Forgot-pwd.css"
 
-function ForgotPassword() {
+function ChangeEmail() {
   const navigate = useNavigate()
   const { ChangeVerificationEmail } = useAuthStore();
   const { isLoading } = useLoaderStore();
@@ -17,7 +17,10 @@ function ForgotPassword() {
 
   const handleChangeVerificationEmail = (e) => {
     e.preventDefault();
-    ChangeVerificationEmail(email, () => navigate("/email-verification"));
+    ChangeVerificationEmail(email, () => {
+      setEmail("")
+      navigate("/email-verification")
+    });
   };
 
   return (
@@ -55,4 +58,4 @@ function ForgotPassword() {
   )
 }
 
-export default ForgotPassword
+export default ChangeEmail

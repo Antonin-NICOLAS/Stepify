@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, useLocation, Link } from "react-router-dom"
 //context
 import { useAuthStore } from "../../store/CheckAuth";
 import { useLoaderStore } from "../../store/Loading";
@@ -18,6 +18,15 @@ function EmailVerification() {
     const [countdown, setCountdown] = useState(0)
     const [isVerified, setIsVerified] = useState(false)
     const inputRefs = useRef([])
+    const location = useLocation();
+
+    //add toast notification if redirected
+    useEffect(() => {
+        if (location.state?.showToast) {
+            toast('Veuillez vérifier votre adresse email pour continuer.');
+            navigate(location.pathname, { replace: true });
+        }
+    }, [location.state, location.pathname, navigate]);
 
     // Handle countdown for resend button
     useEffect(() => {
