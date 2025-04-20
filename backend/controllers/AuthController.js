@@ -156,12 +156,8 @@ const resendVerificationEmail = async (req, res) => {
 };
 
 // change verification email
-const changeVerificationEmail = async (req, res) => {
+const ChangeVerificationEmail = async (req, res) => {
     const { newEmail } = req.body;
-
-    if (!newEmail) {
-        return res.status(400).json({ success: false, error: "Nouvel email requis" });
-    }
 
     try {
         const user = await UserModel.findById(req.userId);
@@ -169,6 +165,14 @@ const changeVerificationEmail = async (req, res) => {
 
         if (user.isVerified) {
             return res.status(400).json({ success: false, error: "Votre compte est déjà vérifié" });
+        }
+
+        if (!newEmail) {
+            return res.status(400).json({ success: false, error: "Nouvel email requis" });
+        }
+
+        if (user.email === newEmail) {
+            return res.status(400).json({ success: false, error: 'Le nouvel email doit être différent' })
         }
 
         // Vérifier si l'email existe déjà
@@ -193,7 +197,6 @@ const changeVerificationEmail = async (req, res) => {
 
         // Générer un nouveau cookie avec le nouvel email
         GenerateAuthCookie(res, user, false);
-
 
         return res.status(200).json({
             success: true,
@@ -351,7 +354,7 @@ module.exports = {
     createUser,
     verifyEmail,
     resendVerificationEmail,
-    changeVerificationEmail,
+    ChangeVerificationEmail,
     deleteUser,
     loginUser,
     forgotPassword,

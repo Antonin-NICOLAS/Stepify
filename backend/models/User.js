@@ -7,7 +7,7 @@ const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  avatarUrl: { type: String }, //TODO: add a default url
+  avatarUrl: { type: String, default: "https://step-ify.vercel.app/assets/account-B-Y-cm6M.png" },
   status: { type: String, default: "Salut, j'utilise Stepify !" },
 
   //authentification/autorisation

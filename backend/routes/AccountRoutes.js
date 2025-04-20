@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
 //middleware
-
+const { verifyToken } = require('../middlewares/VerifyToken')
 //controllers
 const { updateAvatar,
     updateUsername,
@@ -10,7 +10,7 @@ const { updateAvatar,
     updatePassword,
     updateStatus,
     updateDailyGoal
-} = require('../controllers/UserController')
+} = require('../controllers/AccountController')
 
 //router
 const router = express.Router()
@@ -24,11 +24,10 @@ router.use(
 );
 
 //routes
-
 router.patch('/:userId/avatar', updateAvatar)
 router.patch('/:userId/username', updateUsername)
-router.patch('/:userId/email', updateEmail)
-router.patch('/:userId/password', updatePassword)
+router.patch('/:userId/email', verifyToken, updateEmail)
+router.patch('/:userId/password', verifyToken, updatePassword)
 router.patch('/:userId/status', updateStatus)
 router.patch('/:userId/daily-goal', updateDailyGoal)
 

@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 //routes
 const AuthRoutes = require('../routes/AuthRoutes')
-const UserRoutes = require('../routes/UserRoutes')
+const UserRoutes = require('../routes/AccountRoutes')
 //.env
 require('dotenv').config()
 
@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
     res.send("Hello from Stepify API")
 })
 app.use('/auth', AuthRoutes)
-app.use('/user', UserRoutes)
+app.use('/account', UserRoutes)
 
 //mongoDB connection
 mongoose.connect(process.env.MONGO_URI)
