@@ -22,14 +22,55 @@ const userSchema = new Schema({
   dailyGoal: { type: Number, default: 10000 }, // pas/jour
   totalSteps: { type: Number, default: 0 },
   totalDistance: { type: Number, default: 0 }, // en km
-  totalChallengesCompleted: { type: Number, default: 0 },
+  dailyStats: [{
+    date: { type: Date, required: true },
+    steps: { type: Number, default: 0 },
+    distance: { type: Number, default: 0 },
+    calories: { type: Number },
+    mode: { type: String, enum: ['walk', 'run', 'bike'], default: 'walk' },
+    activeTime: { type: Number }
+  }],
+  customGoals: [{
+    type: { type: String, enum: ['steps', 'distance', 'calories', 'time'] },
+    target: Number,
+    deadline: Date,
+    createdAt: Date,
+    isCompleted: Boolean
+  }],
 
   // Récompenses gagnées
   rewardsUnlocked: [{
     reward: { type: Schema.Types.ObjectId, ref: 'Reward' },
+    progress: { type: Number }, // en %
     unlockedAt: { type: Date, default: Date.now }
   }],
+  challenges: [{
+    challengeId: { type: Schema.Types.ObjectId, ref: 'Challenge' },
+    joinedAt: Date,
+    completed: { type: Boolean, default: false }
+  }],
+  totalChallengesCompleted: { type: Number, default: 0 },
+  streak: {
+    current: { type: Number, default: 0 },
+    max: { type: Number, default: 0 },
+    lastDay: { type: Date }
+  },
 
+  // Amis
+  friends: [{
+    userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    addedAt: { type: Date, default: Date.now }
+  }],
+  friendRequests: [{
+    userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    sentAt: { type: Date, default: Date.now },
+    status: { type: String, enum: ['pending', 'accepted', 'declined'], default: 'pending' }
+  }],
+
+  // Expérience utilisateur
+  themePreference: { type: String, enum: ['light', 'dark', 'auto'], default: 'auto' },
+  languagePreference: { type: String, default: "fr" },
+  lastLoginAt: { type: Date },
   createdAt: { type: Date, default: Date.now }
 })
 

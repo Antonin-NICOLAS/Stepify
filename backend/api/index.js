@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
+const cloudinary = require('../config/cloudinary')
 //routes
 const AuthRoutes = require('../routes/AuthRoutes')
 const UserRoutes = require('../routes/AccountRoutes')
@@ -12,9 +13,9 @@ require('dotenv').config()
 const app = express()
 
 //middleware
-app.use(express.json())
+app.use(express.json({limit: '50mb'}))
 app.use(cookieParser())
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false, limit: '50mb' }))
 
 
 //cors
