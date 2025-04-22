@@ -1,5 +1,5 @@
 const UserModel = require('../models/User')
-const cloudinary = require('../utils/cloudinary');
+const cloudinary = require('../config/cloudinary');
 const bcrypt = require('bcryptjs')
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 const { generateVerificationCode } = require('../utils/GenerateCode')
