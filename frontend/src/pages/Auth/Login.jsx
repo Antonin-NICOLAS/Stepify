@@ -6,10 +6,8 @@ import { useAuthStore } from "../../store/CheckAuth";
 import { useLoaderStore } from "../../store/Loading";
 //icons
 import {
-  RiMailLine, RiEyeFill, RiEyeOffFill,
-  RiIdCardLine, RiUser3Line
-} from "react-icons/ri";
-import { LuLogIn } from "react-icons/lu";
+  Mail, Eye, EyeOff, IdCard, User, LogIn
+} from "lucide-react";
 //CSS
 import "./Login.css";
 
@@ -86,7 +84,7 @@ function Auth() {
                 <label>Email</label>
                 <div className="input-wrapper">
                   <input type="email" placeholder="Enter your email" value={Logindata.email} onChange={(e) => setLoginData({ ...Logindata, email: e.target.value })} required />
-                  <RiMailLine />
+                  <Mail />
                 </div>
               </div>
 
@@ -95,7 +93,7 @@ function Auth() {
                 <div className="input-wrapper">
                   <input type={showLPassword ? "text" : "password"} placeholder="Enter your password" value={Logindata.password} onChange={(e) => setLoginData({ ...Logindata, password: e.target.value })} required />
                   <button type="button" onClick={() => setShowLPassword(!showLPassword)}>
-                    {showLPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                    {showLPassword ? <EyeOff /> : <Eye />}
                   </button>
                 </div>
               </div>
@@ -105,7 +103,7 @@ function Auth() {
                 <Link to="/forgot-password">Forgot password?</Link>
               </div>
 
-              <button type="submit" className="submit-btn" disabled={isLoading}>Log In <LuLogIn /></button>
+              <button type="submit" className="submit-btn" disabled={isLoading}>Log In <LogIn /></button>
               <div className="form-footer">
                 <span>Pas de compte ?</span>
                 <button onClick={() => setIsLogin(false)}>Register</button>
@@ -119,28 +117,28 @@ function Auth() {
                 <label>Prénom</label>
                 <div className="input-wrapper">
                   <input type="text" placeholder="Your firstname" value={Registerdata.firstName} onChange={(e) => setRegisterData({ ...Registerdata, firstName: e.target.value })} required />
-                  <RiIdCardLine />
+                  <IdCard />
                 </div>
               </div>
               <div className="input-group">
                 <label>Nom</label>
                 <div className="input-wrapper">
                   <input type="text" placeholder="Your lastname" value={Registerdata.lastName} onChange={(e) => setRegisterData({ ...Registerdata, lastName: e.target.value })} required />
-                  <RiIdCardLine />
+                  <IdCard />
                 </div>
               </div>
               <div className="input-group">
                 <label>Username</label>
                 <div className="input-wrapper">
                   <input type="text" placeholder="Your username" value={Registerdata.username} onChange={(e) => setRegisterData({ ...Registerdata, username: e.target.value })} required />
-                  <RiUser3Line />
+                  <User />
                 </div>
               </div>
               <div className="input-group">
                 <label>Email</label>
                 <div className="input-wrapper">
                   <input type="email" placeholder="Your email" value={Registerdata.email} onChange={(e) => setRegisterData({ ...Registerdata, email: e.target.value })} required />
-                  <RiMailLine />
+                  <Mail />
                 </div>
               </div>
               <div className="input-group">
@@ -148,7 +146,7 @@ function Auth() {
                 <div className="input-wrapper">
                   <input type={showRPassword ? "text" : "password"} placeholder="Your password" value={Registerdata.password} onChange={(e) => setRegisterData({ ...Registerdata, password: e.target.value })} required />
                   <button type="button" onClick={() => setShowRPassword(!showRPassword)}>
-                    {showRPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                    {showRPassword ? <EyeOff /> : <Eye />}
                   </button>
                 </div>
               </div>
@@ -157,7 +155,7 @@ function Auth() {
                 <div className="input-wrapper">
                   <input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm your password" value={Registerdata.confirmPassword} onChange={(e) => setRegisterData({ ...Registerdata, confirmPassword: e.target.value })} required />
                   <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                    {showConfirmPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                    {showConfirmPassword ? <EyeOff /> : <Eye />}
                   </button>
                 </div>
               </div>
@@ -166,7 +164,7 @@ function Auth() {
                 <label><input type="checkbox" checked={Registerdata.stayLoggedIn} onChange={() => setRegisterData({ ...Registerdata, stayLoggedIn: !Registerdata.stayLoggedIn })} />Rester connecté</label>
               </div>
 
-              <button type="submit" className="submit-btn" disabled={isLoading}>Register <LuLogIn /></button>
+              <button type="submit" className="submit-btn" disabled={isLoading}>Register <LogIn /></button>
               <div className="form-footer">
                 <span>Déjà un compte ?</span>
                 <button onClick={() => setIsLogin(true)}>Login</button>

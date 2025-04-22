@@ -4,8 +4,7 @@ import { useNavigate, Link } from "react-router-dom"
 import { useAuthStore } from "../../store/CheckAuth";
 import { useLoaderStore } from "../../store/Loading";
 //icons
-import { RiMailLine } from "react-icons/ri"
-import { LuSend } from "react-icons/lu"
+import { Mail, Send } from "lucide-react"
 //CSS
 import "./Forgot-pwd.css"
 
@@ -37,12 +36,12 @@ function ForgotPassword() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
-              <RiMailLine />
+              <Mail />
             </div>
           </div>
 
           <button type="submit" className="submit-btn" disabled={isLoading}>
-            {isLoading ? "Envoi en cours..." : "Envoyer le lien"} <LuSend />
+            {isLoading ? "Envoi en cours..." : "Envoyer le lien"} <Send />
           </button>
 
           <div className="form-footer">

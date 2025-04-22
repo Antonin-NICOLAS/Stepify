@@ -4,8 +4,7 @@ import { useParams, Link } from "react-router-dom"
 import { useAuthStore } from "../../store/CheckAuth";
 import { useLoaderStore } from "../../store/Loading";
 //icons
-import { RiEyeFill, RiEyeOffFill, RiCheckLine } from "react-icons/ri"
-import { LuSave } from "react-icons/lu"
+import { Eye, EyeOff, Check, LockKeyhole } from "lucide-react";
 //CSS
 import "./Reset-pwd.css"
 
@@ -35,7 +34,7 @@ function ResetPassword() {
         <div className="resetpwd-container">
           <div className="resetpwd-form success-form">
               <div className="success-icon">
-                <RiCheckLine />
+                <Check />
               </div>
 
             <h2>Réinitialisation réussie! 🎉</h2>
@@ -46,7 +45,7 @@ function ResetPassword() {
             </div>
 
             <Link to="/login" className="submit-btn">
-              Se connecter <LuSave />
+              Se connecter <LockKeyhole />
             </Link>
           </div>
         </div>
@@ -79,10 +78,10 @@ function ResetPassword() {
                 disabled={!token}
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                {showPassword ? <EyeOff /> : <Eye />}
               </button>
             </div>
-            <p className="password-hint">Le mot de passe doit contenir au moins 6 caractères</p>
+            <p className="password-hint">Le mot de passe doit contenir au moins 8 caractères</p>
           </div>
 
           <div className="input-group">
@@ -97,13 +96,13 @@ function ResetPassword() {
                 disabled={!token}
               />
               <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                {showConfirmPassword ? <RiEyeOffFill /> : <RiEyeFill />}
+                {showConfirmPassword ? <EyeOff /> : <Eye />}
               </button>
             </div>
           </div>
 
           <button type="submit" className="submit-btn" disabled={isLoading || !token}>
-            {isLoading ? "Réinitialisation..." : "Réinitialiser le mot de passe"} <LuSave />
+            {isLoading ? "Réinitialisation..." : "Réinitialiser le mot de passe"} <LockKeyhole />
           </button>
 
           <div className="form-footer">

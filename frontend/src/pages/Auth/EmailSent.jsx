@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 //icons
-import { RiMailCheckLine } from "react-icons/ri"
-import { LuArrowLeft } from "react-icons/lu"
+import { MailCheck } from 'lucide-react';
+import { CornerDownLeft } from 'lucide-react';
 //CSS
 import "./EmailSent.css"
 
@@ -12,7 +12,7 @@ function EmailSent() {
         <div className="emailsent-form">
           <div className="email-icon-container">
             <div className="email-icon">
-              <RiMailCheckLine />
+              <MailCheck />
             </div>
           </div>
 
@@ -33,7 +33,7 @@ function EmailSent() {
           </div>
 
           <Link to="/forgot-password" className="secondary-btn">
-            <LuArrowLeft /> Retour
+            Retour <CornerDownLeft />
           </Link>
 
           <div className="form-footer">

@@ -8,6 +8,12 @@ const API_AUTH = process.env.NODE_ENV === "production" ? "/api/auth" : "/auth";
 export const useAuthStore = create((set, get) => ({
     // --- Auth State ---
     user: null,
+    setUser: (userUpdates) => set(state => ({
+        user: { ...state.user, ...userUpdates }
+    })),
+    updateUserField: (field, value) => set(state => ({
+        user: state.user ? { ...state.user, [field]: value } : null
+    })),
     isAuthenticated: false,
     error: null,
 
@@ -35,19 +41,31 @@ export const useAuthStore = create((set, get) => ({
     register: async (RformData, resetForm) => {
         const { startLoading, stopLoading } = useLoaderStore.getState();
         const { firstName, lastName, username, email, password, confirmPassword, stayLoggedIn } = RformData;
-        if (!firstName || !lastName || !username || !email || !password) {
-            toast.error("Tous les champs sont requis");
+        // Validations
+        if (!firstName || firstName.length < 2) {
+            toast.error("Un prénom valide (2 caractères minimum) est requis");
+            return;
+        }
+        if (!lastName || lastName.length < 2) {
+            toast.error("Un nom valide (2 caractères minimum) est requis");
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            toast.error("Veuillez entrer une adresse email valide");
+            return;
+        }
+        if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
+            toast.error("Nom d'utilisateur invalide (3-30 caractères alphanumériques)");
+            return;
+        }
+        if (password.length < 8) {
+            toast.error("Le mot de passe doit contenir au moins 8 caractères");
             return;
         }
         if (password !== confirmPassword) {
             toast.error("Les mots de passe ne correspondent pas");
             return;
         }
-        if (password.length < 6) {
-            toast.error("Le mot de passe doit contenir au moins 6 caractères");
-            return;
-        }
-
         startLoading();
         try {
             const res = await axios.post(`${API_AUTH}/register`, {
@@ -129,7 +147,10 @@ export const useAuthStore = create((set, get) => ({
     // --- Forgot Password ---
     forgotPassword: async (email, onSuccess) => {
         const { startLoading, stopLoading } = useLoaderStore.getState();
-        if (!email) return toast("Veuillez entrer votre email");
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            toast.error("Veuillez entrer une adresse email valide");
+            return;
+        }
         startLoading();
         try {
             const res = await axios.post(`${API_AUTH}/forgot-password`, {
@@ -159,7 +180,7 @@ export const useAuthStore = create((set, get) => ({
         const { startLoading, stopLoading } = useLoaderStore.getState();
         if (!token) return toast.error("Lien invalide ou expiré");
         if (password !== confirmPassword) return toast.error("Les mots de passe ne correspondent pas");
-        if (password.length < 6) return toast.error("Mot de passe trop court (min 6 caractères)");
+        if (password.length < 8) return toast.error("Mot de passe trop court (min 8 caractères)");
 
         startLoading();
         try {

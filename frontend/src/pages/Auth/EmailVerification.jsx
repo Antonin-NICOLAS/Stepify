@@ -4,8 +4,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom"
 import { useAuthStore } from "../../store/CheckAuth";
 import { useLoaderStore } from "../../store/Loading";
 //icons
-import { RiMailCheckLine, RiTimerLine, RiArrowRightLine } from "react-icons/ri"
-import { LuRefreshCw } from "react-icons/lu"
+import { MailCheck, ClockFading, ShieldCheck, RefreshCcw } from 'lucide-react';
 //CSS
 import "./EmailVerification.css"
 
@@ -134,7 +133,7 @@ function EmailVerification() {
                     <div className="form-slide">
                         <div className="verificationcode-form success-form">
                             <div className="success-icon">
-                                <RiMailCheckLine />
+                                <MailCheck />
                             </div>
 
                             <h2>Email Vérifié ! 🎉</h2>
@@ -156,7 +155,7 @@ function EmailVerification() {
                 <form className="verificationcode-form" onSubmit={handleVerificationCode}>
                     <div className="email-icon-container">
                         <div className="email-icon">
-                            <RiMailCheckLine />
+                            <MailCheck />
                         </div>
                     </div>
 
@@ -185,7 +184,7 @@ function EmailVerification() {
                     </div>
 
                     <button type="submit" className="submit-btn" disabled={isLoading || otp.join("").length !== 6}>
-                        {isLoading ? "Vérification..." : "Vérifier"} <RiArrowRightLine />
+                        {isLoading ? "Vérification..." : "Vérifier"} <ShieldCheck />
                     </button>
 
                     <div className="resend-container">
@@ -198,11 +197,11 @@ function EmailVerification() {
                         >
                             {resendDisabled ? (
                                 <>
-                                    <RiTimerLine /> Renvoyer dans {countdown}s
+                                    <ClockFading /> Renvoyer dans {countdown}s
                                 </>
                             ) : (
                                 <>
-                                    <LuRefreshCw /> Renvoyer le code
+                                    <RefreshCcw width="calc(0.8vh + 0.7vw)" /> Renvoyer le code
                                 </>
                             )}
                         </button>

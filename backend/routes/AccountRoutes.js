@@ -5,11 +5,15 @@ require('dotenv').config();
 const { verifyToken } = require('../middlewares/VerifyToken')
 //controllers
 const { updateAvatar,
-    updateUsername,
+    updateProfile,
     updateEmail,
     updatePassword,
     updateStatus,
-    updateDailyGoal
+    updateDailyGoal,
+    updateThemePreference,
+    updateLanguagePreference,
+    updatePrivacySettings,
+    getUserProfile
 } = require('../controllers/AccountController')
 
 //router
@@ -24,11 +28,16 @@ router.use(
 );
 
 //routes
-router.patch('/:userId/avatar', updateAvatar)
-router.patch('/:userId/username', updateUsername)
+router.patch('/:userId/avatar', verifyToken, updateAvatar)
+router.patch('/:userId/updateprofile', verifyToken, updateProfile)
 router.patch('/:userId/email', verifyToken, updateEmail)
 router.patch('/:userId/password', verifyToken, updatePassword)
-router.patch('/:userId/status', updateStatus)
-router.patch('/:userId/daily-goal', updateDailyGoal)
+router.patch('/:userId/status', verifyToken, updateStatus)
+router.patch('/:userId/daily-goal', verifyToken, updateDailyGoal)
+
+router.patch('/:userId/theme', verifyToken, updateThemePreference);
+router.patch('/:userId/language', verifyToken, updateLanguagePreference);
+router.patch('/:userId/privacy', verifyToken, updatePrivacySettings);
+router.get('/:userId/profile', verifyToken, getUserProfile);
 
 module.exports = router
