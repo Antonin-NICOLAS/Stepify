@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react"
 import { useNavigate, useLocation, Link } from "react-router-dom"
 //context
-import { useAuthStore } from "../../store/CheckAuth";
-import { useLoaderStore } from "../../store/Loading";
+import { useLoading } from '../../context/LoadingContext';
+import { useAuth } from '../../context/AuthContext';
 //icons
 import { MailCheck, ClockFading, ShieldCheck, RefreshCcw } from 'lucide-react';
 //CSS
@@ -10,8 +10,9 @@ import "./EmailVerification.css"
 
 function EmailVerification() {
     const navigate = useNavigate()
-    const { user, verifyEmail, resendVerificationCode } = useAuthStore();
-    const { isLoading } = useLoaderStore()
+    const { user, verifyEmail, resendVerificationCode } = useAuth();
+    const { isLoading } = useLoading();
+
     const [otp, setOtp] = useState(["", "", "", "", "", ""])
     const [resendDisabled, setResendDisabled] = useState(false)
     const [countdown, setCountdown] = useState(0)

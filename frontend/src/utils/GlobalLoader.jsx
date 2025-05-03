@@ -1,16 +1,14 @@
-import { useLoaderStore } from "../store/Loading"
-import SVGLoader from "../components/Loader"
+import { useLoading } from "../context/LoadingContext";
+import SVGLoader from "../components/Loader";
 
 export default function GlobalLoader() {
-  const { isLoading } = useLoaderStore()
+  const { isLoading } = useLoading();
 
-  if (!isLoading) return null
+  if (!isLoading) return null;
 
   return (
-    <>
-      <div className="global-loader">
-        <SVGLoader size={300}/>
-      </div>
-    </>
-  )
+    <div className="global-loader">
+      <SVGLoader size={300} />
+    </div>
+  );
 }

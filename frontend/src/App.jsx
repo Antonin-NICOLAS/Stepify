@@ -1,7 +1,8 @@
 import { BrowserRouter } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useAuthStore } from './store/CheckAuth.js';
-import { useThemeStore } from './store/Theme.js';
+import { LoadingProvider } from './context/LoadingContext';
+import { AuthProvider } from './context/AuthContext';
+import { UserProvider } from './context/UserContext';
+import { ThemeProvider } from './context/ThemeContext';
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
 import AppRoutes from './routes/AppRoutes.jsx';
@@ -12,33 +13,31 @@ axios.defaults.baseURL = process.env.NODE_ENV === "production" ? '' : process.en
 axios.defaults.withCredentials = true;
 
 function App() {
-  const { checkAuth } = useAuthStore();
-  const { theme, setTheme } = useThemeStore();
-
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
-
-  useEffect(() => {
-    setTheme(theme);
-  }, []);
 
   return (
     <div className="App">
-      <BrowserRouter>
-        <Toaster
-          position="top-right"
-          reverseOrder={false}
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: 'var(--bleu)',
-              color: '#fff',
-            },
-          }}
-        />
-        <AppRoutes />
-      </BrowserRouter>
+      <LoadingProvider>
+        <AuthProvider>
+          <UserProvider>
+            <ThemeProvider>
+              <BrowserRouter>
+                <Toaster
+                  position="top-right"
+                  reverseOrder={false}
+                  toastOptions={{
+                    duration: 3000,
+                    style: {
+                      background: 'var(--bleu)',
+                      color: '#fff',
+                    },
+                  }}
+                />
+                <AppRoutes />
+              </BrowserRouter>
+            </ThemeProvider>
+          </UserProvider>
+        </AuthProvider>
+      </LoadingProvider>
     </div>
   );
 }

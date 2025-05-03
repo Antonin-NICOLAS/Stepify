@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 //context
-import { useAuthStore } from "../../store/CheckAuth";
-import { useLoaderStore } from "../../store/Loading";
+import { useLoading } from '../../context/LoadingContext';
+import { useAuth } from '../../context/AuthContext';
 //icons
 import { Mail, Send } from "lucide-react"
 //CSS
@@ -10,8 +10,8 @@ import "./Forgot-pwd.css"
 
 function ForgotPassword() {
   const navigate = useNavigate()
-  const { forgotPassword } = useAuthStore();
-  const { isLoading } = useLoaderStore();
+  const { forgotPassword } = useAuth();
+  const { isLoading } = useLoading();
   const [email, setEmail] = useState("")
 
   const handleForgotPwd = (e) => {

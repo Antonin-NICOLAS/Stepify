@@ -1,16 +1,16 @@
 import { useState } from "react"
 import { useParams, Link } from "react-router-dom"
 //context
-import { useAuthStore } from "../../store/CheckAuth";
-import { useLoaderStore } from "../../store/Loading";
+import { useLoading } from '../../context/LoadingContext';
+import { useAuth } from '../../context/AuthContext';
 //icons
 import { Eye, EyeOff, Check, LockKeyhole } from "lucide-react";
 //CSS
 import "./Reset-pwd.css"
 
 function ResetPassword() {
-  const { resetPassword } = useAuthStore();
-  const { isLoading } = useLoaderStore();
+  const { resetPassword } = useAuth();
+  const { isLoading } = useLoading();
   
   const { token } = useParams();
   const [password, setPassword] = useState("")

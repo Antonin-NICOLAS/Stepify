@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Spline from "@splinetool/react-spline";
 //context
-import { useAuthStore } from "../../store/CheckAuth";
-import { useLoaderStore } from "../../store/Loading";
+import { useLoading } from '../../context/LoadingContext';
+import { useAuth } from '../../context/AuthContext';
 //icons
 import {
   Mail, Eye, EyeOff, IdCard, User, LogIn
@@ -13,8 +13,8 @@ import "./Login.css";
 
 function Auth() {
   const navigate = useNavigate();
-  const { login, register } = useAuthStore();
-  const { isLoading } = useLoaderStore();
+  const { login, register } = useAuth();
+  const { isLoading } = useLoading();
 
   const [Logindata, setLoginData] = useState({
     email: "",

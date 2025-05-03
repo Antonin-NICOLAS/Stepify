@@ -1,15 +1,19 @@
 import { useState, useRef } from "react"
+import GlobalLoader from '../utils/GlobalLoader.jsx';
+//Context
+import { useAuth } from '../context/AuthContext';
+import { useLoading } from "../context/LoadingContext"
+import { useUser } from "../context/UserContext"
+//icons
 import { Camera, Edit, Upload, Globe, Moon, Sun, ChevronDown, Check } from "lucide-react"
-import { useAuthStore } from "../store/CheckAuth"
-import { useLoaderStore } from "../store/Loading"
-import { useUserStore } from "../store/UserStore"
 import AccountImage from "../assets/account.png"
+//CSS
 import "./Settings.css"
 
 const AccountPage = () => {
-  // Stores
-  const { user } = useAuthStore()
-  const { isLoading } = useLoaderStore()
+  // Contexts
+  const { user } = useAuth()
+  const { isLoading } = useLoading()
   const {
     updateAvatar,
     updateStatus,
@@ -18,7 +22,11 @@ const AccountPage = () => {
     updateThemePreference,
     updateLanguagePreference,
     changePassword
-  } = useUserStore()
+  } = useUser()
+
+  if (isLoading || !user) {
+    return <GlobalLoader />
+  }
 
   // UI state
   const [isEditingPassword, setIsEditingPassword] = useState(false)
@@ -234,10 +242,6 @@ const AccountPage = () => {
     if (!dateString) return ""
     const options = { year: 'numeric', month: 'long', day: 'numeric' }
     return new Date(dateString).toLocaleDateString(user?.languagePreference || 'fr-FR', options)
-  }
-
-  if (isLoading || !user) {
-    return <div className="loading-container">Chargement...</div>
   }
 
   return (

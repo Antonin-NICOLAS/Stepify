@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
-import { useAuthStore } from "../store/CheckAuth";
-import { useLoaderStore } from "../store/Loading";
+import { useAuth } from "../context/AuthContext";
+import { useLoading } from "../context/LoadingContext";
 
 export const ProtectRoute = ({ children }) => {
-  const { isAuthenticated } = useAuthStore();
-  const { isLoading } = useLoaderStore();
+  const { isAuthenticated } = useAuth();
+  const { isLoading } = useLoading();
 
   if (!isLoading) {
     return isAuthenticated ? children : <Navigate to="/login" replace />;
@@ -12,8 +12,8 @@ export const ProtectRoute = ({ children }) => {
 };
 
 export const AuthenticatedUserRoute = ({ children }) => {
-  const { isAuthenticated, user } = useAuthStore();
-  const { isLoading } = useLoaderStore();
+  const { isAuthenticated, user } = useAuth();
+  const { isLoading } = useLoading();
 
   if (!isLoading) {
     return isAuthenticated && user ? <Navigate to="/dashboard" replace /> : children;
@@ -21,19 +21,23 @@ export const AuthenticatedUserRoute = ({ children }) => {
 };
 
 export const RequireEmailVerification = ({ children }) => {
-  const { user } = useAuthStore();
-  const { isLoading } = useLoaderStore();
+  const { user } = useAuth();
+  const { isLoading } = useLoading();
 
   if (!isLoading) {
-    return user && !user.isVerified ? <Navigate to="/email-verification" replace state={{ showToast: true }} /> : children;
+    return user && !user.isVerified ? 
+      <Navigate to="/email-verification" replace state={{ showToast: true }} /> : 
+      children;
   }
 };
 
 export const RequireAdmin = ({ children }) => {
-  const { user } = useAuthStore();
-  const { isLoading } = useLoaderStore();
+  const { user } = useAuth();
+  const { isLoading } = useLoading();
 
   if (!isLoading) {
-    return user && user.isAdmin ? children : <Navigate to="/dashboard" replace />; {/* TODO : rediriger vers la page admin quand elle sera créée */ }
+    return user && user.isAdmin ? 
+      children : 
+      <Navigate to="/dashboard" replace />;
   }
 };

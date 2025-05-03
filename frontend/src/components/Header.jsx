@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 //context
-import { useThemeStore } from "../store/Theme";
-import { useAuthStore } from "../store/CheckAuth";
+import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 //images
 import Account from "../assets/account.png";
 import Logo from "../assets/icon.png";
@@ -26,8 +26,8 @@ import "./Header.css";
 
 function Header() {
   const navigate = useNavigate();
-  const { user, isAuthenticated, logout } = useAuthStore();
-  const { theme, toggleTheme } = useThemeStore();
+  const { user, isAuthenticated, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -61,8 +61,12 @@ function Header() {
       <nav className={`sidebar ${sidebarOpen ? "hide-sidebar" : ""}`} id="sidebar">
         <div className="sidebar__container">
           <div className="sidebar__user">
-            <div className="sidebar__img">
-              <img src={Account} alt="profile" />
+            <div className={user ? "sidebar__img user" : "sidebar__img"}>
+              {user ? (
+                <img src={user.avatarUrl} className="userimg" alt="profile" />
+              ) : (
+                <img src={Account} className="imgaccount" alt="profile" />
+              )}
             </div>
             <div className="sidebar__info">
               <h3>{user ? (`${user.firstName} ${user.lastName}`) : ("Guest")}</h3>
@@ -105,7 +109,7 @@ function Header() {
             )}
           </div>
         </div>
-      </nav>
+      </nav >
     </>
   );
 }

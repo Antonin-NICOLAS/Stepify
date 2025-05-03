@@ -513,9 +513,9 @@ const resetPassword = async (req, res) => {
 const logoutUser = async (req, res) => {
     try {
         res.clearCookie("jwtauth", {
-            secure: process.env.NODE_ENV === "production",
-            httpOnly: true,
-            sameSite: process.env.NODE_ENV === "production" ? 'lax' : 'none',
+            secure: process.env.NODE_ENV === "production" ? true : false,
+            httpOnly: process.env.NODE_ENV === "production" ? true : false,
+            sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
             ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
         });
 
