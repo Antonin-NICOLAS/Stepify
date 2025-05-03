@@ -2,7 +2,7 @@ import React, { createContext, useContext, useCallback } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useAuth } from './AuthContext';
-import { useLoading } from './LoadingContext';
+import { useLoadingActions } from './LoadingContext';
 
 const API_USER = process.env.NODE_ENV === 'production' ? '/api/account' : '/account';
 
@@ -10,7 +10,7 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const { user, setUser, updateUserField } = useAuth();
-  const { startLoading, stopLoading } = useLoading();
+  const { startLoading, stopLoading } = useLoadingActions();
 
   const updateProfile = useCallback(async (userId, updates) => {
     startLoading();

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useParams, Link } from "react-router-dom"
 //context
-import { useLoading } from '../../context/LoadingContext';
+import { useLoadingState } from '../../context/LoadingContext';
 import { useAuth } from '../../context/AuthContext';
 //icons
 import { Eye, EyeOff, Check, LockKeyhole } from "lucide-react";
@@ -10,7 +10,7 @@ import "./Reset-pwd.css"
 
 function ResetPassword() {
   const { resetPassword } = useAuth();
-  const { isLoading } = useLoading();
+  const { isLoading } = useLoadingState();
   
   const { token } = useParams();
   const [password, setPassword] = useState("")

@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { useLoading } from './LoadingContext';
+import { useLoadingActions } from './LoadingContext';
 
 const API_AUTH = process.env.NODE_ENV === 'production' ? '/api/auth' : '/auth';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const { startLoading, stopLoading } = useLoading();
+  const { startLoading, stopLoading } = useLoadingActions();
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState(null);

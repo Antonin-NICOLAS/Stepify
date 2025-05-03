@@ -2,7 +2,7 @@ import { useState, useRef } from "react"
 import GlobalLoader from '../utils/GlobalLoader.jsx';
 //Context
 import { useAuth } from '../context/AuthContext';
-import { useLoading } from "../context/LoadingContext"
+import { useLoadingState } from "../context/LoadingContext"
 import { useUser } from "../context/UserContext"
 //icons
 import { Camera, Edit, Upload, Globe, Moon, Sun, ChevronDown, Check } from "lucide-react"
@@ -13,7 +13,7 @@ import "./Settings.css"
 const AccountPage = () => {
   // Contexts
   const { user } = useAuth()
-  const { isLoading } = useLoading()
+  const { isLoading } = useLoadingState()
   const {
     updateAvatar,
     updateStatus,
