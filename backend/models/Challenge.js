@@ -12,6 +12,12 @@ const challengeSchema = new Schema({
       steps: { type: Number, default: 0 },
       joinedAt: { type: Date, default: Date.now }
     }],
+
+    status: {
+      type: String,
+      enum: ['upcoming', 'active', 'completed'],
+      default: 'upcoming'
+    },
     
     isPrivate: { type: Boolean, default: false },
     accessCode: { type: String }, // pour rejoindre si privé

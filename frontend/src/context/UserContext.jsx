@@ -17,12 +17,24 @@ export const UserProvider = ({ children }) => {
     try {
       const changes = {};
       if (updates.username && updates.username !== user.username) {
+        if (!/^[a-zA-Z0-9_]{3,30}$/.test(updates.username)) {
+          toast.error("Nom d'utilisateur invalide (3-30 caractères alphanumériques)");
+          return;
+        }
         changes.username = updates.username;
       }
       if (updates.firstName && updates.firstName !== user.firstName) {
+        if (!updates.firstName || updates.firstName.length < 2) {
+          toast.error("Un prénom valide (2 caractères minimum) est requis");
+          return;
+        }
         changes.firstName = updates.firstName;
       }
       if (updates.lastName && updates.lastName !== user.lastName) {
+        if (!updates.lastName || updates.lastName.length < 2) {
+          toast.error("Un nom valide (2 caractères minimum) est requis");
+          return;
+        }
         changes.lastName = updates.lastName;
       }
 

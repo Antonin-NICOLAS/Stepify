@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+require('./StepEntry.js');
 
 const userSchema = new Schema({
   // --- Informations de base ---
@@ -74,7 +75,7 @@ const userSchema = new Schema({
     ipAddress: String,
     userAgent: String,
     createdAt: { type: Date, default: Date.now },
-    lastActivity: Date
+    expiresAt: { type: Date, default: () => Date.now() + 7 * 24 * 60 * 60 * 1000 }
   }],
 
   // --- Objectifs & Statistiques ---
@@ -94,36 +95,6 @@ const userSchema = new Schema({
     default: 0, // en km
     min: 0
   },
-  dailyStats: [{
-    date: {
-      type: Date,
-      required: true,
-      index: true
-    },
-    steps: {
-      type: Number,
-      default: 0,
-      min: 0
-    },
-    distance: {
-      type: Number,
-      default: 0, // en km
-      min: 0
-    },
-    calories: {
-      type: Number,
-      min: 0
-    },
-    mode: {
-      type: String,
-      enum: ['walk', 'run', 'bike'],
-      default: 'walk'
-    },
-    activeTime: { // en minutes
-      type: Number,
-      min: 0
-    }
-  }],
   customGoals: [{
     type: {
       type: String,
@@ -193,19 +164,9 @@ const userSchema = new Schema({
     min: 0
   },
   streak: {
-    current: {
-      type: Number,
-      default: 0,
-      min: 0
-    },
-    max: {
-      type: Number,
-      default: 0,
-      min: 0
-    },
-    lastDay: {
-      type: Date
-    }
+    current: { type: Number, default: 0, min: 0 },
+    max: { type: Number, default: 0, min: 0 },
+    lastAchieved: Date
   },
 
   // --- Réseau social ---
@@ -267,21 +228,24 @@ const userSchema = new Schema({
     default: 'fr'
   },
   notificationPreferences: {
-    email: {
-      activitySummary: { type: Boolean, default: true },
-      newChallenges: { type: Boolean, default: true },
-      friendRequests: { type: Boolean, default: true }
-    },
-    push: {
-      goalAchieved: { type: Boolean, default: true },
-      friendActivity: { type: Boolean, default: true }
-    }
+    activitySummary: { type: Boolean, default: true },
+    newChallenges: { type: Boolean, default: true },
+    friendRequests: { type: Boolean, default: true },
+    goalAchieved: { type: Boolean, default: true },
+    friendActivity: { type: Boolean, default: true }
   },
 
   // --- Métadonnées ---
   lastLoginAt: {
     type: Date
   },
+  loginAttempts: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  lastLoginAttempt: Date,
+  lockUntil: Date,
   createdAt: {
     type: Date,
     default: Date.now,
@@ -292,10 +256,12 @@ const userSchema = new Schema({
   toJSON: {
     virtuals: true,
     transform: function (doc, ret) {
-      // Exclure les champs sensibles dans les réponses JSON
       delete ret.password;
       delete ret.verificationToken;
       delete ret.resetPasswordToken;
+      delete ret.activeSessions;
+      delete ret.loginAttempts;
+      delete ret.lockUntil;
       return ret;
     }
   },
@@ -310,12 +276,15 @@ userSchema.virtual('fullName').get(function () {
 });
 
 // Virtual pour le progrès de l'objectif quotidien
-userSchema.virtual('todayProgress').get(function () {
+userSchema.virtual('todayProgress').get(async function() {
   const today = new Date().toISOString().split('T')[0];
-  const todayStats = this.dailyStats.find(s =>
-    s.date.toISOString().split('T')[0] === today
-  );
-  return todayStats ? (todayStats.steps / this.dailyGoal) * 100 : 0;
+  const result = await mongoose.model('StepEntry').aggregate([
+    { $match: { user: this._id, day: today } },
+    { $group: { _id: null, totalSteps: { $sum: "$steps" } } }
+  ]);
+  
+  const todaySteps = result[0]?.totalSteps || 0;
+  return (todaySteps / this.dailyGoal) * 100;
 });
 
 // Index pour améliorer les performances

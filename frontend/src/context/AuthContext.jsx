@@ -31,6 +31,10 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setIsAuthenticated(false);
       }
+      if (data.error === 'Session expirée ou invalide') {
+        toast.error('Session expirée ou invalide. Veuillez vous reconnecter');
+        throw data.error;
+      }
     } catch (err) {
       setUser(null);
       setIsAuthenticated(false);
@@ -85,8 +89,8 @@ export const AuthProvider = ({ children }) => {
         }
       });
 
-      if (res.data.error) {
-        toast.error(res.data.error);
+      if (res.data.errors.username || res.data.errors.email) {
+        toast.error(res.data.errors.username && res.data.errors.email || res.data.errors.username || res.data.errors.email);
       } else {
         setUser(res.data.user);
         setIsAuthenticated(true);
@@ -94,7 +98,7 @@ export const AuthProvider = ({ children }) => {
         toast.success(res.data.message);
       }
     } catch (err) {
-      toast.error(err.response?.data?.error || "Erreur lors de l'inscription");
+      toast.error(err.response?.data?.errors?.username && err.response?.data?.errors?.email || err.response?.data?.errors?.username || err.response?.data?.errors?.email || "Erreur lors de l'inscription");
     } finally {
       stopLoading();
     }

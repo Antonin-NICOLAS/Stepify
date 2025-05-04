@@ -1,14 +1,15 @@
 const UserModel = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const ms = require('ms');
 const crypto = require('crypto');
 const { generateVerificationCode } = require('../utils/GenerateCode');
 const { GenerateAuthCookie } = require('../utils/GenerateAuthCookie');
-const { 
-    sendVerificationEmail, 
-    sendWelcomeEmail, 
-    sendResetPasswordEmail, 
-    sendResetPasswordSuccessfulEmail 
+const {
+    sendVerificationEmail,
+    sendWelcomeEmail,
+    sendResetPasswordEmail,
+    sendResetPasswordSuccessfulEmail
 } = require('../utils/SendMail');
 require('dotenv').config();
 
@@ -30,54 +31,51 @@ const createUser = async (req, res) => {
     try {
         // Validations améliorées
         if (!firstName || firstName.length < 2) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Un prénom valide (2 caractères minimum) est requis" 
+            return res.status(400).json({
+                success: false,
+                error: "Un prénom valide (2 caractères minimum) est requis"
             });
         }
         if (!lastName || lastName.length < 2) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Un nom valide (2 caractères minimum) est requis" 
+            return res.status(400).json({
+                success: false,
+                error: "Un nom valide (2 caractères minimum) est requis"
             });
         }
         if (!email || !validateEmail(email)) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Une adresse email valide est requise" 
+            return res.status(400).json({
+                success: false,
+                error: "Une adresse email valide est requise"
             });
         }
         if (!username || !validateUsername(username)) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Un nom d'utilisateur valide (3-30 caractères alphanumériques) est requis" 
+            return res.status(400).json({
+                success: false,
+                error: "Un nom d'utilisateur valide (3-30 caractères alphanumériques) est requis"
             });
         }
         if (!password || password.length < 8) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Un mot de passe de 8 caractères minimum est requis" 
+            return res.status(400).json({
+                success: false,
+                error: "Un mot de passe de 8 caractères minimum est requis"
             });
         }
 
-        // Vérifications d'unicité optimisées
-        const [emailExist, usernameExist] = await Promise.all([
-            UserModel.findOne({ email }).select('_id').lean(),
-            UserModel.findOne({ username }).select('_id').lean()
-        ]);
-
-        if (emailExist) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "L'email est déjà associé à un compte" 
+        // Vérifications email/username existant
+        const existingUser = await UserModel.findOne({
+            $or: [{ email }, { username }]
+          }).select('email username').lean();
+          
+          if (existingUser) {
+            const errors = {};
+            if (existingUser.email === email) errors.email = "Email déjà utilisé";
+            if (existingUser.username === username) errors.username = "Nom d'utilisateur déjà pris";
+            
+            return res.status(400).json({
+              success: false,
+              errors
             });
-        }
-        if (usernameExist) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Le nom d'utilisateur est déjà pris" 
-            });
-        }
+          }
 
         const hashedPassword = await bcrypt.hash(password, 12);
         const verificationCode = generateVerificationCode();
@@ -89,9 +87,13 @@ const createUser = async (req, res) => {
             email,
             password: hashedPassword,
             verificationToken: verificationCode,
-            verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000,
+            verificationTokenExpiresAt: Date.now() + ms(process.env.VERIFICATION_TOKEN_EXPIRY),
             isVerified: false,
             lastLoginAt: Date.now(),
+            activeSessions: [{
+                ipAddress: req.ip,
+                userAgent: req.headers['user-agent']
+            }],
             dailyGoal: 10000, // Valeur par défaut
             themePreference: 'auto',
             languagePreference: 'fr'
@@ -99,6 +101,19 @@ const createUser = async (req, res) => {
 
         await sendVerificationEmail(newUser.email, verificationCode);
         GenerateAuthCookie(res, newUser, stayLoggedIn);
+
+        //save new session
+        const userAgent = req.headers['user-agent'] || 'unknown';
+        const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        const sessionDuration = stayLoggedIn ? ms(process.env.SESSION_DURATION_LONG) : ms(process.env.SESSION_DURATION_SHORT);
+
+        user.activeSessions.push({
+            ipAddress,
+            userAgent,
+            expiresAt: new Date(Date.now() + sessionDuration)
+        });
+
+        await user.save();
 
         // Ne pas renvoyer les informations sensibles
         const userResponse = newUser.toObject();
@@ -113,9 +128,9 @@ const createUser = async (req, res) => {
         });
     } catch (error) {
         console.error("Erreur lors de la création du compte:", error);
-        res.status(500).json({ 
-            success: false, 
-            error: "Une erreur est survenue lors de la création du compte" 
+        res.status(500).json({
+            success: false,
+            error: "Une erreur est survenue lors de la création du compte"
         });
     }
 };
@@ -127,9 +142,9 @@ const verifyEmail = async (req, res) => {
 
     try {
         if (!jwtauth) {
-            return res.status(401).json({ 
-                success: false, 
-                error: "Authentification requise" 
+            return res.status(401).json({
+                success: false,
+                error: "Authentification requise"
             });
         }
 
@@ -137,36 +152,37 @@ const verifyEmail = async (req, res) => {
         const user = await UserModel.findById(decoded.id);
 
         if (!user) {
-            return res.status(404).json({ 
-                success: false, 
-                error: "Utilisateur non trouvé" 
+            return res.status(404).json({
+                success: false,
+                error: "Utilisateur non trouvé"
             });
         }
 
         if (user.isVerified) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Email déjà vérifié" 
+            return res.status(400).json({
+                success: false,
+                error: "Email déjà vérifié"
             });
         }
 
         if (user.verificationToken !== code) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Code de vérification invalide" 
+            return res.status(400).json({
+                success: false,
+                error: "Code de vérification invalide"
             });
         }
 
         if (user.verificationTokenExpiresAt < Date.now()) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Le code de vérification a expiré" 
+            return res.status(400).json({
+                success: false,
+                error: "Le code de vérification a expiré"
             });
         }
 
         user.isVerified = true;
         user.verificationToken = undefined;
         user.verificationTokenExpiresAt = undefined;
+        user.lastLoginAt = new Date();
         await user.save();
 
         await sendWelcomeEmail(user.email, user.firstName);
@@ -175,6 +191,7 @@ const verifyEmail = async (req, res) => {
         delete userResponse.password;
         delete userResponse.verificationToken;
         delete userResponse.resetPasswordToken;
+        delete userResponse.activeSessions;
 
         return res.status(200).json({
             success: true,
@@ -184,14 +201,14 @@ const verifyEmail = async (req, res) => {
     } catch (error) {
         console.error("Erreur lors de la vérification de l'email:", error);
         if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({ 
-                success: false, 
-                error: "Token invalide" 
+            return res.status(401).json({
+                success: false,
+                error: "Token invalide"
             });
         }
-        res.status(500).json({ 
-            success: false, 
-            error: "Une erreur est survenue lors de la vérification de l'email" 
+        res.status(500).json({
+            success: false,
+            error: "Une erreur est survenue lors de la vérification de l'email"
         });
     }
 };
@@ -202,9 +219,9 @@ const resendVerificationEmail = async (req, res) => {
 
     try {
         if (!jwtauth) {
-            return res.status(401).json({ 
-                success: false, 
-                error: "Authentification requise" 
+            return res.status(401).json({
+                success: false,
+                error: "Authentification requise"
             });
         }
 
@@ -212,22 +229,22 @@ const resendVerificationEmail = async (req, res) => {
         const user = await UserModel.findById(decoded.id);
 
         if (!user) {
-            return res.status(404).json({ 
-                success: false, 
-                error: "Utilisateur non trouvé" 
+            return res.status(404).json({
+                success: false,
+                error: "Utilisateur non trouvé"
             });
         }
 
         if (user.isVerified) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "L'email est déjà vérifié" 
+            return res.status(400).json({
+                success: false,
+                error: "L'email est déjà vérifié"
             });
         }
 
         // Générer un nouveau code avec une expiration
         user.verificationToken = generateVerificationCode();
-        user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000;
+        user.verificationTokenExpiresAt = Date.now() + ms(process.env.VERIFICATION_TOKEN_EXPIRY);
         await user.save();
 
         await sendVerificationEmail(user.email, user.verificationToken);
@@ -238,9 +255,9 @@ const resendVerificationEmail = async (req, res) => {
         });
     } catch (error) {
         console.error("Erreur lors de la demande de renvoi du code de vérification:", error);
-        res.status(500).json({ 
-            success: false, 
-            error: "Une erreur est survenue lors du renvoi du code de vérification" 
+        res.status(500).json({
+            success: false,
+            error: "Une erreur est survenue lors du renvoi du code de vérification"
         });
     }
 };
@@ -251,46 +268,46 @@ const ChangeVerificationEmail = async (req, res) => {
 
     try {
         if (!newEmail || !validateEmail(newEmail)) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Une adresse email valide est requise" 
+            return res.status(400).json({
+                success: false,
+                error: "Une adresse email valide est requise"
             });
         }
 
         const user = await UserModel.findById(req.userId);
         if (!user) {
-            return res.status(404).json({ 
-                success: false, 
-                error: "Utilisateur introuvable" 
+            return res.status(404).json({
+                success: false,
+                error: "Utilisateur introuvable"
             });
         }
 
         if (user.isVerified) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Votre compte est déjà vérifié" 
+            return res.status(400).json({
+                success: false,
+                error: "Votre compte est déjà vérifié"
             });
         }
 
         if (user.email === newEmail) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Le nouvel email doit être différent de l'actuel" 
+            return res.status(400).json({
+                success: false,
+                error: "Le nouvel email doit être différent de l'actuel"
             });
         }
 
         const emailExists = await UserModel.findOne({ email: newEmail });
         if (emailExists) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "L'email est déjà associé à un compte" 
+            return res.status(400).json({
+                success: false,
+                error: "L'email est déjà associé à un compte"
             });
         }
 
         user.email = newEmail;
         user.isVerified = false;
         user.verificationToken = generateVerificationCode();
-        user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000;
+        user.verificationTokenExpiresAt = Date.now() + ms(process.env.VERIFICATION_TOKEN_EXPIRY);
         await user.save();
 
         res.clearCookie("jwtauth", {
@@ -309,9 +326,9 @@ const ChangeVerificationEmail = async (req, res) => {
         });
     } catch (error) {
         console.error("Erreur lors du changement d'email:", error);
-        res.status(500).json({ 
-            success: false, 
-            error: "Une erreur est survenue lors du changement d'email" 
+        res.status(500).json({
+            success: false,
+            error: "Une erreur est survenue lors du changement d'email"
         });
     }
 };
@@ -323,25 +340,25 @@ const deleteUser = async (req, res) => {
 
     try {
         if (!password) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Le mot de passe est requis pour supprimer le compte" 
+            return res.status(400).json({
+                success: false,
+                error: "Le mot de passe est requis pour supprimer le compte"
             });
         }
 
         const user = await UserModel.findById(userId);
         if (!user) {
-            return res.status(404).json({ 
-                success: false, 
-                error: "Utilisateur introuvable" 
+            return res.status(404).json({
+                success: false,
+                error: "Utilisateur introuvable"
             });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ 
-                success: false, 
-                error: "Mot de passe incorrect" 
+            return res.status(401).json({
+                success: false,
+                error: "Mot de passe incorrect"
             });
         }
 
@@ -354,15 +371,15 @@ const deleteUser = async (req, res) => {
             ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
         });
 
-        return res.status(200).json({ 
-            success: true, 
-            message: "Compte supprimé avec succès" 
+        return res.status(200).json({
+            success: true,
+            message: "Compte supprimé avec succès"
         });
     } catch (error) {
         console.error("Erreur lors de la suppression du compte:", error);
-        res.status(500).json({ 
-            success: false, 
-            error: "Une erreur est survenue lors de la suppression du compte" 
+        res.status(500).json({
+            success: false,
+            error: "Une erreur est survenue lors de la suppression du compte"
         });
     }
 };
@@ -375,30 +392,72 @@ const loginUser = async (req, res) => {
 
     try {
         if (!email || !password) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "L'email et le mot de passe sont requis" 
+            return res.status(400).json({
+                success: false,
+                error: "L'email et le mot de passe sont requis"
             });
         }
 
         const user = await UserModel.findOne({ email });
         if (!user) {
-            return res.status(401).json({ 
-                success: false, 
-                error: "Email associé à aucun compte" 
+            return res.status(401).json({
+                success: false,
+                error: "Email associé à aucun compte"
             });
         }
 
+        if (user.lockUntil && user.lockUntil > Date.now()) {
+            const remainingTime = Math.ceil((user.lockUntil - Date.now()) / (1000 * 60));
+            return res.status(429).json({
+              success: false,
+              error: `Trop de tentatives. Réessayez dans ${remainingTime} minutes`,
+              retryAfter: remainingTime * 60 // en secondes
+            });
+          }
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ 
-                success: false, 
-                error: "Mot de passe incorrect" 
+            user.loginAttempts += 1;
+            if (user.loginAttempts >= 5) {
+                user.lockUntil = Date.now() + 15 * 60 * 1000;
+                await user.save();
+                return res.status(429).json({
+                    success: false,
+                    error: "Trop de tentatives. Votre compte est temporairement verrouillé."
+                });
+            }
+            return res.status(401).json({
+                success: false,
+                error: "Mot de passe incorrect"
             });
         }
 
         // Mettre à jour la dernière connexion
         user.lastLoginAt = Date.now();
+        user.loginAttempts = 0;
+        user.lockUntil = null;
+
+        const userAgent = req.headers['user-agent'] || 'unknown';
+        const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        const sessionDuration = stayLoggedIn ? ms(process.env.SESSION_DURATION_LONG) : ms(process.env.SESSION_DURATION_SHORT);
+
+        //vérification des sessions expirées
+        user.activeSessions = user.activeSessions.filter(session => 
+            session.expiresAt > Date.now()
+          );
+
+        // pas plus de 5 sessions en mm temps
+        if (user.activeSessions.length >= 5) {
+            user.activeSessions.sort((a, b) => a.expiresAt - b.expiresAt);
+            user.activeSessions.shift();
+          }
+
+        user.activeSessions.push({
+            ipAddress,
+            userAgent,
+            expiresAt: new Date(Date.now() + sessionDuration)
+        });
+
         await user.save();
 
         GenerateAuthCookie(res, user, stayLoggedIn);
@@ -415,9 +474,9 @@ const loginUser = async (req, res) => {
         });
     } catch (error) {
         console.error("Erreur lors de la connexion:", error);
-        res.status(500).json({ 
-            success: false, 
-            error: "Une erreur est survenue lors de la connexion" 
+        res.status(500).json({
+            success: false,
+            error: "Une erreur est survenue lors de la connexion"
         });
     }
 };
@@ -428,37 +487,37 @@ const forgotPassword = async (req, res) => {
 
     try {
         if (!email || !validateEmail(email)) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Une adresse email valide est requise" 
+            return res.status(400).json({
+                success: false,
+                error: "Une adresse email valide est requise"
             });
         }
 
         const user = await UserModel.findOne({ email });
         if (!user) {
-            return res.status(200).json({ 
-                success: true, 
-                message: "Si l'email existe, un lien de réinitialisation a été envoyé" 
+            return res.status(200).json({
+                success: true,
+                message: "Si l'email existe, un lien de réinitialisation a été envoyé"
             });
         }
 
-        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetToken = crypto.randomBytes(32).toString('hex') + Date.now().toString(36);
         user.resetPasswordToken = resetToken;
-        user.resetPasswordTokenExpiresAt = Date.now() + 3600000; // 1 heure
+        user.resetPasswordTokenExpiresAt = Date.now() + ms(process.env.RESET_TOKEN_EXPIRY);
         await user.save();
 
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
         await sendResetPasswordEmail(user.email, resetUrl);
 
-        return res.status(200).json({ 
-            success: true, 
-            message: "Un lien de réinitialisation a été envoyé à votre email" 
+        return res.status(200).json({
+            success: true,
+            message: "Un lien de réinitialisation a été envoyé à votre email"
         });
     } catch (error) {
         console.error("Erreur lors de la demande de réinitialisation de mot de passe:", error);
-        res.status(500).json({ 
-            success: false, 
-            error: "Une erreur est survenue lors de la demande de réinitialisation" 
+        res.status(500).json({
+            success: false,
+            error: "Une erreur est survenue lors de la demande de réinitialisation"
         });
     }
 };
@@ -470,9 +529,9 @@ const resetPassword = async (req, res) => {
 
     try {
         if (!password || password.length < 8) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Un mot de passe de 8 caractères minimum est requis" 
+            return res.status(400).json({
+                success: false,
+                error: "Un mot de passe de 8 caractères minimum est requis"
             });
         }
 
@@ -482,9 +541,9 @@ const resetPassword = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(400).json({ 
-                success: false, 
-                error: "Lien invalide ou expiré. Veuillez faire une nouvelle demande." 
+            return res.status(400).json({
+                success: false,
+                error: "Lien invalide ou expiré. Veuillez faire une nouvelle demande de réinitialisation."
             });
         }
 
@@ -496,15 +555,15 @@ const resetPassword = async (req, res) => {
 
         await sendResetPasswordSuccessfulEmail(user.email, user.firstName);
 
-        return res.status(200).json({ 
-            success: true, 
-            message: "Mot de passe réinitialisé avec succès" 
+        return res.status(200).json({
+            success: true,
+            message: "Mot de passe réinitialisé avec succès"
         });
     } catch (error) {
         console.error("Erreur lors de la réinitialisation du mot de passe:", error);
-        res.status(500).json({ 
-            success: false, 
-            error: "Une erreur est survenue lors de la réinitialisation du mot de passe" 
+        res.status(500).json({
+            success: false,
+            error: "Une erreur est survenue lors de la réinitialisation du mot de passe"
         });
     }
 };
@@ -512,6 +571,20 @@ const resetPassword = async (req, res) => {
 // logout
 const logoutUser = async (req, res) => {
     try {
+        if (req.userId) {
+            const user = await UserModel.findById(req.userId);
+            if (user) {
+                const userAgent = req.headers['user-agent'] || 'unknown';
+                const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+                // Supprimer la session actuelle
+                user.activeSessions = user.activeSessions.filter(session =>
+                    !(session.ipAddress === ipAddress && session.userAgent === userAgent)
+                );
+                await user.save();
+            }
+        }
+
         res.clearCookie("jwtauth", {
             secure: process.env.NODE_ENV === "production" ? true : false,
             httpOnly: process.env.NODE_ENV === "production" ? true : false,
@@ -519,15 +592,15 @@ const logoutUser = async (req, res) => {
             ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
         });
 
-        return res.status(200).json({ 
-            success: true, 
-            message: "Déconnexion réussie" 
+        return res.status(200).json({
+            success: true,
+            message: "Déconnexion réussie"
         });
     } catch (error) {
         console.error("Erreur lors de la déconnexion:", error);
-        res.status(500).json({ 
-            success: false, 
-            error: "Une erreur est survenue lors de la déconnexion" 
+        res.status(500).json({
+            success: false,
+            error: "Une erreur est survenue lors de la déconnexion"
         });
     }
 };
@@ -542,11 +615,31 @@ const checkAuth = async (req, res) => {
             .lean();
 
         if (!user) {
-            return res.status(404).json({ 
-                success: false, 
-                error: "Utilisateur non trouvé" 
+            return res.status(404).json({
+                success: false,
+                error: "Utilisateur non trouvé"
             });
         }
+        const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        const userAgent = req.headers['user-agent'] || 'unknown';
+        const currentSession = user.activeSessions.find(session => 
+            session.ipAddress === ip && 
+            session.userAgent === userAgent &&
+            new Date(session.expiresAt) > new Date(),
+          );
+          
+          if (!currentSession) {
+            res.clearCookie("jwtauth", {
+                secure: process.env.NODE_ENV === "production" ? true : false,
+                httpOnly: process.env.NODE_ENV === "production" ? true : false,
+                sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
+                ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
+            });
+            return res.status(200).json({ 
+              success: false, 
+              error: "Session expirée ou invalide",
+            });
+          }
 
         return res.status(200).json({
             success: true,
@@ -554,9 +647,9 @@ const checkAuth = async (req, res) => {
         });
     } catch (error) {
         console.error("Erreur lors de la vérification de l'authentification:", error);
-        res.status(500).json({ 
-            success: false, 
-            error: "Une erreur est survenue lors de la vérification de l'authentification" 
+        res.status(500).json({
+            success: false,
+            error: "Une erreur est survenue lors de la vérification de l'authentification"
         });
     }
 };

@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
+const ms = require('ms');
 
 const GenerateAuthCookie = (res, user, stayLoggedIn) => {
-  const cookieDuration = stayLoggedIn ? 7 * 24 * 60 * 60 * 1000 : 2 * 24 * 60 * 60 * 1000;
-  const expiration = stayLoggedIn ? '7d' : '2d';
+  const cookieDuration = stayLoggedIn ? ms(process.env.SESSION_DURATION_LONG) : ms(process.env.SESSION_DURATION_SHORT);
+  const expiration = stayLoggedIn ? process.env.SESSION_DURATION_LONG : process.env.SESSION_DURATION_SHORT;
 
   const token = jwt.sign({
     id: user._id,

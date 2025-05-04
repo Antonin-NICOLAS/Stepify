@@ -96,7 +96,7 @@ const updateProfile = async (req, res) => {
             userId,
             updates,
             { new: true }
-        ).select('-password -verificationToken -resetPasswordToken');
+        ).select('-password -verificationToken -resetPasswordToken -activeSessions');
 
         res.status(200).json({
             success: true,

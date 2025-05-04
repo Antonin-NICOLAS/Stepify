@@ -7,8 +7,13 @@ const rewardSchema = new Schema({
       enum: ['steps', 'distance', 'challenges'],
       required: true
     },
-    EarnedBy: [{
+    earnedBy: [{
         user: Schema.Types.ObjectId, ref: 'User'
     }],
+    tier: {
+      type: String,
+      enum: ['bronze', 'silver', 'gold', 'platinium', 'ruby', 'sapphire', 'diamond'],
+      default: 'bronze'
+    },
     target: { type: Number, required: true }, // ex: 10000 pas
   })
