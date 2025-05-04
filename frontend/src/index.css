@@ -24,6 +24,12 @@
   --body-color: hsl(228, 100%, 99%);
   --shadow-color: hsla(228, 80%, 4%, .1);
 
+  --shadow: 0 4px 6px var(--shadow-color), 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --transition: all 0.3s ease;
+  --radius: 8px;
+  --radius-lg: 12px;
+
   /*========== Font and typography ==========*/
   /*.5rem = 8px | 1rem = 16px ...*/
   --body-font: "Nunito Sans", system-ui;
@@ -42,7 +48,7 @@
 
 /*=============== VARIABLES DARK THEME ===============*/
 body.dark-theme {
-  --background: #0F1B21;   
+  --background: #0F1B21;
   --Couleur: #dae9f7;
   --Couleur1: #212E53;
   --Couleur2: #89B4A1;

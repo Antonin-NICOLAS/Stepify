@@ -138,11 +138,18 @@
 }
 
 .sidebar__content::-webkit-scrollbar {
+  display: none;
+  border-radius: 20px;
   width: .4rem;
   background-color: hsl(228, 8%, 85%);
 }
 
+.sidebar__content:hover::-webkit-scrollbar {
+  display: block;
+}
+
 .sidebar__content::-webkit-scrollbar-thumb {
+  border-radius: 20px;
   background-color: hsl(228, 8%, 75%);
 }
 
@@ -167,7 +174,7 @@
   align-items: center;
   column-gap: 1rem;
   color: var(--text-color);
-  padding-left: 2rem;
+  padding-left: 1.8rem;
   transition: color .4s, opacity .4s;
 }
 
@@ -247,7 +254,7 @@
     padding: 0;
   }
   .sidebar__link {
-    padding-inline: 2rem;
+    padding-inline: 1.8rem;
   }
   .sidebar__title {
     padding-inline: .5rem;

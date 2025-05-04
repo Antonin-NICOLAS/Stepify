@@ -15,9 +15,9 @@ import {
 import Home from '../pages/Home.jsx';
 import Dashboard from '../pages/Dashboard.jsx';
 import Challenges from '../pages/Challenges.jsx';
-import Activities from '../pages/Activities.jsx';
+import Steps from '../pages/Steps.jsx';
 import Leaderboard from '../pages/Leaderboard.jsx';
-import Statistics from '../pages/Statistics.jsx';
+import Rewards from '../pages/Rewards.jsx';
 import Settings from '../pages/Settings.jsx';
 import About from '../pages/About.jsx';
 //AUTH
@@ -39,10 +39,10 @@ export default function AppRoutes() {
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<RequireEmailVerification><Home /></RequireEmailVerification>} />
                     <Route path="/dashboard" element={<RequireEmailVerification><Dashboard /></RequireEmailVerification>} />
+                    <Route path="/steps" element={<RequireEmailVerification><Steps /></RequireEmailVerification>} />
                     <Route path="/challenges" element={<RequireEmailVerification><Challenges /></RequireEmailVerification>} />
-                    <Route path="/activities" element={<RequireEmailVerification><Activities /></RequireEmailVerification>} />
+                    <Route path="/rewards" element={<RequireEmailVerification><Rewards /></RequireEmailVerification>} />
                     <Route path="/leaderboard" element={<RequireEmailVerification><Leaderboard /></RequireEmailVerification>} />
-                    <Route path="/statistics" element={<RequireEmailVerification><Statistics /></RequireEmailVerification>} />
                     <Route path="/settings" element={<RequireEmailVerification><Settings /></RequireEmailVerification>} />
                     <Route path="/about" element={<RequireEmailVerification><About /></RequireEmailVerification>} />
                     <Route path="/loader" element={<Loader />} />

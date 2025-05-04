@@ -7,20 +7,18 @@ import { useAuth } from '../context/AuthContext';
 import Account from "../assets/account.png";
 import Logo from "../assets/icon.png";
 //icons
-import {
-  RiPieChart2Fill,
-  RiBarChartBoxFill,
-  RiSettings3Fill,
-  RiLoginBoxLine,
-  RiLogoutBoxRFill,
-  RiMoonFill,
-  RiSunFill,
-  RiCalendarFill,
-  RiTrophyFill,
-  RiGroupFill,
-  RiInformationFill
-} from "react-icons/ri";
-import { GiHamburgerMenu } from "react-icons/gi";
+import { LayoutDashboard,
+  Award,
+  Footprints,
+  AlignStartVertical,
+  Menu,
+  CircleGauge,
+  Moon,
+  Sun,
+  Settings,
+  Info,
+  LogIn,
+  LogOut } from 'lucide-react';
 //CSS
 import "./Header.css";
 
@@ -52,7 +50,7 @@ function Header() {
 
           <div className="header__actions">
             <button className="header__toggle" onClick={toggleSidebar}>
-              <GiHamburgerMenu />
+              <Menu />
             </button>
           </div>
         </div>
@@ -78,34 +76,34 @@ function Header() {
             <div>
               <h3 className="sidebar__title nav">NAVIGATION</h3>
               <div className="sidebar__list">
-                <NavLink to="/dashboard" className="sidebar__link"><RiPieChart2Fill /><span>Dashboard</span></NavLink>
-                <NavLink to="/challenges" className="sidebar__link"><RiTrophyFill /><span>Challenges</span></NavLink>
-                <NavLink to="/activities" className="sidebar__link"><RiCalendarFill /><span>Activities</span></NavLink>
-                <NavLink to="/leaderboard" className="sidebar__link"><RiGroupFill /><span>Leaderboard</span></NavLink>
-                <NavLink to="/statistics" className="sidebar__link"><RiBarChartBoxFill /><span>Statistics</span></NavLink>
+                <NavLink to="/dashboard" className="sidebar__link"><LayoutDashboard /><span>Dashboard</span></NavLink>
+                <NavLink to="/steps" className="sidebar__link"><Footprints /><span>Mes pas</span></NavLink>
+                <NavLink to="/challenges" className="sidebar__link"><CircleGauge /><span>Challenges</span></NavLink>
+                <NavLink to="/rewards" className="sidebar__link"><Award /><span>Récompenses</span></NavLink>
+                <NavLink to="/leaderboard" className="sidebar__link"><AlignStartVertical /><span>Classement</span></NavLink>
               </div>
             </div>
 
             <div>
               <h3 className="sidebar__title">GENERAL</h3>
               <div className="sidebar__list">
-                {user ? (
-                  <NavLink to="/settings" className="sidebar__link"><RiSettings3Fill /><span>Settings</span></NavLink>
-                ) : (<></>)}
-                <NavLink to="/about" className="sidebar__link"><RiInformationFill /><span>About</span></NavLink>
+                {user && (
+                  <NavLink to="/settings" className="sidebar__link"><Settings /><span>Settings</span></NavLink>
+                )}
+                <NavLink to="/about" className="sidebar__link"><Info /><span>About</span></NavLink>
               </div>
             </div>
           </div>
 
           <div className="sidebar__actions">
             <button className="sidebar__link sidebar__theme" onClick={toggleTheme}>
-              {theme === "dark" ? <RiSunFill /> : <RiMoonFill />}
+              {theme === "dark" ? <Sun /> : <Moon />}
               <span>Theme</span>
             </button>
             {isAuthenticated ? (
-              <button className="sidebar__link" onClick={handleLogout}><RiLogoutBoxRFill /><span>Log Out</span></button>
+              <button className="sidebar__link" onClick={handleLogout}><LogOut /><span>Log Out</span></button>
             ) : (
-              <NavLink to="/login" className="sidebar__link"><RiLoginBoxLine /><span>Log In</span></NavLink>
+              <NavLink to="/login" className="sidebar__link"><LogIn /><span>Log In</span></NavLink>
             )}
           </div>
         </div>

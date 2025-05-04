@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLoadingState } from "../context/LoadingContext"
 import { useUser } from "../context/UserContext"
 //icons
-import { Camera, Edit, Upload, Globe, Moon, Sun, ChevronDown, Check } from "lucide-react"
+import { Camera, Edit, Upload, Globe, Moon, Sun, ChevronDown, Check, SunMoon } from "lucide-react"
 import AccountImage from "../assets/account.png"
 //CSS
 import "./Settings.css"
@@ -583,8 +583,7 @@ const AccountPage = () => {
                 className={`theme-option ${user.themePreference === 'auto' ? "selected" : ""}`}
                 onClick={() => handleThemeChange('auto')}
               >
-                <Sun size={16} />
-                <Moon size={16} />
+                <SunMoon size={20}/>
                 <span>Automatique</span>
               </div>
             </div>
