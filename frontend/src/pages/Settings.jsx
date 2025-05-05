@@ -1,8 +1,6 @@
-import { useState, useRef } from "react"
-import GlobalLoader from '../utils/GlobalLoader.jsx';
+import { useState, useRef, useEffect } from "react"
 //Context
 import { useAuth } from '../context/AuthContext';
-import { useLoadingState } from "../context/LoadingContext"
 import { useUser } from "../context/UserContext"
 //icons
 import { Camera, Edit, Upload, Globe, Moon, Sun, ChevronDown, Check, SunMoon } from "lucide-react"
@@ -13,7 +11,6 @@ import "./Settings.css"
 const AccountPage = () => {
   // Contexts
   const { user } = useAuth()
-  const { isLoading } = useLoadingState()
   const {
     updateAvatar,
     updateStatus,
@@ -23,10 +20,6 @@ const AccountPage = () => {
     updateLanguagePreference,
     changePassword
   } = useUser()
-
-  if (isLoading || !user) {
-    return <GlobalLoader />
-  }
 
   // UI state
   const [isEditingPassword, setIsEditingPassword] = useState(false)
@@ -42,14 +35,28 @@ const AccountPage = () => {
 
   // Form states
   const [profileData, setProfileData] = useState({
-    firstName: user.firstName || "",
-    lastName: user.lastName || "",
-    username: user.username || "",
-    email: user.email || "",
-    avatarUrl: user.avatarUrl || "",
-    status: user.status || "",
-    dailyGoal: user.dailyGoal || 10000,
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    avatarUrl: "",
+    status: "",
+    dailyGoal: 10000,
   })
+
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        username: user.username || "",
+        email: user.email || "",
+        avatarUrl: user.avatarUrl || "",
+        status: user.status || "",
+        dailyGoal: user.dailyGoal || 10000,
+      });
+    }
+  }, [user]);
 
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -91,7 +98,7 @@ const AccountPage = () => {
     e.preventDefault();
     const file = fileInputRef.current.files[0];
     if (!file) return toast.error("Aucun fichier sélectionné");
-  
+
     try {
       const newAvatarUrl = await updateAvatar(user._id, file);
       setProfileData(prev => ({ ...prev, avatarUrl: newAvatarUrl }));
@@ -141,29 +148,29 @@ const AccountPage = () => {
     const changes = {};
 
     if (profileData.username !== user.username) {
-        changes.username = profileData.username;
+      changes.username = profileData.username;
     }
     if (profileData.firstName !== user.firstName) {
-        changes.firstName = profileData.firstName;
+      changes.firstName = profileData.firstName;
     }
     if (profileData.lastName !== user.lastName) {
-        changes.lastName = profileData.lastName;
+      changes.lastName = profileData.lastName;
     }
 
     try {
-        if (Object.keys(changes).length > 0) {
-            await updateProfile(user._id, changes);
-        }
+      if (Object.keys(changes).length > 0) {
+        await updateProfile(user._id, changes);
+      }
 
-        if (profileData.email !== user.email) {
-            await updateEmail(user._id, profileData.email);
-        }
-        
-        toast.success("Profil mis à jour avec succès");
+      if (profileData.email !== user.email) {
+        await updateEmail(user._id, profileData.email);
+      }
+
+      toast.success("Profil mis à jour avec succès");
     } catch (error) {
       toast.success("Erreur lors de la mise à jour du profil");
     }
-};
+  };
 
   // 3. Status Handlers
   const handleStatusChange = async (status) => {
@@ -216,25 +223,25 @@ const AccountPage = () => {
   // 6. Theme Preference Handler
   const handleThemeChange = async (theme) => {
     if (theme === user.themePreference) return;
-    
+
     try {
-        await updateThemePreference(user._id, theme);
+      await updateThemePreference(user._id, theme);
     } catch (error) {
-        toast.error("Erreur lors de la mise à jour du thème");
+      toast.error("Erreur lors de la mise à jour du thème");
     }
-};
+  };
 
   // 7. Language Preference Handler
   const handleLanguageChange = async (code) => {
     if (code === user.languagePreference) return;
-    
+
     try {
-        await updateLanguagePreference(user._id, code);
-        setIsLanguageDropdownOpen(false);
+      await updateLanguagePreference(user._id, code);
+      setIsLanguageDropdownOpen(false);
     } catch (error) {
-        toast.error("Erreur lors de la mise à jour de la langue");
+      toast.error("Erreur lors de la mise à jour de la langue");
     }
-};
+  };
 
   // Helpers
   const formatNumber = (num) => num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || "0"
@@ -268,7 +275,7 @@ const AccountPage = () => {
                 <img src={Image || AccountImage} className="avatar" />
               }
               {!isEditingAvatar && !isEditingUrlAvatar &&
-                <img src={user.avatarUrl || AccountImage} className="avatar" />
+                <img src={user?.avatarUrl || AccountImage} className="avatar" />
               }
               {!isEditingUrlAvatar &&
                 <div className="avatar-overlay">
@@ -321,8 +328,8 @@ const AccountPage = () => {
           }
           <div className="user-info">
             <div className="name-container">
-              <h2>{user.firstName} {user.lastName}</h2>
-              <span className="username">@{user.username}</span>
+              <h2>{user?.firstName} {user?.lastName}</h2>
+              <span className="username">@{user?.username}</span>
             </div>
             <div className="status-container">
               <div className="status-selector">
@@ -331,7 +338,7 @@ const AccountPage = () => {
                   onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
                   aria-expanded={isStatusDropdownOpen}
                 >
-                  <span>{user.status}</span>
+                  <span>{user?.status}</span>
                   <ChevronDown size={16} className={isStatusDropdownOpen ? "rotated" : ""} />
                 </div>
                 {isStatusDropdownOpen && (
@@ -339,12 +346,12 @@ const AccountPage = () => {
                     {statusOptions.map((status) => (
                       <div
                         key={status}
-                        className={`status-option ${user.status === status ? "selected" : ""}`}
+                        className={`status-option ${user?.status === status ? "selected" : ""}`}
                         onClick={() => handleStatusChange(status)}
                       >
                         <span className={`status-indicator ${status.toLowerCase().replace(/\s+/g, "-")}`}></span>
                         <span>{status}</span>
-                        {user.status === status && <Check size={16} className="check-icon" />}
+                        {user?.status === status && <Check size={16} className="check-icon" />}
                       </div>
                     ))}
                   </div>
@@ -364,14 +371,14 @@ const AccountPage = () => {
                       value={profileData.status}
                       onChange={handleProfileChange}
                     />
-                    <button type="button" className="cancel-btn" onClick={() => setIsCustomStatus(false)}>Annuler</button>
+                    <button type="button" className="cancel-btn cancel-status-btn" onClick={() => setIsCustomStatus(false)}>Annuler</button>
                     <button className="save-btn save-status-btn" type="submit">Enregister</button>
                   </form>
                 )}
               </div>
             </div>
             <div className="account-creation">
-              <span>Membre depuis le {formatDate(user.createdAt)}</span>
+              <span>Membre depuis le {formatDate(user?.createdAt)}</span>
             </div>
           </div>
         </div>
@@ -467,19 +474,19 @@ const AccountPage = () => {
           <h3>Votre Activité</h3>
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-value">{formatNumber(user.totalSteps)}</div>
+              <div className="stat-value">{formatNumber(user?.totalSteps)}</div>
               <div className="stat-label">Pas totaux</div>
             </div>
             <div className="stat-card">
-              <div className="stat-value">{user.totalDistance?.toFixed(1)}</div>
+              <div className="stat-value">{user?.totalDistance?.toFixed(1)}</div>
               <div className="stat-label">Distance (km)</div>
             </div>
             <div className="stat-card">
-              <div className="stat-value">{user.totalChallengesCompleted}</div>
+              <div className="stat-value">{user?.totalChallengesCompleted}</div>
               <div className="stat-label">Défis complétés</div>
             </div>
             <div className="stat-card">
-              <div className="stat-value">{user.streak?.max || 0}</div>
+              <div className="stat-value">{user?.streak?.max || 0}</div>
               <div className="stat-label">Record (jours)</div>
             </div>
           </div>
@@ -491,11 +498,11 @@ const AccountPage = () => {
                   <div
                     className="progress-bar"
                     style={{
-                      width: `${Math.min(100, ((user.dailyStats?.[0]?.steps || 0) / user.dailyGoal) * 100)}%`
+                      width: `${Math.min(100, ((user?.dailyStats?.[0]?.steps || 0) / user?.dailyGoal) * 100)}%`
                     }}
                   ></div>
                   <span className="progress-text">
-                    {formatNumber(user.dailyStats?.[0]?.steps || 0)} / {formatNumber(user.dailyGoal)} pas
+                    {formatNumber(user?.dailyStats?.[0]?.steps || 0)} / {formatNumber(user?.dailyGoal)} pas
                   </span>
                 </div>
                 <button className="edit-btn" onClick={() => setIsEditingGoal(true)} aria-label="Modifier l'objectif quotidien">
@@ -540,7 +547,7 @@ const AccountPage = () => {
                 onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
                 aria-expanded={isLanguageDropdownOpen}
               >
-                <span>{languages.find(l => l.code === user.languagePreference)?.name || 'Français'}</span>
+                <span>{languages.find(l => l.code === user?.languagePreference)?.name || 'Français'}</span>
                 <ChevronDown size={16} className={isLanguageDropdownOpen ? "rotated" : ""} />
               </div>
               {isLanguageDropdownOpen && (
@@ -548,11 +555,11 @@ const AccountPage = () => {
                   {languages.map((language) => (
                     <div
                       key={language.code}
-                      className={`language-option ${user.languagePreference === language.code ? "selected" : ""}`}
+                      className={`language-option ${user?.languagePreference === language.code ? "selected" : ""}`}
                       onClick={() => handleLanguageChange(language.code)}
                     >
                       {language.name}
-                      {user.languagePreference === language.code && <Check size={16} className="check-icon" />}
+                      {user?.languagePreference === language.code && <Check size={16} className="check-icon" />}
                     </div>
                   ))}
                 </div>
@@ -561,29 +568,29 @@ const AccountPage = () => {
           </div>
           <div className="preference-item">
             <div className="preference-label">
-              {user.themePreference === 'light' ? <Sun size={20} /> : <Moon size={20} />}
+              {user?.themePreference === 'light' ? <Sun size={20} /> : <Moon size={20} />}
               <span>Thème</span>
             </div>
             <div className="theme-selector">
               <div
-                className={`theme-option ${user.themePreference === 'light' ? "selected" : ""}`}
+                className={`theme-option ${user?.themePreference === 'light' ? "selected" : ""}`}
                 onClick={() => handleThemeChange('light')}
               >
                 <Sun size={16} />
                 <span>Clair</span>
               </div>
               <div
-                className={`theme-option ${user.themePreference === 'dark' ? "selected" : ""}`}
+                className={`theme-option ${user?.themePreference === 'dark' ? "selected" : ""}`}
                 onClick={() => handleThemeChange('dark')}
               >
                 <Moon size={16} />
                 <span>Sombre</span>
               </div>
               <div
-                className={`theme-option ${user.themePreference === 'auto' ? "selected" : ""}`}
+                className={`theme-option ${user?.themePreference === 'auto' ? "selected" : ""}`}
                 onClick={() => handleThemeChange('auto')}
               >
-                <SunMoon size={20}/>
+                <SunMoon size={20} />
                 <span>Automatique</span>
               </div>
             </div>

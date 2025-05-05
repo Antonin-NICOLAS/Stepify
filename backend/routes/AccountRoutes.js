@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 //middleware
 const { verifyToken } = require('../middlewares/VerifyToken')
+const upload = require('../middlewares/multer');
 //controllers
 const { updateAvatar,
     updateProfile,
@@ -28,7 +29,7 @@ router.use(
 );
 
 //routes
-router.patch('/:userId/avatar', verifyToken, updateAvatar)
+router.patch('/:userId/avatar', verifyToken, upload.single('avatar'), updateAvatar)
 router.patch('/:userId/updateprofile', verifyToken, updateProfile)
 router.patch('/:userId/email', verifyToken, updateEmail)
 router.patch('/:userId/password', verifyToken, updatePassword)

@@ -1,6 +1,10 @@
 # Stepify
 Summer Contest
 ## Route
-- lastlogin property for user.js
 - re-export emails (with good links) (+ create a "new connection email")(add 2h limit for pwd reset)
-- remplacement de react icons par lucide-react
+- Implémenter un système de favoris pour les dates importantes
+- convertir les chart acutels du dashboard en chartjs (au lieu de HighCharts)
+- Ajouter des indicateurs visuels pendant le chargement
+- ajouter une barre de progression lors de l'import d'un fichier de data
+- math round sur les calories/distance lors du patch de AppleHealthData
+

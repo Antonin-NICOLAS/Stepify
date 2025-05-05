@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom"
 //context
 import { useLoadingState } from '../../context/LoadingContext';
 import { useAuth } from '../../context/AuthContext';
+import { toast } from 'react-hot-toast'
 //icons
 import { MailCheck, ClockFading, ShieldCheck, RefreshCcw } from 'lucide-react';
 //CSS

@@ -6,6 +6,7 @@ const cloudinary = require('../config/cloudinary')
 //routes
 const AuthRoutes = require('../routes/AuthRoutes')
 const UserRoutes = require('../routes/AccountRoutes')
+const StepRoutes = require('../routes/StepRoutes')
 //.env
 require('dotenv').config()
 
@@ -40,6 +41,7 @@ app.get('/', (req, res) => {
 })
 app.use('/auth', AuthRoutes)
 app.use('/account', UserRoutes)
+app.use('/step', StepRoutes)
 
 //mongoDB connection
 mongoose.connect(process.env.MONGO_URI)
