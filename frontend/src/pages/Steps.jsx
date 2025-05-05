@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 //Hooks & context
 import { useAuth } from "../context/AuthContext"
 import { useSteps } from "../hooks/useSteps"
-import { useStepsFilters} from "../hooks/useStepsFilters"
+import { useStepsFilters } from "../hooks/useStepsFilters"
 import { useStepsStats } from "../hooks/useStepsStats"
 //CHARTS
 import { Line } from "react-chartjs-2"
@@ -39,8 +39,8 @@ const Steps = () => {
     const [chartMetric, setChartMetric] = useState("steps");
 
     // Custom hooks
-    const { 
-        stepEntries, 
+    const {
+        stepEntries,
         addStepEntry,
         updateStepEntry,
         deleteStepEntry,
@@ -48,9 +48,9 @@ const Steps = () => {
     } = useSteps(user?._id);
 
     const { filteredEntries, filters, setFilters } = useStepsFilters(
-        stepEntries, 
-        viewMode, 
-        selectedDate, 
+        stepEntries,
+        viewMode,
+        selectedDate,
         dateRange
     );
 
@@ -453,87 +453,89 @@ const Steps = () => {
 
             {/* Secondary Navigation */}
             <div className="secondary-nav">
-                <div className="view-options">
-                    <span>Vue par :</span>
-                    <div className="view-buttons">
-                        <button
-                            className={viewMode === "day" ? "active" : ""}
-                            onClick={() => {
-                                setViewMode("day")
-                                setCustomDateRange(false)
-                            }}
-                        >
-                            🔘 Jour
-                        </button>
-                        <button
-                            className={viewMode === "week" ? "active" : ""}
-                            onClick={() => {
-                                setViewMode("week")
-                                setCustomDateRange(false)
-                            }}
-                        >
-                            🔘 Semaine
-                        </button>
-                        <button
-                            className={viewMode === "month" ? "active" : ""}
-                            onClick={() => {
-                                setViewMode("month")
-                                setCustomDateRange(false)
-                            }}
-                        >
-                            🔘 Mois
-                        </button>
-                        <button
-                            className={viewMode === "custom" ? "active" : ""}
-                            onClick={() => {
-                                setViewMode("custom")
-                                setCustomDateRange(true)
-                            }}
-                        >
-                            🔘 Personnalisée
-                        </button>
-                    </div>
-                </div>
-
-                <div className="date-selector">
-                    {!customDateRange ? (
-                        <>
-                            <button className="nav-button" onClick={() => navigateDate(-1)}>
-                                &lt;
+                <div className="high-secondary-nav">
+                    <div className="view-options">
+                        <span>Vue par :</span>
+                        <div className="view-buttons">
+                            <button
+                                className={viewMode === "day" ? "active" : ""}
+                                onClick={() => {
+                                    setViewMode("day")
+                                    setCustomDateRange(false)
+                                }}
+                            >
+                                🔘 Jour
                             </button>
-                            <div className="date-display" onClick={() => setCustomDateRange(true)}>
-                                <Calendar size={16} />
-                                <span>{formatDate(selectedDate)}</span>
-                            </div>
-                            <button className="nav-button" onClick={() => navigateDate(1)}>
-                                &gt;
+                            <button
+                                className={viewMode === "week" ? "active" : ""}
+                                onClick={() => {
+                                    setViewMode("week")
+                                    setCustomDateRange(false)
+                                }}
+                            >
+                                🔘 Semaine
                             </button>
-                        </>
-                    ) : (
-                        <div className="date-range-picker">
-                            <div className="date-inputs">
-                                <div className="date-input">
-                                    <label>Du</label>
-                                    <input
-                                        type="date"
-                                        value={dateRange.start.toISOString().split("T")[0]}
-                                        onChange={(e) => setDateRange({ ...dateRange, start: new Date(e.target.value) })}
-                                    />
-                                </div>
-                                <div className="date-input">
-                                    <label>Au</label>
-                                    <input
-                                        type="date"
-                                        value={dateRange.end.toISOString().split("T")[0]}
-                                        onChange={(e) => setDateRange({ ...dateRange, end: new Date(e.target.value) })}
-                                    />
-                                </div>
-                            </div>
-                            <button className="apply-button" onClick={() => setCustomDateRange(false)}>
-                                Appliquer
+                            <button
+                                className={viewMode === "month" ? "active" : ""}
+                                onClick={() => {
+                                    setViewMode("month")
+                                    setCustomDateRange(false)
+                                }}
+                            >
+                                🔘 Mois
+                            </button>
+                            <button
+                                className={viewMode === "custom" ? "active" : ""}
+                                onClick={() => {
+                                    setViewMode("custom")
+                                    setCustomDateRange(true)
+                                }}
+                            >
+                                🔘 Personnalisée
                             </button>
                         </div>
-                    )}
+                    </div>
+
+                    <div className="date-selector">
+                        {!customDateRange ? (
+                            <>
+                                <button className="nav-button" onClick={() => navigateDate(-1)}>
+                                    &lt;
+                                </button>
+                                <div className="date-display" onClick={() => setCustomDateRange(true)}>
+                                    <Calendar size={16} />
+                                    <span>{formatDate(selectedDate)}</span>
+                                </div>
+                                <button className="nav-button" onClick={() => navigateDate(1)}>
+                                    &gt;
+                                </button>
+                            </>
+                        ) : (
+                            <div className="date-range-picker">
+                                <div className="date-inputs">
+                                    <div className="date-input">
+                                        <label>Du</label>
+                                        <input
+                                            type="date"
+                                            value={dateRange.start.toISOString().split("T")[0]}
+                                            onChange={(e) => setDateRange({ ...dateRange, start: new Date(e.target.value) })}
+                                        />
+                                    </div>
+                                    <div className="date-input">
+                                        <label>Au</label>
+                                        <input
+                                            type="date"
+                                            value={dateRange.end.toISOString().split("T")[0]}
+                                            onChange={(e) => setDateRange({ ...dateRange, end: new Date(e.target.value) })}
+                                        />
+                                    </div>
+                                </div>
+                                <button className="apply-button" onClick={() => setCustomDateRange(false)}>
+                                    Appliquer
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 <div className="action-buttons">

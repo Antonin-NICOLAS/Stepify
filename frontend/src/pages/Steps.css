@@ -102,15 +102,21 @@ button {
 /* Secondary Navigation */
 .secondary-nav {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--blanc);
+    background-color: var(--shadow-color);
     padding: 1rem;
     border-radius: var(--radius);
     margin-bottom: 2rem;
     box-shadow: var(--shadow);
+}
+
+.high-secondary-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
 }
 
 .view-options {
@@ -198,7 +204,9 @@ button {
 
 .date-input {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-direction: raw;
     gap: 0.25rem;
 }
 
@@ -307,7 +315,7 @@ button {
     padding: 1rem;
     border-radius: var(--radius);
     margin-bottom: 1rem;
-    background-color: var(--blanc);
+    background-color: var(--shadow-color);
     box-shadow: var(--shadow);
 }
 
@@ -325,7 +333,7 @@ button {
 
 /* Chart Section */
 .chart-section {
-    background-color: var(--blanc);
+    background-color: var(--shadow-color);
     border-radius: var(--radius);
     padding: 1.5rem;
     margin-bottom: 2rem;
@@ -373,7 +381,7 @@ button {
 
 /* Entries Section */
 .entries-section {
-    background-color: var(--blanc);
+    background-color: var(--shadow-color);
     border-radius: var(--radius);
     padding: 1.5rem;
     margin-bottom: 2rem;
@@ -488,7 +496,7 @@ button {
     align-items: center;
     gap: 0.5rem;
     padding: 1rem;
-    background-color: var(--blanc);
+    background-color: var(--shadow-color);
     border-radius: var(--radius);
     margin-bottom: 2rem;
     color: var(--Gris);
