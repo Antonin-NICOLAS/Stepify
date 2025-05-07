@@ -246,6 +246,7 @@ export const UserProvider = ({ children }) => {
       const { data } = await axios.get(`${API_USER}/${userId}/profile`);
 
       if (data.success) {
+        setUser(data.user);
         return data.user;
       }
     } catch (error) {

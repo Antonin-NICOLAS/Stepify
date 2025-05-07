@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useUser } from "../context/UserContext";
 
 const API_STEP = process.env.NODE_ENV === 'production' ? '/api/step' : '/step';
 
 export const useSteps = (userId) => {
     const [stepEntries, setStepEntries] = useState([]);
     const [isLoading, setIsLoading] = useState(false)
+    const { getUserProfile } = useUser();
 
     const fetchStepEntries = useCallback(async () => {
         setIsLoading(true)
@@ -39,6 +41,7 @@ export const useSteps = (userId) => {
             if (data.success) {
                 toast.success("Entrée ajoutée avec succès");
                 await fetchStepEntries();
+                await getUserProfile(userId);
                 return true;
             } else {
                 toast.error(data.message || "Erreur lors de l'ajout");
@@ -64,6 +67,7 @@ export const useSteps = (userId) => {
             if (data.success) {
                 toast.success("Entrée modifiée avec succès");
                 await fetchStepEntries();
+                await getUserProfile(userId)
                 return true;
             } else {
                 toast.error(data.message || "Erreur lors de la modification");
@@ -72,6 +76,29 @@ export const useSteps = (userId) => {
         } catch (error) {
             console.error("Update error:", error);
             toast.error("Erreur lors de la modification");
+            return false;
+        } finally {
+            setIsLoading(false)
+        }
+    };
+
+    const FavoriteEntry = async (entryId) => {
+        setIsLoading(true)
+        try {
+            const { data } = await axios.put(`${API_STEP}/${userId}/${entryId}/favorite`,
+                { withCredentials: true }
+            );
+
+            if (data.success) {
+                await fetchStepEntries();
+                return true;
+            } else {
+                toast.error(data.message || "Erreur lors de la mise en favoris");
+                return false;
+            }
+        } catch (error) {
+            console.error("Favorites error:", error);
+            toast.error("Erreur lors de la mise en favoris");
             return false;
         } finally {
             setIsLoading(false)
@@ -88,6 +115,7 @@ export const useSteps = (userId) => {
             if (data.success) {
                 toast.success("Entrée supprimée avec succès");
                 await fetchStepEntries();
+                await getUserProfile(userId)
                 return true;
             } else {
                 toast.error(data.message || "Erreur lors de la suppression");
@@ -121,6 +149,7 @@ export const useSteps = (userId) => {
             if (data.success) {
                 toast.success('Le fichier a bien été importé');
                 await fetchStepEntries();
+                await getUserProfile(userId)
                 return true;
             } else {
                 toast.error('Erreur lors de l\'importation');
@@ -147,6 +176,7 @@ export const useSteps = (userId) => {
         fetchStepEntries,
         addStepEntry,
         updateStepEntry,
+        FavoriteEntry,
         deleteStepEntry,
         importSteps,
     };

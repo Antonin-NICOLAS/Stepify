@@ -19,6 +19,7 @@ import Leaderboard from '../pages/Leaderboard.jsx';
 import Rewards from '../pages/Rewards.jsx';
 import Settings from '../pages/Settings.jsx';
 import About from '../pages/About.jsx';
+import GlobalLoader from '../utils/GlobalLoader.jsx';
 //AUTH
 import Login from '../pages/Auth/Login.jsx';
 import EmailVerification from '../pages/Auth/EmailVerification.jsx';
@@ -27,7 +28,6 @@ import ForgotPassword from '../pages/Auth/Forgot-pwd.jsx';
 import EmailSent from '../pages/Auth/EmailSent.jsx';
 import ResetPassword from '../pages/Auth/Reset-pwd.jsx';
 //OTHERS
-import Loader from '../components/Loader.jsx';
 import NotFound from '../components/NotFound.jsx';
 
 export default function AppRoutes() {
@@ -43,9 +43,9 @@ export default function AppRoutes() {
                     <Route path="/leaderboard" element={<RequireEmailVerification><Leaderboard /></RequireEmailVerification>} />
                     <Route path="/settings" element={<RequireEmailVerification><Settings /></RequireEmailVerification>} />
                     <Route path="/about" element={<RequireEmailVerification><About /></RequireEmailVerification>} />
-                    <Route path="/loader" element={<Loader />} />
                     <Route path="/admin" element={<RequireAdmin><Dashboard /></RequireAdmin>} /> {/* TODO : admin page */}
                     <Route path="*" element={<NotFound />} />
+                    <Route path='/loader' element={<GlobalLoader/>}></Route>
                 </Route>
 
                 {/* Pages sans header/sidebar */}

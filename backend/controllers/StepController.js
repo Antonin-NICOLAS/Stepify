@@ -1,7 +1,8 @@
 const StepEntry = require('../models/StepEntry');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
-const {parseAppleHealthData, parseSamsungHealthData } = require('../utils/ParseHealthData')
+const { parseAppleHealthData, parseSamsungHealthData } = require('../utils/ParseHealthData')
 const { updateUserStatsAfterImport, updateUserStats } = require('../utils/StepUtils');
+const { computeXpForEntry } = require('../utils/CalculateXP');
 const csv = require('csv-parser');
 
 // Récupérer toutes les entrées de l'utilisateur
@@ -38,7 +39,7 @@ const createStepEntry = async (req, res) => {
 
   try {
     // Validation des données
-    const requiredFields = ['date', 'steps', 'distance', 'calories', 'activeTime'];
+    const requiredFields = ['date', 'totalDistance', 'totalDistance', 'totalDistance'];
     const missingFields = requiredFields.filter(field => !entryData[field]);
 
     if (missingFields.length > 0) {
@@ -50,6 +51,7 @@ const createStepEntry = async (req, res) => {
 
     const newEntry = await StepEntry.create({
       ...entryData,
+      xp: computeXpForEntry(entryData),
       user: userId,
       date: new Date(entryData.date),
       day: new Date(entryData.date).toISOString().split('T')[0]
@@ -89,13 +91,14 @@ const updateStepEntry = async (req, res) => {
     }
 
     // Mise à jour des champs autorisés
-    const allowedUpdates = ['steps', 'distance', 'calories', 'activeTime', 'mode'];
+    const allowedUpdates = ['totalSteps', 'totalDistance', 'totalCalories', 'totalActiveTime', 'dominantMode'];
     allowedUpdates.forEach(field => {
       if (updateData[field] !== undefined) {
         entry[field] = updateData[field];
       }
     });
     entry.isVerified = false
+    entry.xp = computeXpForEntry(entry)
 
     await entry.save();
     await updateUserStats(userId);
@@ -110,6 +113,38 @@ const updateStepEntry = async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Erreur lors de la modification de l\'entrée'
+    });
+  }
+};
+
+// Rendre une entrée favorite
+const FavoriteStepEntry = async (req, res) => {
+  const { userId, entryId } = req.params;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  try {
+    const entry = await StepEntry.findOne({ _id: entryId, user: userId });
+
+    if (!entry) {
+      return res.status(404).json({
+        success: false,
+        error: 'Entrée non trouvée'
+      });
+    }
+
+    entry.isFavorite === false ? entry.isFavorite = true : entry.isFavorite = false
+    await entry.save();
+
+    res.status(200).json({
+      success: true
+    });
+
+  } catch (error) {
+    console.error('Erreur favoris entrée:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la mise en favoris de l\'entrée'
     });
   }
 };
@@ -213,6 +248,7 @@ module.exports = {
   getMySteps,
   createStepEntry,
   updateStepEntry,
+  FavoriteStepEntry,
   deleteStepEntry,
   importHealthData
 }

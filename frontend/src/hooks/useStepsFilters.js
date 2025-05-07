@@ -41,11 +41,11 @@ export const useStepsFilters = (stepEntries, viewMode, selectedDate, dateRange) 
 
         // Apply additional filters
         if (filters.mode !== "all") {
-            filtered = filtered.filter((entry) => entry.mode === filters.mode);
+            filtered = filtered.filter((entry) => entry.dominantMode === filters.mode);
         }
 
         filtered = filtered.filter(
-            (entry) => entry.steps >= filters.minSteps && entry.steps <= filters.maxSteps
+            (entry) => entry.totalSteps >= filters.minSteps && entry.totalSteps <= filters.maxSteps
         );
 
         // Sort by date (newest first)

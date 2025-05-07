@@ -8,6 +8,7 @@ const upload = require('../middlewares/multer')
 const { getMySteps,
     createStepEntry,
     updateStepEntry,
+    FavoriteStepEntry,
     deleteStepEntry,
     importHealthData
 } = require('../controllers/StepController')
@@ -27,6 +28,7 @@ router.use(
 router.get('/:userId/mysteps', verifyToken, getMySteps)
 router.post('/:userId/new', verifyToken, createStepEntry)
 router.put('/:userId/:entryId/modify', verifyToken, updateStepEntry)
+router.put('/:userId/:entryId/favorite', verifyToken, FavoriteStepEntry)
 router.delete('/:userId/:entryId/delete', verifyToken, deleteStepEntry)
 router.post('/:userId/import', verifyToken, upload.single('exported-data'), importHealthData)
 

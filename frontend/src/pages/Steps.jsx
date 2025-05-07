@@ -10,7 +10,7 @@ import { useStepsStats } from "../hooks/useStepsStats"
 import { Line } from "react-chartjs-2"
 import { Chart, registerables } from "chart.js"
 //ICONS
-import { Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info } from "lucide-react"
+import { Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart } from "lucide-react"
 //CSS
 import "./Steps.css"
 
@@ -37,7 +37,7 @@ const Steps = () => {
     const [importFile, setImportFile] = useState(null);
 
     // State for chart
-    const [chartMetric, setChartMetric] = useState("steps");
+    const [chartMetric, setChartMetric] = useState("totalSteps");
 
     // Custom hooks
     const {
@@ -45,6 +45,7 @@ const Steps = () => {
         isLoading,
         addStepEntry,
         updateStepEntry,
+        FavoriteEntry,
         deleteStepEntry,
         importSteps
     } = useSteps(user?._id);
@@ -127,16 +128,24 @@ const Steps = () => {
 
         // Group data by day, week, or month
         if (viewMode === "day") {
-            // For day view, show hourly breakdown
-            const hourlyData = Array(24).fill(0)
-
-            filteredEntries.forEach((entry) => {
-                const hour = new Date(entry.date).getHours()
-                hourlyData[hour] += entry[chartMetric] || 0
-            })
-
-            labels = Array.from({ length: 24 }, (_, i) => `${i}:00`)
-            data = hourlyData
+            // Récupérer les données horaires pour le jour sélectionné
+            const dayEntry = filteredEntries.find(entry => 
+              entry.day === selectedDate.toISOString().split('T')[0]
+            );
+            
+            if (dayEntry) {
+              // Initialiser les données pour 24h
+              const hourlyData = Array(24).fill(0);
+              const trimmed = chartMetric.slice(5);
+              const daychartmetric = trimmed.charAt(0).toLowerCase() + trimmed.slice(1);
+              
+              dayEntry.hourlyData.forEach(hourData => {
+                hourlyData[hourData.hour] = hourData[daychartmetric] || 0;
+              });
+        
+              labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+              data = hourlyData;
+            }
         } else if (viewMode === "week" || (viewMode === "custom" && dateRange.end - dateRange.start < 8 * 86400000)) {
             // For week view, show daily breakdown
             const dailyData = {}
@@ -216,13 +225,13 @@ const Steps = () => {
                     label: (context) => {
                         let label = getMetricLabel(chartMetric) + ": "
 
-                        if (chartMetric === "steps") {
+                        if (chartMetric === "totalSteps") {
                             label += context.raw.toLocaleString("fr-FR")
-                        } else if (chartMetric === "distance") {
+                        } else if (chartMetric === "totalDistance") {
                             label += context.raw.toFixed(1) + " km"
-                        } else if (chartMetric === "calories") {
+                        } else if (chartMetric === "totalCalories") {
                             label += Math.round(context.raw) + " kcal"
-                        } else if (chartMetric === "activeTime") {
+                        } else if (chartMetric === "totalActiveTime") {
                             label += formatActiveTime(context.raw)
                         }
 
@@ -236,11 +245,11 @@ const Steps = () => {
                 beginAtZero: true,
                 ticks: {
                     callback: (value) => {
-                        if (chartMetric === "distance") {
+                        if (chartMetric === "totalDistance") {
                             return value + " km"
-                        } else if (chartMetric === "calories") {
+                        } else if (chartMetric === "totalCalories") {
                             return value + " kcal"
-                        } else if (chartMetric === "activeTime") {
+                        } else if (chartMetric === "totalActiveTime") {
                             return formatActiveTime(value)
                         }
                         return value
@@ -258,10 +267,10 @@ const Steps = () => {
         const entryData = {
             date: formData.get("date"),
             steps: Number.parseInt(formData.get("steps")),
-            distance: Number.parseFloat(formData.get("distance")),
-            calories: Number.parseInt(formData.get("calories")),
+            totalDistance: Number.parseFloat(formData.get("distance")),
+            totalCalories: Number.parseInt(formData.get("calories")),
             mode: formData.get("mode"),
-            activeTime: Number.parseInt(formData.get("activeTime")),
+            totalActiveTime: Number.parseInt(formData.get("activeTime")),
             isVerified: false,
             day: new Date(formData.get("date")).toISOString().split("T")[0],
         };
@@ -282,6 +291,11 @@ const Steps = () => {
             console.error("Submission error:", error);
         }
     };
+
+    // handle favorite
+    const handleFavoriteChange = async (entryId) => {
+        await FavoriteEntry(entryId)
+    }
 
     // Handle entry deletion
     const handleDelete = async (entryId) => {
@@ -328,7 +342,7 @@ const Steps = () => {
         if (format === "json") {
             dataStr = JSON.stringify(stepEntries, null, 2) //TODO: je ne sais pas si je mets stepentries ou filteredentries
         } else if (format === "csv") {
-            const headers = ["date", "steps", "distance", "calories", "mode", "activeTime", "isVerified"]
+            const headers = ["date", "totalSteps", "totalDistance", "totalCalories", "mode", "totalActiveTime", "isVerified"]
             const csvRows = [headers.join(",")]
 
             stepEntries.forEach((entry) => {
@@ -378,7 +392,7 @@ const Steps = () => {
 
         // Check progress against goals
         if (filteredEntries.length > 0) {
-            const averageSteps = filteredEntries.reduce((sum, entry) => sum + entry.steps, 0) / filteredEntries.length
+            const averageSteps = filteredEntries.reduce((sum, entry) => sum + entry.totalSteps, 0) / filteredEntries.length
 
             if (averageSteps < 5000) {
                 insights.push({
@@ -400,7 +414,7 @@ const Steps = () => {
 
     return (
         <div className="steps-container">
-            {isLoading && <GlobalLoader/>}
+            {isLoading && <GlobalLoader />}
             <div className="steps-header">
                 <h1>Mes Pas</h1>
 
@@ -591,10 +605,10 @@ const Steps = () => {
                     <div className="chart-controls">
                         <div className="metric-selector">
                             <select value={chartMetric} onChange={(e) => setChartMetric(e.target.value)}>
-                                <option value="steps">Pas</option>
-                                <option value="distance">Distance</option>
-                                <option value="calories">Calories</option>
-                                <option value="activeTime">Temps actif</option>
+                                <option value="totalSteps">Pas</option>
+                                <option value="totalDistance">Distance</option>
+                                <option value="totalCalories">Calories</option>
+                                <option value="totalActiveTime">Temps actif</option>
                             </select>
                         </div>
                     </div>
@@ -648,16 +662,19 @@ const Steps = () => {
                                 filteredEntries.map((entry) => (
                                     <tr key={entry._id}>
                                         <td>{new Date(entry.date).toLocaleDateString("fr-FR")}</td>
-                                        <td>{entry.steps.toLocaleString("fr-FR")}</td>
-                                        <td>{entry.distance.toFixed(1)} km</td>
-                                        <td>{Math.round(entry.calories)} kcal</td>
+                                        <td>{entry.totalSteps.toLocaleString("fr-FR")}</td>
+                                        <td>{entry.totalDistance.toFixed(1)} km</td>
+                                        <td>{Math.round(entry.totalCalories)} kcal</td>
                                         <td>
                                             {getModeIcon(entry.mode)} {entry.mode}
                                         </td>
-                                        <td>{formatActiveTime(entry.activeTime)}</td>
+                                        <td>{formatActiveTime(entry.totalActiveTime)}</td>
                                         <td>{entry.isVerified ? "✅" : "❌"}</td>
                                         <td>
                                             <div className="entry-actions">
+                                                <button className={`favorite-button ${entry.isFavorite && "favorite"}`} aria-label="Favoris" onClick={() => handleFavoriteChange(entry._id)}>
+                                                    <Heart size={16} />
+                                                </button>
                                                 <button className="edit-button" onClick={() => handleEdit(entry)} aria-label="Modifier">
                                                     <Edit size={16} />
                                                 </button>
@@ -729,7 +746,7 @@ const Steps = () => {
                                     name="steps"
                                     required
                                     min="0"
-                                    defaultValue={currentEntry ? currentEntry.steps : ""}
+                                    defaultValue={currentEntry ? currentEntry.totalSteps : ""}
                                     placeholder="Nombre de pas"
                                 />
                             </div>
@@ -742,7 +759,7 @@ const Steps = () => {
                                     name="distance"
                                     step="0.1"
                                     min="0"
-                                    defaultValue={currentEntry ? currentEntry.distance : ""}
+                                    defaultValue={currentEntry ? currentEntry.totalDistance : ""}
                                     placeholder="Distance en km"
                                 />
                             </div>
@@ -754,7 +771,7 @@ const Steps = () => {
                                     id="calories"
                                     name="calories"
                                     min="0"
-                                    defaultValue={currentEntry ? currentEntry.calories : ""}
+                                    defaultValue={currentEntry ? currentEntry.totalCalories : ""}
                                     placeholder="Calories brûlées"
                                 />
                             </div>
@@ -775,7 +792,7 @@ const Steps = () => {
                                     id="activeTime"
                                     name="activeTime"
                                     min="0"
-                                    defaultValue={currentEntry ? currentEntry.activeTime : ""}
+                                    defaultValue={currentEntry ? currentEntry.totalActiveTime : ""}
                                     placeholder="Temps actif en minutes"
                                 />
                             </div>

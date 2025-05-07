@@ -8,12 +8,14 @@ const updateUserStatsAfterImport = async (userId, newEntries) => {
   const stepsPerDay = {};
   let totalStepsToAdd = 0;
   let distanceToAdd = 0;
+  let totalXPToAdd = 0;
 
   for (const entry of newEntries) {
     const day = entry.day;
-    stepsPerDay[day] = (stepsPerDay[day] || 0) + entry.steps;
-    totalStepsToAdd += entry.steps;
-    distanceToAdd += entry.distance;
+    stepsPerDay[day] = (stepsPerDay[day] || 0) + entry.totalSteps;
+    totalStepsToAdd += entry.totalSteps;
+    distanceToAdd += entry.totalDistance;
+    totalXPToAdd += entry.xp;
   }
 
   const updatedDays = Object.keys(stepsPerDay);
@@ -21,7 +23,7 @@ const updateUserStatsAfterImport = async (userId, newEntries) => {
 
   for (const day of updatedDays) {
     const entries = await StepEntry.find({ user: userId, day });
-    const totalForDay = entries.reduce((sum, e) => sum + e.steps, 0);
+    const totalForDay = entries.reduce((sum, e) => sum + e.totalSteps, 0);
 
     if (totalForDay >= dailyGoal) {
       updatedStreakDays.add(day);
@@ -45,7 +47,7 @@ const updateUserStatsAfterImport = async (userId, newEntries) => {
     const prevStr = prevDate.toISOString().split('T')[0];
 
     const wasPrevAchieved = await StepEntry.find({ user: userId, day: prevStr })
-      .then(entries => entries.reduce((sum, e) => sum + e.steps, 0) >= dailyGoal);
+      .then(entries => entries.reduce((sum, e) => sum + e.totalSteps, 0) >= dailyGoal);
 
     if (!wasPrevAchieved) {
       // Nouveau streak
@@ -69,7 +71,8 @@ const updateUserStatsAfterImport = async (userId, newEntries) => {
   await User.findByIdAndUpdate(userId, {
     $inc: {
       totalSteps: totalStepsToAdd,
-      totalDistance: distanceToAdd
+      totalDistance: distanceToAdd,
+      totalXP: totalXPToAdd
     },
     $set: {
       'streak.current': streakCurrent,
@@ -88,6 +91,7 @@ const updateUserStats = async (userId) => {
   const entries = await StepEntry.find({ user: userId });
 
   let totalSteps = 0;
+  let totalXP = 0;
   let totalDistance = 0;
   let totalCalories = 0;
   let totalActiveTime = 0;
@@ -95,13 +99,14 @@ const updateUserStats = async (userId) => {
   const stepsPerDay = {};
 
   for (const entry of entries) {
-    totalSteps += entry.steps;
-    totalDistance += entry.distance;
-    totalCalories += entry.calories || 0;
-    totalActiveTime += entry.activeTime || 0;
+    totalSteps += entry.totalSteps;
+    totalXP += entry.xp;
+    totalDistance += entry.totalDistance;
+    totalCalories += entry.totalCalories || 0;
+    totalActiveTime += entry.totalActiveTime || 0;
 
     const day = entry.day;
-    stepsPerDay[day] = (stepsPerDay[day] || 0) + entry.steps;
+    stepsPerDay[day] = (stepsPerDay[day] || 0) + entry.totalSteps;
   }
 
   // === Calcul du streak ===
@@ -142,6 +147,7 @@ const updateUserStats = async (userId) => {
 
   await User.findByIdAndUpdate(userId, {
     totalSteps,
+    totalXP,
     totalDistance,
     totalCalories,
     totalActiveTime,

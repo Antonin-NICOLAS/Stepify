@@ -87,6 +87,11 @@ const userSchema = new Schema({
     min: [1000, "L'objectif quotidien doit être d'au moins 1000 pas"],
     max: [50000, "L'objectif quotidien ne peut pas dépasser 50000 pas"]
   },
+  totalXP: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
   totalSteps: {
     type: Number,
     default: 0,

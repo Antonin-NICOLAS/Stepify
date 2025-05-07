@@ -219,6 +219,7 @@
     padding: 0.5rem;
     border: 1px solid var(--Couleur2);
     border-radius: var(--radius);
+    color: var(--Noir);
     background-color: var(--body-color);
 }
 
@@ -461,7 +462,9 @@
 }
 
 .steps-container .edit-button,
-.steps-container .delete-button {
+.steps-container .delete-button,
+.steps-container .favorite-button
+ {
     width: 30px;
     height: 30px;
     display: flex;
@@ -490,6 +493,23 @@
     background-color: #a65051;
 }
 
+.steps-container .favorite-button {
+    background-color: var(--Couleur3);
+    color: white;
+}
+
+.steps-container .favorite-button:hover {
+    background-color: palevioletred;
+}
+
+.steps-container .favorite-button.favorite svg {
+    fill: deeppink;
+}
+
+.steps-container .favorite-button.favorite:hover svg {
+    fill: white;
+}
+
 /* Privacy Notice */
 .steps-container .privacy-notice {
     display: flex;
@@ -503,7 +523,7 @@
 }
 
 .steps-container .privacy-notice a {
-    color: var(--Couleur1);
+    color: var(--Couleur4);
     text-decoration: none;
 }
 
