@@ -8,4 +8,5 @@ Summer Contest
 - ajouter une barre de progression lors de l'import d'un fichier de data
 - math round sur les calories/distance lors du patch de AppleHealthData
 - ajouter la gestion du mode sombre en fonction des préférences
+- ajouter une entrée dans le modèle stepentry pour record les pas/calories/distance/active time à chaque heure de la journée (pour le graphique de la page my steps)
 

@@ -1,6 +1,7 @@
 const StepEntry = require('../models/StepEntry');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 const {parseAppleHealthData, parseSamsungHealthData } = require('../utils/ParseHealthData')
+const { updateUserStatsAfterImport, updateUserStats } = require('../utils/StepUtils');
 const csv = require('csv-parser');
 
 // Récupérer toutes les entrées de l'utilisateur
@@ -54,6 +55,8 @@ const createStepEntry = async (req, res) => {
       day: new Date(entryData.date).toISOString().split('T')[0]
     });
 
+    await updateUserStats(userId);
+
     res.status(201).json({
       success: true,
       entry: newEntry
@@ -92,10 +95,10 @@ const updateStepEntry = async (req, res) => {
         entry[field] = updateData[field];
       }
     });
-    
     entry.isVerified = false
 
     await entry.save();
+    await updateUserStats(userId);
 
     res.status(200).json({
       success: true,
@@ -129,6 +132,7 @@ const deleteStepEntry = async (req, res) => {
         error: 'Entrée non trouvée'
       });
     }
+    await updateUserStats(userId);
 
     res.status(200).json({
       success: true,
@@ -191,6 +195,7 @@ const importHealthData = async (req, res) => {
 
     // Sauvegarder en base
     await StepEntry.insertMany(filteredEntries);
+    await updateUserStatsAfterImport(userId, filteredEntries);
 
     res.json({ 
       success: true,

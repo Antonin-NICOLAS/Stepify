@@ -1,0 +1,127 @@
+Date : 2025-05-06 15:02:35
+Directory : /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend
+Total : 74 files,  9202 codes, 148 comments, 670 blanks, all 10020 lines
+
+Languages
++----------------+------------+------------+------------+------------+------------+
+| language       | files      | code       | comment    | blank      | total      |
++----------------+------------+------------+------------+------------+------------+
+| JSON           |          6 |      4,817 |          0 |          0 |      4,817 |
+| JavaScript JSX |         28 |      3,917 |        143 |        379 |      4,439 |
+| CSS            |         12 |      3,619 |         77 |        621 |      4,317 |
+| HTML           |          1 |         31 |          6 |          5 |         42 |
+| Markdown       |          1 |          7 |          0 |          6 |         13 |
+| XML            |          1 |          1 |          0 |          0 |          1 |
+| JavaScript     |         25 |     -3,190 |        -78 |       -341 |     -3,609 |
++----------------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                          | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                             |         74 |      9,202 |        148 |        670 |     10,020 |
+| . (Files)                                                                                     |          7 |      6,787 |          7 |         18 |      6,812 |
+| ..                                                                                            |         23 |     -5,341 |        -83 |       -380 |     -5,804 |
+| ../backend                                                                                    |         23 |     -5,341 |        -83 |       -380 |     -5,804 |
+| ../backend (Files)                                                                            |          3 |     -1,888 |          0 |         -2 |     -1,890 |
+| ../backend/api                                                                                |          1 |        -44 |         -7 |         -9 |        -60 |
+| ../backend/config                                                                             |          1 |         -8 |          0 |         -2 |        -10 |
+| ../backend/controllers                                                                        |          3 |     -1,042 |        -43 |       -195 |     -1,280 |
+| ../backend/middlewares                                                                        |          3 |        -30 |          0 |         -6 |        -36 |
+| ../backend/models                                                                             |          4 |       -345 |        -10 |        -22 |       -377 |
+| ../backend/routes                                                                             |          3 |        -91 |        -15 |        -16 |       -122 |
+| ../backend/utils                                                                              |          5 |     -1,893 |         -8 |       -128 |     -2,029 |
+| public                                                                                        |          1 |          1 |          0 |          0 |          1 |
+| src                                                                                           |         43 |      7,755 |        224 |      1,032 |      9,011 |
+| src (Files)                                                                                   |          4 |        165 |         13 |         23 |        201 |
+| src/components                                                                                |          5 |      1,121 |         24 |        131 |      1,276 |
+| src/context                                                                                   |          4 |        629 |         20 |         78 |        727 |
+| src/hooks                                                                                     |          3 |        219 |          4 |         32 |        255 |
+| src/layouts                                                                                   |          2 |         28 |          0 |          4 |         32 |
+| src/pages                                                                                     |         22 |      5,495 |        154 |        749 |      6,398 |
+| src/pages (Files)                                                                             |         11 |      4,112 |         95 |        547 |      4,754 |
+| src/pages/Auth                                                                                |         11 |      1,383 |         59 |        202 |      1,644 |
+| src/routes                                                                                    |          2 |         87 |          9 |         12 |        108 |
+| src/utils                                                                                     |          1 |         11 |          0 |          3 |         14 |
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| filename                                                                                      | language       | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/api/index.js                          | JavaScript     |        -44 |         -7 |         -9 |        -60 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/config/cloudinary.js                  | JavaScript     |         -8 |          0 |         -2 |        -10 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/controllers/AccountController.js      | JavaScript     |       -325 |        -10 |        -64 |       -399 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/controllers/AuthController.js         | JavaScript     |       -555 |        -23 |        -90 |       -668 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/controllers/StepController.js         | JavaScript     |       -162 |        -10 |        -41 |       -213 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/middlewares/VerifyAuthorization.js    | JavaScript     |         -7 |          0 |         -1 |         -8 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/middlewares/VerifyToken.js            | JavaScript     |        -19 |          0 |         -3 |        -22 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/middlewares/multer.js                 | JavaScript     |         -4 |          0 |         -2 |         -6 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/models/Challenge.js                   | JavaScript     |        -22 |          0 |         -5 |        -27 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/models/Reward.js                      | JavaScript     |        -19 |          0 |          0 |        -19 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/models/StepEntry.js                   | JavaScript     |        -33 |          0 |         -5 |        -38 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/models/User.js                        | JavaScript     |       -271 |        -10 |        -12 |       -293 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/package-lock.json                     | JSON           |     -1,843 |          0 |         -1 |     -1,844 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/package.json                          | JSON           |        -36 |          0 |         -1 |        -37 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/routes/AccountRoutes.js               | JavaScript     |        -34 |         -5 |         -5 |        -44 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/routes/AuthRoutes.js                  | JavaScript     |        -33 |         -5 |         -7 |        -45 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/routes/StepRoutes.js                  | JavaScript     |        -24 |         -5 |         -4 |        -33 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/utils/EmailTemplates.js               | JavaScript     |     -1,614 |          0 |        -82 |     -1,696 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/utils/GenerateAuthCookie.js           | JavaScript     |        -25 |          0 |         -5 |        -30 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/utils/GenerateCode.js                 | JavaScript     |         -4 |          0 |         -1 |         -5 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/utils/ParseHealthData.js              | JavaScript     |       -143 |         -7 |        -30 |       -180 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/utils/SendMail.js                     | JavaScript     |       -107 |         -1 |        -10 |       -118 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/backend/vercel.json                           | JSON           |         -9 |          0 |          0 |         -9 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/README.md                            | Markdown       |          7 |          0 |          6 |         13 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/eslint.config.js                     | JavaScript     |         32 |          0 |          2 |         34 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/index.html                           | HTML           |         31 |          6 |          5 |         42 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/package-lock.json                    | JSON           |      6,644 |          0 |          1 |      6,645 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/package.json                         | JSON           |         49 |          0 |          1 |         50 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/public/vite.svg                      | XML            |          1 |          0 |          0 |          1 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/App.css                          | CSS            |         31 |          2 |          4 |         37 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/App.jsx                          | JavaScript JSX |         41 |          0 |          4 |         45 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/components/Header.css            | CSS            |        267 |         14 |         42 |        323 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/components/Header.jsx            | JavaScript JSX |        101 |          4 |         11 |        116 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/components/Loader.jsx            | JavaScript JSX |        318 |          5 |          7 |        330 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/components/NotFound.css          | CSS            |        359 |          1 |         60 |        420 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/components/NotFound.jsx          | JavaScript JSX |         76 |          0 |         11 |         87 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/context/AuthContext.jsx          | JavaScript JSX |        314 |         10 |         29 |        353 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/context/LoadingContext.jsx       | JavaScript JSX |         33 |          0 |          7 |         40 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/context/ThemeContext.jsx         | JavaScript JSX |         35 |          0 |          8 |         43 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/context/UserContext.jsx          | JavaScript JSX |        247 |         10 |         34 |        291 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/hooks/useSteps.js                | JavaScript     |        137 |          0 |         16 |        153 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/hooks/useStepsFilters.js         | JavaScript     |         45 |          3 |         10 |         58 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/hooks/useStepsStats.js           | JavaScript     |         37 |          1 |          6 |         44 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/index.css                        | CSS            |         85 |         11 |         13 |        109 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/layouts/LoaderLayout.jsx         | JavaScript JSX |         14 |          0 |          2 |         16 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/layouts/MainLayout.jsx           | JavaScript JSX |         14 |          0 |          2 |         16 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/main.jsx                         | JavaScript JSX |          8 |          0 |          2 |         10 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/About.jsx                  | JavaScript JSX |          9 |          0 |          2 |         11 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/ChangeEmail.jsx       | JavaScript JSX |         50 |          3 |          8 |         61 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/EmailSent.css         | CSS            |        125 |          3 |         20 |        148 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/EmailSent.jsx         | JavaScript JSX |         40 |          2 |          7 |         49 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/EmailVerification.css | CSS            |        232 |          8 |         34 |        274 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/EmailVerification.jsx | JavaScript JSX |        176 |         18 |         28 |        222 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/Forgot-pwd.css        | CSS            |         89 |          5 |         12 |        106 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/Forgot-pwd.jsx        | JavaScript JSX |         47 |          3 |          7 |         57 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/Login.css             | CSS            |        239 |          5 |         36 |        280 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/Login.jsx             | JavaScript JSX |        161 |          3 |         16 |        180 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/Reset-pwd.css         | CSS            |        123 |          6 |         20 |        149 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Auth/Reset-pwd.jsx         | JavaScript JSX |        101 |          3 |         14 |        118 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Challenges.jsx             | JavaScript JSX |          9 |          0 |          2 |         11 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Dashboard.css              | CSS            |        886 |          6 |        165 |      1,057 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Dashboard.jsx              | JavaScript JSX |        716 |         18 |         36 |        770 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Home.jsx                   | JavaScript JSX |          9 |          0 |          4 |         13 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Leaderboard.jsx            | JavaScript JSX |          9 |          0 |          2 |         11 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Rewards.jsx                | JavaScript JSX |          9 |          0 |          2 |         11 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Settings.css               | CSS            |        582 |          5 |        105 |        692 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Settings.jsx               | JavaScript JSX |        553 |         20 |         31 |        604 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Steps.css                  | CSS            |        601 |         11 |        110 |        722 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/pages/Steps.jsx                  | JavaScript JSX |        729 |         35 |         88 |        852 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/routes/AppRoutes.jsx             | JavaScript JSX |         52 |          9 |          4 |         65 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/routes/RoutesGuards.jsx          | JavaScript JSX |         35 |          0 |          8 |         43 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/src/utils/GlobalLoader.jsx           | JavaScript JSX |         11 |          0 |          3 |         14 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/vercel.json                          | JSON           |         12 |          0 |          0 |         12 |
+| /Users/antoninnicolas/Desktop/2024-2029/Stepify/frontend/vite.config.js                       | JavaScript     |         12 |          1 |          3 |         16 |
+| Total                                                                                         |                |      9,202 |        148 |        670 |     10,020 |
++-----------------------------------------------------------------------------------------------+----------------+------------+------------+------------+------------+

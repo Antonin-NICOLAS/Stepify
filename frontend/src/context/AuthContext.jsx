@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
+import GlobalLoader from '../utils/GlobalLoader';
 import { toast } from 'react-hot-toast';
-import { useLoadingActions } from './LoadingContext';
 
 const API_AUTH = process.env.NODE_ENV === 'production' ? '/api/auth' : '/auth';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const { startLoading, stopLoading } = useLoadingActions();
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState(null);
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
   // --- Check Auth ---
   const checkAuth = useCallback(async () => {
-    startLoading();
+    setIsLoading(true)
     try {
       const res = await axios.get(`${API_AUTH}/check-auth`, { withCredentials: true });
       const data = res.data;
@@ -40,9 +40,9 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       console.error("Error checking auth:", err);
     } finally {
-      stopLoading();
+      setIsLoading(false)
     }
-  }, [startLoading, stopLoading]);
+  }, []);
 
   // --- Register ---
   const register = useCallback(async (RformData, resetForm) => {
@@ -72,8 +72,6 @@ export const AuthProvider = ({ children }) => {
       toast.error("Les mots de passe ne correspondent pas");
       return;
     }
-
-    startLoading();
     try {
       const res = await axios.post(`${API_AUTH}/register`, {
         firstName,
@@ -100,9 +98,9 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error(err.response?.data?.errors?.username && err.response?.data?.errors?.email || err.response?.data?.errors?.username || err.response?.data?.errors?.email || "Erreur lors de l'inscription");
     } finally {
-      stopLoading();
+      setIsLoading(false)
     }
-  }, [startLoading, stopLoading]);
+  }, [setIsLoading]);
 
   // --- Login ---
   const login = useCallback(async (LformData, resetForm, navigate) => {
@@ -111,8 +109,7 @@ export const AuthProvider = ({ children }) => {
       toast.error("Veuillez remplir tous les champs");
       return;
     }
-    console.log('fonction lancée')
-    startLoading();
+    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/login`, {
         email,
@@ -148,9 +145,9 @@ export const AuthProvider = ({ children }) => {
       toast.error(err.response?.data?.error || "Erreur lors de la connexion");
       throw err;
     } finally {
-      stopLoading();
+      setIsLoading(false)
     }
-  }, [startLoading, stopLoading]);
+  }, [setIsLoading]);
 
   // --- Forgot Password ---
   const forgotPassword = useCallback(async (email, onSuccess) => {
@@ -158,7 +155,7 @@ export const AuthProvider = ({ children }) => {
       toast.error("Veuillez entrer une adresse email valide");
       return;
     }
-    startLoading();
+    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/forgot-password`, {
         email
@@ -178,9 +175,9 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error(err.response?.data?.error || "Erreur lors de l'envoi de l'email");
     } finally {
-      stopLoading();
+      setIsLoading(false)
     }
-  }, [startLoading, stopLoading]);
+  }, [setIsLoading]);
 
   // --- Reset Password ---
   const resetPassword = useCallback(async (token, password, confirmPassword, onSuccess) => {
@@ -188,7 +185,7 @@ export const AuthProvider = ({ children }) => {
     if (password !== confirmPassword) return toast.error("Les mots de passe ne correspondent pas");
     if (password.length < 8) return toast.error("Mot de passe trop court (min 8 caractères)");
 
-    startLoading();
+    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/reset-password/${token}`, {
         password,
@@ -211,9 +208,9 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error(err.response?.data?.error || "Erreur lors de la réinitialisation");
     } finally {
-      stopLoading();
+      setIsLoading(false)
     }
-  }, [startLoading, stopLoading]);
+  }, [setIsLoading]);
 
   // --- Verify Email ---
   const verifyEmail = useCallback(async (code, onSuccess) => {
@@ -221,7 +218,7 @@ export const AuthProvider = ({ children }) => {
       toast.error("Veuillez entrer le code complet à 6 chiffres")
       return
     }
-    startLoading();
+    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/verify-email`, {
         code
@@ -242,13 +239,13 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error(err.response?.data?.error || "Erreur de vérification");
     } finally {
-      stopLoading();
+      setIsLoading(false)
     }
-  }, [startLoading, stopLoading]);
+  }, [setIsLoading]);
 
   // --- Resend verification code ---
   const resendVerificationCode = useCallback(async (OnError, onSuccess) => {
-    startLoading();
+    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/resend-verification-code`, {}, {
         withCredentials: true
@@ -269,15 +266,15 @@ export const AuthProvider = ({ children }) => {
       OnError();
       toast.error(err.response?.data?.error || "Erreur lors de l'envoi du code");
     } finally {
-      stopLoading();
+      setIsLoading(false)
     }
-  }, [startLoading, stopLoading]);
+  }, [setIsLoading]);
 
   // --- Change verification email ---
-  const changeVerificationEmail = useCallback(async (newEmail, onSuccess) => {
+  const changeVerificationEmail = useCallback(async (newEmail, onSuccess, Finally) => {
     if (!newEmail) return toast.error("Veuillez entrer votre email");
 
-    startLoading();
+    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/change-verification-email`, {
         newEmail
@@ -298,13 +295,13 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error(err.response?.data?.error || "Erreur lors de l'envoi de l'email");
     } finally {
-      stopLoading();
+      setIsLoading(false)
     }
-  }, [startLoading, stopLoading])
+  }, [setIsLoading])
 
   // --- Logout ---
   const logout = useCallback(async (onSuccess) => {
-    startLoading();
+    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/logout`, {}, { withCredentials: true });
       setIsAuthenticated(false)
@@ -314,9 +311,9 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error("Erreur lors de la déconnexion");
     } finally {
-      stopLoading();
+      setIsLoading(false)
     }
-  }, [startLoading, stopLoading]);
+  });
 
   useEffect(() => {
     checkAuth();
@@ -326,6 +323,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{
       user,
       setUser,
+      isLoading,
       isAuthenticated,
       error,
       updateUserField,
@@ -339,6 +337,7 @@ export const AuthProvider = ({ children }) => {
       resendVerificationCode,
       logout
     }}>
+      {isLoading && <GlobalLoader />}
       {children}
     </AuthContext.Provider>
   );

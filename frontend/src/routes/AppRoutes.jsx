@@ -1,6 +1,5 @@
 // routes/AppRoutes.jsx
 import { Routes, Route } from 'react-router-dom';
-import LoaderLayout from '../layouts/LoaderLayout.jsx';
 import MainLayout from '../layouts/MainLayout.jsx';
 
 // Route guards
@@ -34,7 +33,6 @@ import NotFound from '../components/NotFound.jsx';
 export default function AppRoutes() {
     return (
         <Routes>
-            <Route element={<LoaderLayout />}>
                 {/* Pages avec header et sidebar */}
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<RequireEmailVerification><Home /></RequireEmailVerification>} />
@@ -59,7 +57,6 @@ export default function AppRoutes() {
                 <Route path="/reset-password/:token" element={<RequireEmailVerification><ResetPassword /></RequireEmailVerification>} />
                 {/* TODO : <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
                 {/* TODO : <Route path="/terms-of-service" element={<TermsOfService />} /> */}
-            </Route>
         </Routes>
     );
 }

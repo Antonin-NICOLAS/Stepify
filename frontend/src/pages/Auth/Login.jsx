@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Spline from "@splinetool/react-spline";
 //context
-import { useLoadingState } from '../../context/LoadingContext';
 import { useAuth } from '../../context/AuthContext';
 //icons
 import {
@@ -13,8 +12,7 @@ import "./Login.css";
 
 function Auth() {
   const navigate = useNavigate();
-  const { login, register } = useAuth();
-  const { isLoading } = useLoadingState();
+  const { login, register, isLoading } = useAuth();
 
   const [Logindata, setLoginData] = useState({
     email: "",

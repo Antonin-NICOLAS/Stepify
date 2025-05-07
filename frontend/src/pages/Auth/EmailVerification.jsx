@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import { useNavigate, useLocation, Link } from "react-router-dom"
 //context
-import { useLoadingState } from '../../context/LoadingContext';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast'
 //icons
@@ -11,8 +10,7 @@ import "./EmailVerification.css"
 
 function EmailVerification() {
     const navigate = useNavigate()
-    const { user, verifyEmail, resendVerificationCode } = useAuth();
-    const { isLoading } = useLoadingState();
+    const { user, verifyEmail, resendVerificationCode, isLoading } = useAuth();
 
     const [otp, setOtp] = useState(["", "", "", "", "", ""])
     const [resendDisabled, setResendDisabled] = useState(false)

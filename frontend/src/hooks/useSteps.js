@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useLoadingActions } from "../context/LoadingContext";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
@@ -7,10 +6,10 @@ const API_STEP = process.env.NODE_ENV === 'production' ? '/api/step' : '/step';
 
 export const useSteps = (userId) => {
     const [stepEntries, setStepEntries] = useState([]);
-    const { startLoading, stopLoading } = useLoadingActions();
+    const [isLoading, setIsLoading] = useState(false)
 
     const fetchStepEntries = useCallback(async () => {
-        startLoading();
+        setIsLoading(true)
         try {
             const { data } = await axios.get(`${API_STEP}/${userId}/mysteps`,
                 { withCredentials: true }
@@ -25,12 +24,12 @@ export const useSteps = (userId) => {
             console.error("Fetch error:", err);
             toast.error("Erreur de connexion au serveur");
         } finally {
-            stopLoading();
+            setIsLoading(false)
         }
     }, [userId]);
 
     const addStepEntry = async (entryData) => {
-        startLoading();
+        setIsLoading(true)
         try {
             const { data } = await axios.post(`${API_STEP}/${userId}/new`,
                 entryData,
@@ -50,12 +49,12 @@ export const useSteps = (userId) => {
             toast.error("Erreur lors de l'ajout");
             return false;
         } finally {
-            stopLoading();
+            setIsLoading(false)
         }
     };
 
     const updateStepEntry = async (entryId, entryData) => {
-        startLoading();
+        setIsLoading(true)
         try {
             const { data } = await axios.put(`${API_STEP}/${userId}/${entryId}/modify`,
                 entryData,
@@ -75,12 +74,12 @@ export const useSteps = (userId) => {
             toast.error("Erreur lors de la modification");
             return false;
         } finally {
-            stopLoading();
+            setIsLoading(false)
         }
     };
 
     const deleteStepEntry = async (entryId) => {
-        startLoading();
+        setIsLoading(true)
         try {
             const { data } = await axios.delete(`${API_STEP}/${userId}/${entryId}/delete`,
                 { withCredentials: true }
@@ -99,17 +98,17 @@ export const useSteps = (userId) => {
             toast.error("Erreur lors de la suppression");
             return false;
         } finally {
-            stopLoading();
+            setIsLoading(false)
         }
     };
 
-    const importSteps = async (file, source) => {
+    const importSteps = async (file) => {
         if (!file) return false;
 
         const formData = new FormData();
         formData.append('exported-data', file);
 
-        startLoading();
+        setIsLoading(true)
         try {
             const { data } = await axios.post(`${API_STEP}/${userId}/import`,
                 formData, 
@@ -132,7 +131,7 @@ export const useSteps = (userId) => {
             toast.error('Erreur lors de l\'importation');
             return false;
         } finally {
-            stopLoading();
+            setIsLoading(false)
         }
     };
 
@@ -144,6 +143,7 @@ export const useSteps = (userId) => {
 
     return {
         stepEntries,
+        isLoading,
         fetchStepEntries,
         addStepEntry,
         updateStepEntry,

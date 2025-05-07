@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from "react"
-import GlobalLoader from '../utils/GlobalLoader.jsx';
 //Context
 import { useAuth } from '../context/AuthContext';
-import { useLoadingState } from "../context/LoadingContext"
 //Icons
 import {
     BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
@@ -138,7 +136,7 @@ const Dashboard = () => {
     })
 
     // Calculate progress percentage for daily goal
-    const dailyProgressPercent = (mockDailyStats.steps / user?.dailyGoal) * 100
+    const dailyProgressPercent = (mockDailyStats.steps / user?.dailyGoal) * 100 || 0 //il faut mettre les steps de l'entrée correspondant à aujourd'hui
 
     // Format date for display
     const formatDate = (dateString) => {
@@ -337,7 +335,7 @@ const Dashboard = () => {
                                 <Zap size={20} />
                             </div>
                             <div className="streak-text">
-                                <span className="streak-count">{user?.streak?.current}</span> jours consécutifs
+                                <span className="streak-count">{user?.streak?.current}</span>{user?.streak?.current === 1 ? " jour consécutif" : " jours consécutifs"}
                             </div>
                         </div>
                     </div>

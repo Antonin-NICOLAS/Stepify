@@ -1,5 +1,4 @@
 import { BrowserRouter } from 'react-router-dom';
-import { LoadingProvider } from './context/LoadingContext';
 import { AuthProvider } from './context/AuthContext';
 import { UserProvider } from './context/UserContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -16,7 +15,6 @@ function App() {
 
   return (
     <div className="App">
-      <LoadingProvider>
         <AuthProvider>
           <UserProvider>
             <ThemeProvider>
@@ -37,7 +35,6 @@ function App() {
             </ThemeProvider>
           </UserProvider>
         </AuthProvider>
-      </LoadingProvider>
     </div>
   );
 }

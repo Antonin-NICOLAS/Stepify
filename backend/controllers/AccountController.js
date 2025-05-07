@@ -11,46 +11,46 @@ require('dotenv').config()
 //======== UPDATE AN ACCOUNT =========//
 
 const updateAvatar = async (req, res) => {
-  const { userId } = req.params;
-  const file = req.file; // image envoyée via multer
+    const { userId } = req.params;
+    const file = req.file; // image envoyée via multer
 
-  if (!file) {
-    return res.status(400).json({ success: false, error: 'Aucun fichier fourni' });
-  }
-
-  if (checkAuthorization(req, res, userId)) return;
-
-  try {
-    const user = await UserModel.findById(userId);
-
-    // Supprimer l'ancien avatar s'il est sur Cloudinary
-    if (user.avatarUrl && user.avatarUrl.includes('res.cloudinary.com')) {
-      const publicId = user.avatarUrl.split('/').slice(-1)[0].split('.')[0]; // extraire l'id
-      await cloudinary.uploader.destroy(`stepify/avatars/${publicId}`);
+    if (!file) {
+        return res.status(400).json({ success: false, error: 'Aucun fichier fourni' });
     }
 
-    // Uploader la nouvelle image
-    const result = await cloudinary.uploader.upload_stream(
-      {
-        folder: 'stepify/avatars',
-        public_id: `avatar-${userId}-${Date.now()}`,
-        resource_type: 'image',
-      },
-      async (error, result) => {
-        if (error) return res.status(500).json({ success: false, error: error.message });
+    if (checkAuthorization(req, res, userId)) return;
 
-        user.avatarUrl = result.secure_url;
-        await user.save();
+    try {
+        const user = await UserModel.findById(userId);
 
-        return res.status(200).json({ success: true, avatarUrl: result.secure_url });
-      }
-    );
+        // Supprimer l'ancien avatar s'il est sur Cloudinary
+        if (user.avatarUrl && user.avatarUrl.includes('res.cloudinary.com')) {
+            const publicId = user.avatarUrl.split('/').slice(-1)[0].split('.')[0]; // extraire l'id
+            await cloudinary.uploader.destroy(`stepify/avatars/${publicId}`);
+        }
 
-    // Envoie le fichier à cloudinary
-    result.end(file.buffer);
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+        // Uploader la nouvelle image
+        const result = await cloudinary.uploader.upload_stream(
+            {
+                folder: 'stepify/avatars',
+                public_id: `avatar-${userId}-${Date.now()}`,
+                resource_type: 'image',
+            },
+            async (error, result) => {
+                if (error) return res.status(500).json({ success: false, error: error.message });
+
+                user.avatarUrl = result.secure_url;
+                await user.save();
+
+                return res.status(200).json({ success: true, avatarUrl: result.secure_url });
+            }
+        );
+
+        // Envoie le fichier à cloudinary
+        result.end(file.buffer);
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
 };
 
 const updateProfile = async (req, res) => {
@@ -342,13 +342,23 @@ const updatePrivacySettings = async (req, res) => {
 };
 
 const getUserProfile = async (req, res) => {
-    const { userId } = req.params;
+    const { userId } = { ...req.params };
+
+    if (checkAuthorization(req, res, userId)) return;
 
     try {
         const user = await UserModel.findById(userId)
             .select('-password -verificationToken -resetPasswordToken')
-            .populate('friends.userId', 'username avatarUrl')
-            .populate('rewardsUnlocked.reward', 'name icon')
+            .populate([
+                {
+                  path: 'friends.userId',
+                  select: 'username avatarUrl'
+                },
+                {
+                  path: 'rewardsUnlocked.rewardId',
+                  select: ''
+                }
+              ])
             .lean();
 
         if (!user) {
@@ -358,20 +368,20 @@ const getUserProfile = async (req, res) => {
             });
         }
 
-        // Masquer certaines infos si l'utilisateur n'est pas ami avec le demandeur
-        const isOwner = req.userId === userId;
-        const isFriend = user.friends.some(f => f.userId._id.toString() === req.userId);
-
-        if (!isOwner && !isFriend) {
-            delete user.email;
-            delete user.friendRequests;
-            delete user.customGoals;
-            if (user.privacySettings && !user.privacySettings.showStatsPublicly) {
-                delete user.dailyStats;
-                delete user.totalSteps;
-                delete user.totalDistance;
-            }
-        }
+        //    // Masquer certaines infos si l'utilisateur n'est pas ami avec le demandeur
+        //    const isOwner = req.userId === userId;
+        //    const isFriend = user.friends.some(f => f.userId._id.toString() === req.userId);
+        //
+        //    if (!isOwner && !isFriend) {
+        //        delete user.email;
+        //        delete user.friendRequests;
+        //        delete user.customGoals;
+        //        if (user.privacySettings && !user.privacySettings.showStatsPublicly) {
+        //            delete user.dailyStats;
+        //            delete user.totalSteps;
+        //            delete user.totalDistance;
+        //        }
+        //    }
 
         res.status(200).json({
             success: true,
@@ -380,7 +390,7 @@ const getUserProfile = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            error: "Erreur lors de la récupération du profil"
+            error: `Erreur lors de la récupération du profil: ${error}`
         });
     }
 };

@@ -134,8 +134,10 @@ const parseAppleHealthData = async (xmlData, userId) => {
 
   // Supprimer l'entrée existante pour le jour le plus récent (s'il y en a une)
   const lastEntry = await StepEntry.findOne({ user: userId }).sort({ date: -1 });
+  console.log(lastEntry)
   if (lastEntry) {
     const lastDay = lastEntry.day || lastEntry.date.toISOString().split('T')[0];
+    console.log(lastDay)
     await StepEntry.deleteMany({ user: userId, day: lastDay });
   }
 
@@ -144,7 +146,7 @@ const parseAppleHealthData = async (xmlData, userId) => {
   let filteredEntries = finalEntries;
   if (lastEntry2) {
     const lastDay = lastEntry2.day || lastEntry2.date.toISOString().split('T')[0];
-    filteredEntries = finalEntries.filter(entry => entry.day >= lastDay);
+    filteredEntries = finalEntries.filter(entry => entry.day > lastDay);
   }
 
   return filteredEntries;

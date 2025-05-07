@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 //Hooks & context
 import { useAuth } from "../context/AuthContext"
+import GlobalLoader from "../utils/GlobalLoader"
 import { useSteps } from "../hooks/useSteps"
 import { useStepsFilters } from "../hooks/useStepsFilters"
 import { useStepsStats } from "../hooks/useStepsStats"
@@ -41,6 +42,7 @@ const Steps = () => {
     // Custom hooks
     const {
         stepEntries,
+        isLoading,
         addStepEntry,
         updateStepEntry,
         deleteStepEntry,
@@ -53,9 +55,6 @@ const Steps = () => {
         selectedDate,
         dateRange
     );
-
-    console.log(stepEntries)
-    console.log(filteredEntries)
 
     const stats = useStepsStats(filteredEntries);
 
@@ -294,7 +293,7 @@ const Steps = () => {
     // Handle import data
     const handleFileImport = async () => {
         if (!importFile) return;
-        await importSteps(importFile, importSource);
+        await importSteps(importFile);
         setShowImportModal(false);
         setImportFile(null);
         setImportSource(null);
@@ -327,12 +326,12 @@ const Steps = () => {
         let dataStr
 
         if (format === "json") {
-            dataStr = JSON.stringify(filteredEntries, null, 2)
+            dataStr = JSON.stringify(stepEntries, null, 2) //TODO: je ne sais pas si je mets stepentries ou filteredentries
         } else if (format === "csv") {
             const headers = ["date", "steps", "distance", "calories", "mode", "activeTime", "isVerified"]
             const csvRows = [headers.join(",")]
 
-            filteredEntries.forEach((entry) => {
+            stepEntries.forEach((entry) => {
                 const values = headers.map((header) => {
                     if (header === "date") {
                         return entry.day
@@ -401,6 +400,7 @@ const Steps = () => {
 
     return (
         <div className="steps-container">
+            {isLoading && <GlobalLoader/>}
             <div className="steps-header">
                 <h1>Mes Pas</h1>
 

@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 require('./StepEntry.js');
+require('./Reward.js');
+require('./Challenge.js')
 
 const userSchema = new Schema({
   // --- Informations de base ---
@@ -128,7 +130,7 @@ const userSchema = new Schema({
 
   // --- Récompenses & Défis ---
   rewardsUnlocked: [{
-    reward: {
+    rewardId: {
       type: Schema.Types.ObjectId,
       ref: 'Reward',
       required: true
@@ -164,9 +166,11 @@ const userSchema = new Schema({
     min: 0
   },
   streak: {
-    current: { type: Number, default: 0, min: 0 },
-    max: { type: Number, default: 0, min: 0 },
-    lastAchieved: Date
+    current: { type: Number, default: 0 },
+    max: { type: Number, default: 0 },
+    lastAchieved: { type: Date },
+    startDate: { type: Date },
+    endDate: { type: Date }
   },
 
   // --- Réseau social ---

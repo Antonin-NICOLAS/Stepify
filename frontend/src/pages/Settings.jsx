@@ -100,8 +100,7 @@ const AccountPage = () => {
     if (!file) return toast.error("Aucun fichier sélectionné");
 
     try {
-      const newAvatarUrl = await updateAvatar(user._id, file);
-      setProfileData(prev => ({ ...prev, avatarUrl: newAvatarUrl }));
+      await updateAvatar(user._id, file);
       setIsEditingAvatar(false);
       setImage("");
     } catch (err) {
@@ -117,8 +116,7 @@ const AccountPage = () => {
   }
   const handleAvatarUrlSubmit = async (e) => {
     e.preventDefault()
-    const newAvatarUrl = await updateAvatar(user._id, profileData.avatarUrl);
-    setProfileData(prev => ({ ...prev, avatarUrl: newAvatarUrl }));
+    await updateAvatar(user._id, profileData.avatarUrl);
     setIsEditingUrlAvatar(false);
   }
   //handle drag & drop
@@ -184,8 +182,7 @@ const AccountPage = () => {
     if (status !== user.status) {
       setIsCustomStatus(false)
       setIsStatusDropdownOpen(false)
-      const newStatus = await updateStatus(user._id, status);
-      setProfileData(prev => ({ ...prev, status: newStatus }));
+      await updateStatus(user._id, status);
       setIsCustomStatus(false);
       setIsStatusDropdownOpen(false);
     }
@@ -211,12 +208,11 @@ const AccountPage = () => {
   // 5. Daily Goal Handlers
   const saveDailyGoal = async (e) => {
     e.preventDefault()
-    const newDailyGoal = await updateDailyGoal(
+    await updateDailyGoal(
       user._id,
       profileData.dailyGoal,
       () => setIsEditingGoal(false)
     );
-    setProfileData(prev => ({ ...prev, dailyGoal: newDailyGoal }));
     setIsEditingGoal(false);
   }
 
@@ -387,7 +383,7 @@ const AccountPage = () => {
         <div className="account-section details-section">
           <h3>Détails du compte</h3>
           {errors.profile && <div className="error-message">{errors.profile}</div>}
-          <form onSubmit={e => { e.preventDefault(); saveProfile() }}>
+          <form>
             <div className="form-group">
               <label htmlFor="firstName">Prénom</label>
               <input
@@ -424,7 +420,7 @@ const AccountPage = () => {
                 value={profileData.email}
                 onChange={handleProfileChange} />
             </div>
-            <button type="submit" className="save-btn save-profile-btn">
+            <button type="submit" className="save-btn save-profile-btn" onClick={saveProfile}>
               Enregistrer les modifications
             </button>
           </form>

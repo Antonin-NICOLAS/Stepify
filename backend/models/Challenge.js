@@ -1,3 +1,7 @@
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+require('./User.js')
+
 const challengeSchema = new Schema({
     name: { type: String, required: true },
     description: String,
