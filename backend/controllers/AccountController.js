@@ -348,7 +348,6 @@ const getUserProfile = async (req, res) => {
 
     try {
         const user = await UserModel.findById(userId)
-            .select('-password -verificationToken -resetPasswordToken')
             .populate([
                 {
                   path: 'friends.userId',
@@ -359,7 +358,6 @@ const getUserProfile = async (req, res) => {
                   select: ''
                 }
               ])
-            .lean();
 
         if (!user) {
             return res.status(404).json({
@@ -383,9 +381,11 @@ const getUserProfile = async (req, res) => {
         //        }
         //    }
 
+        const userResponse = user.toJSON();
+
         res.status(200).json({
             success: true,
-            user
+            user: userResponse
         });
     } catch (error) {
         res.status(500).json({

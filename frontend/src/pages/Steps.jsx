@@ -129,22 +129,22 @@ const Steps = () => {
         // Group data by day, week, or month
         if (viewMode === "day") {
             // Récupérer les données horaires pour le jour sélectionné
-            const dayEntry = filteredEntries.find(entry => 
-              entry.day === selectedDate.toISOString().split('T')[0]
+            const dayEntry = filteredEntries.find(entry =>
+                entry.day === selectedDate.toISOString().split('T')[0]
             );
-            
+
             if (dayEntry) {
-              // Initialiser les données pour 24h
-              const hourlyData = Array(24).fill(0);
-              const trimmed = chartMetric.slice(5);
-              const daychartmetric = trimmed.charAt(0).toLowerCase() + trimmed.slice(1);
-              
-              dayEntry.hourlyData.forEach(hourData => {
-                hourlyData[hourData.hour] = hourData[daychartmetric] || 0;
-              });
-        
-              labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
-              data = hourlyData;
+                // Initialiser les données pour 24h
+                const hourlyData = Array(24).fill(0);
+                const trimmed = chartMetric.slice(5);
+                const daychartmetric = trimmed.charAt(0).toLowerCase() + trimmed.slice(1);
+
+                dayEntry.hourlyData.forEach(hourData => {
+                    hourlyData[hourData.hour] = hourData[daychartmetric] || 0;
+                });
+
+                labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+                data = hourlyData;
             }
         } else if (viewMode === "week" || (viewMode === "custom" && dateRange.end - dateRange.start < 8 * 86400000)) {
             // For week view, show daily breakdown
@@ -266,11 +266,12 @@ const Steps = () => {
         const formData = new FormData(e.target);
         const entryData = {
             date: formData.get("date"),
+            hour: Number.parseInt(formData.get("time").slice(0, 2)),
             steps: Number.parseInt(formData.get("steps")),
-            totalDistance: Number.parseFloat(formData.get("distance")),
-            totalCalories: Number.parseInt(formData.get("calories")),
+            distance: Number.parseFloat(formData.get("distance")),
+            calories: Number.parseInt(formData.get("calories")),
             mode: formData.get("mode"),
-            totalActiveTime: Number.parseInt(formData.get("activeTime")),
+            activeTime: Number.parseInt(formData.get("activeTime")),
             isVerified: false,
             day: new Date(formData.get("date")).toISOString().split("T")[0],
         };
@@ -411,6 +412,14 @@ const Steps = () => {
     }
 
     const insights = getInsights()
+
+    if(!user){
+        return (
+            <div className="step-container">
+                <h1>Vous devez vous connecter pour accéder à cette page</h1>
+            </div>
+        )
+    }
 
     return (
         <div className="steps-container">
@@ -735,6 +744,17 @@ const Steps = () => {
                                     name="date"
                                     required
                                     defaultValue={currentEntry ? currentEntry.day : new Date().toISOString().split("T")[0]}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="hour">Heure de début</label>
+                                <input
+                                    type="time"
+                                    step="3600"
+                                    id="time"
+                                    name="time"
+                                    required
+                                    defaultValue={currentEntry ? currentEntry.hour : new Date().getHours()}
                                 />
                             </div>
 

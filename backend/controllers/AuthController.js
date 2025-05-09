@@ -64,18 +64,18 @@ const createUser = async (req, res) => {
         // Vérifications email/username existant
         const existingUser = await UserModel.findOne({
             $or: [{ email }, { username }]
-          }).select('email username').lean();
-          
-          if (existingUser) {
+        }).select('email username').lean();
+
+        if (existingUser) {
             const errors = {};
             if (existingUser.email === email) errors.email = "Email déjà utilisé";
             if (existingUser.username === username) errors.username = "Nom d'utilisateur déjà pris";
-            
+
             return res.status(400).json({
-              success: false,
-              errors
+                success: false,
+                errors
             });
-          }
+        }
 
         const hashedPassword = await bcrypt.hash(password, 12);
         const verificationCode = generateVerificationCode();
@@ -409,11 +409,11 @@ const loginUser = async (req, res) => {
         if (user.lockUntil && user.lockUntil > Date.now()) {
             const remainingTime = Math.ceil((user.lockUntil - Date.now()) / (1000 * 60));
             return res.status(429).json({
-              success: false,
-              error: `Trop de tentatives. Réessayez dans ${remainingTime} minutes`,
-              retryAfter: remainingTime * 60 // en secondes
+                success: false,
+                error: `Trop de tentatives. Réessayez dans ${remainingTime} minutes`,
+                retryAfter: remainingTime * 60 // en secondes
             });
-          }
+        }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
@@ -442,15 +442,15 @@ const loginUser = async (req, res) => {
         const sessionDuration = stayLoggedIn ? ms(process.env.SESSION_DURATION_LONG) : ms(process.env.SESSION_DURATION_SHORT);
 
         //vérification des sessions expirées
-        user.activeSessions = user.activeSessions.filter(session => 
+        user.activeSessions = user.activeSessions.filter(session =>
             session.expiresAt > Date.now()
-          );
+        );
 
         // pas plus de 5 sessions en mm temps
         if (user.activeSessions.length >= 5) {
             user.activeSessions.sort((a, b) => a.expiresAt - b.expiresAt);
             user.activeSessions.shift();
-          }
+        }
 
         user.activeSessions.push({
             ipAddress,
@@ -611,8 +611,6 @@ const logoutUser = async (req, res) => {
 const checkAuth = async (req, res) => {
     try {
         const user = await UserModel.findById(req.userId)
-            .select('-password -verificationToken -resetPasswordToken')
-            .lean();
 
         if (!user) {
             return res.status(404).json({
@@ -622,28 +620,30 @@ const checkAuth = async (req, res) => {
         }
         const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         const userAgent = req.headers['user-agent'] || 'unknown';
-        const currentSession = user.activeSessions.find(session => 
-            session.ipAddress === ip && 
+        const currentSession = user.activeSessions.find(session =>
+            session.ipAddress === ip &&
             session.userAgent === userAgent &&
             new Date(session.expiresAt) > new Date(),
-          );
-          
-          if (!currentSession) {
+        );
+
+        if (!currentSession) {
             res.clearCookie("jwtauth", {
                 secure: process.env.NODE_ENV === "production" ? true : false,
                 httpOnly: process.env.NODE_ENV === "production" ? true : false,
                 sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
                 ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
             });
-            return res.status(200).json({ 
-              success: false, 
-              error: "Session expirée ou invalide",
+            return res.status(200).json({
+                success: false,
+                error: "Session expirée ou invalide",
             });
-          }
+        }
+        
+        const userRes = user.toJSON();
 
         return res.status(200).json({
             success: true,
-            user
+            user: userRes
         });
     } catch (error) {
         console.error("Erreur lors de la vérification de l'authentification:", error);

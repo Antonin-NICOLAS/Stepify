@@ -6,8 +6,9 @@
   background-color: var(--body-color);
   color: var(--text-color);
 }
+
 .hide-sidebar ~ .main {
-  padding-left: 135px; /* sidebar étendue */
+  padding-left: 135px; /* sidebar non-étendue */
 }
 
 .global-loader {
@@ -37,5 +38,12 @@
 
   .hide-sidebar ~ .main {
     padding-left: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .main{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }

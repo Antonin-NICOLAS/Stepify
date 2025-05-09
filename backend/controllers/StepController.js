@@ -38,9 +38,8 @@ const createStepEntry = async (req, res) => {
   if (checkAuthorization(req, res, userId)) return;
 
   try {
-    // Validation des données
-    const requiredFields = ['date', 'totalDistance', 'totalDistance', 'totalDistance'];
-    const missingFields = requiredFields.filter(field => !entryData[field]);
+    const requiredFields = ['date', 'hour', 'steps', 'distance', 'calories', 'activeTime', 'mode', 'day'];
+    const missingFields = requiredFields.filter(field => entryData[field] === undefined);
 
     if (missingFields.length > 0) {
       return res.status(400).json({
@@ -49,24 +48,67 @@ const createStepEntry = async (req, res) => {
       });
     }
 
-    const newEntry = await StepEntry.create({
-      ...entryData,
-      xp: computeXpForEntry(entryData),
-      user: userId,
-      date: new Date(entryData.date),
-      day: new Date(entryData.date).toISOString().split('T')[0]
-    });
+    const { hour, steps, distance, calories, activeTime, mode, date, day } = entryData;
 
-    await updateUserStats(userId);
+    const hourlyEntry = { hour, steps, distance, calories, activeTime, mode };
 
-    res.status(201).json({
-      success: true,
-      entry: newEntry
-    });
+    // Search for existing StepEntry for same user and day
+    const existingEntry = await StepEntry.findOne({ user: userId, day });
 
+    if (existingEntry) {
+      // Check if this hour already exists to avoid duplicates
+      const hourExists = existingEntry.hourlyData.some(data => data.hour === hour);
+
+      if (hourExists) {
+        return res.status(409).json({
+          success: false,
+          error: `Données déjà présentes pour ${hour} heure`
+        });
+      }
+
+      // Push the new hourly entry and update totals
+      existingEntry.hourlyData.push(hourlyEntry);
+      existingEntry.totalSteps += steps;
+      existingEntry.totalDistance += distance;
+      existingEntry.totalCalories += calories;
+      existingEntry.totalActiveTime += activeTime;
+      existingEntry.xp += computeXpForEntry(entryData);
+
+      // Optionally update dominantMode here if needed
+
+      await existingEntry.save();
+
+      await updateUserStats(userId);
+
+      return res.status(200).json({
+        success: true,
+        entry: existingEntry
+      });
+    } else {
+      // Create a new StepEntry
+      const newEntry = await StepEntry.create({
+        user: userId,
+        date: new Date(date),
+        day,
+        hourlyData: [hourlyEntry],
+        totalSteps: steps,
+        totalDistance: distance,
+        totalCalories: calories,
+        totalActiveTime: activeTime,
+        xp: computeXpForEntry(entryData),
+        isVerified: false
+      });
+
+      await updateUserStats(userId);
+
+      return res.status(201).json({
+        success: true,
+        entry: newEntry
+      });
+    }
   } catch (error) {
     console.error('Erreur création entrée:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: 'Erreur lors de la création de l\'entrée'
     });

@@ -7,9 +7,11 @@ import { useAuth } from '../context/AuthContext';
 import Account from "../assets/account.png";
 import Logo from "../assets/icon.png";
 //icons
-import { LayoutDashboard,
+import {
+  LayoutDashboard,
   Award,
   Footprints,
+  ChevronsLeft,
   AlignStartVertical,
   Menu,
   CircleGauge,
@@ -18,7 +20,8 @@ import { LayoutDashboard,
   Settings,
   Info,
   LogIn,
-  LogOut } from 'lucide-react';
+  LogOut
+} from 'lucide-react';
 //CSS
 import "./Header.css";
 
@@ -67,9 +70,15 @@ function Header() {
               )}
             </div>
             <div className="sidebar__info">
-              <h3>{user ? (`${user.firstName} ${user.lastName}`) : ("Guest")}</h3>
+              <h3>{user ? (`${user.fullName}`) : ("Guest")}</h3>
               <span>{user && user.email}</span>
             </div>
+          </div>
+          <div className="sidebar__close">
+            <button className="hide__sidebar sidebar__link" onClick={toggleSidebar}>
+              <ChevronsLeft />
+              <span>Fermer le menu</span>
+            </button>
           </div>
 
           <div className="sidebar__content">

@@ -132,8 +132,18 @@ const userSchema = new Schema({
       default: false
     }
   }],
+  totalCustomGoalsCompleted: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
 
   // --- Récompenses & Défis ---
+  level: {
+    type: Number,
+    min: 0,
+    default: 0
+  },
   rewardsUnlocked: [{
     rewardId: {
       type: Schema.Types.ObjectId,
@@ -285,13 +295,13 @@ userSchema.virtual('fullName').get(function () {
 });
 
 // Virtual pour le progrès de l'objectif quotidien
-userSchema.virtual('todayProgress').get(async function() {
+userSchema.virtual('todayProgress').get(async function () {
   const today = new Date().toISOString().split('T')[0];
   const result = await mongoose.model('StepEntry').aggregate([
     { $match: { user: this._id, day: today } },
     { $group: { _id: null, totalSteps: { $sum: "$steps" } } }
   ]);
-  
+
   const todaySteps = result[0]?.totalSteps || 0;
   return (todaySteps / this.dailyGoal) * 100;
 });
