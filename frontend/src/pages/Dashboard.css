@@ -792,13 +792,13 @@
     border-radius: var(--radius);
 }
 
-.dashboard-container .leaderboard-container {
+.dashboard-container .dashboard-leaderboard-container {
     display: grid;
     grid-template-columns: 1fr;
     gap: 2rem;
 }
 
-.dashboard-container .leaderboard-podium {
+.dashboard-container .dashboard-leaderboard-container .leaderboard-podium {
     display: flex;
     justify-content: center;
     align-items: flex-end;
@@ -806,19 +806,19 @@
     margin: 2rem 0;
 }
 
-.dashboard-container .podium-item {
+.dashboard-container .dashboard-leaderboard-container .podium-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
 }
 
-.dashboard-container .podium-avatar {
+.dashboard-container .dashboard-leaderboard-container .podium-avatar {
     position: relative;
     margin-bottom: 0.5rem;
 }
 
-.dashboard-container .podium-avatar img {
+.dashboard-container .dashboard-leaderboard-container .podium-avatar img {
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -826,21 +826,21 @@
     border: 3px solid var(--shadow-color);
 }
 
-.dashboard-container .first-place .podium-avatar img {
+.dashboard-container .dashboard-leaderboard-container .first-place .podium-avatar img {
     width: 80px;
     height: 80px;
     border-color: gold;
 }
 
-.dashboard-container .second-place .podium-avatar img {
+.dashboard-container .dashboard-leaderboard-container .second-place .podium-avatar img {
     border-color: silver;
 }
 
-.dashboard-container .third-place .podium-avatar img {
+.dashboard-container .dashboard-leaderboard-container .third-place .podium-avatar img {
     border-color: #cd7f32;
 }
 
-.dashboard-container .podium-position {
+.dashboard-container .dashboard-leaderboard-container .podium-position {
     position: absolute;
     bottom: -5px;
     right: -5px;
@@ -857,39 +857,39 @@
     color: var(--Couleur);
 }
 
-.dashboard-container .first-place .podium-position {
+.dashboard-container .dashboard-leaderboard-container .first-place .podium-position {
     background-color: gold;
     color: var(--Noir);
 }
 
-.dashboard-container .second-place .podium-position {
+.dashboard-container .dashboard-leaderboard-container .second-place .podium-position {
     background-color: silver;
     color: var(--Noir);
 }
 
-.dashboard-container .third-place .podium-position {
+.dashboard-container .dashboard-leaderboard-container .third-place .podium-position {
     background-color: #cd7f32;
     color: white;
 }
 
-.dashboard-container .podium-name {
+.dashboard-container .dashboard-leaderboard-container .podium-name {
     font-weight: 600;
     color: var(--Couleur);
     margin-bottom: 0.25rem;
 }
 
-.dashboard-container .podium-steps {
+.dashboard-container .dashboard-leaderboard-container .podium-steps {
     font-size: 0.875rem;
     color: var(--text-color);
 }
 
-.dashboard-container .leaderboard-list {
+.dashboard-container .dashboard-leaderboard-container .leaderboard-list {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.dashboard-container .leaderboard-item {
+.dashboard-container .dashboard-leaderboard-container .leaderboard-item {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -898,7 +898,7 @@
     padding: 0.75rem 1rem;
 }
 
-.dashboard-container .leaderboard-rank {
+.dashboard-container .dashboard-leaderboard-container .leaderboard-rank {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--Couleur);
@@ -906,36 +906,36 @@
     text-align: center;
 }
 
-.dashboard-container .leaderboard-user {
+.dashboard-container .dashboard-leaderboard-container .leaderboard-user {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     flex: 1;
 }
 
-.dashboard-container .leaderboard-avatar {
+.dashboard-container .dashboard-leaderboard-container .leaderboard-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.dashboard-container .leaderboard-name {
+.dashboard-container .dashboard-leaderboard-container .leaderboard-name {
     font-weight: 500;
     color: var(--Couleur);
 }
 
-.dashboard-container .leaderboard-username {
+.dashboard-container .dashboard-leaderboard-container .leaderboard-username {
     font-size: 0.75rem;
     color: var(--text-light);
 }
 
-.dashboard-container .leaderboard-steps {
+.dashboard-container .dashboard-leaderboard-container .leaderboard-steps {
     font-weight: 600;
     color: var(--Couleur);
 }
 
-.dashboard-container .your-position {
+.dashboard-container .dashboard-leaderboard-container .your-position {
     background-color: var(--shadow-color);
     border-radius: var(--radius);
     padding: 1rem;
@@ -946,25 +946,25 @@
     margin-top: 1.5rem;
 }
 
-.dashboard-container .your-position-label {
+.dashboard-container .dashboard-leaderboard-container .your-position-label {
     font-size: 0.875rem;
     color: var(--text-color);
     margin-bottom: 0.5rem;
 }
 
-.dashboard-container .your-position-rank {
+.dashboard-container .dashboard-leaderboard-container .your-position-rank {
     font-size: 2rem;
     font-weight: 700;
     color: var(--Couleur);
     margin-bottom: 0.25rem;
 }
 
-.dashboard-container .your-position-rank span {
+.dashboard-container .dashboard-leaderboard-container .your-position-rank span {
     font-size: 1rem;
     vertical-align: super;
 }
 
-.dashboard-container .your-position-text {
+.dashboard-container .dashboard-leaderboard-container .your-position-text {
     font-size: 0.875rem;
     color: var(--text-color);
 }

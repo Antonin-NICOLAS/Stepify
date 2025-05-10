@@ -34,4 +34,22 @@ const stepEntrySchema = new Schema({
   createdAt: { type: Date, default: Date.now }
 }, { timestamps: true });
 
+stepEntrySchema.pre('save', function(next) {
+  // Calcul des totaux
+  this.totalSteps = this.hourlyData.reduce((sum, h) => sum + h.steps, 0);
+  this.totalDistance = this.hourlyData.reduce((sum, h) => sum + h.distance, 0);
+  this.totalCalories = this.hourlyData.reduce((sum, h) => sum + h.calories, 0);
+  this.totalActiveTime = this.hourlyData.reduce((sum, h) => sum + h.activeTime, 0);
+  
+  // Calcul du mode dominant
+  const modeCounts = this.hourlyData.reduce((acc, h) => {
+      acc[h.mode] = (acc[h.mode] || 0) + 1;
+      return acc;
+  }, {});
+  
+  this.dominantMode = Object.entries(modeCounts).sort((a, b) => b[1] - a[1])[0][0];
+  
+  next();
+});
+
 module.exports = mongoose.model('StepEntry', stepEntrySchema);

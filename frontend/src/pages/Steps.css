@@ -358,12 +358,53 @@
     gap: 1rem;
 }
 
-.steps-container .metric-selector select {
-    padding: 0.5rem;
+.steps-container .metric-selector .metric-select__control,
+.steps-container .mode-filter .mode-select__control,
+.steps-container .form-group .mode-select__control {
+    padding: 0.25rem;
     border: 1px solid var(--Couleur2);
     border-radius: var(--radius);
     background-color: var(--body-color);
     color: var(--Noir);
+    font-size: 1rem;
+    min-height: 40px;
+    min-width: 150px;
+}
+
+.steps-container .metric-selector .metric-select__single-value,
+.steps-container .mode-filter .mode-select__single-value,
+.steps-container .form-group .mode-select__single-value {
+    color: var(--Noir);
+}
+
+.steps-container .metric-selector .metric-select__menu,
+.steps-container .mode-filter .mode-select__menu,
+.steps-container .form-group .mode-select__menu {
+    background-color: var(--body-color);
+    color: var(--Noir);
+}
+.steps-container .metric-selector .metric-select__input-container,
+.steps-container .mode-filter .mode-select__input-container,
+.steps-container .form-group .mode-select__input-container {
+    display: none;
+}
+.steps-container .metric-selector .metric-select__menu-list,
+.steps-container .mode-filter .mode-select__menu-list,
+.steps-container .form-group .mode-select__menu-list {
+    padding: 0;
+}
+
+.steps-container .metric-selector .custom-select__option--is-selected,
+.steps-container .mode-filter .custom-select__option--is-selected,
+.steps-container .form-group .custom-select__option--is-selected {
+    background-color: var(--turquoise) !important;
+    color: var(--Noir) !important;
+}
+
+.steps-container .metric-selector .custom-select__option--is-focused,
+.steps-container .mode-filter .custom-select__option--is-focused,
+.steps-container .form-group .custom-select__option--is-focused {
+    background-color: var(--Couleur1) !important;
 }
 
 .steps-container .chart-container {
@@ -404,14 +445,6 @@
 .steps-container .filter-controls {
     display: flex;
     gap: 1rem;
-}
-
-.steps-container .mode-filter select {
-    padding: 0.5rem;
-    border: 1px solid var(--Couleur2);
-    border-radius: var(--radius);
-    background-color: var(--body-color);
-    color: var(--Noir);
 }
 
 .steps-container .filter-button {
@@ -463,8 +496,7 @@
 
 .steps-container .edit-button,
 .steps-container .delete-button,
-.steps-container .favorite-button
- {
+.steps-container .favorite-button {
     width: 30px;
     height: 30px;
     display: flex;
@@ -549,7 +581,7 @@
     background-color: var(--body-color);
     border-radius: var(--radius-lg);
     width: 90%;
-    max-width: 500px;
+    max-width: 800px;
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: var(--shadow-lg);
@@ -568,6 +600,17 @@
     color: var(--Couleur);
 }
 
+.steps-container .modal .hour-navigation {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.steps-container .modal .hour-navigation button:disabled {
+    visibility: hidden;
+}
+
 .steps-container .close-button {
     background: none;
     border: none;
@@ -583,11 +626,11 @@
     padding: 1.5rem;
 }
 
-.steps-container .form-group {
+.steps-container .entry-form .form-group {
     margin-bottom: 1.5rem;
 }
 
-.steps-container .form-group label {
+.steps-container .entry-form .form-group label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;

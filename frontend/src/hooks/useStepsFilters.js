@@ -12,7 +12,11 @@ export const useStepsFilters = (stepEntries, viewMode, selectedDate, dateRange) 
 
         // Filter by date range
         if (viewMode === "day") {
-            const dayString = selectedDate.toISOString().split("T")[0];
+            const year = selectedDate.getFullYear();
+            const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+            const day = String(selectedDate.getDate()).padStart(2, '0');
+            const dayString = `${year}-${month}-${day}`;
+
             filtered = filtered.filter((entry) => entry.day === dayString);
         } else if (viewMode === "week") {
             const startOfWeek = new Date(selectedDate);

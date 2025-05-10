@@ -107,13 +107,13 @@ const createUser = async (req, res) => {
         const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         const sessionDuration = stayLoggedIn ? ms(process.env.SESSION_DURATION_LONG) : ms(process.env.SESSION_DURATION_SHORT);
 
-        user.activeSessions.push({
+        newUser.activeSessions.push({
             ipAddress,
             userAgent,
             expiresAt: new Date(Date.now() + sessionDuration)
         });
 
-        await user.save();
+        await newUser.save();
 
         // Ne pas renvoyer les informations sensibles
         const userResponse = newUser.toObject();

@@ -12,28 +12,9 @@ import "./Rewards.css"
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title)
 
-function useCssVarsOnThemeChange() {
-    const { theme } = useTheme();
-  
-    const [cssVars, setCssVars] = useState({
-      noir: '',
-      blanc: '',
-    });
-  
-    useEffect(() => {
-      const cssvar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name);
-  
-      setCssVars({
-        noir: cssvar('--Noir'),
-        blanc: cssvar('--Blanc'),
-      });
-    }, [theme]);
-  
-    return cssVars;
-  }
-
 const Rewards = () => {
-    const { noir } = useCssVarsOnThemeChange();
+    const { theme } = useTheme();
+    const [noir, setNoir] = useState(getCssVar('--Noir'));
     // State for active tab
     const [activeTab, setActiveTab] = useState("dashboard")
 
@@ -101,6 +82,19 @@ const Rewards = () => {
 
         setShowcaseRewards(initialShowcase)
     }, [])
+
+    useEffect(() => {
+        // force une mise à jour après changement du theme
+        const timeout = setTimeout(() => {
+            setNoir(getCssVar('--Noir'));
+        }, 0);
+        return () => clearTimeout(timeout);
+    }, [theme]);
+
+    function getCssVar(name) {
+        console.log(getComputedStyle(document.body).getPropertyValue(name).trim())
+        return getComputedStyle(document.body).getPropertyValue(name).trim();
+    }
 
     // Calculate reward statistics
     const calculateRewardStats = (allRewards, userRewards) => {
@@ -1518,7 +1512,7 @@ const Rewards = () => {
                                         legend: {
                                             position: "right",
                                             labels: {
-                                                color: "var(--Noir)",
+                                                color: noir,
                                                 font: {
                                                     size: 10,
                                                 },
@@ -1562,13 +1556,13 @@ const Rewards = () => {
                                         x: {
                                             stacked: true,
                                             ticks: {
-                                                color: "var(--Noir)",
+                                                color: noir,
                                             },
                                         },
                                         y: {
                                             stacked: true,
                                             ticks: {
-                                                color: "var(--Noir)",
+                                                color: noir,
                                             },
                                         },
                                     },
@@ -1576,7 +1570,7 @@ const Rewards = () => {
                                         legend: {
                                             position: "top",
                                             labels: {
-                                                color: "var(--Noir)",
+                                                color: noir,
                                             },
                                         },
                                     },
@@ -1609,14 +1603,14 @@ const Rewards = () => {
                                     scales: {
                                         x: {
                                             ticks: {
-                                                color: "var(--Noir)",
+                                                color: noir,
                                             },
                                         },
                                         y: {
                                             beginAtZero: true,
                                             ticks: {
                                                 stepSize: 1,
-                                                color: "var(--Noir)",
+                                                color: noir,
                                             },
                                         },
                                     },
@@ -1624,7 +1618,7 @@ const Rewards = () => {
                                         legend: {
                                             position: "top",
                                             labels: {
-                                                color: "var(--Noir)",
+                                                color: noir,
                                             },
                                         },
                                     },

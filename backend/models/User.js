@@ -138,12 +138,18 @@ const userSchema = new Schema({
     min: 0
   },
 
-  // --- Récompenses & Défis ---
+  // --- Classement ---
+  rankingHistory: [{
+    date: { type: Date, default: Date.now },
+    globalRank: Number,
+    challengeRank: Schema.Types.ObjectId, // Challenge associé si besoin
+  }],
   level: {
     type: Number,
     min: 0,
     default: 0
   },
+  // --- Récompenses & Défis ---
   rewardsUnlocked: [{
     rewardId: {
       type: Schema.Types.ObjectId,
@@ -173,6 +179,14 @@ const userSchema = new Schema({
     completed: {
       type: Boolean,
       default: false
+    },
+    progress: {
+      type: Number,
+      default: 0
+    },
+    lastUpdated: {
+      type: Date,
+      default: Date.now
     }
   }],
   totalChallengesCompleted: {

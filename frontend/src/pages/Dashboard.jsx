@@ -709,7 +709,7 @@ const Dashboard = () => {
                         <div className="leaderboard-period">Cette semaine</div>
                     </div>
 
-                    <div className="leaderboard-container">
+                    <div className="dashboard-leaderboard-container">
                         <div className="leaderboard-podium">
                             <div className="podium-item second-place">
                                 <div className="podium-avatar">

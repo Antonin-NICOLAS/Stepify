@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
+import Select from 'react-select';
 //Hooks & context
 import { useAuth } from "../context/AuthContext"
 import GlobalLoader from "../utils/GlobalLoader"
@@ -10,7 +11,7 @@ import { useStepsStats } from "../hooks/useStepsStats"
 import { Line } from "react-chartjs-2"
 import { Chart, registerables } from "chart.js"
 //ICONS
-import { Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart } from "lucide-react"
+import { Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart, Trophy, Map, Flame, Clock, ArrowLeft, ArrowRight } from "lucide-react"
 //CSS
 import "./Steps.css"
 
@@ -22,7 +23,11 @@ const Steps = () => {
 
     // State for view options
     const [viewMode, setViewMode] = useState("day");
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState(() => {
+        const now = new Date();
+        now.setHours(0, 0, 0, 0); // Set to local midnight
+        return now;
+    });
     const [dateRange, setDateRange] = useState({
         start: new Date(new Date().setDate(new Date().getDate() - 7)),
         end: new Date(),
@@ -32,6 +37,18 @@ const Steps = () => {
     // State for modals
     const [showModal, setShowModal] = useState(false);
     const [currentEntry, setCurrentEntry] = useState(null);
+    const [selectedHourIndex, setSelectedHourIndex] = useState(0);
+    const now = new Date();
+    const initialHour = `${now.getHours().toString().padStart(2, '0')}:00`;
+    const [formValues, setFormValues] = useState({ // form data
+        date: '',
+        time: initialHour,
+        steps: '',
+        distance: '',
+        calories: '',
+        mode: 'walk',
+        activeTime: ''
+    });
     const [showImportModal, setShowImportModal] = useState(false);
     const [importSource, setImportSource] = useState(null);
     const [importFile, setImportFile] = useState(null);
@@ -58,6 +75,76 @@ const Steps = () => {
     );
 
     const stats = useStepsStats(filteredEntries);
+
+    // UseEffect
+
+    useEffect(() => {
+        if (currentEntry?.mode) {
+            const match = ModeOptions.find(opt => opt.value === currentEntry.mode);
+            if (match) setSelectedMode(match);
+        }
+    }, [currentEntry]);
+
+    useEffect(() => {
+        if (currentEntry) {
+            const hourData = currentEntry.hourlyData[selectedHourIndex];
+            setFormValues({
+                steps: hourData.steps,
+                distance: hourData.distance,
+                calories: hourData.calories,
+                mode: hourData.mode,
+                activeTime: hourData.activeTime
+            });
+            setSelectedMode(ModeOptions.find(opt => opt.value === hourData.mode));
+        }
+    }, [selectedHourIndex, currentEntry]);
+
+    // select Options
+    const MetricOptions = [
+        { value: 'totalSteps', label: 'Pas', icon: <Trophy size={16} /> },
+        { value: 'totalDistance', label: 'Distance', icon: <Map size={16} /> },
+        { value: 'totalCalories', label: 'Calories', icon: <Flame size={16} /> },
+        { value: 'totalActiveTime', label: 'Temps actif', icon: <Clock size={16} /> },
+    ];
+
+    const ModeOptionsChart = [
+        { value: 'all', label: ' Tous les modes', icon: '🌐' },
+        { value: 'walk', label: ' Marche', icon: '🚶' },
+        { value: 'run', label: ' Course', icon: '🏃' },
+        { value: 'bike', label: ' Vélo', icon: '🚴' },
+    ];
+    const ModeOptions = [
+        { value: 'walk', label: ' Marche', icon: '🚶' },
+        { value: 'run', label: ' Course', icon: '🏃' },
+        { value: 'bike', label: ' Vélo', icon: '🚴' },
+    ];
+
+    // State for select
+    const [selectedMode, setSelectedMode] = useState(
+        ModeOptions.find(opt => opt.value === (currentEntry?.mode || 'walk'))
+    );
+
+    const customSingleValue = ({ data }) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {data.icon}
+            {data.label}
+        </div>
+    );
+
+    const customOption = (props) => {
+        const { data, innerRef, innerProps, isSelected, isFocused } = props;
+        return (
+            <div
+                ref={innerRef}
+                {...innerProps}
+                className={`metric-select__option ${isSelected ? 'custom-select__option--is-selected' : ''} ${isFocused ? 'custom-select__option--is-focused' : ''}`}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', borderRadius: '4px' }}
+            >
+                {data.icon}
+                {data.label}
+            </div>
+        );
+    };
 
     // Helper functions
     const formatActiveTime = (minutes) => {
@@ -127,11 +214,15 @@ const Steps = () => {
         let data = []
 
         // Group data by day, week, or month
+        // Inside the day view logic
         if (viewMode === "day") {
-            // Récupérer les données horaires pour le jour sélectionné
-            const dayEntry = filteredEntries.find(entry =>
-                entry.day === selectedDate.toISOString().split('T')[0]
-            );
+            // Get local date string for comparison
+            const year = selectedDate.getFullYear();
+            const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+            const day = String(selectedDate.getDate()).padStart(2, '0');
+            const targetDay = `${year}-${month}-${day}`;
+
+            const dayEntry = filteredEntries.find(entry => entry.day === targetDay);
 
             if (dayEntry) {
                 // Initialiser les données pour 24h
@@ -264,22 +355,31 @@ const Steps = () => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
+        const hour = Number(formData.get("time").split(":")[0]);
+
         const entryData = {
-            date: formData.get("date"),
-            hour: Number.parseInt(formData.get("time").slice(0, 2)),
-            steps: Number.parseInt(formData.get("steps")),
-            distance: Number.parseFloat(formData.get("distance")),
-            calories: Number.parseInt(formData.get("calories")),
-            mode: formData.get("mode"),
-            activeTime: Number.parseInt(formData.get("activeTime")),
-            isVerified: false,
-            day: new Date(formData.get("date")).toISOString().split("T")[0],
+            date: new Date(formData.get("date")),
+            day: formData.get("date"), // Format YYYY-MM-DD
+            hourlyData: [{
+                hour: hour,
+                steps: Number(formData.get("steps")),
+                distance: Number(formData.get("distance")),
+                calories: Number(formData.get("calories")),
+                mode: formData.get("mode"),
+                activeTime: Number(formData.get("activeTime"))
+            }]
         };
 
         try {
             let success;
             if (currentEntry) {
-                success = await updateStepEntry(currentEntry._id, entryData);
+                const updatedEntry = {
+                    ...currentEntry,
+                    hourlyData: currentEntry.hourlyData.map(hd =>
+                        hd.hour === hour ? entryData.hourlyData[0] : hd
+                    )
+                };
+                success = await updateStepEntry(currentEntry._id, updatedEntry);
             } else {
                 success = await addStepEntry(entryData);
             }
@@ -290,6 +390,17 @@ const Steps = () => {
             }
         } catch (error) {
             console.error("Submission error:", error);
+        }
+    };
+
+    // 2. Ajouter la logique de navigation entre les heures
+    const handleHourNavigation = (direction) => {
+        const hours = currentEntry.hourlyData.map(h => h.hour);
+        const currentIndex = hours.indexOf(currentEntry.hourlyData[selectedHourIndex].hour);
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < hours.length) {
+            setSelectedHourIndex(newIndex);
         }
     };
 
@@ -323,7 +434,10 @@ const Steps = () => {
 
     // Handle date navigation
     const navigateDate = (direction) => {
-        const newDate = new Date(selectedDate)
+        const newDate = new Date(selectedDate);
+
+        // Reset time to local midnight before modifying
+        newDate.setHours(0, 0, 0, 0);
 
         if (viewMode === "day") {
             newDate.setDate(newDate.getDate() + direction)
@@ -333,7 +447,7 @@ const Steps = () => {
             newDate.setMonth(newDate.getMonth() + direction)
         }
 
-        setSelectedDate(newDate)
+        setSelectedDate(newDate);
     }
 
     // Handle export data
@@ -413,7 +527,7 @@ const Steps = () => {
 
     const insights = getInsights()
 
-    if(!user){
+    if (!user) {
         return (
             <div className="step-container">
                 <h1>Vous devez vous connecter pour accéder à cette page</h1>
@@ -613,12 +727,13 @@ const Steps = () => {
                     <h2>Progression</h2>
                     <div className="chart-controls">
                         <div className="metric-selector">
-                            <select value={chartMetric} onChange={(e) => setChartMetric(e.target.value)}>
-                                <option value="totalSteps">Pas</option>
-                                <option value="totalDistance">Distance</option>
-                                <option value="totalCalories">Calories</option>
-                                <option value="totalActiveTime">Temps actif</option>
-                            </select>
+                            <Select
+                                value={MetricOptions.find(option => option.value === chartMetric)}
+                                onChange={(selected) => setChartMetric(selected.value)}
+                                options={MetricOptions}
+                                components={{ SingleValue: customSingleValue, Option: customOption }}
+                                classNamePrefix="metric-select"
+                            />
                         </div>
                     </div>
                 </div>
@@ -638,14 +753,15 @@ const Steps = () => {
                     <h2>Historique des entrées</h2>
                     <div className="filter-controls">
                         <div className="mode-filter">
-                            <select value={filters.mode} onChange={(e) => setFilters({ ...filters, mode: e.target.value })}>
-                                <option value="all">Tous les modes</option>
-                                <option value="walk">🚶 Marche</option>
-                                <option value="run">🏃 Course</option>
-                                <option value="bike">🚴 Vélo</option>
-                            </select>
+                            <Select
+                                value={ModeOptionsChart.find(option => option.value === filters.mode)}
+                                onChange={(selected) => setFilters({ ...filters, mode: selected.value })}
+                                options={ModeOptionsChart}
+                                components={{ SingleValue: customSingleValue, Option: customOption }}
+                                classNamePrefix="mode-select"
+                            />
                         </div>
-                        <button className="filter-button">
+                        <button className="filter-button"> {/*TODO: Filtres ? */}
                             <Filter size={16} />
                             <span>Filtres</span>
                         </button>
@@ -734,8 +850,26 @@ const Steps = () => {
                                 <X size={20} />
                             </button>
                         </div>
-
                         <form className="entry-form" onSubmit={handleSubmit}>
+                        {currentEntry && (
+                            <div className="hour-navigation">
+                                <button type="button"
+                                    onClick={() => handleHourNavigation(-1)}
+                                    disabled={selectedHourIndex === 0}
+                                >
+                                    <ArrowLeft size={25} />
+                                </button>
+                                <span>
+                                    Heure: {currentEntry.hourlyData[selectedHourIndex].hour.toString().padStart(2, '0')}:00
+                                </span>
+                                <button type="button"
+                                    onClick={() => handleHourNavigation(1)}
+                                    disabled={selectedHourIndex === currentEntry.hourlyData.length - 1}
+                                >
+                                    <ArrowRight size={25} />
+                                </button>
+                            </div>
+                        )}
                             <div className="form-group">
                                 <label htmlFor="date">Date</label>
                                 <input
@@ -743,18 +877,41 @@ const Steps = () => {
                                     id="date"
                                     name="date"
                                     required
-                                    defaultValue={currentEntry ? currentEntry.day : new Date().toISOString().split("T")[0]}
+                                    disabled={!!currentEntry}
+                                    defaultValue={currentEntry?.day || new Date().toISOString().split('T')[0]}
                                 />
                             </div>
+                            {!currentEntry &&
+                                <div className="form-group">
+                                    <label htmlFor="time">Heure</label>
+                                    <input
+                                        type="time"
+                                        id="time"
+                                        name="time"
+                                        step="3600"
+                                        required
+                                        defaultValue={
+                                            currentEntry
+                                                ? `${currentEntry.hourlyData[selectedHourIndex].hour.toString().padStart(2, '0')}:00`
+                                                : new Date().toLocaleTimeString('fr-FR', { hour: '2-digit' })
+                                        }
+                                    />
+                                </div>}
+
                             <div className="form-group">
-                                <label htmlFor="hour">Heure de début</label>
-                                <input
-                                    type="time"
-                                    step="3600"
-                                    id="time"
-                                    name="time"
-                                    required
-                                    defaultValue={currentEntry ? currentEntry.hour : new Date().getHours()}
+                                <label htmlFor="mode">Mode d'activité</label>
+                                <Select
+                                    value={selectedMode}
+                                    onChange={(selected) => {
+                                        setSelectedMode(selected);
+                                        // Désactiver les pas si mode vélo/course
+                                        if (['run', 'bike'].includes(selected.value)) {
+                                            setFormValues(prev => ({ ...prev, steps: 0 }));
+                                        }
+                                    }}
+                                    options={ModeOptions}
+                                    components={{ SingleValue: customSingleValue, Option: customOption }}
+                                    classNamePrefix="mode-select"
                                 />
                             </div>
 
@@ -764,22 +921,23 @@ const Steps = () => {
                                     type="number"
                                     id="steps"
                                     name="steps"
-                                    required
                                     min="0"
-                                    defaultValue={currentEntry ? currentEntry.totalSteps : ""}
+                                    value={formValues.steps}
+                                    onChange={(e) => setFormValues(prev => ({ ...prev, steps: e.target.value }))}
+                                    disabled={['run', 'bike'].includes(selectedMode?.value)}
                                     placeholder="Nombre de pas"
                                 />
                             </div>
-
                             <div className="form-group">
                                 <label htmlFor="distance">Distance (km)</label>
                                 <input
                                     type="number"
                                     id="distance"
                                     name="distance"
-                                    step="0.1"
+                                    step="0.01"
                                     min="0"
-                                    defaultValue={currentEntry ? currentEntry.totalDistance : ""}
+                                    value={formValues.distance}
+                                    onChange={(e) => setFormValues(prev => ({ ...prev, distance: e.target.value }))}
                                     placeholder="Distance en km"
                                 />
                             </div>
@@ -791,18 +949,10 @@ const Steps = () => {
                                     id="calories"
                                     name="calories"
                                     min="0"
-                                    defaultValue={currentEntry ? currentEntry.totalCalories : ""}
+                                    value={formValues.calories}
+                                    onChange={(e) => setFormValues(prev => ({ ...prev, calories: e.target.value }))}
                                     placeholder="Calories brûlées"
                                 />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="mode">Mode</label>
-                                <select id="mode" name="mode" defaultValue={currentEntry ? currentEntry.mode : "walk"}>
-                                    <option value="walk">🚶 Marche</option>
-                                    <option value="run">🏃 Course</option>
-                                    <option value="bike">🚴 Vélo</option>
-                                </select>
                             </div>
 
                             <div className="form-group">
@@ -812,7 +962,8 @@ const Steps = () => {
                                     id="activeTime"
                                     name="activeTime"
                                     min="0"
-                                    defaultValue={currentEntry ? currentEntry.totalActiveTime : ""}
+                                    value={formValues.activeTime}
+                                    onChange={(e) => setFormValues(prev => ({ ...prev, activeTime: e.target.value }))}
                                     placeholder="Temps actif en minutes"
                                 />
                             </div>
@@ -835,54 +986,57 @@ const Steps = () => {
                         </form>
                     </div>
                 </div>
-            )}
+            )
+            }
             {/* Data import Modal */}
-            {showImportModal && (
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <div className="modal-header">
-                            <h3>Importer depuis {importSource}</h3>
-                            <button className="close-button" onClick={() => setShowImportModal(false)}>
-                                <X size={20} />
-                            </button>
-                        </div>
+            {
+                showImportModal && (
+                    <div className="modal-overlay">
+                        <div className="modal">
+                            <div className="modal-header">
+                                <h3>Importer depuis {importSource}</h3>
+                                <button className="close-button" onClick={() => setShowImportModal(false)}>
+                                    <X size={20} />
+                                </button>
+                            </div>
 
-                        <div className="import-instructions">
-                            {importSource === 'Apple Health' && (
-                                <p>
-                                    1. Ouvrez l'application Santé sur iPhone<br />
-                                    2. Allez dans votre profil &gt; Exporter les données santé<br />
-                                    3. Sélectionnez "Exporter" et envoyez-vous le fichier XML<br />
-                                    4. Uploadez le fichier export.xml ci-dessous
-                                </p>
-                            )}
-                            {importSource === 'Samsung Health' && (
-                                <p>
-                                    1. Ouvrez Samsung Health<br />
-                                    2. Allez dans Paramètres &gt; Télécharger les données personnelles<br />
-                                    3. Sélectionnez les données à exporter<br />
-                                    4. Uploadez le fichier CSV reçu ci-dessous
-                                </p>
-                            )}
+                            <div className="import-instructions">
+                                {importSource === 'Apple Health' && (
+                                    <p>
+                                        1. Ouvrez l'application Santé sur iPhone<br />
+                                        2. Allez dans votre profil &gt; Exporter les données santé<br />
+                                        3. Sélectionnez "Exporter" et envoyez-vous le fichier XML<br />
+                                        4. Uploadez le fichier export.xml ci-dessous
+                                    </p>
+                                )}
+                                {importSource === 'Samsung Health' && (
+                                    <p>
+                                        1. Ouvrez Samsung Health<br />
+                                        2. Allez dans Paramètres &gt; Télécharger les données personnelles<br />
+                                        3. Sélectionnez les données à exporter<br />
+                                        4. Uploadez le fichier CSV reçu ci-dessous
+                                    </p>
+                                )}
 
-                            <input
-                                type="file"
-                                accept={importSource === 'Apple Health' ? '.xml' : '.csv'}
-                                onChange={(e) => setImportFile(e.target.files[0])}
-                            />
+                                <input
+                                    type="file"
+                                    accept={importSource === 'Apple Health' ? '.xml' : '.csv'}
+                                    onChange={(e) => setImportFile(e.target.files[0])}
+                                />
 
-                            <button
-                                className="import-button"
-                                onClick={handleFileImport}
-                                disabled={!importFile}
-                            >
-                                Importer
-                            </button>
+                                <button
+                                    className="import-button"
+                                    onClick={handleFileImport}
+                                    disabled={!importFile}
+                                >
+                                    Importer
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     )
 }
 

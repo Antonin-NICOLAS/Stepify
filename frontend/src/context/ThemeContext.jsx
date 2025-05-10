@@ -30,21 +30,33 @@ export const ThemeProvider = ({ children }) => {
 
   // Changer le thème (toggle uniquement entre dark et light)
   const toggleTheme = useCallback(() => {
-    if (!user) return;
+    if (user) {
+      let newPreference;
+      if (user.themePreference === 'auto') {
+        newPreference = getAutoTheme() === 'dark' ? 'light' : 'dark';
+      } else {
+        newPreference = user.themePreference === 'dark' ? 'light' : 'dark';
+      }
 
-    let newPreference;
-    if (user.themePreference === 'auto') {
-      newPreference = getAutoTheme() === 'dark' ? 'light' : 'dark';
+      // Update user preference both locally and in DB
+      setUser({ ...user, themePreference: newPreference });
+      updateThemePreference(user?._id, newPreference);
+
+      setTheme(newPreference);
     } else {
-      newPreference = user.themePreference === 'dark' ? 'light' : 'dark';
+      const current = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+
+      // Applique le thème au body
+      document.body.classList.toggle('dark-theme');
+
+      // Met à jour le state global du thème
+      setTheme(newTheme);
+
+      // (Facultatif) sauvegarder dans localStorage
+      localStorage.setItem('theme', newTheme);
     }
-
-    // Update user preference both locally and in DB
-    setUser({ ...user, themePreference: newPreference });
-    updateThemePreference(user?._id, newPreference);
-
-    setTheme(newPreference);
-  }, [user, setUser]);
+  }, [user, setUser, setTheme]);
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
