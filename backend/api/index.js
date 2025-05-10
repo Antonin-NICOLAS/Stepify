@@ -3,10 +3,13 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 const cloudinary = require('../config/cloudinary')
+//cron
+const { scheduleStatusUpdates } = require('../controllers/updateChallengeStatuses');
 //routes
 const AuthRoutes = require('../routes/AuthRoutes')
 const UserRoutes = require('../routes/AccountRoutes')
 const StepRoutes = require('../routes/StepRoutes')
+const ChallengeRoutes = require('../routes/ChallengeRoutes')
 //.env
 require('dotenv').config()
 
@@ -37,11 +40,12 @@ app.use((req, res, next) => {
 
 //routes
 app.get('/', (req, res) => {
-    res.send("Hello from Stepify API")
+    res.send("Hello ! Here is Stepify API")
 })
 app.use('/auth', AuthRoutes)
 app.use('/account', UserRoutes)
 app.use('/step', StepRoutes)
+app.use('/challenge', ChallengeRoutes)
 
 //mongoDB connection
 mongoose.connect(process.env.MONGO_URI)
@@ -56,5 +60,6 @@ const port = process.env.PORT || 8000;
 const host = process.env.NODE_ENV === "production" ? 'step-ify.vercel.app' : 'localhost';
 app.listen(port, function () {
     console.log("Server Has Started!");
-    console.log(`Server is running at http://${host}:${port}`)
+    console.log(`Server is running at http://${host}:${port}`);
+    scheduleStatusUpdates();
 });

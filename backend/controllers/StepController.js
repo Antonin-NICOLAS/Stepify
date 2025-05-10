@@ -38,46 +38,102 @@ const createStepEntry = async (req, res) => {
   if (checkAuthorization(req, res, userId)) return;
 
   try {
-    const requiredFields = ['date', 'hour', 'steps', 'distance', 'calories', 'activeTime', 'mode', 'day'];
-    const missingFields = requiredFields.filter(field => entryData[field] === undefined);
+    const { hourlyData, date, day } = entryData;
 
-    if (missingFields.length > 0) {
+    // Validate hourlyData exists and has at least one entry
+    if (!hourlyData || hourlyData.length === 0) {
       return res.status(400).json({
         success: false,
-        error: `Champs manquants: ${missingFields.join(', ')}`
+        error: 'Aucune donnée horaire fournie'
       });
     }
 
-    const { hour, steps, distance, calories, activeTime, mode, date, day } = entryData;
+    // Extract the first hourly entry (assuming one entry per request)
+    const [hourlyEntry] = hourlyData;
+    const { hour, steps, distance, calories, activeTime, mode } = hourlyEntry;
 
-    const hourlyEntry = { hour, steps, distance, calories, activeTime, mode };
+    // Validate required fields in the hourly entry
+    if (hour === undefined) {
+      return res.status(400).json({
+        success: false,
+        error: 'L\'heure est requise'
+      });
+    }
 
-    // Search for existing StepEntry for same user and day
+    const parsedHour = parseInt(hour, 10);
+    const parsedSteps = parseFloat(steps);
+    const parsedDistance = parseFloat(distance);
+    const parsedCalories = parseFloat(calories);
+    const parsedActiveTime = parseFloat(activeTime);
+
+    if (isNaN(parsedHour) || parsedHour < 0 || parsedHour > 23) {
+      return res.status(400).json({
+        success: false,
+        error: 'Heure invalide'
+      });
+    }
+
+    if (isNaN(parsedSteps) || parsedSteps < 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Nombre de pas invalide'
+      });
+    }
+
+    if (isNaN(parsedDistance) || parsedDistance < 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Distance invalide'
+      });
+    }
+
+    if (isNaN(parsedCalories) || parsedCalories < 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Calories invalides'
+      });
+    }
+
+    if (isNaN(parsedActiveTime) || parsedActiveTime < 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Temps actif invalide'
+      });
+    }
+
+    // Validate other required fields
+    if (!mode || !date || !day) {
+      return res.status(400).json({
+        success: false,
+        error: 'Tous les champs requis (mode, date) doivent être fournis'
+      });
+    }
+
+    // Proceed with existing entry check
     const existingEntry = await StepEntry.findOne({ user: userId, day });
 
     if (existingEntry) {
-      // Check if this hour already exists to avoid duplicates
       const hourExists = existingEntry.hourlyData.some(data => data.hour === hour);
-
       if (hourExists) {
         return res.status(409).json({
           success: false,
-          error: `Données déjà présentes pour ${hour} heure`
+          error: `Données déjà présentes pour ${hour}h`
         });
       }
 
-      // Push the new hourly entry and update totals
+      // Add the new entry
       existingEntry.hourlyData.push(hourlyEntry);
-      existingEntry.totalSteps += steps;
-      existingEntry.totalDistance += distance;
-      existingEntry.totalCalories += calories;
-      existingEntry.totalActiveTime += activeTime;
-      existingEntry.xp += computeXpForEntry(entryData);
+      
+      // Sort the hourlyData array by hour (0-23)
+      existingEntry.hourlyData.sort((a, b) => a.hour - b.hour);
 
-      // Optionally update dominantMode here if needed
+      existingEntry.totalSteps += parsedSteps || 0;
+      existingEntry.totalDistance += parsedDistance || 0;
+      existingEntry.totalCalories += parsedCalories || 0;
+      existingEntry.totalActiveTime += parsedActiveTime || 0;
+      existingEntry.xp += computeXpForEntry(hourlyEntry);
 
       await existingEntry.save();
-
       await updateUserStats(userId);
 
       return res.status(200).json({
@@ -85,22 +141,21 @@ const createStepEntry = async (req, res) => {
         entry: existingEntry
       });
     } else {
-      // Create a new StepEntry
+      // For new entries, the array will naturally be sorted since it only has one element
       const newEntry = await StepEntry.create({
         user: userId,
         date: new Date(date),
         day,
         hourlyData: [hourlyEntry],
-        totalSteps: steps,
-        totalDistance: distance,
-        totalCalories: calories,
-        totalActiveTime: activeTime,
-        xp: computeXpForEntry(entryData),
+        totalSteps: parsedSteps || 0,
+        totalDistance: parsedDistance || 0,
+        totalCalories: parsedCalories || 0,
+        totalActiveTime: parsedActiveTime || 0,
+        xp: computeXpForEntry(hourlyEntry),
         isVerified: false
       });
 
       await updateUserStats(userId);
-
       return res.status(201).json({
         success: true,
         entry: newEntry

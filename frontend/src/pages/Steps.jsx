@@ -365,7 +365,7 @@ const Steps = () => {
                 steps: Number(formData.get("steps")),
                 distance: Number(formData.get("distance")),
                 calories: Number(formData.get("calories")),
-                mode: formData.get("mode"),
+                mode: String(selectedMode.value),
                 activeTime: Number(formData.get("activeTime"))
             }]
         };
@@ -381,6 +381,7 @@ const Steps = () => {
                 };
                 success = await updateStepEntry(currentEntry._id, updatedEntry);
             } else {
+                console.log(entryData)
                 success = await addStepEntry(entryData);
             }
 
@@ -948,6 +949,7 @@ const Steps = () => {
                                     type="number"
                                     id="calories"
                                     name="calories"
+                                    step="0.01"
                                     min="0"
                                     value={formValues.calories}
                                     onChange={(e) => setFormValues(prev => ({ ...prev, calories: e.target.value }))}

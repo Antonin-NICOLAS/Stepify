@@ -24,7 +24,7 @@ export const useSteps = (userId) => {
             }
         } catch (err) {
             console.error("Fetch error:", err);
-            toast.error("Erreur de connexion au serveur");
+            toast.error(error.response?.data?.error || "Erreur de connexion au serveur");
         } finally {
             setIsLoading(false)
         }
@@ -49,7 +49,7 @@ export const useSteps = (userId) => {
             }
         } catch (error) {
             console.error("Add error:", error);
-            toast.error("Erreur lors de l'ajout");
+            toast.error(error.response?.data?.error || "Erreur lors de l'ajout");
             return false;
         } finally {
             setIsLoading(false)
@@ -75,7 +75,7 @@ export const useSteps = (userId) => {
             }
         } catch (error) {
             console.error("Update error:", error);
-            toast.error("Erreur lors de la modification");
+            toast.error(error.response?.data?.error || "Erreur lors de la modification");
             return false;
         } finally {
             setIsLoading(false)
@@ -98,7 +98,7 @@ export const useSteps = (userId) => {
             }
         } catch (error) {
             console.error("Favorites error:", error);
-            toast.error("Erreur lors de la mise en favoris");
+            toast.error(error.response?.data?.error || "Erreur lors de la mise en favoris");
             return false;
         } finally {
             setIsLoading(false)
@@ -123,7 +123,7 @@ export const useSteps = (userId) => {
             }
         } catch (error) {
             console.error("Delete error:", error);
-            toast.error("Erreur lors de la suppression");
+            toast.error(error.response?.data?.error || "Erreur lors de la suppression");
             return false;
         } finally {
             setIsLoading(false)
@@ -157,7 +157,7 @@ export const useSteps = (userId) => {
             }
         } catch (error) {
             console.error('Import error:', error);
-            toast.error('Erreur lors de l\'importation');
+            toast.error(error.response?.data?.error || 'Erreur lors de l\'importation');
             return false;
         } finally {
             setIsLoading(false)

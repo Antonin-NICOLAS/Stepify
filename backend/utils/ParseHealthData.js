@@ -123,16 +123,16 @@ const parseAppleHealthData = async (xmlData, userId) => {
       hourlyData.push({
         hour: hourNum,
         steps: Math.round(hourSteps),
-        distance: hourDistance,
-        calories: hourCalories,
+        distance: Math.round(hourDistance * 100) / 100,
+        calories: Math.round(hourCalories * 100) / 100,
         activeTime: hourActiveTime,
         mode: 'walk' // sera mis à jour plus tard si workout
       });
 
       // Mise à jour des totaux
       totalSteps += hourSteps;
-      totalDistance += hourDistance;
-      totalCalories += hourCalories;
+      totalDistance += Math.round(hourDistance * 100) / 100;
+      totalCalories += Math.round(hourCalories * 100) / 100;
       totalActiveTime += hourActiveTime;
     });
 
@@ -143,7 +143,7 @@ const parseAppleHealthData = async (xmlData, userId) => {
       day: dateKey,
       hourlyData,
       totalSteps: Math.round(totalSteps),
-      totalDistance: parseFloat(totalDistance.toFixed(2)),
+      totalDistance: parseFloat(totalDistance.toFixed(3)),
       totalCalories: Math.round(totalCalories),
       totalActiveTime: Math.round(totalActiveTime),
       dominantMode: 'walk',
@@ -252,17 +252,17 @@ const parseSamsungHealthData = (csvData, userId) => {
       // Mettre à jour les données horaires
       dayEntry.hourlyData[hour] = {
         hour,
-        steps: dayEntry.hourlyData[hour].steps + steps,
-        distance: dayEntry.hourlyData[hour].distance + distance,
-        calories: dayEntry.hourlyData[hour].calories + calories,
+        steps: dayEntry.hourlyData[hour].steps + Math.round(steps * 100) / 100,
+        distance: dayEntry.hourlyData[hour].distance + Math.round(distance * 100) / 100,
+        calories: dayEntry.hourlyData[hour].calories + Math.round(calories * 100) / 100,
         activeTime: dayEntry.hourlyData[hour].activeTime + duration,
         mode
       };
 
       // Mettre à jour les totaux
-      dayEntry.totalSteps += steps;
-      dayEntry.totalDistance += distance;
-      dayEntry.totalCalories += calories;
+      dayEntry.totalSteps += Math.round(steps * 100) / 100;
+      dayEntry.totalDistance += Math.round(distance * 100) / 100;
+      dayEntry.totalCalories += Math.round(calories * 100) / 100;
       dayEntry.totalActiveTime += duration;
 
       // Déterminer le mode dominant (le plus long)
