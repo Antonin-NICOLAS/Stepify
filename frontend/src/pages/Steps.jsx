@@ -456,7 +456,7 @@ const Steps = () => {
         let dataStr
 
         if (format === "json") {
-            dataStr = JSON.stringify(stepEntries, null, 2) //TODO: je ne sais pas si je mets stepentries ou filteredentries
+            dataStr = JSON.stringify(stepEntries, null, 2)
         } else if (format === "csv") {
             const headers = ["date", "totalSteps", "totalDistance", "totalCalories", "mode", "totalActiveTime", "isVerified"]
             const csvRows = [headers.join(",")]

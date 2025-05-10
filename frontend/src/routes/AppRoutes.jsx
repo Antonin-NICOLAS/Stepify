@@ -19,7 +19,10 @@ import Leaderboard from '../pages/Leaderboard.jsx';
 import Rewards from '../pages/Rewards.jsx';
 import Settings from '../pages/Settings.jsx';
 import About from '../pages/About.jsx';
+//loader
 import GlobalLoader from '../utils/GlobalLoader.jsx';
+//terms of services
+import TermsOfService from '../pages/Documents/TermsOfService.jsx'
 //AUTH
 import Login from '../pages/Auth/Login.jsx';
 import EmailVerification from '../pages/Auth/EmailVerification.jsx';
@@ -46,6 +49,7 @@ export default function AppRoutes() {
                     <Route path="/admin" element={<RequireAdmin><Dashboard /></RequireAdmin>} /> {/* TODO : admin page */}
                     <Route path="*" element={<NotFound />} />
                     <Route path='/loader' element={<GlobalLoader/>}></Route>
+                    <Route path="/terms-of-service" element={<TermsOfService />} />
                 </Route>
 
                 {/* Pages sans header/sidebar */}
@@ -56,7 +60,6 @@ export default function AppRoutes() {
                 <Route path="/email-sent" element={<RequireEmailVerification><EmailSent /></RequireEmailVerification>} />
                 <Route path="/reset-password/:token" element={<RequireEmailVerification><ResetPassword /></RequireEmailVerification>} />
                 {/* TODO : <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
-                {/* TODO : <Route path="/terms-of-service" element={<TermsOfService />} /> */}
         </Routes>
     );
 }
