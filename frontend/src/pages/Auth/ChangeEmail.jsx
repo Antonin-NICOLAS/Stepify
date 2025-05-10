@@ -1,56 +1,108 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 //context
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from "../../context/AuthContext"
 //icons
-import { Mail, Send } from 'lucide-react';
+import { Mail, Send, ArrowLeft, AtSign, CheckCircle2 } from "lucide-react"
 //CSS
-import "./Forgot-pwd.css"
+import "./ChangeEmail.css"
 
 function ChangeEmail() {
   const navigate = useNavigate()
-  const { ChangeVerificationEmail, isLoading } = useAuth();
+  const { ChangeVerificationEmail, isLoading } = useAuth()
 
   const [email, setEmail] = useState("")
 
   const handleChangeVerificationEmail = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     ChangeVerificationEmail(email, () => {
       setEmail("")
       navigate("/email-verification")
-    });
-  };
+    })
+  }
 
   return (
-    <div className="forgotpwd-body">
-      <div className="forgotpwd-container">
-        <form className="forgotpwd-form" onSubmit={handleChangeVerificationEmail}>
-          <h2>Mauvais email ?</h2>
-          <p className="subtitle">Entrez votre nouvel email pour le vérifier</p>
-
-          <div className="input-group">
-            <label>Email</label>
-            <div className="input-wrapper">
-              <input
-                type="email"
-                placeholder="Entrez votre email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <Mail />
+    <div className="change-email-page">
+      <div className="auth-container">
+        <div className="auth-visual-section">
+          <div className="auth-visual-content">
+            <div className="auth-logo">
+              <span>Stepify</span>
+            </div>
+            <div className="auth-stats">
+              <div className="auth-stat-item">
+                <h3>Changer d'email</h3>
+                <p>Mettez à jour votre adresse email pour la vérification</p>
+              </div>
+              <div className="auth-stat-item">
+                <div className="auth-stat-icon">
+                  <Mail />
+                </div>
+                <div className="auth-stat-info">
+                  <h4>Nouvel email</h4>
+                  <p>Entrez votre nouvelle adresse email</p>
+                </div>
+              </div>
+              <div className="auth-stat-item">
+                <div className="auth-stat-icon">
+                  <CheckCircle2 />
+                </div>
+                <div className="auth-stat-info">
+                  <h4>Vérification</h4>
+                  <p>Vous recevrez un nouveau code de vérification</p>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <button type="submit" className="submit-btn" disabled={isLoading}>
-            {isLoading ? "Envoi en cours..." : "Envoyer le code"} <Send />
-          </button>
+        <div className="auth-form-section">
+          <div className="auth-form-container">
+            <form className="auth-form" onSubmit={handleChangeVerificationEmail}>
+              <div className="auth-form-header">
+                <div className="auth-icon-container">
+                  <div className="auth-icon">
+                    <AtSign />
+                  </div>
+                </div>
+                <h2>Mauvais email ?</h2>
+                <p className="auth-subtitle">Entrez votre nouvel email pour le vérifier</p>
+              </div>
 
-          <div className="form-footer">
-            <span>Vous aviez renseigné le bon email ?</span>
-            <Link to="/email-verification">Retour</Link>
+              <div className="auth-form-content">
+                <div className="auth-input-group">
+                  <label htmlFor="email">Email</label>
+                  <div className="auth-input-wrapper">
+                    <Mail className="auth-input-icon" />
+                    <input
+                      id="email"
+                      type="email"
+                      placeholder="Entrez votre email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <button type="submit" className="auth-button auth-button-primary" disabled={isLoading}>
+                  <Send />
+                  <span>{isLoading ? "Envoi en cours..." : "Envoyer le code"}</span>
+                </button>
+
+                <Link to="/email-verification" className="auth-button auth-button-secondary">
+                  <ArrowLeft />
+                  <span>Retour</span>
+                </Link>
+              </div>
+
+              <div className="auth-form-footer">
+                <span>Vous aviez renseigné le bon email ?</span>
+                <Link to="/email-verification">Retour à la vérification</Link>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )

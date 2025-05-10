@@ -4,7 +4,7 @@
   --auth-visual-width: 450px;
 }
 
-.forgot-password-page {
+.change-email-page {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,7 +16,7 @@
   .auth-container {
     display: flex;
     width: 100%;
-    max-width: 1200px;
+    max-width: calc(var(--auth-form-width) + var(--auth-visual-width));
     min-height: 600px;
     background-color: var(--body-color);
     border-radius: var(--radius-lg);
@@ -70,13 +70,13 @@
 
   .auth-stat-item {
     display: flex;
-    align-items: center;
-    justify-content: space-around;
+    align-items: flex-start;
     gap: 1rem;
   }
 
   .auth-stat-item h3 {
     font-size: 1.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .auth-stat-item h4 {
@@ -110,7 +110,7 @@
 
   /* =================== FORM SECTION =================== */
   .auth-form-section {
-    min-width: 500px;
+    width: var(--auth-form-width);
     background-color: var(--body-color);
     padding: 2rem;
     display: flex;
@@ -341,7 +341,7 @@
 
 /* =================== RESPONSIVE STYLES =================== */
 @media (max-width: 900px) {
-  .forgot-password-page {
+  .change-email-page {
     .auth-container {
       flex-direction: column;
       max-width: var(--auth-form-width);
@@ -358,7 +358,7 @@
 }
 
 @media (max-width: 500px) {
-  .forgot-password-page {
+  .change-email-page {
     .auth-form-section {
       padding: 1.5rem;
     }
@@ -371,8 +371,8 @@
   }
 }
 
-/* =================== FORGOT PASSWORD SPECIFIC STYLES =================== */
-.forgot-password-page .auth-form-content {
+/* =================== CHANGE EMAIL SPECIFIC STYLES =================== */
+.change-email-page .auth-form-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;

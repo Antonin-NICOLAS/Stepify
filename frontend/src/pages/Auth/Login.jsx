@@ -1,52 +1,68 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import Spline from "@splinetool/react-spline";
+import { useState } from "react"
+import { useNavigate, Link } from "react-router-dom"
+import Spline from "@splinetool/react-spline"
 //context
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from "../../context/AuthContext"
 //icons
 import {
-  Mail, Eye, EyeOff, IdCard, User, LogIn
-} from "lucide-react";
+  Mail,
+  Eye,
+  EyeOff,
+  BadgeIcon as IdCard,
+  User,
+  LogIn,
+  Lock,
+  ArrowRight,
+  UserPlus,
+  AlertCircle,
+  ChevronLeft,
+} from "lucide-react"
 //CSS
-import "./Login.css";
+import "./login.css"
 
 function Auth() {
-  const navigate = useNavigate();
-  const { login, register, isLoading } = useAuth();
+  const navigate = useNavigate()
+  const { login, register, isLoading } = useAuth()
 
-  const [Logindata, setLoginData] = useState({
+  const [loginData, setLoginData] = useState({
     email: "",
     password: "",
-    stayLoggedIn: false
-  });
+    stayLoggedIn: false,
+  })
 
-  const [Registerdata, setRegisterData] = useState({
+  const [registerData, setRegisterData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
     firstName: "",
     lastName: "",
     username: "",
-    stayLoggedIn: false
-  });
+    stayLoggedIn: false,
+  })
 
-  const [isLogin, setIsLogin] = useState(true);
-  const [showLPassword, setShowLPassword] = useState(false);
-  const [showRPassword, setShowRPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLogin, setIsLogin] = useState(true)
+  const [showLPassword, setShowLPassword] = useState(false)
+  const [showRPassword, setShowRPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [formError, setFormError] = useState("")
 
   const handleLogin = (e) => {
-    e.preventDefault();
-    login(
-      Logindata,
-      () => setLoginData({ email: "", password: "", stayLoggedIn: false }),
-      navigate
-    );
-  };
+    e.preventDefault()
+    setFormError("")
+
+    login(loginData, () => setLoginData({ email: "", password: "", stayLoggedIn: false }), navigate)
+  }
 
   const handleRegister = (e) => {
-    e.preventDefault();
-    register(Registerdata, () => {
+    e.preventDefault()
+    setFormError("")
+
+    if (registerData.password !== registerData.confirmPassword) {
+      setFormError("Passwords do not match")
+      return
+    }
+
+    register(registerData, () => {
       setRegisterData({
         email: "",
         password: "",
@@ -54,125 +70,314 @@ function Auth() {
         firstName: "",
         lastName: "",
         username: "",
-        stayLoggedIn: false
-      }),
-        navigate("/email-verification");
-    });
-  };
+        stayLoggedIn: false,
+      })
+      navigate("/email-verification")
+    })
+  }
 
   return (
-    <div className="auth-body">
-      <div className="auth-container">
-        <div className="auth-col col-spline">
-          <Spline scene="https://prod.spline.design/mXCYrxjtEUkHhzFi/scene.splinecode" />
+    <div className="login-container">
+      <div className="auth-header">
+        <button className="back-button" onClick={() => navigate("/")}>
+          <ChevronLeft size={20} />
+          <span>Back to Home</span>
+        </button>
+        <h1>Stepify</h1>
+      </div>
+
+      <div className="auth-content">
+        <div className="auth-visual">
+          <div className="spline-container">
+            <Spline scene="https://prod.spline.design/mXCYrxjtEUkHhzFi/scene.splinecode" />
+          </div>
+          <div className="auth-info">
+            <h2>Track Your Progress</h2>
+            <p>Join thousands of users improving their fitness with Stepify</p>
+            <div className="auth-stats">
+              <div className="stat-item">
+                <span className="stat-value">10K+</span>
+                <span className="stat-label">Active Users</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-value">500+</span>
+                <span className="stat-label">Challenges</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-value">1M+</span>
+                <span className="stat-label">Steps Tracked</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="auth-col col-form">
-          <div className="auth-toggle-buttons">
-            <button className={`form-switch ${isLogin ? "active" : ""}`} onClick={() => setIsLogin(true)}>Sign In</button>
-            <button className={`form-switch ${!isLogin ? "active" : ""}`} onClick={() => setIsLogin(false)}>Register</button>
+        <div className="auth-form-container">
+          <div className="auth-tabs">
+            <button className={`auth-tab ${isLogin ? "active" : ""}`} onClick={() => setIsLogin(true)}>
+              <LogIn size={18} />
+              <span>Sign In</span>
+            </button>
+            <button className={`auth-tab ${!isLogin ? "active" : ""}`} onClick={() => setIsLogin(false)}>
+              <UserPlus size={18} />
+              <span>Register</span>
+            </button>
           </div>
 
-          <div className={`form-slide ${isLogin ? "slide-login" : "slide-register"}`}>
-            <form className="auth-form" onSubmit={handleLogin}>
-              <h2>Welcome Back 👋</h2>
-              <p className="subtitle">Log in to your Stepify account</p>
+          {formError && (
+            <div className="form-error">
+              <AlertCircle size={16} />
+              <span>{formError}</span>
+            </div>
+          )}
 
-              <div className="input-group">
-                <label>Email</label>
-                <div className="input-wrapper">
-                  <input type="email" placeholder="Enter your email" value={Logindata.email} onChange={(e) => setLoginData({ ...Logindata, email: e.target.value })} required />
-                  <Mail />
+          <div className={`auth-forms ${isLogin ? "show-login" : "show-register"}`}>
+            <form className="login-form" onSubmit={handleLogin}>
+              <h2>Welcome Back</h2>
+              <p className="form-subtitle">Log in to your Stepify account</p>
+
+              <div className="form-group">
+                <label htmlFor="login-email">
+                  <Mail size={16} />
+                  <span>Email</span>
+                </label>
+                <div className="input-container">
+                  <input
+                    id="login-email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={loginData.email}
+                    onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                    required
+                  />
                 </div>
               </div>
 
-              <div className="input-group">
-                <label>Password</label>
-                <div className="input-wrapper">
-                  <input type={showLPassword ? "text" : "password"} placeholder="Enter your password" value={Logindata.password} onChange={(e) => setLoginData({ ...Logindata, password: e.target.value })} required />
-                  <button type="button" onClick={() => setShowLPassword(!showLPassword)}>
-                    {showLPassword ? <EyeOff /> : <Eye />}
+              <div className="form-group">
+                <label htmlFor="login-password">
+                  <Lock size={16} />
+                  <span>Password</span>
+                </label>
+                <div className="input-container">
+                  <input
+                    id="login-password"
+                    type={showLPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={loginData.password}
+                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="toggle-password"
+                    onClick={() => setShowLPassword(!showLPassword)}
+                    aria-label={showLPassword ? "Hide password" : "Show password"}
+                  >
+                    {showLPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
               </div>
 
               <div className="form-options">
-                <label><input type="checkbox" checked={Logindata.stayLoggedIn} onChange={() => setLoginData({ ...Logindata, stayLoggedIn: !Logindata.stayLoggedIn })} /> Stay connected</label>
-                <Link to="/forgot-password">Forgot password?</Link>
+                <label className="checkbox-container">
+                  <input
+                    type="checkbox"
+                    checked={loginData.stayLoggedIn}
+                    onChange={() => setLoginData({ ...loginData, stayLoggedIn: !loginData.stayLoggedIn })}
+                  />
+                  <span className="checkmark"></span>
+                  <span>Stay connected</span>
+                </label>
+                <Link to="/forgot-password" className="forgot-password">
+                  Forgot password?
+                </Link>
               </div>
 
-              <button type="submit" className="submit-btn" disabled={isLoading}>Log In <LogIn /></button>
+              <button type="submit" className="submit-button" disabled={isLoading}>
+                <span>Sign In</span>
+                <ArrowRight size={18} />
+              </button>
+
               <div className="form-footer">
-                <span>Pas de compte ?</span>
-                <button onClick={() => setIsLogin(false)}>Register</button>
+                <span>Don't have an account?</span>
+                <button type="button" className="switch-form" onClick={() => setIsLogin(false)}>
+                  Register now
+                </button>
               </div>
             </form>
-            <form className="auth-form" onSubmit={handleRegister}>
-              <h2>Nice to meet you 👋</h2>
-              <p className="subtitle">Create your Stepify account</p>
 
-              <div className="input-group">
-                <label>Prénom</label>
-                <div className="input-wrapper">
-                  <input type="text" placeholder="Your firstname" value={Registerdata.firstName} onChange={(e) => setRegisterData({ ...Registerdata, firstName: e.target.value })} required />
-                  <IdCard />
+            <form className="register-form" onSubmit={handleRegister}>
+              <h2>Create Account</h2>
+              <p className="form-subtitle">Join Stepify and start tracking your progress</p>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="register-firstname">
+                    <User size={16} />
+                    <span>First Name</span>
+                  </label>
+                  <div className="input-container">
+                    <input
+                      id="register-firstname"
+                      type="text"
+                      placeholder="Your first name"
+                      value={registerData.firstName}
+                      onChange={(e) => setRegisterData({ ...registerData, firstName: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="register-lastname">
+                    <User size={16} />
+                    <span>Last Name</span>
+                  </label>
+                  <div className="input-container">
+                    <input
+                      id="register-lastname"
+                      type="text"
+                      placeholder="Your last name"
+                      value={registerData.lastName}
+                      onChange={(e) => setRegisterData({ ...registerData, lastName: e.target.value })}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="input-group">
-                <label>Nom</label>
-                <div className="input-wrapper">
-                  <input type="text" placeholder="Your lastname" value={Registerdata.lastName} onChange={(e) => setRegisterData({ ...Registerdata, lastName: e.target.value })} required />
-                  <IdCard />
+
+              <div className="form-group">
+                <label htmlFor="register-username">
+                  <IdCard size={16} />
+                  <span>Username</span>
+                </label>
+                <div className="input-container">
+                  <input
+                    id="register-username"
+                    type="text"
+                    placeholder="Choose a username"
+                    value={registerData.username}
+                    onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
+                    required
+                  />
                 </div>
               </div>
-              <div className="input-group">
-                <label>Username</label>
-                <div className="input-wrapper">
-                  <input type="text" placeholder="Your username" value={Registerdata.username} onChange={(e) => setRegisterData({ ...Registerdata, username: e.target.value })} required />
-                  <User />
+
+              <div className="form-group">
+                <label htmlFor="register-email">
+                  <Mail size={16} />
+                  <span>Email</span>
+                </label>
+                <div className="input-container">
+                  <input
+                    id="register-email"
+                    type="email"
+                    placeholder="Your email address"
+                    value={registerData.email}
+                    onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                    required
+                  />
                 </div>
               </div>
-              <div className="input-group">
-                <label>Email</label>
-                <div className="input-wrapper">
-                  <input type="email" placeholder="Your email" value={Registerdata.email} onChange={(e) => setRegisterData({ ...Registerdata, email: e.target.value })} required />
-                  <Mail />
-                </div>
-              </div>
-              <div className="input-group">
-                <label>Password</label>
-                <div className="input-wrapper">
-                  <input type={showRPassword ? "text" : "password"} placeholder="Your password" value={Registerdata.password} onChange={(e) => setRegisterData({ ...Registerdata, password: e.target.value })} required />
-                  <button type="button" onClick={() => setShowRPassword(!showRPassword)}>
-                    {showRPassword ? <EyeOff /> : <Eye />}
+
+              <div className="form-group">
+                <label htmlFor="register-password">
+                  <Lock size={16} />
+                  <span>Password</span>
+                </label>
+                <div className="input-container">
+                  <input
+                    id="register-password"
+                    type={showRPassword ? "text" : "password"}
+                    placeholder="Create a password"
+                    value={registerData.password}
+                    onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="toggle-password"
+                    onClick={() => setShowRPassword(!showRPassword)}
+                    aria-label={showRPassword ? "Hide password" : "Show password"}
+                  >
+                    {showRPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
               </div>
-              <div className="input-group">
-                <label>Confirm your Password</label>
-                <div className="input-wrapper">
-                  <input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm your password" value={Registerdata.confirmPassword} onChange={(e) => setRegisterData({ ...Registerdata, confirmPassword: e.target.value })} required />
-                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
-                    {showConfirmPassword ? <EyeOff /> : <Eye />}
+
+              <div className="form-group">
+                <label htmlFor="register-confirm-password">
+                  <Lock size={16} />
+                  <span>Confirm Password</span>
+                </label>
+                <div className="input-container">
+                  <input
+                    id="register-confirm-password"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    value={registerData.confirmPassword}
+                    onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="toggle-password"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
               </div>
-              <div className="register-form-options">
-                <label><input type="checkbox" required /><Link to="/terms-of-service" target="_blank" rel="noopener noreferrer">Accepter les conditions d'utilisation</Link></label> {/*TODO conditions d'utilisation*/}
-                <label><input type="checkbox" checked={Registerdata.stayLoggedIn} onChange={() => setRegisterData({ ...Registerdata, stayLoggedIn: !Registerdata.stayLoggedIn })} />Rester connecté</label>
+
+              <div className="form-agreements">
+                <label className="checkbox-container">
+                  <input type="checkbox" required />
+                  <span className="checkmark"></span>
+                  <span>
+                    I agree to the{" "}
+                    <Link to="/terms-of-service" target="_blank" rel="noopener noreferrer">
+                      Terms of Service
+                    </Link>
+                  </span>
+                </label>
+
+                <label className="checkbox-container">
+                  <input
+                    type="checkbox"
+                    checked={registerData.stayLoggedIn}
+                    onChange={() => setRegisterData({ ...registerData, stayLoggedIn: !registerData.stayLoggedIn })}
+                  />
+                  <span className="checkmark"></span>
+                  <span>Stay connected after registration</span>
+                </label>
               </div>
 
-              <button type="submit" className="submit-btn" disabled={isLoading}>Register <LogIn /></button>
+              <button type="submit" className="submit-button" disabled={isLoading}>
+                <span>Create Account</span>
+                <ArrowRight size={18} />
+              </button>
+
               <div className="form-footer">
-                <span>Déjà un compte ?</span>
-                <button onClick={() => setIsLogin(true)}>Login</button>
+                <span>Already have an account?</span>
+                <button type="button" className="switch-form" onClick={() => setIsLogin(true)}>
+                  Sign in
+                </button>
               </div>
             </form>
           </div>
         </div>
       </div>
+
+      <div className="auth-footer">
+        <div className="footer-links">
+          <Link to="/help">Help</Link>
+          <Link to="/privacy">Privacy</Link>
+          <Link to="/terms">Terms</Link>
+        </div>
+        <p>© {new Date().getFullYear()} Stepify. All rights reserved.</p>
+      </div>
     </div>
-  );
+  )
 }
 
-export default Auth;
+export default Auth

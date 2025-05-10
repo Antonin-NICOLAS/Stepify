@@ -1,148 +1,413 @@
 /* =================== GLOBAL RESET STYLES =================== */
-.emailsent-body {
+:root {
+  --auth-form-width: 450px;
+  --auth-visual-width: 450px;
+}
+
+.email-sent-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--background);
+  padding: 1rem;
+
+  .auth-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    max-width: 1200px;
+    min-height: 600px;
+    background-color: var(--body-color);
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    background-color: var(--Couleur1);
-}
+    box-shadow: var(--shadow-lg);
+  }
 
-.emailsent-body .emailsent-container {
+  /* =================== VISUAL SECTION =================== */
+  .auth-visual-section {
+    flex: 1;
+    background: linear-gradient(135deg, var(--Couleur1), var(--bleu));
+    color: white;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    max-height: 90%;
-    max-width: 90%;
-    overflow-y: auto;
-    padding: 3vw;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-radius: 30px;
-}
-
-/* =================== FORMS =================== */
-
-.emailsent-form {
+    justify-content: center;
+    padding: 2rem;
     position: relative;
-    width: 100%;
+    overflow: hidden;
+  }
+
+  .auth-visual-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("/placeholder.svg?height=600&width=600") center / cover no-repeat;
+    opacity: 0.1;
+  }
+
+  .auth-visual-content {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.8vh;
-}
+    gap: 2rem;
+  }
 
-.emailsent-form h2 {
-    font-size: calc(15px + 0.8vh + 0.7vw);
-    color: var(--Noir);
-    text-align: center;
-}
+  .auth-logo {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
 
-.emailsent-form .subtitle {
-    font-size: calc(0.8vh + 0.7vw);
-    font-weight: 800;
-    color: var(--Couleur);
-    text-align: center;
-}
-
-.emailsent-body .emailsent-form .form-footer {
-    width: 100%;
+  .auth-stats {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .auth-stat-item {
+    display: flex;
+    align-items: flex-start;
     gap: 1rem;
-    font-size: calc(0.8vh + 0.7vw);
-    margin-top: 1rem;
-}
+  }
 
-.emailsent-body .emailsent-form .form-footer a {
-    color: var(--Couleur3);
-    text-decoration: none;
-    font-weight: 600;
-    cursor: pointer;
-}
+  .auth-stat-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
 
-.emailsent-body .emailsent-form .form-footer a:hover {
-    text-decoration: underline;
-}
+  .auth-stat-item h4 {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
 
-.emailsent-body .emailsent-form .form-footer span {
-    color: var(--Couleur);
-}
+  .auth-stat-item p {
+    opacity: 0.8;
+    font-size: 0.9rem;
+  }
 
-.emailsent-body .emailsent-form .secondary-btn {
-    background-color: transparent;
-    color: var(--Couleur);
-    padding: 0.75rem;
-    border: 1px solid var(--Couleur);
-    border-radius: 0.75rem;
-    cursor: pointer;
-    font-weight: 600;
+  .auth-stat-icon {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+  }
 
-.emailsent-body .emailsent-form .secondary-btn:hover {
-    background-color: rgba(33, 46, 83, 0.1);
-}
+  .auth-stat-icon.success {
+    background-color: rgba(190, 211, 195, 0.3);
+  }
 
-/* =================== EMAIL SENT PAGE =================== */
+  .auth-stat-info {
+    flex: 1;
+  }
 
-.emailsent-body .emailsent-form .email-icon-container{
+  /* =================== FORM SECTION =================== */
+  .auth-form-section {
+    min-width: 500px;
+    background-color: var(--body-color);
+    padding: 2rem;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .auth-form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     width: 100%;
   }
 
-.emailsent-body .emailsent-form .email-icon {
+  .auth-form-header {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .auth-icon-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-icon-container.success .auth-icon {
+    background: linear-gradient(135deg, var(--Couleur2), var(--turquoise));
+  }
+
+  .auth-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
-    background-color: var(--Couleur2);
-}
+    background: linear-gradient(135deg, var(--Couleur1), var(--bleu));
+    color: white;
+  }
 
-.emailsent-body .emailsent-form .email-icon svg {
-    width: 40px;
-    height: 40px;
+  .auth-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .auth-form-header h2 {
+    font-size: 1.75rem;
     color: var(--Couleur);
-}
+    margin-bottom: 0.5rem;
+  }
 
-.emailsent-body .emailsent-form .email-sent-message {
-    font-size: calc(0.8vh + 0.7vw);
+  .auth-subtitle {
+    font-size: 1rem;
+    color: var(--Gris);
+  }
+
+  .auth-form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .auth-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .auth-input-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--Couleur);
+  }
+
+  .auth-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .auth-input-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--Gris);
+    width: 18px;
+    height: 18px;
+  }
+
+  .auth-input-wrapper input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid var(--Couleur2);
+    border-radius: var(--radius);
+    background-color: var(--background);
+    color: var(--Noir);
+    font-size: 1rem;
+    transition: var(--transition);
+  }
+
+  .auth-input-wrapper input:focus {
+    outline: none;
+    border-color: var(--Couleur1);
+    box-shadow: 0 0 0 2px rgba(74, 145, 158, 0.2);
+  }
+
+  .auth-input-action {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--Gris);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .auth-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    border: none;
+    font-size: 1rem;
+  }
+
+  .auth-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .auth-button-primary {
+    background: linear-gradient(135deg, var(--Couleur1), var(--bleu));
+    color: white;
+  }
+
+  .auth-button-primary:hover {
+    background: linear-gradient(135deg, var(--bleu), var(--Couleur1));
+    transform: translateY(-2px);
+  }
+
+  .auth-button-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .auth-button-secondary {
+    background-color: transparent;
+    border: 1px solid var(--Couleur2);
+    color: var(--Couleur);
+  }
+
+  .auth-button-secondary:hover {
+    background-color: var(--Couleur2);
+    color: var(--Noir);
+  }
+
+  .auth-form-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--Gris);
+  }
+
+  .auth-form-footer a {
+    color: var(--Couleur1);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .auth-form-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .auth-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+  }
+
+  .auth-alert svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .auth-alert-error {
+    background-color: rgba(206, 106, 107, 0.1);
+    color: var(--Couleur4);
+  }
+
+  .auth-alert-success {
+    background-color: rgba(190, 211, 195, 0.2);
+    color: var(--Couleur2);
+  }
+
+  .success-message {
     text-align: center;
-    margin: 3vh 0;
     color: var(--Noir);
     line-height: 1.6;
+  }
+
+  .password-hint {
+    font-size: 0.8rem;
+    color: var(--Gris);
+  }
 }
 
-.emailsent-body .emailsent-form .email-sent-info {
-    background-color: rgba(74, 145, 158, 0.1);
-    font-size: calc(10px + 0.4vh + 0.3vw);
-    border-radius: 0.75rem;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    width: 100%;
+/* =================== RESPONSIVE STYLES =================== */
+@media (max-width: 900px) {
+  .email-sent-page {
+    .auth-container {
+      flex-direction: column;
+      max-width: var(--auth-form-width);
+    }
+
+    .auth-visual-section {
+      display: none;
+    }
+
+    .auth-form-section {
+      width: 100%;
+    }
+  }
 }
 
-.emailsent-body .emailsent-form .email-sent-info p {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+@media (max-width: 500px) {
+  .email-sent-page {
+    .auth-form-section {
+      padding: 1.5rem;
+    }
+
+    .auth-form-footer {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+}
+
+/* =================== EMAIL SENT SPECIFIC STYLES =================== */
+.email-sent-page {
+  .auth-form-content {
+    text-align: center;
+  }
+
+  .email-sent-message {
+    line-height: 1.6;
     color: var(--Noir);
-}
+    margin-bottom: 1.5rem;
+  }
 
-.emailsent-body .emailsent-form .email-sent-info ul {
+  .email-sent-info {
+    background-color: rgba(74, 145, 158, 0.1);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-align: left;
+    margin-bottom: 1.5rem;
+  }
+
+  .email-sent-info p {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--Couleur);
+  }
+
+  .email-sent-info ul {
     padding-left: 1.5rem;
     margin: 0;
-}
+  }
 
-.emailsent-body .emailsent-form .email-sent-info li {
-    list-style: disc;
-    margin-bottom: 0.25rem;
+  .email-sent-info li {
+    margin-bottom: 0.5rem;
     color: var(--Gris);
+  }
+
+  .email-sent-info li:last-child {
+    margin-bottom: 0;
+  }
 }

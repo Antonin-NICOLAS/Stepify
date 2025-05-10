@@ -204,6 +204,7 @@
 
 .sidebar__theme {
   width: 100%;
+  background-color: transparent;
   font-size: 1.25rem;
 }
 
