@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { useNavigate, useLocation, Link } from "react-router-dom"
+//loader
+import GlobalLoader from "../../utils/GlobalLoader"
 //context
 import { useAuth } from "../../context/AuthContext"
 import { toast } from "react-hot-toast"
@@ -18,7 +20,8 @@ import "./EmailVerification.css"
 
 function EmailVerification() {
   const navigate = useNavigate()
-  const { user, verifyEmail, resendVerificationCode, isLoading } = useAuth()
+  const { user, verifyEmail, resendVerificationCode } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""])
   const [resendDisabled, setResendDisabled] = useState(false)
@@ -110,13 +113,18 @@ function EmailVerification() {
   const handleVerificationCode = async (e) => {
     e.preventDefault()
     const otpCode = otp.join("")
-    verifyEmail(otpCode, () => {
-      console.log('function successful')
-      setIsVerified(true)
-      setTimeout(() => {
-        navigate("/dashboard")
-      }, 3000)
-    })
+    setIsLoading(true)
+    try {
+      await verifyEmail(otpCode, () => {
+        console.log('function successful')
+        setIsVerified(true)
+        setTimeout(() => {
+          navigate("/dashboard")
+        }, 3000)
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   // Handle resend code
@@ -142,6 +150,7 @@ function EmailVerification() {
   if (isVerified) {
     return (
       <div className="verification-page">
+        {isLoading && <GlobalLoader />}
         <div className="auth-container">
           <div className="auth-visual-section">
             <div className="auth-visual-content">
@@ -201,6 +210,7 @@ function EmailVerification() {
 
   return (
     <div className="verification-page">
+      {isLoading && <GlobalLoader />}
       <div className="auth-container">
         <div className="auth-visual-section">
           <div className="auth-visual-content">
@@ -208,7 +218,7 @@ function EmailVerification() {
               <span>Stepify</span>
             </div>
             <div className="auth-stats">
-              <div className="auth-stat-item" style={{flexDirection: 'column'}}>
+              <div className="auth-stat-item" style={{ flexDirection: 'column' }}>
                 <h3>Vérification</h3>
                 <p>Nous prenons la sécurité de votre compte au sérieux</p>
               </div>

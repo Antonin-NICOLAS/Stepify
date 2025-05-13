@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
+//loader
+import GlobalLoader from "../../utils/GlobalLoader"
 //context
 import { useAuth } from "../../context/AuthContext"
 //icons
@@ -9,20 +11,27 @@ import "./ChangeEmail.css"
 
 function ChangeEmail() {
   const navigate = useNavigate()
-  const { changeVerificationEmail, isLoading } = useAuth()
+  const { changeVerificationEmail } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
 
   const [email, setEmail] = useState("")
 
-  const handleChangeVerificationEmail = (e) => {
+  const handleChangeVerificationEmail = async (e) => {
     e.preventDefault()
-    changeVerificationEmail(email, () => {
-      setEmail("")
-      navigate("/email-verification")
-    })
+    setIsLoading(true)
+    try {
+      await changeVerificationEmail(email, () => {
+        setEmail("")
+        navigate("/email-verification")
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <div className="change-email-page">
+      {isLoading && <GlobalLoader/>}
       <div className="auth-container">
         <div className="auth-visual-section">
           <div className="auth-visual-content">

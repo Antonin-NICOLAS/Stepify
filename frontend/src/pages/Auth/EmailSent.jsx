@@ -83,7 +83,7 @@ function EmailSent() {
 
             <div className="auth-form-footer">
               <span>Besoin d'aide?</span>
-              <Link to="/contact">Contactez-nous</Link>
+              <a href="mailto:stepify.contact@gmail.com">Contactez-nous</a>
             </div>
           </div>
         </div>

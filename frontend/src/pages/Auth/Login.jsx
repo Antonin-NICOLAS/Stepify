@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import Spline from "@splinetool/react-spline"
+//loader
+import GlobalLoader from "../../utils/GlobalLoader"
 //context
 import { useAuth } from "../../context/AuthContext"
 //icons
@@ -22,7 +24,8 @@ import "./Login.css"
 
 function Auth() {
   const navigate = useNavigate()
-  const { login, register, isLoading } = useAuth()
+  const { login, register } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -46,14 +49,18 @@ function Auth() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [formError, setFormError] = useState("")
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
     setFormError("")
-
-    login(loginData, () => setLoginData({ email: "", password: "", stayLoggedIn: false }), navigate)
+    setIsLoading(true)
+    try {
+      await login(loginData, () => setLoginData({ email: "", password: "", stayLoggedIn: false }), navigate)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault()
     setFormError("")
 
@@ -62,22 +69,28 @@ function Auth() {
       return
     }
 
-    register(registerData, () => {
-      setRegisterData({
-        email: "",
-        password: "",
-        confirmPassword: "",
-        firstName: "",
-        lastName: "",
-        username: "",
-        stayLoggedIn: false,
+    setIsLoading(true)
+    try {
+      await register(registerData, () => {
+        setRegisterData({
+          email: "",
+          password: "",
+          confirmPassword: "",
+          firstName: "",
+          lastName: "",
+          username: "",
+          stayLoggedIn: false,
+        })
+        navigate("/email-verification")
       })
-      navigate("/email-verification")
-    })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <div className="login-container">
+      {isLoading && <GlobalLoader />}
       <div className="auth-header">
         <button className="back-button" onClick={() => navigate("/")}>
           <ChevronLeft size={20} />
@@ -371,8 +384,8 @@ function Auth() {
       <div className="auth-footer">
         <div className="footer-links">
           <Link to="/help">Help</Link>
-          <Link to="/privacy">Privacy</Link>
-          <Link to="/terms">Terms</Link>
+          <Link to="#">Privacy</Link> {/*TODO: privacy and help pages */}
+          <Link to="/terms-of-service">Terms</Link>
         </div>
         <p>© {new Date().getFullYear()} Stepify. All rights reserved.</p>
       </div>

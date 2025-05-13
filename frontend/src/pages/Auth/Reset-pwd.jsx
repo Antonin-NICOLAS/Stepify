@@ -1,16 +1,20 @@
 import { useState } from "react"
 import { useParams, Link } from "react-router-dom"
+//loader
+import GlobalLoader from "../../utils/GlobalLoader"
 //context
 import { useAuth } from "../../context/AuthContext"
 //icons
 import { Eye, EyeOff, Check, LockKeyhole, KeyRound, ShieldCheck, AlertCircle } from "lucide-react"
 //CSS
 import "./Reset-pwd.css"
+import toast from "react-hot-toast"
 
 function ResetPassword() {
-  const { resetPassword, isLoading, setIsTransitioning } = useAuth()
+  const { resetPassword } = useAuth()
 
   const { token } = useParams()
+  const [isLoading, setIsLoading] = useState(false)
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -19,21 +23,25 @@ function ResetPassword() {
 
   const handleResetPwd = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
     try {
-      setIsTransitioning(true);
       await resetPassword(token, password, confirmPassword, () => {
         setPassword("")
         setConfirmPassword("")
         setIsSuccess(true)
       })
+      console.log(isSuccess)
+    } catch (error) {
+      toast.error(error)
     } finally {
-      setIsTransitioning(false)
+      setIsLoading(false)
     }
   }
 
   if (isSuccess) {
     return (
       <div className="reset-password-page">
+        {isLoading && <GlobalLoader />}
         <div className="auth-container">
           <div className="auth-visual-section">
             <div className="auth-visual-content">
@@ -98,6 +106,7 @@ function ResetPassword() {
 
   return (
     <div className="reset-password-page">
+      {isLoading && <GlobalLoader />}
       <div className="auth-container">
         <div className="auth-visual-section">
           <div className="auth-visual-content">

@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
+//loader
+import GlobalLoader from "../../utils/GlobalLoader"
 //context
 import { useAuth } from "../../context/AuthContext"
 //icons
@@ -9,16 +11,23 @@ import "./Forgot-pwd.css"
 
 function ForgotPassword() {
   const navigate = useNavigate()
-  const { forgotPassword, isLoading } = useAuth()
+  const { forgotPassword } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState("")
 
-  const handleForgotPwd = (e) => {
+  const handleForgotPwd = async (e) => {
     e.preventDefault()
-    forgotPassword(email, () => navigate("/email-sent"))
+    setIsLoading(true)
+    try {
+      await forgotPassword(email, () => navigate("/email-sent"))
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <div className="forgot-password-page">
+      {isLoading && <GlobalLoader />}
       <div className="auth-container">
         <div className="auth-visual-section">
           <div className="auth-visual-content">
@@ -26,7 +35,7 @@ function ForgotPassword() {
               <span>Stepify</span>
             </div>
             <div className="auth-stats">
-              <div className="auth-stat-item" style={{flexDirection: 'column'}}>
+              <div className="auth-stat-item" style={{ flexDirection: 'column' }}>
                 <h3>Mot de passe oublié</h3>
                 <p>Nous vous aiderons à récupérer votre compte</p>
               </div>

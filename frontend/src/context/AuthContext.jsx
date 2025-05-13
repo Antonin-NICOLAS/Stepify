@@ -9,9 +9,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [error, setError] = useState(null);
 
   // Mise à jour partielle de l'utilisateur
   const updateUserField = useCallback((field, value) => {
@@ -20,7 +18,6 @@ export const AuthProvider = ({ children }) => {
 
   // --- Check Auth ---
   const checkAuth = useCallback(async () => {
-    setIsLoading(true)
     try {
       const res = await axios.get(`${API_AUTH}/check-auth`, { withCredentials: true });
       const data = res.data;
@@ -39,8 +36,6 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setIsAuthenticated(false);
       console.error("Error checking auth:", err);
-    } finally {
-      setIsLoading(false)
     }
   }, []);
 
@@ -97,10 +92,8 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(err.response?.data?.errors?.username && err.response?.data?.errors?.email || err.response?.data?.errors?.username || err.response?.data?.errors?.email || "Erreur lors de l'inscription");
-    } finally {
-      setIsLoading(false)
     }
-  }, [setIsLoading]);
+  }, []);
 
   // --- Login ---
   const login = useCallback(async (LformData, resetForm, navigate) => {
@@ -109,7 +102,6 @@ export const AuthProvider = ({ children }) => {
       toast.error("Veuillez remplir tous les champs");
       return;
     }
-    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/login`, {
         email,
@@ -143,10 +135,8 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error(err.response?.data?.error || "Erreur lors de la connexion");
       throw err;
-    } finally {
-      setIsLoading(false)
     }
-  }, [setIsLoading]);
+  }, []);
 
   // --- Forgot Password ---
   const forgotPassword = useCallback(async (email, onSuccess) => {
@@ -154,7 +144,6 @@ export const AuthProvider = ({ children }) => {
       toast.error("Veuillez entrer une adresse email valide");
       return;
     }
-    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/forgot-password`, {
         email
@@ -173,10 +162,9 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(err.response?.data?.error || "Erreur lors de l'envoi de l'email");
-    } finally {
-      setIsLoading(false)
+      throw err;
     }
-  }, [setIsLoading]);
+  }, []);
 
   // --- Reset Password ---
   const resetPassword = useCallback(async (token, password, confirmPassword, onSuccess) => {
@@ -184,7 +172,6 @@ export const AuthProvider = ({ children }) => {
     if (password !== confirmPassword) return toast.error("Les mots de passe ne correspondent pas");
     if (password.length < 8) return toast.error("Mot de passe trop court (min 8 caractères)");
 
-    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/reset-password/${token}`, {
         password,
@@ -206,10 +193,8 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(err.response?.data?.error || "Erreur lors de la réinitialisation");
-    } finally {
-      setIsLoading(false)
     }
-  }, [setIsLoading]);
+  }, []);
 
   // --- Verify Email ---
   const verifyEmail = useCallback(async (code, onSuccess) => {
@@ -217,7 +202,6 @@ export const AuthProvider = ({ children }) => {
       toast.error("Veuillez entrer le code complet à 6 chiffres")
       throw new Error("Invalid code length");
     }
-    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/verify-email`, {
         code
@@ -237,14 +221,11 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(err.response?.data?.error || "Erreur de vérification");
-    } finally {
-      setIsLoading(false)
     }
-  }, [setIsLoading, setIsAuthenticated, setUser]);
+  }, []);
 
   // --- Resend verification code ---
   const resendVerificationCode = useCallback(async (OnError, onSuccess) => {
-    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/resend-verification-code`, {}, {
         withCredentials: true
@@ -264,16 +245,13 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       OnError();
       toast.error(err.response?.data?.error || "Erreur lors de l'envoi du code");
-    } finally {
-      setIsLoading(false)
     }
-  }, [setIsLoading]);
+  }, []);
 
   // --- Change verification email ---
-  const changeVerificationEmail = useCallback(async (newEmail, onSuccess, Finally) => {
+  const changeVerificationEmail = useCallback(async (newEmail, onSuccess) => {
     if (!newEmail) return toast.error("Veuillez entrer votre email");
 
-    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/change-verification-email`, {
         newEmail
@@ -293,14 +271,11 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(err.response?.data?.error || "Erreur lors de l'envoi de l'email");
-    } finally {
-      setIsLoading(false)
     }
-  }, [setIsLoading])
+  }, [])
 
   // --- Logout ---
   const logout = useCallback(async (onSuccess) => {
-    setIsLoading(true)
     try {
       const res = await axios.post(`${API_AUTH}/logout`, {}, { withCredentials: true });
       setIsAuthenticated(false)
@@ -309,8 +284,6 @@ export const AuthProvider = ({ children }) => {
       onSuccess();
     } catch (err) {
       toast.error("Erreur lors de la déconnexion");
-    } finally {
-      setIsLoading(false)
     }
   });
 
@@ -322,9 +295,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{
       user,
       setUser,
-      isLoading,
       isAuthenticated,
-      error,
       updateUserField,
       checkAuth,
       register,
@@ -337,7 +308,6 @@ export const AuthProvider = ({ children }) => {
       resendVerificationCode,
       logout
     }}>
-      {isLoading && <GlobalLoader />}
       {children}
     </AuthContext.Provider>
   );
