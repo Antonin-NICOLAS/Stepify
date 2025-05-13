@@ -335,7 +335,7 @@ const Dashboard = () => {
                                 <Zap size={20} />
                             </div>
                             <div className="streak-text">
-                                <span className="streak-count">{user?.streak?.current}</span>{user?.streak?.current === 1 ? " jour consécutif" : " jours consécutifs"}
+                                <span className="streak-count">{user?.streak?.current}</span>{user?.streak?.current === 0 || user?.streak?.current === 1 ? " jour consécutif" : " jours consécutifs"}
                             </div>
                         </div>
                     </div>

@@ -121,7 +121,6 @@ export const AuthProvider = ({ children }) => {
           'Content-Type': 'application/json'
         }
       });
-      console.log('requête lancée')
 
       const data = res.data;
 
@@ -216,7 +215,7 @@ export const AuthProvider = ({ children }) => {
   const verifyEmail = useCallback(async (code, onSuccess) => {
     if (code.length !== 6) {
       toast.error("Veuillez entrer le code complet à 6 chiffres")
-      return
+      throw new Error("Invalid code length");
     }
     setIsLoading(true)
     try {
@@ -241,7 +240,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setIsLoading(false)
     }
-  }, [setIsLoading]);
+  }, [setIsLoading, setIsAuthenticated, setUser]);
 
   // --- Resend verification code ---
   const resendVerificationCode = useCallback(async (OnError, onSuccess) => {
@@ -333,6 +332,7 @@ export const AuthProvider = ({ children }) => {
       forgotPassword,
       resetPassword,
       verifyEmail,
+      //TODO : delete account
       changeVerificationEmail,
       resendVerificationCode,
       logout

@@ -381,7 +381,6 @@ const Steps = () => {
                 };
                 success = await updateStepEntry(currentEntry._id, updatedEntry);
             } else {
-                console.log(entryData)
                 success = await addStepEntry(entryData);
             }
 

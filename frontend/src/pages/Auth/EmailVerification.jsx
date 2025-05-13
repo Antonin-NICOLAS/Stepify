@@ -45,6 +45,10 @@ function EmailVerification() {
     }
   }, [countdown, resendDisabled])
 
+  useEffect(() => {
+    console.log('isVerified state modified :', isVerified);
+  }, [isVerified]);
+
   // Handle input change and auto-focus next input
   const handleChange = (index, value) => {
     if (value.length > 1) {
@@ -107,6 +111,7 @@ function EmailVerification() {
     e.preventDefault()
     const otpCode = otp.join("")
     verifyEmail(otpCode, () => {
+      console.log('function successful')
       setIsVerified(true)
       setTimeout(() => {
         navigate("/dashboard")
@@ -136,7 +141,7 @@ function EmailVerification() {
 
   if (isVerified) {
     return (
-      <div className="auth-page verification-page">
+      <div className="verification-page">
         <div className="auth-container">
           <div className="auth-visual-section">
             <div className="auth-visual-content">
@@ -195,7 +200,7 @@ function EmailVerification() {
   }
 
   return (
-    <div className="auth-page verification-page">
+    <div className="verification-page">
       <div className="auth-container">
         <div className="auth-visual-section">
           <div className="auth-visual-content">
@@ -203,7 +208,7 @@ function EmailVerification() {
               <span>Stepify</span>
             </div>
             <div className="auth-stats">
-              <div className="auth-stat-item">
+              <div className="auth-stat-item" style={{flexDirection: 'column'}}>
                 <h3>Vérification</h3>
                 <p>Nous prenons la sécurité de votre compte au sérieux</p>
               </div>

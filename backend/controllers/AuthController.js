@@ -502,13 +502,11 @@ const forgotPassword = async (req, res) => {
         }
 
         const resetToken = crypto.randomBytes(32).toString('hex') + Date.now().toString(36);
-        console.log(resetToken)
         user.resetPasswordToken = resetToken;
         user.resetPasswordTokenExpiresAt = Date.now() + ms(process.env.RESET_TOKEN_EXPIRY);
         await user.save();
 
         const resetUrl = `${process.env.FRONTEND_SERVER}/reset-password/${resetToken}`;
-        console.log(resetUrl)
         await sendResetPasswordEmail(user.email, resetUrl);
 
         return res.status(200).json({

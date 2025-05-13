@@ -113,6 +113,7 @@ const updateProfile = async (req, res) => {
 
 const updateEmail = async (req, res) => {
     const { newEmail } = req.body
+    const { userId } = req.params;
 
     if (checkAuthorization(req, res, userId)) return;
 
@@ -164,6 +165,9 @@ const updateEmail = async (req, res) => {
 
 const updatePassword = async (req, res) => {
     const { currentPassword, newPassword } = req.body
+    const { userId } = req.params;
+
+    if (checkAuthorization(req, res, userId)) return;
 
     try {
         if (!currentPassword || !newPassword) {

@@ -19,8 +19,9 @@ export const AuthenticatedUserRoute = ({ children }) => {
 
 export const RequireEmailVerification = ({ children }) => {
   const { user, isLoading } = useAuth();
+  const isOnVerificationPage = window.location.pathname === "/email-verification";
 
-  if (!isLoading) {
+  if (!isLoading && !isOnVerificationPage) {
     return user && !user.isVerified ? 
       <Navigate to="/email-verification" replace state={{ showToast: true }} /> : 
       children;

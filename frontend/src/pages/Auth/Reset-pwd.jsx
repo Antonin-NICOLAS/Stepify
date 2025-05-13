@@ -8,7 +8,7 @@ import { Eye, EyeOff, Check, LockKeyhole, KeyRound, ShieldCheck, AlertCircle } f
 import "./Reset-pwd.css"
 
 function ResetPassword() {
-  const { resetPassword, isLoading } = useAuth()
+  const { resetPassword, isLoading, setIsTransitioning } = useAuth()
 
   const { token } = useParams()
   const [password, setPassword] = useState("")
@@ -17,13 +17,18 @@ function ResetPassword() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const handleResetPwd = (e) => {
+  const handleResetPwd = async (e) => {
     e.preventDefault()
-    resetPassword(token, password, confirmPassword, () => {
-      setPassword("")
-      setConfirmPassword("")
-      setIsSuccess(true)
-    })
+    try {
+      setIsTransitioning(true);
+      await resetPassword(token, password, confirmPassword, () => {
+        setPassword("")
+        setConfirmPassword("")
+        setIsSuccess(true)
+      })
+    } finally {
+      setIsTransitioning(false)
+    }
   }
 
   if (isSuccess) {
@@ -100,7 +105,7 @@ function ResetPassword() {
               <span>Stepify</span>
             </div>
             <div className="auth-stats">
-              <div className="auth-stat-item" style={{flexDirection: "column"}}>
+              <div className="auth-stat-item" style={{ flexDirection: "column" }}>
                 <h3>Réinitialisation du mot de passe</h3>
                 <p>Créez un nouveau mot de passe sécurisé</p>
               </div>

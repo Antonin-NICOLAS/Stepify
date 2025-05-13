@@ -24,7 +24,6 @@ const sendVerificationEmail = async (email, verificationCode) => {
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log('Email de vérification envoyé');
     } catch (error) {
         console.error("Erreur lors de l'envoi de l'email :", error);
         throw new Error("Échec de l'envoi de l'email de vérification");
@@ -52,7 +51,6 @@ const sendWelcomeEmail = async (email, prenom) => {
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log('Email de bienvenue envoyé');
     } catch (error) {
         console.error("Erreur lors de l'envoi de l'email :", error);
         throw new Error("Échec de l'envoi de l'email de bienvenue");
@@ -80,7 +78,6 @@ const sendResetPasswordEmail = async (email, resetUrl) => {
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log('Email de réinitialisation de mot de passe envoyé');
     } catch (error) {
         console.error("Erreur lors de l'envoi de l'email :", error);
         throw new Error("Échec de l'envoi de l'email de réinitialisation de mot de passe");
@@ -108,7 +105,6 @@ const sendResetPasswordSuccessfulEmail = async (email, prenom) => {
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log('Email du succès de réinitialisation de mot de passe envoyé');
     } catch (error) {
         console.error("Erreur lors de l'envoi de l'email :", error);
         throw new Error("Échec de l'envoi de l'email du succès de réinitialisation de mot de passe");

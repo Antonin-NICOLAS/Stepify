@@ -92,7 +92,6 @@ const Rewards = () => {
     }, [theme]);
 
     function getCssVar(name) {
-        console.log(getComputedStyle(document.body).getPropertyValue(name).trim())
         return getComputedStyle(document.body).getPropertyValue(name).trim();
     }
 

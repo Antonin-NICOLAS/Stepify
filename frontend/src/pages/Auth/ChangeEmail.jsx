@@ -9,13 +9,13 @@ import "./ChangeEmail.css"
 
 function ChangeEmail() {
   const navigate = useNavigate()
-  const { ChangeVerificationEmail, isLoading } = useAuth()
+  const { changeVerificationEmail, isLoading } = useAuth()
 
   const [email, setEmail] = useState("")
 
   const handleChangeVerificationEmail = (e) => {
     e.preventDefault()
-    ChangeVerificationEmail(email, () => {
+    changeVerificationEmail(email, () => {
       setEmail("")
       navigate("/email-verification")
     })

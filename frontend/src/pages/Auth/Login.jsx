@@ -18,7 +18,7 @@ import {
   ChevronLeft,
 } from "lucide-react"
 //CSS
-import "./login.css"
+import "./Login.css"
 
 function Auth() {
   const navigate = useNavigate()

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react"
 //Context
 import { useAuth } from '../context/AuthContext';
 import { useUser } from "../context/UserContext"
+import { toast } from "react-hot-toast";
 //icons
 import { Camera, Edit, Upload, Globe, Moon, Sun, ChevronDown, Check, SunMoon } from "lucide-react"
 import AccountImage from "../assets/account.png"
@@ -15,6 +16,7 @@ const AccountPage = () => {
     updateAvatar,
     updateStatus,
     updateProfile,
+    updateEmail,
     updateDailyGoal,
     updateThemePreference,
     updateLanguagePreference,
@@ -163,10 +165,9 @@ const AccountPage = () => {
       if (profileData.email !== user.email) {
         await updateEmail(user._id, profileData.email);
       }
-
-      toast.success("Profil mis à jour avec succès");
+      
     } catch (error) {
-      toast.success("Erreur lors de la mise à jour du profil");
+      toast.error("Erreur lors de la mise à jour du profil");
     }
   };
 
