@@ -17,6 +17,7 @@ import Challenges from '../pages/Challenges.jsx';
 import Steps from '../pages/Steps.jsx';
 import Leaderboard from '../pages/Leaderboard.jsx';
 import Rewards from '../pages/Rewards.jsx';
+import Friends from '../pages/Friends.jsx';
 import Settings from '../pages/Settings.jsx';
 import About from '../pages/About.jsx';
 //loader
@@ -44,11 +45,11 @@ export default function AppRoutes() {
                     <Route path="/challenges" element={<RequireEmailVerification><Challenges /></RequireEmailVerification>} />
                     <Route path="/rewards" element={<RequireEmailVerification><Rewards /></RequireEmailVerification>} />
                     <Route path="/leaderboard" element={<RequireEmailVerification><Leaderboard /></RequireEmailVerification>} />
-                    <Route path="/settings" element={<RequireEmailVerification><Settings /></RequireEmailVerification>} />
+                    <Route path="/friends" element={<RequireEmailVerification><Friends /></RequireEmailVerification>} />
+                    <Route path="/settings" element={<ProtectRoute><RequireEmailVerification><Settings /></RequireEmailVerification></ProtectRoute>} />
                     <Route path="/about" element={<RequireEmailVerification><About /></RequireEmailVerification>} />
                     <Route path="/admin" element={<RequireAdmin><Dashboard /></RequireAdmin>} /> {/* TODO : admin page */}
                     <Route path="*" element={<NotFound />} />
-                    <Route path='/loader' element={<GlobalLoader/>}></Route>
                     <Route path="/terms-of-service" element={<TermsOfService />} />
                 </Route>
 

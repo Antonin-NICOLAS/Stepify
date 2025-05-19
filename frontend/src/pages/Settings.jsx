@@ -20,7 +20,8 @@ const AccountPage = () => {
     updateDailyGoal,
     updateThemePreference,
     updateLanguagePreference,
-    changePassword
+    changePassword,
+    getUserProfile
   } = useUser()
 
   // UI state
@@ -45,6 +46,11 @@ const AccountPage = () => {
     status: "",
     dailyGoal: 10000,
   })
+  useEffect(() => {
+    if (user) {
+      getUserProfile(user._id)
+    }
+  }, [getUserProfile])
 
   useEffect(() => {
     if (user) {
@@ -165,7 +171,7 @@ const AccountPage = () => {
       if (profileData.email !== user.email) {
         await updateEmail(user._id, profileData.email);
       }
-      
+
     } catch (error) {
       toast.error("Erreur lors de la mise à jour du profil");
     }
@@ -293,7 +299,7 @@ const AccountPage = () => {
               {isDragging && <div className="drop-indicator">Déposer l'image ici</div>}
             </div>
             {isEditingAvatar &&
-              <form onSubmit={handleFileSubmit}>
+              <form className="avatar-file-form" onSubmit={handleFileSubmit}>
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -301,7 +307,7 @@ const AccountPage = () => {
                   accept="image/*"
                   style={{ display: "none" }}
                 />
-                <button type="button" className="cancel-btn" onClick={() => setIsEditingAvatar(false)}>Annuler</button>
+                <button type="button" className="cancel-btn cancel-avatar-btn" onClick={() => setIsEditingAvatar(false)}>Annuler</button>
                 <button className="save-btn save-avatar-btn" type="submit">Enregistrer</button>
               </form>
             }
@@ -490,22 +496,24 @@ const AccountPage = () => {
           <div className="daily-goal">
             <h4>Objectif quotidien</h4>
             {!isEditingGoal ? (
-              <div className="goal-display">
-                <div className="goal-progress">
-                  <div
-                    className="progress-bar"
-                    style={{
-                      width: `${Math.min(100, ((user?.dailyStats?.[0]?.steps || 0) / user?.dailyGoal) * 100)}%`
-                    }}
-                  ></div>
-                  <span className="progress-text">
-                    {formatNumber(user?.dailyStats?.[0]?.steps || 0)} / {formatNumber(user?.dailyGoal)} pas
-                  </span>
+              <>
+                <span className="progress-text">
+                  {user?.todayProgress} %
+                </span>
+                <div className="goal-display">
+                  <div className="goal-progress">
+                    <div
+                      className="progress-bar"
+                      style={{
+                        width: `${Math.min(100, user?.todayProgress)}%`
+                      }}
+                    ></div>
+                  </div>
+                  <button className="edit-btn" onClick={() => setIsEditingGoal(true)} aria-label="Modifier l'objectif quotidien">
+                    <Edit size={16} />
+                  </button>
                 </div>
-                <button className="edit-btn" onClick={() => setIsEditingGoal(true)} aria-label="Modifier l'objectif quotidien">
-                  <Edit size={16} />
-                </button>
-              </div>
+              </>
             ) : (
               <form className="goal-editor" onSubmit={saveDailyGoal}>
                 <input
@@ -517,14 +525,12 @@ const AccountPage = () => {
                   max="50000"
                   step="500"
                 />
-                <div className="goal-actions">
                   <button type="button" className="cancel-btn" onClick={() => setIsEditingGoal(false)}>
                     Annuler
                   </button>
                   <button type="submit" className="save-btn">
                     Enregistrer
                   </button>
-                </div>
               </form>
             )}
           </div>

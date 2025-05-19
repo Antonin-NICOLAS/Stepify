@@ -5,10 +5,12 @@ require('dotenv').config();
 const { verifyToken } = require('../middlewares/VerifyToken')
 const upload = require('../middlewares/multer')
 //controllers
-const { getMyChallenges,
+const { getPublicChallenges,
+    getMyChallenges,
     createChallenge,
     updateChallenge,
     joinChallenge,
+    leaveChallenge,
     updateProgress,
     deleteChallenge,
     getChallengeDetails
@@ -26,11 +28,16 @@ router.use(
 );
 
 //routes
+router.get('/challenges', getPublicChallenges)
 router.get('/:userId/mychallenges', verifyToken, getMyChallenges)
-router.post('/:userId/new', verifyToken, createChallenge)
-router.put('/:userId/:challengeId/modify', verifyToken, updateChallenge)
-router.put('/:userId/:challengeId/join', verifyToken, joinChallenge)
 router.get('/:userId/:challengeId', verifyToken, getChallengeDetails)
+router.post('/:userId/new', verifyToken, createChallenge)
+
+router.put('/:userId/:challengeId/modify', verifyToken, updateChallenge)
+router.put('/:userId/join', verifyToken, joinChallenge)
+router.put('/:userId/:challengeId/leave', verifyToken, leaveChallenge)
+router.put('/:userId/:challengeId/progress', verifyToken, updateProgress)
+
 router.delete('/:userId/:challengeId/delete', verifyToken, deleteChallenge)
 
 module.exports = router

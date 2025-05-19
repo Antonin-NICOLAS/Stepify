@@ -24,7 +24,7 @@ export const useSteps = (userId) => {
             }
         } catch (err) {
             console.error("Fetch error:", err);
-            toast.error(error.response?.data?.error || "Erreur de connexion au serveur");
+            toast.error(err.response?.data?.error || "Erreur de connexion au serveur");
         } finally {
             setIsLoading(false)
         }

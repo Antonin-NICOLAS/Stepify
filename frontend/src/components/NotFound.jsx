@@ -71,7 +71,7 @@ const NotFoundPage = () => {
               <Link to="/steps">Mes pas</Link>
             </li>
             <li>
-              <Link to="/challenges">Challenges</Link>
+              <Link to="/challenges">Défis</Link>
             </li>
             <li>
               <Link to="/settings">Réglages</Link>

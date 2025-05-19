@@ -24,18 +24,24 @@ const challengeSchema = new Schema({
   creator: { type: Schema.Types.ObjectId, ref: 'User' },
   activityType: {
     type: String,
-    enum: ['walk', 'run', 'bike','xp', 'walk-time', 'run-time', 'bike-time', 'xp-time', 'any'],
-    default: 'walk'
+    enum: ['steps', 'steps-time', 'distance', 'distance-time', 'calories', 'calories-time', 'xp', 'xp-time', 'any'],
+    default: 'steps'
   },
   goal: { type: Number, required: true },
-  time: {type: Number, min: 0},
+  time: {
+    type: Number,
+    min: 1,
+    required: function () {
+      return ['steps-time', 'distance-time', 'calories-time', 'xp-time'].includes(this.activityType);
+    }
+  }, // jours
   xpReward: { type: Number, required: true },
 
   participants: [{
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-    steps: { type: Number, default: 0 },
+    goal: { type: Number, default: 0 },
     xpEarned: { type: Number, default: 0 },
-    time: {type: Number, min: 0}, //days
+    time: { type: Number, min: 0 }, //days
     progress: { type: Number, default: 0 }, // % de l'objectif
     joinedAt: { type: Date, default: Date.now },
     completed: { type: Boolean, default: false },
@@ -49,6 +55,7 @@ const challengeSchema = new Schema({
   },
 
   isPrivate: { type: Boolean, default: false },
+  isVerified: { type: Boolean, default: false },
   accessCode: { type: String }, // pour rejoindre si privé
   createdAt: { type: Date, default: Date.now }
 })

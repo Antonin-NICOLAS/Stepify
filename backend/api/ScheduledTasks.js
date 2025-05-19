@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const Challenge = require('../models/Challenge');
+const Notification = require('../models/Notification');
 
 // Update challenge statuses every hour
 const scheduleStatusUpdates = () => {
@@ -22,7 +23,7 @@ const updateChallengeStatuses = async () => {
 
     for (const challenge of challenges) {
       let newStatus = challenge.status;
-      
+
       if (challenge.startDate > now) {
         newStatus = 'upcoming';
       } else if (challenge.endDate && challenge.endDate < now) {
@@ -43,4 +44,20 @@ const updateChallengeStatuses = async () => {
   }
 };
 
-module.exports = { scheduleStatusUpdates };
+// Delete Notification 1 week after the response - Every day at 1 AM
+const deleteExpiredNotifications = () => {
+  cron.schedule('0 1 * * *', async () => {
+    try {
+      const now = new Date();
+      const result = await Notification.deleteMany({
+        DeleteAt: { $lte: now }
+      });
+
+      console.log(`[CRON] Deleted ${result.deletedCount} expired invitations.`);
+    } catch (error) {
+      console.error('[CRON] Error deleting notifications:', error);
+    }
+  });
+}
+
+module.exports = { scheduleStatusUpdates, deleteExpiredNotifications };

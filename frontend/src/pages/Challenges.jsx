@@ -1,369 +1,131 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, MessageSquare, UserPlus, Clock, Award, BarChart2, Target, X, Info, Zap, Smile, Star, ArrowUp, ArrowDown, Medal, Crown, Heart, Share2, Settings, User, MapPin, Sliders, Plus, Lock, Unlock, Check, AlertTriangle, Flag, CalendarIcon, Hash, Compass, Bookmark, Trash2, Mail } from 'lucide-react'
-import { Bar, Line, Pie } from "react-chartjs-2"
+import Select from 'react-select';
+// Context
+import { useAuth } from "../context/AuthContext";
+import { useUser } from "../context/UserContext";
+import { useChallenge } from "../hooks/useChallenges";
+import { useNotifications } from "../hooks/useNotifications";
+import { useChallengesFilters } from "../hooks/useChallengesFilters";
+import FiltersPanel from "./Challenges/FiltersPanel"
+import ChallengeDetailModal from "./Challenges/ChallengeDetailModal";
+// Loader
+import GlobalLoader from "../utils/GlobalLoader";
+// Icons
+import { Icon, Activity, Footprints, Watch, Spline, Flame, Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, Clock, Award, BarChart2, Target, X, Info, Zap, Star, MapPin, Plus, Lock, Check, AlertTriangle, Flag, Hash, Compass, Bookmark, Mail } from 'lucide-react'
+import { sneaker, watchActivity } from '@lucide/lab';
+// Charts
 import { Chart, registerables } from "chart.js"
+//CSS
 import "./Challenges.css"
 
 // Register Chart.js components
 Chart.register(...registerables)
 
 const Challenges = () => {
-    // State for active tab
-    const [activeTab, setActiveTab] = useState("my-challenges")
+    const { user } = useAuth();
+    const { getUserProfile } = useUser();
+    const [activeTab, setActiveTab] = useState("my-challenges");
+    const [showFilters, setShowFilters] = useState(false);
+    const [selectedChallenge, setSelectedChallenge] = useState(null);
+    const [showChallengeModal, setShowChallengeModal] = useState(false);
+    const [showJoinModal, setShowJoinModal] = useState(false);
+    const [accessCode, setAccessCode] = useState("");
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-    // State for filters
-    const [showFilters, setShowFilters] = useState(false)
-    const [sortBy, setSortBy] = useState("recent")
-    const [filterType, setFilterType] = useState("all")
-    const [filterStatus, setFilterStatus] = useState("all")
-
-    // State for search
-    const [searchQuery, setSearchQuery] = useState("")
-
-    // State for challenge detail modal
-    const [selectedChallenge, setSelectedChallenge] = useState(null)
-    const [showChallengeModal, setShowChallengeModal] = useState(false)
-
-    // State for join private challenge modal
-    const [showJoinModal, setShowJoinModal] = useState(false)
-    const [accessCode, setAccessCode] = useState("")
-
-    // State for create challenge modal
-    const [showCreateModal, setShowCreateModal] = useState(false)
     const [newChallenge, setNewChallenge] = useState({
         name: "",
         description: "",
         startDate: "",
         endDate: "",
-        goalType: "steps",
-        goalValue: 10000,
+        activityType: "steps",
+        goal: 10000,
+        time: 1,
+        xpReward: 100,
         isPrivate: false,
-        accessCode: "",
-        invitedFriends: []
-    })
+        participants: []
+    });
 
-    // Mock data for challenges
-    const [challenges, setChallenges] = useState([])
-    const [publicChallenges, setPublicChallenges] = useState([])
-    const [invitations, setInvitations] = useState([])
-    const [currentUser, setCurrentUser] = useState(null)
-    const [friends, setFriends] = useState([])
-
-    // Load mock data
     useEffect(() => {
-        // Simulate API call to get challenges
-        const mockChallenges = generateMockChallenges(10)
-        setChallenges(mockChallenges)
-
-        // Simulate API call to get public challenges
-        const mockPublicChallenges = generateMockChallenges(15, true)
-        setPublicChallenges(mockPublicChallenges)
-
-        // Simulate API call to get invitations
-        const mockInvitations = generateMockInvitations(3)
-        setInvitations(mockInvitations)
-
-        // Set current user
-        setCurrentUser({
-            _id: "user-1",
-            username: "johndoe42",
-            firstName: "John",
-            lastName: "Doe",
-            avatarUrl: "/placeholder.svg?height=100&width=100&text=JD",
-            preferredMode: "walk",
-            dailyGoal: 10000,
-            dailyProgress: 65,
-            totalSteps: 1250000,
-            totalXP: 25000,
-            streak: {
-                current: 12,
-                max: 30
-            }
-        })
-
-        // Set friends
-        setFriends(generateMockFriends(10))
-    }, [])
-
-    // Filter challenges based on current filters and search
-    const filteredChallenges = () => {
-        let filtered = [...challenges]
-
-        // Apply search filter
-        if (searchQuery) {
-            filtered = filtered.filter(
-                (challenge) =>
-                    challenge.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    challenge.description.toLowerCase().includes(searchQuery.toLowerCase())
-            )
+        if (user) {
+            getUserProfile(user._id);
         }
+    }, []);
 
-        // Apply type filter
-        if (filterType !== "all") {
-            filtered = filtered.filter((challenge) => challenge.goalType === filterType)
-        }
+    const {
+        challenges,
+        publicChallenges,
+        progress,
+        createChallenge,
+        fetchChallengeDetails,
+        updateChallenge,
+        joinChallenge,
+        leaveChallenge,
+        deleteChallenge,
+        updateChallengeProgress,
+    } = useChallenge(user?._id);
 
-        // Apply status filter
-        if (filterStatus !== "all") {
-            filtered = filtered.filter((challenge) => challenge.status === filterStatus)
-        }
+    const { challengeNotifications, respondToChallengeInvite } = useNotifications(user?._id);
 
-        // Sort challenges
-        filtered.sort((a, b) => {
-            switch (sortBy) {
-                case "recent":
-                    return new Date(b.createdAt) - new Date(a.createdAt)
-                case "ending-soon":
-                    return new Date(a.endDate) - new Date(b.endDate)
-                case "progress":
-                    return b.progress - a.progress
-                case "participants":
-                    return b.participants.length - a.participants.length
-                default:
-                    return new Date(b.createdAt) - new Date(a.createdAt)
-            }
-        })
+    const {
+        sortBy,
+        setSortBy,
+        filterType,
+        setFilterType,
+        filterStatus,
+        setFilterStatus,
+        searchQuery,
+        setSearchQuery,
+        filteredChallenges,
+        filteredPublicChallenges
+    } = useChallengesFilters(challenges, publicChallenges);
 
-        return filtered
-    }
+    // Calculate progress
+    const computeGlobalProgress = (participants = []) => {
+        if (!Array.isArray(participants) || !participants.length) return 0;
+        const total = participants.reduce((sum, p) => sum + (p.progress || 0), 0);
+        return Math.round(total / participants.length);
+    };
 
-    // Filter public challenges
-    const filteredPublicChallenges = () => {
-        let filtered = [...publicChallenges]
+    // Select options
+    const ActivityOptions = [
+        { value: 'steps', label: ' Pas', icon: <Footprints size={16} /> },
+        { value: 'steps-time', label: ' Pas par jour', icon: <Icon iconNode={sneaker} size={16} /> },
+        { value: 'xp', label: ' XP', icon: <Trophy size={16} /> },
+        { value: 'xp-time', label: ' XP par jour', icon: <Award size={16} /> },
+        { value: 'distance', label: ' Distance (km)', icon: <Spline size={16} /> },
+        { value: 'distance-time', label: ' Distance par jour', icon: <Watch size={16} /> },
+        { value: 'calories', label: ' Calories (kcal)', icon: <Flame size={16} /> },
+        { value: 'calories-time', label: ' Calories par jour', icon: <Icon iconNode={watchActivity} size={16} /> },
+        { value: 'any', label: ' Tout type d\'activité', icon: <Activity size={16} /> },
+    ];
 
-        // Apply search filter
-        if (searchQuery) {
-            filtered = filtered.filter(
-                (challenge) =>
-                    challenge.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    challenge.description.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-        }
+    const [selectedActivity, setSelectedActivity] = useState(
+        ActivityOptions.find(opt => opt.value === (newChallenge?.activityType || 'walk'))
+    );
 
-        // Apply type filter
-        if (filterType !== "all") {
-            filtered = filtered.filter((challenge) => challenge.goalType === filterType)
-        }
+    const customSingleValue = ({ data }) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {data.icon}
+            {data.label}
+        </div>
+    );
 
-        // Apply status filter
-        if (filterStatus !== "all") {
-            filtered = filtered.filter((challenge) => challenge.status === filterStatus)
-        }
-
-        // Sort challenges
-        filtered.sort((a, b) => {
-            switch (sortBy) {
-                case "recent":
-                    return new Date(b.createdAt) - new Date(a.createdAt)
-                case "ending-soon":
-                    return new Date(a.endDate) - new Date(b.endDate)
-                case "progress":
-                    return b.progress - a.progress
-                case "participants":
-                    return b.participants.length - a.participants.length
-                default:
-                    return new Date(b.createdAt) - new Date(a.createdAt)
-            }
-        })
-
-        return filtered
-    }
-
-    // Generate mock challenges
-    const generateMockChallenges = (count, isPublic = false) => {
-        const challenges = []
-        const challengeNames = [
-            "Défi 10K Pas",
-            "Marathon Hebdo",
-            "Tour de Ville",
-            "Défi Matinal",
-            "Régularité 30 Jours",
-            "Challenge Escaliers",
-            "Défi Weekend",
-            "Course Urbaine",
-            "Randonnée Virtuelle",
-            "Défi Calories",
-            "Challenge Distance",
-            "Défi Équipe",
-            "Marche Quotidienne",
-            "Sprint Final",
-            "Exploration Urbaine"
-        ]
-        const descriptions = [
-            "Atteignez 10 000 pas par jour pendant 7 jours consécutifs.",
-            "Parcourez l'équivalent d'un marathon (42,2 km) en une semaine.",
-            "Explorez 5 nouveaux lieux dans votre ville en marchant.",
-            "Faites 5 000 pas avant 9h du matin pendant 5 jours.",
-            "Atteignez votre objectif quotidien pendant 30 jours consécutifs.",
-            "Montez l'équivalent de 100 étages en une semaine.",
-            "Faites 25 000 pas pendant le weekend.",
-            "Courez 5 km dans votre ville en moins de 30 minutes.",
-            "Parcourez virtuellement un célèbre sentier de randonnée.",
-            "Brûlez 5 000 calories en une semaine.",
-            "Parcourez 100 km en un mois.",
-            "Défi collectif : atteignez 1 million de pas en équipe.",
-            "Faites au moins 8 000 pas chaque jour pendant 14 jours.",
-            "Augmentez votre distance de marche de 10% chaque jour pendant une semaine.",
-            "Visitez 10 points d'intérêt dans votre ville."
-        ]
-        const goalTypes = ["steps", "distance", "calories", "time"]
-        const statuses = ["upcoming", "active", "completed"]
-
-        for (let i = 0; i < count; i++) {
-            const nameIndex = Math.floor(Math.random() * challengeNames.length)
-            const descIndex = Math.floor(Math.random() * descriptions.length)
-            const goalType = goalTypes[Math.floor(Math.random() * goalTypes.length)]
-            const status = statuses[Math.floor(Math.random() * statuses.length)]
-
-            // Generate random dates
-            const now = new Date()
-            let startDate, endDate
-
-            if (status === "upcoming") {
-                startDate = new Date(now.getTime() + Math.floor(Math.random() * 10) * 24 * 60 * 60 * 1000)
-                endDate = new Date(startDate.getTime() + (7 + Math.floor(Math.random() * 30)) * 24 * 60 * 60 * 1000)
-            } else if (status === "active") {
-                startDate = new Date(now.getTime() - Math.floor(Math.random() * 10) * 24 * 60 * 60 * 1000)
-                endDate = new Date(now.getTime() + (3 + Math.floor(Math.random() * 20)) * 24 * 60 * 60 * 1000)
-            } else {
-                endDate = new Date(now.getTime() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000)
-                startDate = new Date(endDate.getTime() - (7 + Math.floor(Math.random() * 30)) * 24 * 60 * 60 * 1000)
-            }
-
-            // Generate goal value based on goal type
-            let goalValue
-            switch (goalType) {
-                case "steps":
-                    goalValue = (5 + Math.floor(Math.random() * 20)) * 1000 // 5,000 to 25,000 steps
-                    break
-                case "distance":
-                    goalValue = 5 + Math.floor(Math.random() * 45) // 5 to 50 km
-                    break
-                case "calories":
-                    goalValue = (5 + Math.floor(Math.random() * 15)) * 100 // 500 to 2,000 calories
-                    break
-                case "time":
-                    goalValue = 30 + Math.floor(Math.random() * 270) // 30 to 300 minutes
-                    break
-                default:
-                    goalValue = 10000
-            }
-
-            // Generate participants
-            const participantCount = 3 + Math.floor(Math.random() * 18) // 3 to 20 participants
-            const participants = []
-
-            for (let j = 0; j < participantCount; j++) {
-                const progress = Math.floor(Math.random() * 101) // 0 to 100%
-
-                participants.push({
-                    userId: `user-${j + 1}`,
-                    username: `user${j + 1}`,
-                    firstName: ["John", "Jane", "Mike", "Sarah", "David", "Emma", "Thomas", "Sophie"][Math.floor(Math.random() * 8)],
-                    lastName: ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis", "Garcia"][Math.floor(Math.random() * 8)],
-                    avatarUrl: `/placeholder.svg?height=100&width=100&text=${j + 1}`,
-                    progress: progress,
-                    joinedAt: new Date(startDate.getTime() - Math.floor(Math.random() * 5) * 24 * 60 * 60 * 1000),
-                    value: Math.floor((goalValue * progress) / 100), // Current value based on progress
-                    rank: j + 1
-                })
-            }
-
-            // Sort participants by progress
-            participants.sort((a, b) => b.progress - a.progress)
-
-            // Update ranks after sorting
-            participants.forEach((participant, index) => {
-                participant.rank = index + 1
-            })
-
-            // Create challenge object
-            challenges.push({
-                _id: `challenge-${i + 1}`,
-                name: challengeNames[nameIndex],
-                description: descriptions[descIndex],
-                goalType: goalType,
-                goalValue: goalValue,
-                startDate: startDate,
-                endDate: endDate,
-                status: status,
-                isPrivate: isPublic ? false : Math.random() > 0.7, // 30% chance of being private for user challenges, 0% for public
-                accessCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
-                createdBy: {
-                    userId: `user-${Math.floor(Math.random() * 10) + 1}`,
-                    username: `user${Math.floor(Math.random() * 10) + 1}`,
-                    firstName: ["John", "Jane", "Mike", "Sarah", "David", "Emma", "Thomas", "Sophie"][Math.floor(Math.random() * 8)],
-                    lastName: ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis", "Garcia"][Math.floor(Math.random() * 8)],
-                    avatarUrl: `/placeholder.svg?height=100&width=100&text=${Math.floor(Math.random() * 10) + 1}`
-                },
-                participants: participants,
-                progress: status === "completed" ? 100 : Math.floor(Math.random() * 101), // 0 to 100%
-                createdAt: new Date(startDate.getTime() - (1 + Math.floor(Math.random() * 10)) * 24 * 60 * 60 * 1000)
-            })
-        }
-
-        return challenges
-    }
-
-    // Generate mock invitations
-    const generateMockInvitations = (count) => {
-        const invitations = []
-        const challengeNames = [
-            "Défi Amical",
-            "Challenge Équipe",
-            "Compétition Hebdo",
-            "Défi Surprise",
-            "Marathon Virtuel"
-        ]
-
-        for (let i = 0; i < count; i++) {
-            const now = new Date()
-            const expiresAt = new Date(now.getTime() + (1 + Math.floor(Math.random() * 5)) * 24 * 60 * 60 * 1000)
-
-            invitations.push({
-                _id: `invitation-${i + 1}`,
-                challengeId: `challenge-${i + 100}`,
-                challengeName: challengeNames[Math.floor(Math.random() * challengeNames.length)],
-                description: "Rejoignez ce défi pour comparer vos performances avec vos amis !",
-                sentBy: {
-                    userId: `user-${Math.floor(Math.random() * 10) + 1}`,
-                    username: `user${Math.floor(Math.random() * 10) + 1}`,
-                    firstName: ["John", "Jane", "Mike", "Sarah", "David"][Math.floor(Math.random() * 5)],
-                    lastName: ["Smith", "Johnson", "Williams", "Brown", "Jones"][Math.floor(Math.random() * 5)],
-                    avatarUrl: `/placeholder.svg?height=100&width=100&text=${Math.floor(Math.random() * 10) + 1}`
-                },
-                sentAt: new Date(now.getTime() - Math.floor(Math.random() * 3) * 24 * 60 * 60 * 1000),
-                expiresAt: expiresAt,
-                participants: 5 + Math.floor(Math.random() * 15) // 5 to 20 participants
-            })
-        }
-
-        return invitations
-    }
-
-    // Generate mock friends
-    const generateMockFriends = (count) => {
-        const friends = []
-        const firstNames = ["John", "Jane", "Mike", "Sarah", "David", "Emma", "Thomas", "Sophie", "Alex", "Lisa"]
-        const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Miller", "Davis", "Garcia", "Wilson", "Taylor"]
-
-        for (let i = 0; i < count; i++) {
-            const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
-            const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
-
-            friends.push({
-                _id: `user-${i + 2}`, // Start from 2 since user-1 is current user
-                username: `${firstName.toLowerCase()}${lastName.toLowerCase()}${Math.floor(Math.random() * 100)}`,
-                firstName: firstName,
-                lastName: lastName,
-                avatarUrl: `/placeholder.svg?height=100&width=100&text=${firstName[0]}${lastName[0]}`,
-                status: ["En ligne", "Hors ligne", "Inactif"][Math.floor(Math.random() * 3)]
-            })
-        }
-
-        return friends
-    }
+    const customOption = (props) => {
+        const { data, innerRef, innerProps, isSelected, isFocused } = props;
+        return (
+            <div
+                ref={innerRef}
+                {...innerProps}
+                className={`activity-select__option ${isSelected ? 'activity-select__option--is-selected' : ''} ${isFocused ? 'activity-select__option--is-focused' : ''}`}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', borderRadius: '4px' }}
+            >
+                {data.icon}
+                {data.label}
+            </div>
+        );
+    };
 
     // Format date
     const formatDate = (date) => {
@@ -383,37 +145,50 @@ const Challenges = () => {
         return diffDays
     }
 
-    // Format goal value based on goal type
-    const formatGoalValue = (value, type) => {
+    const formatgoal = (value, type) => {
         switch (type) {
             case "steps":
-                return `${value.toLocaleString("fr-FR")} pas`
+                return `${value.toLocaleString("fr-FR")} pas`;
+            case "steps-time":
+                return `${value.toLocaleString("fr-FR")} pas par jour`;
             case "distance":
-                return `${value} km`
+                return `${value} km`;
+            case "distance-time":
+                return `${value.toLocaleString("fr-FR")} km par jour`;
             case "calories":
-                return `${value.toLocaleString("fr-FR")} calories`
-            case "time":
-                return `${value} minutes`
+                return `${value} kcal`;
+            case "calories-time":
+                return `${value} kcal par jour`;
+            case "xp":
+                return `${value.toLocaleString("fr-FR")} XP`;
             default:
-                return value.toLocaleString("fr-FR")
+                return value.toLocaleString("fr-FR");
         }
-    }
+    };
 
     // Get goal type icon
-    const getGoalTypeIcon = (type) => {
+    const getActivityTypeIcon = (type) => {
         switch (type) {
-            case "steps":
+            case "xp":
                 return <Trophy size={16} />
+            case "xp-time":
+                return <Award size={16} />
+            case "steps":
+                return <Footprints size={16} />;
+            case "steps-time":
+                return <Icon iconNode={sneaker} size={16} />;
             case "distance":
-                return <MapPin size={16} />
+                return <Spline size={16} />
+            case "distance-time":
+                return <Watch size={16} />
             case "calories":
-                return <Zap size={16} />
-            case "time":
-                return <Clock size={16} />
-            default:
-                return <Target size={16} />
+                return <Flame size={16} />
+            case "calories-time":
+                return <Icon iconNode={watchActivity} size={16} />
+            case "any":
+                return <Activity size={16} />
         }
-    }
+    };
 
     // Get status badge
     const getStatusBadge = (status) => {
@@ -429,179 +204,130 @@ const Challenges = () => {
         }
     }
 
-    // Handle challenge click
-    const handleChallengeClick = (challenge) => {
-        setSelectedChallenge(challenge)
-        setShowChallengeModal(true)
-    }
+    // Handle challenge click - fetch details
+    const handleChallengeClick = async (challenge) => {
+        setIsLoading(true);
+        try {
+            const details = await fetchChallengeDetails(challenge._id);
+            setSelectedChallenge(details);
+            setShowChallengeModal(true);
+        } catch (error) {
+            console.error("Error fetching challenge details:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     // Handle join challenge
-    const handleJoinChallenge = (challengeId) => {
-        alert(`Vous avez rejoint le défi ${challengeId}`)
-        // In a real app, this would send an API request
-    }
+    const handleJoinChallenge = async (challengeId) => {
+        setIsLoading(true);
+        try {
+            await joinChallenge(challengeId);
+        } catch (error) {
+            console.error("Error joining challenge:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     // Handle leave challenge
-    const handleLeaveChallenge = (challengeId) => {
+    const handleLeaveChallenge = async (challengeId) => {
         if (window.confirm("Êtes-vous sûr de vouloir quitter ce défi ?")) {
-            alert(`Vous avez quitté le défi ${challengeId}`)
-            // In a real app, this would send an API request
+            setIsLoading(true);
+            try {
+                await leaveChallenge(challengeId);
+                setShowChallengeModal(false)
+                setSelectedChallenge(null)
+            } catch (error) {
+                console.error("Error leaving challenge:", error);
+            } finally {
+                setIsLoading(false);
+            }
         }
-    }
+    };
+
+    // Handle delete challenge
+    const handleDeleteChallenge = async (challengeId) => {
+        if (window.confirm("Êtes-vous sûr de vouloir supprimer ce défi ? Tous les participants seront également supprimés.")) {
+            setIsLoading(true);
+            try {
+                await deleteChallenge(challengeId);
+                setShowChallengeModal(false)
+                setSelectedChallenge(null)
+            } catch (error) {
+                console.error("Error deleting challenge:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    };
 
     // Handle join private challenge
-    const handleJoinPrivateChallenge = (e) => {
-        e.preventDefault()
-        alert(`Tentative de rejoindre un défi privé avec le code: ${accessCode}`)
-        setAccessCode("")
-        setShowJoinModal(false)
-        // In a real app, this would send an API request
-    }
+    const handleJoinPrivateChallenge = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            await joinChallenge(accessCode);
+            setAccessCode("");
+            setShowJoinModal(false);
+        } catch (error) {
+            console.error("Error joining private challenge:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     // Handle create challenge
-    const handleCreateChallenge = (e) => {
-        e.preventDefault()
-        alert(`Défi créé: ${newChallenge.name}`)
-        setNewChallenge({
-            name: "",
-            description: "",
-            startDate: "",
-            endDate: "",
-            goalType: "steps",
-            goalValue: 10000,
-            isPrivate: false,
-            accessCode: "",
-            invitedFriends: []
-        })
-        setShowCreateModal(false)
-        // In a real app, this would send an API request
-    }
+    const handleCreateChallenge = async (e) => {
+        e.preventDefault();
+        setIsLoading(true)
+        try {
+            const challengeData = {
+                name: newChallenge.name,
+                description: newChallenge.description,
+                startDate: newChallenge.startDate,
+                endDate: newChallenge.endDate,
+                activityType: selectedActivity.value,
+                goal: newChallenge.goal,
+                xpReward: newChallenge.xpReward,
+                time: selectedActivity.value.includes("-time") ? newChallenge.time : 1,
+                isPrivate: newChallenge.isPrivate,
+                participants: newChallenge.participants
+            };
+
+            await createChallenge(challengeData);
+
+            setNewChallenge({
+                name: "",
+                description: "",
+                startDate: "",
+                endDate: "",
+                activityType: "steps",
+                goal: 10000,
+                time: 1,
+                xpReward: 100,
+                isPrivate: false,
+                participants: []
+            });
+
+            setShowCreateModal(false);
+        } catch (error) {
+            console.error("Error creating challenge:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     // Handle accept invitation
-    const handleAcceptInvitation = (invitationId) => {
-        alert(`Invitation ${invitationId} acceptée`)
-        // In a real app, this would send an API request
-    }
-
-    // Handle decline invitation
-    const handleDeclineInvitation = (invitationId) => {
-        alert(`Invitation ${invitationId} refusée`)
-        // In a real app, this would send an API request
-    }
-
-    // Generate progress chart data
-    const generateProgressChartData = (challenge) => {
-        // Get last 7 days or days since challenge started
-        const now = new Date()
-        const startDate = new Date(challenge.startDate)
-        const days = Math.min(7, Math.ceil((now - startDate) / (1000 * 60 * 60 * 24)))
-
-        const labels = Array.from({ length: days }, (_, i) => {
-            const date = new Date()
-            date.setDate(date.getDate() - (days - 1 - i))
-            return date.toLocaleDateString("fr-FR", { weekday: "short" })
-        })
-
-        // Generate random progress data
-        const progressData = labels.map((_, i) => {
-            // Progress increases over time
-            const baseProgress = (i / (days - 1)) * challenge.progress
-            return Math.min(100, Math.max(0, baseProgress * (0.8 + Math.random() * 0.4)))
-        })
-
-        return {
-            labels,
-            datasets: [
-                {
-                    label: "Progression (%)",
-                    data: progressData,
-                    backgroundColor: "rgba(74, 145, 158, 0.2)",
-                    borderColor: "rgba(74, 145, 158, 1)",
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: true,
-                },
-            ],
+    const handleRespondToInvitation = async (invitationId, action) => {
+        setIsLoading(true)
+        try {
+            await respondToChallengeInvite(invitationId, action);
+        } catch (error) {
+            console.error("Error accepting invitation:", error);
+        } finally {
+            setIsLoading(false)
         }
-    }
-
-    // Generate participants distribution chart data
-    const generateParticipantsChartData = (challenge) => {
-        // Group participants by progress ranges
-        const ranges = [
-            { label: "0-25%", count: 0 },
-            { label: "26-50%", count: 0 },
-            { label: "51-75%", count: 0 },
-            { label: "76-100%", count: 0 }
-        ]
-
-        challenge.participants.forEach(participant => {
-            if (participant.progress <= 25) {
-                ranges[0].count++
-            } else if (participant.progress <= 50) {
-                ranges[1].count++
-            } else if (participant.progress <= 75) {
-                ranges[2].count++
-            } else {
-                ranges[3].count++
-            }
-        })
-
-        return {
-            labels: ranges.map(r => r.label),
-            datasets: [
-                {
-                    data: ranges.map(r => r.count),
-                    backgroundColor: [
-                        "rgba(206, 106, 107, 0.7)",
-                        "rgba(235, 172, 162, 0.7)",
-                        "rgba(190, 211, 195, 0.7)",
-                        "rgba(74, 145, 158, 0.7)"
-                    ],
-                    borderColor: [
-                        "rgba(206, 106, 107, 1)",
-                        "rgba(235, 172, 162, 1)",
-                        "rgba(190, 211, 195, 1)",
-                        "rgba(74, 145, 158, 1)"
-                    ],
-                    borderWidth: 1,
-                },
-            ],
-        }
-    }
-
-    // Chart options
-    const lineChartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false,
-            },
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 100,
-                ticks: {
-                    callback: (value) => `${value}%`
-                }
-            },
-        },
-    }
-
-    const pieChartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: "right",
-                labels: {
-                    boxWidth: 15,
-                    padding: 15
-                }
-            },
-        },
     }
 
     // Get tab content based on active tab
@@ -610,9 +336,9 @@ const Challenges = () => {
             case "my-challenges":
                 return (
                     <div className="challenges-my-tab">
-                        {filteredChallenges().length > 0 ? (
+                        {filteredChallenges.length > 0 ? (
                             <div className="challenges-grid">
-                                {filteredChallenges().map((challenge) => (
+                                {filteredChallenges.map((challenge) => (
                                     <div
                                         key={challenge._id}
                                         className={`challenge-card ${challenge.status}`}
@@ -634,22 +360,22 @@ const Challenges = () => {
 
                                         <div className="challenge-meta">
                                             <div className="challenge-goal">
-                                                <span className="meta-label">Objectif:</span>
+                                                <span className="meta-label">Objectif :</span>
                                                 <span className="meta-value">
-                                                    {getGoalTypeIcon(challenge.goalType)}
-                                                    {formatGoalValue(challenge.goalValue, challenge.goalType)}
+                                                    {getActivityTypeIcon(challenge.activityType)}
+                                                    {formatgoal(challenge.goal, challenge.activityType)}
                                                 </span>
                                             </div>
 
                                             <div className="challenge-dates">
-                                                <span className="meta-label">Période:</span>
+                                                <span className="meta-label">Période :</span>
                                                 <span className="meta-value">
                                                     {formatDate(challenge.startDate)} - {formatDate(challenge.endDate)}
                                                 </span>
                                             </div>
 
                                             <div className="challenge-participants-count">
-                                                <span className="meta-label">Participants:</span>
+                                                <span className="meta-label">{challenge.participants.length <= 1 ? "Participant :" : "Participants:"}</span>
                                                 <span className="meta-value">
                                                     <Users size={16} />
                                                     {challenge.participants.length}
@@ -660,12 +386,12 @@ const Challenges = () => {
                                         <div className="challenge-progress-section">
                                             <div className="progress-header">
                                                 <span>Progression</span>
-                                                <span>{challenge.progress}%</span>
+                                                <span>{computeGlobalProgress(challenge.participants)}%</span>
                                             </div>
                                             <div className="progress-container">
                                                 <div
                                                     className="progress-bar"
-                                                    style={{ width: `${challenge.progress}%` }}
+                                                    style={{ width: `${computeGlobalProgress(challenge.participants)}%` }}
                                                 ></div>
                                             </div>
                                         </div>
@@ -688,18 +414,32 @@ const Challenges = () => {
                                                     e.stopPropagation();
                                                     handleChallengeClick(challenge);
                                                 }}
+                                                disabled={isLoading}
                                             >
                                                 <Info size={16} />
                                                 <span>Voir les détails</span>
                                             </button>
-
-                                            {challenge.status !== "completed" && (
+                                            {challenge.creator._id === user?._id && challenge.status !== "completed" && (
+                                                <button
+                                                    className="action-button secondary"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteChallenge(challenge._id);
+                                                    }}
+                                                    disabled={challenge.status === "completed" || isLoading}
+                                                >
+                                                    <X size={16} />
+                                                    <span>Supprimer</span>
+                                                </button>
+                                            )}
+                                            {challenge.creator._id !== user?._id && challenge.status !== "completed" && (
                                                 <button
                                                     className="action-button secondary"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleLeaveChallenge(challenge._id);
                                                     }}
+                                                    disabled={challenge.status === "completed" || isLoading}
                                                 >
                                                     <X size={16} />
                                                     <span>Quitter</span>
@@ -739,9 +479,9 @@ const Challenges = () => {
             case "public-challenges":
                 return (
                     <div className="challenges-public-tab">
-                        {filteredPublicChallenges().length > 0 ? (
+                        {filteredPublicChallenges.length > 0 ? (
                             <div className="challenges-grid">
-                                {filteredPublicChallenges().map((challenge) => (
+                                {filteredPublicChallenges.map((challenge) => (
                                     <div
                                         key={challenge._id}
                                         className={`challenge-card ${challenge.status}`}
@@ -765,8 +505,8 @@ const Challenges = () => {
                                             <div className="challenge-goal">
                                                 <span className="meta-label">Objectif:</span>
                                                 <span className="meta-value">
-                                                    {getGoalTypeIcon(challenge.goalType)}
-                                                    {formatGoalValue(challenge.goalValue, challenge.goalType)}
+                                                    {getActivityTypeIcon(challenge.activityType)}
+                                                    {formatgoal(challenge.goal, challenge.activityType)}
                                                 </span>
                                             </div>
 
@@ -778,7 +518,7 @@ const Challenges = () => {
                                             </div>
 
                                             <div className="challenge-participants-count">
-                                                <span className="meta-label">Participants:</span>
+                                                <span className="meta-label">{challenge.participants.length <= 1 ? "Participant :" : "Participants :"}</span>
                                                 <span className="meta-value">
                                                     <Users size={16} />
                                                     {challenge.participants.length}
@@ -790,12 +530,12 @@ const Challenges = () => {
                                             <span className="meta-label">Créé par:</span>
                                             <div className="creator-info">
                                                 <img
-                                                    src={challenge.createdBy.avatarUrl || "/placeholder.svg"}
-                                                    alt={challenge.createdBy.username}
+                                                    src={challenge.creator.avatarUrl || "/placeholder.svg"}
+                                                    alt={challenge.creator.username}
                                                     className="creator-avatar"
                                                 />
                                                 <span className="creator-name">
-                                                    {challenge.createdBy.firstName} {challenge.createdBy.lastName}
+                                                    {challenge.creator.firstName} {challenge.creator.lastName}
                                                 </span>
                                             </div>
                                         </div>
@@ -849,24 +589,24 @@ const Challenges = () => {
                         )}
                     </div>
                 )
-                
+
             case "invitations":
                 return (
                     <div className="challenges-invitations-tab">
-                        {invitations.length > 0 ? (
+                        {challengeNotifications && challengeNotifications.length > 0 ? (
                             <div className="invitations-list">
-                                {invitations.map((invitation) => (
-                                    <div key={invitation._id} className="invitation-card">
+                                {challengeNotifications.map((invitation) => (
+                                    <div key={invitation?._id} className="invitation-card">
                                         <div className="invitation-header">
                                             <div className="invitation-title">
-                                                <h3>{invitation.challengeName}</h3>
-                                                {new Date(invitation.expiresAt) < new Date(Date.now() + 24 * 60 * 60 * 1000) && (
+                                                <h3>{invitation?.challenge.name}</h3>
+                                                {new Date(invitation?.DeleteAt) < new Date(Date.now() + 24 * 60 * 60 * 1000) && (
                                                     <span className="expiring-badge">
                                                         <AlertTriangle size={12} /> Expire bientôt
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="invitation-description">{invitation.description}</p>
+                                            <p className="invitation-description">{invitation?.content}</p>
                                         </div>
 
                                         <div className="invitation-details">
@@ -874,12 +614,12 @@ const Challenges = () => {
                                                 <span className="detail-label">Invité par:</span>
                                                 <div className="sender-info">
                                                     <img
-                                                        src={invitation.sentBy.avatarUrl || "/placeholder.svg"}
-                                                        alt={invitation.sentBy.username}
+                                                        src={invitation?.sender?.avatarUrl || "/placeholder.svg"}
+                                                        alt={invitation?.sender?.username}
                                                         className="sender-avatar"
                                                     />
                                                     <span className="sender-name">
-                                                        {invitation.sentBy.firstName} {invitation.sentBy.lastName}
+                                                        {invitation?.sender?.firstName} {invitation?.sender?.lastName}
                                                     </span>
                                                 </div>
                                             </div>
@@ -887,12 +627,12 @@ const Challenges = () => {
                                             <div className="invitation-meta">
                                                 <div className="invitation-date">
                                                     <span className="detail-label">Reçu le:</span>
-                                                    <span className="detail-value">{formatDate(invitation.sentAt)}</span>
+                                                    <span className="detail-value">{formatDate(invitation?.createdAt)}</span>
                                                 </div>
 
                                                 <div className="invitation-expiry">
                                                     <span className="detail-label">Expire le:</span>
-                                                    <span className="detail-value">{formatDate(invitation.expiresAt)}</span>
+                                                    <span className="detail-value">{formatDate(invitation?.DeleteAt)}</span>
                                                 </div>
 
                                                 <div className="invitation-participants">
@@ -908,7 +648,7 @@ const Challenges = () => {
                                         <div className="invitation-actions">
                                             <button
                                                 className="action-button primary"
-                                                onClick={() => handleAcceptInvitation(invitation._id)}
+                                                onClick={() => handleRespondToInvitation(invitation._id, 'accept')}
                                             >
                                                 <Check size={16} />
                                                 <span>Accepter</span>
@@ -916,7 +656,7 @@ const Challenges = () => {
 
                                             <button
                                                 className="action-button secondary"
-                                                onClick={() => handleDeclineInvitation(invitation._id)}
+                                                onClick={() => handleRespondToInvitation(invitation._id, 'decline')}
                                             >
                                                 <X size={16} />
                                                 <span>Refuser</span>
@@ -999,17 +739,16 @@ const Challenges = () => {
                                     <div className="form-row">
                                         <div className="form-group">
                                             <label htmlFor="goal-type">Type d'objectif *</label>
-                                            <select
-                                                id="goal-type"
-                                                value={newChallenge.goalType}
-                                                onChange={(e) => setNewChallenge({ ...newChallenge, goalType: e.target.value })}
+                                            <Select
+                                                value={selectedActivity}
+                                                onChange={(selected) => {
+                                                    setSelectedActivity(selected);
+                                                }}
+                                                options={ActivityOptions}
+                                                components={{ SingleValue: customSingleValue, Option: customOption }}
+                                                classNamePrefix="activity-select"
                                                 required
-                                            >
-                                                <option value="steps">Pas</option>
-                                                <option value="distance">Distance (km)</option>
-                                                <option value="calories">Calories</option>
-                                                <option value="time">Temps (minutes)</option>
-                                            </select>
+                                            />
                                         </div>
 
                                         <div className="form-group">
@@ -1018,12 +757,41 @@ const Challenges = () => {
                                                 type="number"
                                                 id="goal-value"
                                                 min={1}
-                                                value={newChallenge.goalValue}
-                                                onChange={(e) => setNewChallenge({ ...newChallenge, goalValue: parseInt(e.target.value) })}
+                                                value={newChallenge.goal}
+                                                onChange={(e) => setNewChallenge({ ...newChallenge, goal: parseInt(e.target.value) })}
                                                 required
                                             />
                                         </div>
+                                        {selectedActivity.value.includes("-time") && (
+                                            <div className="form-group">
+                                                <label>Durée (en jours)</label>
+                                                <input
+                                                    type="number"
+                                                    id="time-duration"
+                                                    value={newChallenge.time}
+                                                    onChange={(e) => setNewChallenge({ ...newChallenge, time: parseInt(e.target.value) })}
+                                                    min={2}
+                                                    required
+                                                />
+                                            </div>
+                                        )}
                                     </div>
+                                </div>
+                                <div className="form-section">
+                                    <h3> Récompenses </h3>
+                                    <div className="form-group">
+                                        <label>Récompense XP *</label>
+                                        <input
+                                            type="number"
+                                            id="xp"
+                                            value={newChallenge.xpReward}
+                                            onChange={(e) => setNewChallenge({ ...newChallenge, xpReward: parseInt(e.target.value) })}
+                                            min={10}
+                                            step={5}
+                                            required
+                                        />
+                                    </div>
+                                    {/*TODO: ajouter un reward associé si nécessaire */}
                                 </div>
 
                                 <div className="form-section">
@@ -1031,15 +799,17 @@ const Challenges = () => {
 
                                     <div className="form-group">
                                         <div className="toggle-group">
-                                            <label htmlFor="is-private">Défi privé</label>
+                                            <label htmlFor="is-private">
+                                                {newChallenge.isPrivate
+                                                    ? "Défi privé"
+                                                    : "Défi public"}</label>
                                             <div className="toggle-switch">
                                                 <input
                                                     type="checkbox"
                                                     id="is-private"
                                                     checked={newChallenge.isPrivate}
-                                                    onChange={(e) => setNewChallenge({ ...newChallenge, isPrivate: e.target.checked })}
+                                                    onChange={() => { setNewChallenge({ ...newChallenge, isPrivate: !newChallenge.isPrivate }) }}
                                                 />
-                                                <span className="toggle-slider"></span>
                                             </div>
                                         </div>
                                         <p className="form-help-text">
@@ -1053,41 +823,45 @@ const Challenges = () => {
                                         <div className="form-group">
                                             <label>Inviter des amis</label>
                                             <div className="friends-selection">
-                                                {friends.slice(0, 5).map((friend) => (
-                                                    <div key={friend._id} className="friend-option">
-                                                        <input
-                                                            type="checkbox"
-                                                            id={`friend-${friend._id}`}
-                                                            checked={newChallenge.invitedFriends.includes(friend._id)}
-                                                            onChange={(e) => {
-                                                                if (e.target.checked) {
-                                                                    setNewChallenge({
-                                                                        ...newChallenge,
-                                                                        invitedFriends: [...newChallenge.invitedFriends, friend._id]
-                                                                    });
-                                                                } else {
-                                                                    setNewChallenge({
-                                                                        ...newChallenge,
-                                                                        invitedFriends: newChallenge.invitedFriends.filter(id => id !== friend._id)
-                                                                    });
-                                                                }
-                                                            }}
-                                                        />
-                                                        <label htmlFor={`friend-${friend._id}`} className="friend-label">
-                                                            <img
-                                                                src={friend.avatarUrl || "/placeholder.svg"}
-                                                                alt={friend.username}
-                                                                className="friend-avatar"
+                                                {user?.friends.length === 0 ? (
+                                                    <p className="form-help-text">Vous navez pas d'ami. Vous pouvez créer le challenge. Si dans une semaine vous êtes le seul participant, il sera supprimé</p>
+                                                ) : (
+                                                    user?.friends.slice(0, 5).map((friend) => (
+                                                        <div key={friend.userId._id} className="friend-option">
+                                                            <input
+                                                                type="checkbox"
+                                                                id={`friend-${friend.userId._id}`}
+                                                                checked={newChallenge.participants.includes(friend.userId._id)}
+                                                                onChange={(e) => {
+                                                                    if (e.target.checked) {
+                                                                        setNewChallenge({
+                                                                            ...newChallenge,
+                                                                            participants: [...newChallenge.participants, friend.userId._id]
+                                                                        });
+                                                                    } else {
+                                                                        setNewChallenge({
+                                                                            ...newChallenge,
+                                                                            participants: newChallenge.participants.filter(id => id !== friend.userId._id)
+                                                                        });
+                                                                    }
+                                                                }}
                                                             />
-                                                            <span className="friend-name">
-                                                                {friend.firstName} {friend.lastName}
-                                                            </span>
-                                                        </label>
-                                                    </div>
-                                                ))}
-                                                {friends.length > 5 && (
+                                                            <label htmlFor={`friend-${friend.userId._id}`} className="friend-label">
+                                                                <img
+                                                                    src={friend.userId.avatarUrl || "/placeholder.svg"}
+                                                                    alt={friend.userId.username}
+                                                                    className="friend-avatar"
+                                                                />
+                                                                <span className="friend-name">
+                                                                    {friend.userId.fullName}
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                    ))
+                                                )}
+                                                {user?.friends.length > 5 && (
                                                     <button type="button" className="show-more-friends">
-                                                        + {friends.length - 5} autres amis
+                                                        + {user?.friends.length - 5} autres amis
                                                     </button>
                                                 )}
                                             </div>
@@ -1110,11 +884,11 @@ const Challenges = () => {
                                                 description: "",
                                                 startDate: "",
                                                 endDate: "",
-                                                goalType: "steps",
-                                                goalValue: 10000,
+                                                activityType: "steps",
+                                                goal: 10000,
+                                                time: 1,
                                                 isPrivate: false,
-                                                accessCode: "",
-                                                invitedFriends: []
+                                                participants: []
                                             });
                                         }}
                                     >
@@ -1133,6 +907,7 @@ const Challenges = () => {
 
     return (
         <div className="challenges-container">
+            {isLoading && <GlobalLoader />}
             <div className="challenges-header">
                 <h1>Défis</h1>
                 <p>Participez à des défis pour vous motiver et comparer vos performances</p>
@@ -1164,139 +939,17 @@ const Challenges = () => {
                     {showFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
             </div>
-
-            {showFilters && (
-                <div className="filters-panel">
-                    <div className="filter-section">
-                        <h3>Trier par</h3>
-                        <div className="filter-options">
-                            <button
-                                className={sortBy === "recent" ? "active" : ""}
-                                onClick={() => setSortBy("recent")}
-                            >
-                                <Calendar size={16} />
-                                <span>Plus récents</span>
-                            </button>
-                            <button
-                                className={sortBy === "ending-soon" ? "active" : ""}
-                                onClick={() => setSortBy("ending-soon")}
-                            >
-                                <Clock size={16} />
-                                <span>Se termine bientôt</span>
-                            </button>
-                            <button
-                                className={sortBy === "progress" ? "active" : ""}
-                                onClick={() => setSortBy("progress")}
-                            >
-                                <BarChart2 size={16} />
-                                <span>Progression</span>
-                            </button>
-                            <button
-                                className={sortBy === "participants" ? "active" : ""}
-                                onClick={() => setSortBy("participants")}
-                            >
-                                <Users size={16} />
-                                <span>Nombre de participants</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="filter-section">
-                        <h3>Type d'objectif</h3>
-                        <div className="filter-options">
-                            <button
-                                className={filterType === "all" ? "active" : ""}
-                                onClick={() => setFilterType("all")}
-                            >
-                                <span>Tous</span>
-                            </button>
-                            <button
-                                className={filterType === "steps" ? "active" : ""}
-                                onClick={() => setFilterType("steps")}
-                            >
-                                <Trophy size={16} />
-                                <span>Pas</span>
-                            </button>
-                            <button
-                                className={filterType === "distance" ? "active" : ""}
-                                onClick={() => setFilterType("distance")}
-                            >
-                                <MapPin size={16} />
-                                <span>Distance</span>
-                            </button>
-                            <button
-                                className={filterType === "calories" ? "active" : ""}
-                                onClick={() => setFilterType("calories")}
-                            >
-                                <Zap size={16} />
-                                <span>Calories</span>
-                            </button>
-                            <button
-                                className={filterType === "time" ? "active" : ""}
-                                onClick={() => setFilterType("time")}
-                            >
-                                <Clock size={16} />
-                                <span>Temps</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="filter-section">
-                        <h3>Statut</h3>
-                        <div className="filter-options">
-                            <button
-                                className={filterStatus === "all" ? "active" : ""}
-                                onClick={() => setFilterStatus("all")}
-                            >
-                                <span>Tous</span>
-                            </button>
-                            <button
-                                className={filterStatus === "upcoming" ? "active" : ""}
-                                onClick={() => setFilterStatus("upcoming")}
-                            >
-                                <Calendar size={16} />
-                                <span>À venir</span>
-                            </button>
-                            <button
-                                className={filterStatus === "active" ? "active" : ""}
-                                onClick={() => setFilterStatus("active")}
-                            >
-                                <Zap size={16} />
-                                <span>En cours</span>
-                            </button>
-                            <button
-                                className={filterStatus === "completed" ? "active" : ""}
-                                onClick={() => setFilterStatus("completed")}
-                            >
-                                <Check size={16} />
-                                <span>Terminés</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="filter-section">
-                        <h3>Recherche</h3>
-                        <div className="search-bar">
-                            <Search size={16} />
-                            <input
-                                type="text"
-                                placeholder="Rechercher un défi..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                            {searchQuery && (
-                                <button
-                                    className="clear-search"
-                                    onClick={() => setSearchQuery("")}
-                                >
-                                    <X size={16} />
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
-
+            <FiltersPanel
+                showFilters={showFilters}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                filterType={filterType}
+                setFilterType={setFilterType}
+                filterStatus={filterStatus}
+                setFilterStatus={setFilterStatus}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+            />
             <div className="challenges-tabs">
                 <button
                     className={activeTab === "my-challenges" ? "active" : ""}
@@ -1318,8 +971,8 @@ const Challenges = () => {
                 >
                     <Mail size={16} />
                     <span>Invitations</span>
-                    {invitations.length > 0 && (
-                        <span className="badge">{invitations.length}</span>
+                    {challengeNotifications.length > 0 && (
+                        <span className="badge">{challengeNotifications.length}</span>
                     )}
                 </button>
                 <button
@@ -1337,246 +990,13 @@ const Challenges = () => {
 
             {/* Challenge Detail Modal */}
             {showChallengeModal && selectedChallenge && (
-                <div className="modal-overlay">
-                    <div className="modal challenge-detail-modal">
-                        <div className="modal-header">
-                            <h3>Détails du défi</h3>
-                            <button
-                                className="close-button"
-                                onClick={() => {
-                                    setShowChallengeModal(false)
-                                    setSelectedChallenge(null)
-                                }}
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <div className="challenge-detail-content">
-                            <div className="challenge-detail-header">
-                                <div className="challenge-detail-title">
-                                    <h2>{selectedChallenge.name}</h2>
-                                    <div className="challenge-detail-badges">
-                                        {getStatusBadge(selectedChallenge.status)}
-                                        {selectedChallenge.isPrivate ? (
-                                            <span className="privacy-badge">
-                                                <Lock size={12} /> Privé
-                                            </span>
-                                        ) : (
-                                            <span className="privacy-badge public">
-                                                <Unlock size={12} /> Public
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <p className="challenge-detail-description">{selectedChallenge.description}</p>
-                            </div>
-
-                            <div className="challenge-detail-info">
-                                <div className="info-section">
-                                    <h4>Informations générales</h4>
-
-                                    <div className="info-grid">
-                                        <div className="info-item">
-                                            <span className="info-label">Créé par</span>
-                                            <div className="creator-info">
-                                                <img
-                                                    src={selectedChallenge.createdBy.avatarUrl || "/placeholder.svg"}
-                                                    alt={selectedChallenge.createdBy.username}
-                                                    className="creator-avatar"
-                                                />
-                                                <span className="creator-name">
-                                                    {selectedChallenge.createdBy.firstName} {selectedChallenge.createdBy.lastName}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div className="info-item">
-                                            <span className="info-label">Dates</span>
-                                            <span className="info-value">
-                                                <CalendarIcon size={16} />
-                                                {formatDate(selectedChallenge.startDate)} - {formatDate(selectedChallenge.endDate)}
-                                            </span>
-                                        </div>
-
-                                        <div className="info-item">
-                                            <span className="info-label">Objectif</span>
-                                            <span className="info-value">
-                                                {getGoalTypeIcon(selectedChallenge.goalType)}
-                                                {formatGoalValue(selectedChallenge.goalValue, selectedChallenge.goalType)}
-                                            </span>
-                                        </div>
-
-                                        <div className="info-item">
-                                            <span className="info-label">Participants</span>
-                                            <span className="info-value">
-                                                <Users size={16} />
-                                                {selectedChallenge.participants.length} participants
-                                            </span>
-                                        </div>
-
-                                        {selectedChallenge.status === "active" && (
-                                            <div className="info-item">
-                                                <span className="info-label">Temps restant</span>
-                                                <span className="info-value">
-                                                    <Clock size={16} />
-                                                    {getDaysRemaining(selectedChallenge.endDate) > 0
-                                                        ? `${getDaysRemaining(selectedChallenge.endDate)} jours`
-                                                        : "Dernier jour !"}
-                                                </span>
-                                            </div>
-                                        )}
-
-                                        {selectedChallenge.isPrivate && (
-                                            <div className="info-item">
-                                                <span className="info-label">Code d'accès</span>
-                                                <span className="info-value code">
-                                                    <Hash size={16} />
-                                                    {selectedChallenge.accessCode}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="info-section">
-                                    <h4>Progression du défi</h4>
-
-                                    <div className="challenge-progress-detail">
-                                        <div className="progress-header">
-                                            <span>Progression globale</span>
-                                            <span>{selectedChallenge.progress}%</span>
-                                        </div>
-                                        <div className="progress-container">
-                                            <div
-                                                className="progress-bar"
-                                                style={{ width: `${selectedChallenge.progress}%` }}
-                                            ></div>
-                                        </div>
-                                    </div>
-
-                                    <div className="challenge-charts">
-                                        <div className="chart-container">
-                                            <h5>Évolution de la progression</h5>
-                                            <div className="chart" style={{ height: "200px" }}>
-                                                <Line
-                                                    data={generateProgressChartData(selectedChallenge)}
-                                                    options={lineChartOptions}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="chart-container">
-                                            <h5>Répartition des participants</h5>
-                                            <div className="chart" style={{ height: "200px" }}>
-                                                <Pie
-                                                    data={generateParticipantsChartData(selectedChallenge)}
-                                                    options={pieChartOptions}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="info-section">
-                                    <h4>Classement des participants</h4>
-
-                                    <div className="participants-list">
-                                        {selectedChallenge.participants.slice(0, 10).map((participant, index) => (
-                                            <div
-                                                key={participant.userId}
-                                                className={`participant-item ${participant.userId === currentUser?._id ? "current-user" : ""
-                                                    }`}
-                                            >
-                                                <div className="participant-rank">
-                                                    {index === 0 ? (
-                                                        <Crown size={16} className="rank-icon gold" />
-                                                    ) : index === 1 ? (
-                                                        <Medal size={16} className="rank-icon silver" />
-                                                    ) : index === 2 ? (
-                                                        <Award size={16} className="rank-icon bronze" />
-                                                    ) : (
-                                                        <span className="rank-number">{index + 1}</span>
-                                                    )}
-                                                </div>
-
-                                                <div className="participant-avatar">
-                                                    <img
-                                                        src={participant.avatarUrl || "/placeholder.svg"}
-                                                        alt={participant.username}
-                                                    />
-                                                </div>
-
-                                                <div className="participant-info">
-                                                    <span className="participant-name">
-                                                        {participant.firstName} {participant.lastName}
-                                                    </span>
-                                                    <span className="participant-username">@{participant.username}</span>
-                                                </div>
-
-                                                <div className="participant-progress-container">
-                                                    <div className="participant-value">
-                                                        {formatGoalValue(participant.value, selectedChallenge.goalType)}
-                                                    </div>
-                                                    <div className="progress-container">
-                                                        <div
-                                                            className="progress-bar"
-                                                            style={{ width: `${participant.progress}%` }}
-                                                        ></div>
-                                                        <span className="progress-text">{participant.progress}%</span>
-                                                    </div>
-                                                </div>
-
-                                                {participant.userId !== currentUser?._id && (
-                                                    <div className="participant-actions">
-                                                        <button
-                                                            className="action-icon-button"
-                                                            title="Envoyer un message"
-                                                        >
-                                                            <MessageSquare size={16} />
-                                                        </button>
-                                                        <button
-                                                            className="action-icon-button"
-                                                            title="Ajouter en ami"
-                                                        >
-                                                            <UserPlus size={16} />
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
-
-                                        {selectedChallenge.participants.length > 10 && (
-                                            <button className="show-more-button">
-                                                Voir tous les participants ({selectedChallenge.participants.length})
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="challenge-detail-actions">
-                                {selectedChallenge.status !== "completed" && (
-                                    <>
-                                        <button className="action-button primary">
-                                            <Share2 size={16} />
-                                            <span>Partager</span>
-                                        </button>
-
-                                        <button
-                                            className="action-button secondary"
-                                            onClick={() => handleLeaveChallenge(selectedChallenge._id)}
-                                        >
-                                            <X size={16} />
-                                            <span>Quitter ce défi</span>
-                                        </button>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <ChallengeDetailModal
+                    challenge={selectedChallenge}
+                    onClose={() => setSelectedChallenge(null)}
+                    onDelete={() => handleDeleteChallenge(selectedChallenge._id)}
+                    onLeave={() => handleLeaveChallenge(selectedChallenge._id)}
+                    user={user}
+                />
             )}
 
             {/* Join Private Challenge Modal */}
@@ -1702,17 +1122,16 @@ const Challenges = () => {
                                     <div className="form-row">
                                         <div className="form-group">
                                             <label htmlFor="modal-goal-type">Type d'objectif *</label>
-                                            <select
-                                                id="modal-goal-type"
-                                                value={newChallenge.goalType}
-                                                onChange={(e) => setNewChallenge({ ...newChallenge, goalType: e.target.value })}
+                                            <Select
+                                                value={selectedActivity}
+                                                onChange={(selected) => {
+                                                    setSelectedActivity(selected);
+                                                }}
+                                                options={ActivityOptions}
+                                                components={{ SingleValue: customSingleValue, Option: customOption }}
+                                                classNamePrefix="activity-select"
                                                 required
-                                            >
-                                                <option value="steps">Pas</option>
-                                                <option value="distance">Distance (km)</option>
-                                                <option value="calories">Calories</option>
-                                                <option value="time">Temps (minutes)</option>
-                                            </select>
+                                            />
                                         </div>
 
                                         <div className="form-group">
@@ -1721,12 +1140,41 @@ const Challenges = () => {
                                                 type="number"
                                                 id="modal-goal-value"
                                                 min={1}
-                                                value={newChallenge.goalValue}
-                                                onChange={(e) => setNewChallenge({ ...newChallenge, goalValue: parseInt(e.target.value) })}
+                                                value={newChallenge.goal}
+                                                onChange={(e) => setNewChallenge({ ...newChallenge, goal: parseInt(e.target.value) })}
                                                 required
                                             />
                                         </div>
+                                        {selectedActivity.value.includes("-time") && (
+                                            <div className="form-group">
+                                                <label>Durée (en jours)</label>
+                                                <input
+                                                    type="number"
+                                                    id="time-duration"
+                                                    value={newChallenge.time}
+                                                    onChange={(e) => setNewChallenge({ ...newChallenge, time: parseInt(e.target.value) })}
+                                                    min={2}
+                                                    required
+                                                />
+                                            </div>
+                                        )}
                                     </div>
+                                </div>
+                                <div className="form-section">
+                                    <h3> Récompenses </h3>
+                                    <div className="form-group">
+                                        <label>Récompense XP *</label>
+                                        <input
+                                            type="number"
+                                            id="xp"
+                                            value={newChallenge.xpReward}
+                                            onChange={(e) => setNewChallenge({ ...newChallenge, xpReward: parseInt(e.target.value) })}
+                                            min={10}
+                                            step={5}
+                                            required
+                                        />
+                                    </div>
+                                    {/*TODO: ajouter un reward associé si nécessaire */}
                                 </div>
 
                                 <div className="form-section">
@@ -1734,15 +1182,17 @@ const Challenges = () => {
 
                                     <div className="form-group">
                                         <div className="toggle-group">
-                                            <label htmlFor="modal-is-private">Défi privé</label>
+                                            <label htmlFor="modal-is-private">
+                                                {newChallenge.isPrivate
+                                                    ? "Défi privé"
+                                                    : "Défi public"}</label>
                                             <div className="toggle-switch">
                                                 <input
                                                     type="checkbox"
                                                     id="modal-is-private"
                                                     checked={newChallenge.isPrivate}
-                                                    onChange={(e) => setNewChallenge({ ...newChallenge, isPrivate: e.target.checked })}
+                                                    onChange={() => { setNewChallenge({ ...newChallenge, isPrivate: !newChallenge.isPrivate }) }}
                                                 />
-                                                <span className="toggle-slider"></span>
                                             </div>
                                         </div>
                                         <p className="form-help-text">
@@ -1751,12 +1201,81 @@ const Challenges = () => {
                                                 : "Tous les utilisateurs pourront voir et rejoindre ce défi."}
                                         </p>
                                     </div>
+                                    {newChallenge.isPrivate && (
+                                        <div className="form-group">
+                                            <label>Inviter des amis</label>
+                                            <div className="friends-selection">
+                                                {user?.friends.length === 0 ? (
+                                                    <p className="form-help-text">Vous navez pas d'ami. Vous pouvez créer le challenge. Si dans une semaine vous êtes le seul participant, il sera supprimé</p>
+                                                ) : (
+                                                    user?.friends.slice(0, 5).map((friend) => (
+                                                        <div key={friend.userId._id} className="friend-option">
+                                                            <input
+                                                                type="checkbox"
+                                                                id={`friend-${friend.userId._id}`}
+                                                                checked={newChallenge.participants.includes(friend.userId._id)}
+                                                                onChange={(e) => {
+                                                                    if (e.target.checked) {
+                                                                        setNewChallenge({
+                                                                            ...newChallenge,
+                                                                            participants: [...newChallenge.participants, friend.userId._id]
+                                                                        });
+                                                                    } else {
+                                                                        setNewChallenge({
+                                                                            ...newChallenge,
+                                                                            participants: newChallenge.participants.filter(id => id !== friend.userId._id)
+                                                                        });
+                                                                    }
+                                                                }}
+                                                            />
+                                                            <label htmlFor={`friend-${friend.userId._id}`} className="friend-label">
+                                                                <img
+                                                                    src={friend.userId.avatarUrl || "/placeholder.svg"}
+                                                                    alt={friend.userId.username}
+                                                                    className="friend-avatar"
+                                                                />
+                                                                <span className="friend-name">
+                                                                    {friend.userId.fullName}
+                                                                </span>
+                                                            </label>
+                                                        </div>
+                                                    ))
+                                                )}
+                                                {user?.friends.length > 5 && (
+                                                    <button type="button" className="show-more-friends">
+                                                        + {user?.friends.length - 5} autres amis
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="form-actions">
                                     <button type="submit" className="action-button primary">
                                         <Flag size={16} />
                                         <span>Créer le défi</span>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="action-button secondary"
+                                        onClick={() => {
+                                            setNewChallenge({
+                                                name: "",
+                                                description: "",
+                                                startDate: "",
+                                                endDate: "",
+                                                activityType: "steps",
+                                                goal: 10000,
+                                                time: 1,
+                                                isPrivate: false,
+                                                participants: []
+                                            });
+                                        }}
+                                    >
+                                        <X size={16} />
+                                        <span>Réinitialiser</span>
                                     </button>
                                 </div>
                             </form>

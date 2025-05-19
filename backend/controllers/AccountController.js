@@ -355,13 +355,14 @@ const getUserProfile = async (req, res) => {
             .populate([
                 {
                   path: 'friends.userId',
-                  select: 'username avatarUrl'
+                  select: 'username avatarUrl firstName lastName'
                 },
                 {
                   path: 'rewardsUnlocked.rewardId',
-                  select: ''
+                  select: 'name description imageUrl'
                 }
               ])
+        const todayProgress = await user.calculateTodayProgress();
 
         if (!user) {
             return res.status(404).json({
@@ -389,7 +390,7 @@ const getUserProfile = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            user: userResponse
+            user: {...userResponse, todayProgress }
         });
     } catch (error) {
         res.status(500).json({

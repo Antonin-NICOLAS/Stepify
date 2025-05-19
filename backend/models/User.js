@@ -308,17 +308,15 @@ userSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
-// Virtual pour le progrès de l'objectif quotidien
-userSchema.virtual('todayProgress').get(async function () {
+// Méthode pour le progrès de l'objectif quotidien
+userSchema.methods.calculateTodayProgress = async function () {
+  const StepEntry = mongoose.model('StepEntry');
   const today = new Date().toISOString().split('T')[0];
-  const result = await mongoose.model('StepEntry').aggregate([
-    { $match: { user: this._id, day: today } },
-    { $group: { _id: null, totalSteps: { $sum: "$steps" } } }
-  ]);
 
-  const todaySteps = result[0]?.totalSteps || 0;
-  return (todaySteps / this.dailyGoal) * 100;
-});
+  const entry = await StepEntry.findOne({ user: this._id, day: today });
+  const todaySteps = entry?.totalSteps || 0;
+  return Math.min(Math.round((todaySteps / this.dailyGoal) * 1000)/10, 100); // max 100%
+};
 
 // Index pour améliorer les performances
 userSchema.index({ 'customGoals.deadline': 1 });

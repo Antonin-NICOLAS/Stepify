@@ -114,7 +114,7 @@ function Auth() {
               </div>
               <div className="stat-item">
                 <span className="stat-value">500+</span>
-                <span className="stat-label">Challenges</span>
+                <span className="stat-label">Défis</span>
               </div>
               <div className="stat-item">
                 <span className="stat-value">1M+</span>

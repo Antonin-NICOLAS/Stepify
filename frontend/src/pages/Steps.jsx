@@ -11,7 +11,7 @@ import { useStepsStats } from "../hooks/useStepsStats"
 import { Line } from "react-chartjs-2"
 import { Chart, registerables } from "chart.js"
 //ICONS
-import { Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart, Trophy, Map, Flame, Clock, ArrowLeft, ArrowRight } from "lucide-react"
+import { Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart, Footprints, Spline, Flame, Clock, ArrowLeft, ArrowRight } from "lucide-react"
 //CSS
 import "./Steps.css"
 
@@ -101,8 +101,8 @@ const Steps = () => {
 
     // select Options
     const MetricOptions = [
-        { value: 'totalSteps', label: 'Pas', icon: <Trophy size={16} /> },
-        { value: 'totalDistance', label: 'Distance', icon: <Map size={16} /> },
+        { value: 'totalSteps', label: 'Pas', icon: <Footprints size={16} /> },
+        { value: 'totalDistance', label: 'Distance', icon: <Spline size={16} /> },
         { value: 'totalCalories', label: 'Calories', icon: <Flame size={16} /> },
         { value: 'totalActiveTime', label: 'Temps actif', icon: <Clock size={16} /> },
     ];

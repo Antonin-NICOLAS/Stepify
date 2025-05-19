@@ -6,7 +6,8 @@ import {
     BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
     PieChart, Pie, Cell
 } from "recharts"
-import { Award, Calendar, ChevronDown, ChevronLeft, ChevronRight, Clock, Flame, Gift, Medal, Plus, Target, TrendingUp, Trophy, Users, Zap, ArrowUp, ArrowDown, Check, X } from 'lucide-react'
+import { Icon, MapPin, Calendar, ChevronDown, ChevronLeft, ChevronRight, Clock, Flame, Gift, Medal, Plus, Target, TrendingUp, Trophy, Users, Footprints, ArrowUp, ArrowDown, Check, X, Zap, Bike, Watch } from 'lucide-react'
+import { sneaker } from "@lucide/lab";
 import "./Dashboard.css"
 
 const mockDailyStats = {
@@ -196,13 +197,13 @@ const Dashboard = () => {
     const getActivityModeIcon = (mode) => {
         switch (mode) {
             case "walk":
-                return "🚶"
+                return <Icon iconNode={sneaker} size={20}/>
             case "run":
-                return "🏃"
+                return <Watch size={20}/>
             case "bike":
-                return "🚴"
+                return <Bike size={20}/>
             default:
-                return "🚶"
+                return <Icon iconNode={sneaker} size={20}/>
         }
     }
 
@@ -285,7 +286,7 @@ const Dashboard = () => {
                     <div className="daily-stats">
                         <div className="daily-stat-card">
                             <div className="daily-stat-icon">
-                                <Zap size={24} />
+                                <Footprints size={24} />
                             </div>
                             <div className="daily-stat-content">
                                 <div className="daily-stat-value">{formatNumber(mockDailyStats.steps)}</div>
@@ -294,7 +295,7 @@ const Dashboard = () => {
                         </div>
                         <div className="daily-stat-card">
                             <div className="daily-stat-icon">
-                                <TrendingUp size={24} />
+                                <MapPin size={24} />
                             </div>
                             <div className="daily-stat-content">
                                 <div className="daily-stat-value">{mockDailyStats.distance.toFixed(1)}</div>

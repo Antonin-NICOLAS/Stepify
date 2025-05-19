@@ -2,9 +2,10 @@ import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import { useTheme } from "../context/ThemeContext"
 import {
-    Trophy, Medal, Star, Filter, Search, ChevronDown, ChevronUp, Clock, Award, Target,
-    Zap, Users, Info, X, ArrowUp, BarChart2, Flame, Gift, Crown, Bookmark, BookmarkPlus, Share2,
+    Icon, Footprints, Spline, Trophy, Medal, Star, Filter, Search, ChevronDown, ChevronUp, Clock, Award, Target,
+    Zap, Users, Info, X, ArrowUp, BarChart2, Flame, Watch, Gift, Crown, Bookmark, BookmarkPlus, Share2,
 } from "lucide-react"
+import { sneaker, watchActivity } from '@lucide/lab';
 import { Pie, Bar } from "react-chartjs-2"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from "chart.js"
 import "./Rewards.css"
@@ -294,15 +295,22 @@ const Rewards = () => {
     // Get criteria icon
     const getCriteriaIcon = (criteria) => {
         switch (criteria) {
-            case "steps":
-            case "steps-time":
+            case "xp":
                 return <Trophy size={16} />
-            case "distance":
-            case "distance-time":
+            case "xp-time":
                 return <Award size={16} />
+            case "steps":
+                return <Footprints size={16} />;
+            case "steps-time":
+                return <Icon iconNode={sneaker} size={16} />;
+            case "distance":
+                return <Spline size={16} />
+            case "distance-time":
+                return <Watch size={16}/>
             case "calories":
-            case "calories-time":
                 return <Flame size={16} />
+            case "calories-time":
+                return <Icon iconNode={watchActivity} size={16}/>
             case "streak":
                 return <Zap size={16} />
             case "level":

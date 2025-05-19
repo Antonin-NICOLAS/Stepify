@@ -154,7 +154,13 @@
   text-align: center;
   padding: 1rem;
 }
-.account-container .save-avatar-btn{
+
+.avatar-file-form {
+  display: flex;
+  gap: 1rem;
+}
+
+.account-container .save-avatar-btn, .account-container .cancel-avatar-btn {
   margin-top: 1rem;
 }
 
@@ -350,7 +356,7 @@
 
 .account-container .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 0;
   font-weight: 500;
   color: var(--text-color);
 }
@@ -509,16 +515,14 @@
 }
 
 .account-container .progress-text {
-  position: absolute;
-  top: -20px;
-  left: 0;
   font-size: 0.875rem;
-  color: var(--text-color);
+  color: white;
 }
 
 .account-container .goal-editor {
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 .account-container .goal-editor input {
@@ -528,7 +532,6 @@
   border-radius: var(--radius);
   background-color: var(--body-color);
   color: var(--text-color);
-  margin-right: 0.5rem;
 }
 
 /* Preferences Section */
