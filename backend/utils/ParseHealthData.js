@@ -196,6 +196,7 @@ const parseAppleHealthData = async (xmlData, userId) => {
     const user = await UserModel.findById(userId);
     user.totalSteps -= lastEntry.totalSteps;
     user.totalDistance -= lastEntry.totalDistance;
+    user.totalCalories -= lastEntry.totalCalories;
     user.totalXP -= lastEntry.xp;
     await user.save();
     await StepEntry.deleteMany({ user: userId, day: lastDay });

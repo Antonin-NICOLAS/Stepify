@@ -102,6 +102,11 @@ const userSchema = new Schema({
     default: 0, // en km
     min: 0
   },
+  totalCalories: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
   customGoals: [{
     type: {
       type: String,

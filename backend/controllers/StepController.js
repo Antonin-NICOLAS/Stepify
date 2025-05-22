@@ -3,6 +3,7 @@ const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 const { parseAppleHealthData, parseSamsungHealthData } = require('../utils/ParseHealthData')
 const { updateUserStatsAfterImport, updateUserStats } = require('../utils/StepUtils');
 const { computeXpForEntry } = require('../utils/CalculateXP');
+const { updateUserRewards } = require('../controllers/RewardController');
 const csv = require('csv-parser');
 
 // Récupérer toutes les entrées de l'utilisateur
@@ -16,14 +17,14 @@ const getMySteps = async (req, res) => {
       .sort({ date: -1 })
       .lean();
 
-    return res.status(200).json({ 
+    return res.status(200).json({
       success: true,
       steps: entries
     });
 
   } catch (error) {
     console.error('Erreur récupération données:', error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       success: false,
       error: 'Erreur lors de la récupération des données'
     });
@@ -123,7 +124,7 @@ const createStepEntry = async (req, res) => {
 
       // Add the new entry
       existingEntry.hourlyData.push(hourlyEntry);
-      
+
       // Sort the hourlyData array by hour (0-23)
       existingEntry.hourlyData.sort((a, b) => a.hour - b.hour);
 
@@ -135,6 +136,7 @@ const createStepEntry = async (req, res) => {
 
       await existingEntry.save();
       await updateUserStats(userId);
+      await updateUserRewards(userId);
 
       return res.status(200).json({
         success: true,
@@ -156,6 +158,7 @@ const createStepEntry = async (req, res) => {
       });
 
       await updateUserStats(userId);
+      await updateUserRewards(userId);
       return res.status(201).json({
         success: true,
         entry: newEntry
@@ -199,6 +202,7 @@ const updateStepEntry = async (req, res) => {
 
     await entry.save();
     await updateUserStats(userId);
+    await updateUserRewards(userId);
 
     res.status(200).json({
       success: true,
@@ -253,9 +257,9 @@ const deleteStepEntry = async (req, res) => {
   if (checkAuthorization(req, res, userId)) return;
 
   try {
-    const entry = await StepEntry.findOneAndDelete({ 
-      _id: entryId, 
-      user: userId 
+    const entry = await StepEntry.findOneAndDelete({
+      _id: entryId,
+      user: userId
     });
 
     if (!entry) {
@@ -265,6 +269,7 @@ const deleteStepEntry = async (req, res) => {
       });
     }
     await updateUserStats(userId);
+    await updateUserRewards(userId);
 
     res.status(200).json({
       success: true,
@@ -309,7 +314,7 @@ const importHealthData = async (req, res) => {
       const stream = require('stream');
       const bufferStream = new stream.PassThrough();
       bufferStream.end(req.file.buffer);
-      
+
       await new Promise((resolve, reject) => {
         bufferStream
           .pipe(csv())
@@ -317,19 +322,20 @@ const importHealthData = async (req, res) => {
           .on('end', resolve)
           .on('error', reject);
       });
-      
+
       entries = parseSamsungHealthData(csvData, userId);
     }
 
-    const filteredEntries = entries.filter(entry => 
+    const filteredEntries = entries.filter(entry =>
       new Date(entry.date) >= new Date('2025-05-01T00:00:00Z')
     );
 
     // Sauvegarder en base
     await StepEntry.insertMany(filteredEntries);
     await updateUserStatsAfterImport(userId, filteredEntries);
+    await updateUserRewards(userId);
 
-    res.json({ 
+    res.json({
       success: true,
       importedEntries: filteredEntries.length,
       rejectedEntries: entries.length - filteredEntries.length

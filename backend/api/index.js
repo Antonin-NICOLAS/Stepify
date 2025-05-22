@@ -2,15 +2,15 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
-const cloudinary = require('../config/cloudinary')
 //cron
-const { scheduleStatusUpdates, deleteExpiredNotifications } = require('./ScheduledTasks');
+const { scheduleStatusUpdates, deleteExpiredNotifications, scheduleDailyRewardUpdates } = require('./ScheduledTasks');
 //routes
 const AuthRoutes = require('../routes/AuthRoutes')
 const UserRoutes = require('../routes/AccountRoutes')
 const StepRoutes = require('../routes/StepRoutes')
 const ChallengeRoutes = require('../routes/ChallengeRoutes')
 const NotificationRoutes = require('../routes/NotificationRoutes')
+const RewardRoutes = require('../routes/RewardRoutes')
 //.env
 require('dotenv').config()
 
@@ -48,6 +48,7 @@ app.use('/account', UserRoutes)
 app.use('/step', StepRoutes)
 app.use('/challenge', ChallengeRoutes)
 app.use('/notification', NotificationRoutes)
+app.use('/reward', RewardRoutes)
 
 //mongoDB connection
 mongoose.connect(process.env.MONGO_URI)
@@ -65,4 +66,5 @@ app.listen(port, function () {
     console.log(`Server is running at http://${host}:${port}`);
     scheduleStatusUpdates();
     deleteExpiredNotifications();
+    scheduleDailyRewardUpdates();
 });

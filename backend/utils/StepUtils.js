@@ -13,8 +13,9 @@ const updateUserStatsAfterImport = async (userId, newEntries) => {
   for (const entry of newEntries) {
     const day = entry.day;
     stepsPerDay[day] = (stepsPerDay[day] || 0) + entry.totalSteps;
-    totalStepsToAdd += entry.totalSteps;
-    distanceToAdd += entry.totalDistance;
+    totalStepsToAdd += entry.totalSteps || 0;
+    distanceToAdd += entry.totalDistance || 0;
+    caloriestoAdd += entry.totalCalories || 0;
     totalXPToAdd += entry.xp;
   }
 
@@ -72,6 +73,7 @@ const updateUserStatsAfterImport = async (userId, newEntries) => {
     $inc: {
       totalSteps: totalStepsToAdd,
       totalDistance: distanceToAdd,
+      totalCalories: caloriestoAdd,
       totalXP: totalXPToAdd
     },
     $set: {

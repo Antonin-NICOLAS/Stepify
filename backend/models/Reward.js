@@ -4,42 +4,40 @@ require('./User.js')
 
 const rewardSchema = new Schema({
   name: {
-    type: String,
-    fr: String,
-    en: String,
-    es: String,
-    de: String,
-    required: true
+    fr: { type: String, required: true },
+    en: { type: String, required: true },
+    es: { type: String },
+    de: { type: String }
   },
   description: {
-    type: String,
-    fr: String,
-    en: String,
-    es: String,
-    de: String
+    fr: { type: String },
+    en: { type: String },
+    es: { type: String },
+    de: { type: String }
   },
   iconUrl: String,
   criteria: {
     type: String,
     enum: ['steps', 'steps-time', 'distance', 'distance-time', 'calories', 'calories-time',
-      'streak', 'level','dailygoal-time', 'customgoal', 'challenges', 'challenges-time', 'rank', 'friend'],
+      'streak', 'level', 'customgoal', 'challenges', 'challenges-time', 'rank', 'friend'],
     required: true
   },
   tier: {
     type: String,
-    enum: ['bronze', 'silver', 'gold', 'platinium', 'ruby', 'sapphire', 'diamond'],
+    enum: ['bronze', 'silver', 'gold', 'platinum', 'ruby', 'sapphire', 'diamond'],
     default: 'bronze'
   },
-  time: {type: Number, min: 0}, //days
+  time: { type: Number, min: 0 }, //days
 
   earnedBy: [{
-    user: {type: Schema.Types.ObjectId, ref: 'User', required: true},
-    times: {type: Number, min:1, default: 1}
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    times: { type: Number, min: 1, default: 1 }, // combien de fois la récompense a été gagnée
+    date: { type: Date, default: Date.now }, // débloquée à 
   }],
   //isBadge: { type: Boolean, default: true }
   //isHiddenUntilUnlocked: { type: Boolean, default: false }
   minLevel: { type: Number, default: 0 }, //level minimum pour débloquer
-  isInVitrine: { type: Boolean, default: false},
+  isInVitrine: { type: Boolean, default: false }, // vitrine de récompenses
   isRepeatable: { type: Boolean, default: false },
   target: { type: Number, required: true }, // ex: 10000 pas
 })

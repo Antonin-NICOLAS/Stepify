@@ -1,6 +1,8 @@
 const cron = require('node-cron');
 const Challenge = require('../models/Challenge');
 const Notification = require('../models/Notification');
+const User = require('../models/User');
+const { updateUserRewards } = require('../controllers/RewardController');
 
 // Update challenge statuses every hour
 const scheduleStatusUpdates = () => {
@@ -15,7 +17,6 @@ const scheduleStatusUpdates = () => {
   });
 };
 
-// Your existing update function (modified for standalone use)
 const updateChallengeStatuses = async () => {
   try {
     const challenges = await Challenge.find();
@@ -58,6 +59,50 @@ const deleteExpiredNotifications = () => {
       console.error('[CRON] Error deleting notifications:', error);
     }
   });
-}
+};
 
-module.exports = { scheduleStatusUpdates, deleteExpiredNotifications };
+// Update rewards for all users daily at 3 AM
+const scheduleDailyRewardUpdates = () => {
+  cron.schedule('0 3 * * *', async () => {
+    try {
+      console.log('Starting daily reward updates for all users...');
+      
+      // Get all user IDs (just the IDs for efficiency)
+      const users = await User.find({}, '_id');
+      
+      let processed = 0;
+      const totalUsers = users.length;
+      
+      // Process users in batches to avoid memory issues
+      const batchSize = 100;
+      for (let i = 0; i < totalUsers; i += batchSize) {
+        const batch = users.slice(i, i + batchSize);
+        
+        // Process each user in parallel
+        await Promise.all(batch.map(async (user) => {
+          try {
+            await updateUserRewards(user._id);
+            processed++;
+            
+            // Log progress every 100 users
+            if (processed % 100 === 0) {
+              console.log(`Processed ${processed} of ${totalUsers} users...`);
+            }
+          } catch (error) {
+            console.error(`Error updating rewards for user ${user._id}:`, error);
+          }
+        }));
+      }
+      
+      console.log(`[CRON] Completed reward updates for ${processed} users.`);
+    } catch (error) {
+      console.error('[CRON] Error in daily reward updates:', error);
+    }
+  });
+};
+
+module.exports = { 
+  scheduleStatusUpdates, 
+  deleteExpiredNotifications,
+  scheduleDailyRewardUpdates
+};
