@@ -1,4 +1,7 @@
 const UserModel = require('../models/User');
+const ChallengeModel = require('../models/Challenge');
+const StepEntryModel = require('../models/StepEntry');
+const NotificationModel = require('../models/Notification');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const ms = require('ms');
@@ -361,8 +364,37 @@ const deleteUser = async (req, res) => {
                 error: "Mot de passe incorrect"
             });
         }
+    // 1. Supprimer les challenges créés par l'utilisateur
+    await ChallengeModel.deleteMany({ creator: userId });
 
-        await UserModel.findByIdAndDelete(userId);
+    // 2. Supprimer les participations à des challenges
+    await ChallengeModel.updateMany(
+      {},
+      { $pull: { participants: { user: userId } } }
+    );
+
+    // 3. Supprimer les entrées de pas (StepEntry)
+    await StepEntryModel.deleteMany({ user: userId });
+
+    // 4. Supprimer toutes les notifications où il est destinataire ou expéditeur
+    await NotificationModel.deleteMany({
+      $or: [{ recipient: userId }, { sender: userId }]
+    });
+
+    // 5. Retirer l'utilisateur de la liste d'amis des autres
+    await UserModel.updateMany(
+      {},
+      { $pull: { friends: { userId: userId } } }
+    );
+
+    // 6. Supprimer les demandes d'amis (envoyées ou reçues)
+    await UserModel.updateMany(
+      {},
+      { $pull: { friendRequests: { userId: userId } } }
+    );
+
+    // 7. Supprimer enfin l'utilisateur lui-même
+    await UserModel.findByIdAndDelete(userId);
 
         res.clearCookie("jwtauth", {
             secure: process.env.NODE_ENV === "production",

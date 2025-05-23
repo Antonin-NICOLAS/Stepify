@@ -1128,93 +1128,93 @@ const rewards = [
         //TODO: friends rewards
     {
         name: {
-            fr: 'Top 10',
-            en: 'Top 10',
-            es: 'Top 10',
-            de: 'Top 10'
+            fr: 'Timide',
+            en: 'Shy',
+            es: 'Tímido',
+            de: 'Schüchtern'
         },
         description: {
-            fr: 'Atteins le top 10 du classement.',
-            en: 'Reach the top 10 of the ranking.',
-            es: 'Alcanza el top 10 del ranking.',
-            de: 'Erreiche die Top 10 der Rangliste.'
+            fr: 'Tu as réussi à te faire 1 ami.',
+            en: 'Your first friend!',
+            es: '¡Tu primer amigo!',
+            de: 'Dein erster Freund!'
         },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821492/rank-bronze_agrpwh.png',
-        criteria: 'rank',
+        iconUrl: '',
+        criteria: 'friend',
         tier: 'bronze',
-        target: 10,
+        target: 1,
     },
     {
         name: {
-            fr: 'Top 5',
-            en: 'Top 5',
-            es: 'Top 5',
-            de: 'Top 5'
+            fr: 'Sociable',
+            en: 'Sociable',
+            es: 'Sociable',
+            de: 'Sozial'
         },
         description: {
-            fr: 'Atteins le top 5 du classement.',
-            en: 'Reach the top 5 of the ranking.',
-            es: 'Alcanza el top 5 del ranking.',
-            de: 'Erreiche die Top 5 der Rangliste.'
+            fr: 'Tu as réussi à te faire 3 amis.',
+            en: 'You have 3 friends now!',
+            es: '¡Ahora tienes 3 amigos!',
+            de: 'Du hast jetzt 3 Freunde!'
         },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747820901/rank-silver_def456.png',
-        criteria: 'rank',
+        iconUrl: '',
+        criteria: 'friend',
         tier: 'silver',
-        target: 5,
-    },
-    {
-        name: {
-            fr: 'Top 3',
-            en: 'Top 3',
-            es: 'Top 3',
-            de: 'Top 3'
-        },
-        description: {
-            fr: 'Atteins le top 3 du classement.',
-            en: 'Reach the top 3 of the ranking.',
-            es: 'Alcanza el top 3 del ranking.',
-            de: 'Erreiche die Top 3 der Rangliste.'
-        },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821664/rank-gold_e3klt9.png',
-        criteria: 'rank',
-        tier: 'gold',
         target: 3,
     },
     {
         name: {
-            fr: 'Top 2',
-            en: 'Top 2',
-            es: 'Top 2',
-            de: 'Top 2'
+            fr: 'Populaire',
+            en: 'Popular',
+            es: 'Popular',
+            de: 'Beliebt'
         },
         description: {
-            fr: 'Atteins le top 2 du classement.',
-            en: 'Reach the top 2 of the ranking.',
-            es: 'Alcanza el top 2 del ranking.',
-            de: 'Erreiche die Top 2 der Rangliste.'
+            fr: 'Tu as maintenant 5 amis ! Bel entourage !',
+            en: 'You have 5 friends now! Great entourage!',
+            es: 'Tienes 5 amigos ahora! Gran entorno!',
+            de: 'Du hast jetzt 5 Freunde! Großartige Umgebung!'
         },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821761/rank-platinum_bmw66u.png',
-        criteria: 'rank',
-        tier: 'platinum',
-        target: 2,
+        iconUrl: '',
+        criteria: 'friend',
+        tier: 'gold',
+        target: 5,
     },
     {
         name: {
-            fr: 'Numéro 1',
-            en: 'Number 1',
-            es: 'Número 1',
-            de: 'Nummer 1'
+            fr: 'Mondial',
+            en: 'Global',
+            es: 'Global',
+            de: 'Global'
         },
         description: {
-            fr: 'Devient numéro 1 du classement.',
-            en: 'Become number 1 in the ranking.',
-            es: 'Conviértete en el número 1 del ranking.',
-            de: 'Werde Nummer 1 in der Rangliste.'
+            fr: 'Tu as maintenant 10 amis ! De quoi être motivé tous les jours.',
+            en: 'You have 10 friends now! Enough to be motivated every day.',
+            es: '¡Ahora tienes 10 amigos! Suficiente para estar motivado todos los días.',
+            de: 'Du hast jetzt 10 Freunde! Genug, um jeden Tag motiviert zu sein.'
         },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821608/rank-diamond_fyljfb.png',
-        criteria: 'rank',
+        iconUrl: '',
+        criteria: 'friend',
+        tier: 'platinum',
+        target: 10,
+    },
+    {
+        name: {
+            fr: 'Star de Stepify',
+            en: 'Star of Stepify',
+            es: 'Star de Stepify',
+            de: 'Star von Stepify'
+        },
+        description: {
+            fr: '20 amis ! Tu es le roi du réseau !',
+            en: '20 friends! You are the king of the network!',
+            es: '¡20 amigos! Eres el rey de la red!',
+            de: '20 Freunde! Du bist der König des Netzwerks!'
+        },
+        iconUrl: '',
+        criteria: 'friend',
         tier: 'diamond',
-        target: 1,
+        target: 20,
     },
 ];
 

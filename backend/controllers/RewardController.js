@@ -196,11 +196,15 @@ const updateUserRewardStatus = async (user, reward, shouldAward, progress) => {
 
 // Steps-based rewards
 const checkStepsReward = async (user, reward) => {
-  return user.totalSteps >= reward.target;
+  const entries = await StepEntry.find({ user: user._id });
+  const maxStepsInDay = Math.max(...entries.map(entry => entry.totalSteps), 0);
+  return maxStepsInDay >= reward.target;
 };
 
-const calculateStepsProgress = (user, reward) => {
-  return Math.min(Math.round((user.totalSteps / reward.target) * 100), 100);
+const calculateStepsProgress = async (user, reward) => {
+  const entries = await StepEntry.find({ user: user._id });
+  const maxStepsInDay = Math.max(...entries.map(entry => entry.totalSteps), 0);
+  return Math.min(Math.round((maxStepsInDay / reward.target) * 100), 100);
 };
 
 // Steps over time rewards
@@ -232,11 +236,15 @@ const calculateStepsTimeProgress = async (user, reward) => {
 
 // Distance-based rewards
 const checkDistanceReward = async (user, reward) => {
-  return user.totalDistance >= reward.target;
+  const entries = await StepEntry.find({ user: user._id });
+  const maxDistanceInDay = Math.max(...entries.map(entry => entry.totalDistance), 0);
+  return maxDistanceInDay >= reward.target;
 };
 
-const calculateDistanceProgress = (user, reward) => {
-  return Math.min(Math.round((user.totalDistance / reward.target) * 100), 100);
+const calculateDistanceProgress = async (user, reward) => {
+  const entries = await StepEntry.find({ user: user._id });
+  const maxDistanceInDay = Math.max(...entries.map(entry => entry.totalDistance), 0);
+  return Math.min(Math.round((maxDistanceInDay / reward.target) * 100), 100);
 };
 
 // Distance over time rewards
@@ -268,15 +276,15 @@ const calculateDistanceTimeProgress = async (user, reward) => {
 
 // Calories-based rewards
 const checkCaloriesReward = async (user, reward) => {
-  // Assuming we have a way to get total calories burned
-  // This would need to be implemented based on your data model
-  const totalCalories = await getTotalCaloriesForUser(user._id);
-  return totalCalories >= reward.target;
+  const entries = await StepEntry.find({ user: user._id });
+  const maxCaloriesInDay = Math.max(...entries.map(entry => entry.totalCalories), 0);
+  return maxCaloriesInDay >= reward.target;
 };
 
 const calculateCaloriesProgress = async (user, reward) => {
-  const totalCalories = await getTotalCaloriesForUser(user._id);
-  return Math.min(Math.round((totalCalories / reward.target) * 100), 100);
+  const entries = await StepEntry.find({ user: user._id });
+  const maxCaloriesInDay = Math.max(...entries.map(entry => entry.totalCalories), 0);
+  return Math.min(Math.round((maxCaloriesInDay / reward.target) * 100), 100);
 };
 
 // Calories over time rewards
