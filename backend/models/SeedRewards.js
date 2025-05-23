@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const Reward = require('./Reward');
+//.env
+require('dotenv').config()
 
-mongoose.connect('mongodb+srv://antoninnicolas:EskXWYME5ulTgSif@stepify.rnpo1ur.mongodb.net/?retryWrites=true&w=majority&appName=Stepify', {
+mongoose.connect(/*MONGODB*/ process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
