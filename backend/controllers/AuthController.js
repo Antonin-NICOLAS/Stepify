@@ -5,7 +5,7 @@ const NotificationModel = require('../models/Notification');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const ms = require('ms');
-const crypto = require('crypto');
+const CryptoJS = require('crypto-js');
 const { generateVerificationCode } = require('../utils/GenerateCode');
 const { GenerateAuthCookie } = require('../utils/GenerateAuthCookie');
 const {
@@ -364,37 +364,37 @@ const deleteUser = async (req, res) => {
                 error: "Mot de passe incorrect"
             });
         }
-    // 1. Supprimer les challenges créés par l'utilisateur
-    await ChallengeModel.deleteMany({ creator: userId });
+        // 1. Supprimer les challenges créés par l'utilisateur
+        await ChallengeModel.deleteMany({ creator: userId });
 
-    // 2. Supprimer les participations à des challenges
-    await ChallengeModel.updateMany(
-      {},
-      { $pull: { participants: { user: userId } } }
-    );
+        // 2. Supprimer les participations à des challenges
+        await ChallengeModel.updateMany(
+            {},
+            { $pull: { participants: { user: userId } } }
+        );
 
-    // 3. Supprimer les entrées de pas (StepEntry)
-    await StepEntryModel.deleteMany({ user: userId });
+        // 3. Supprimer les entrées de pas (StepEntry)
+        await StepEntryModel.deleteMany({ user: userId });
 
-    // 4. Supprimer toutes les notifications où il est destinataire ou expéditeur
-    await NotificationModel.deleteMany({
-      $or: [{ recipient: userId }, { sender: userId }]
-    });
+        // 4. Supprimer toutes les notifications où il est destinataire ou expéditeur
+        await NotificationModel.deleteMany({
+            $or: [{ recipient: userId }, { sender: userId }]
+        });
 
-    // 5. Retirer l'utilisateur de la liste d'amis des autres
-    await UserModel.updateMany(
-      {},
-      { $pull: { friends: { userId: userId } } }
-    );
+        // 5. Retirer l'utilisateur de la liste d'amis des autres
+        await UserModel.updateMany(
+            {},
+            { $pull: { friends: { userId: userId } } }
+        );
 
-    // 6. Supprimer les demandes d'amis (envoyées ou reçues)
-    await UserModel.updateMany(
-      {},
-      { $pull: { friendRequests: { userId: userId } } }
-    );
+        // 6. Supprimer les demandes d'amis (envoyées ou reçues)
+        await UserModel.updateMany(
+            {},
+            { $pull: { friendRequests: { userId: userId } } }
+        );
 
-    // 7. Supprimer enfin l'utilisateur lui-même
-    await UserModel.findByIdAndDelete(userId);
+        // 7. Supprimer enfin l'utilisateur lui-même
+        await UserModel.findByIdAndDelete(userId);
 
         res.clearCookie("jwtauth", {
             secure: process.env.NODE_ENV === "production",
@@ -533,7 +533,9 @@ const forgotPassword = async (req, res) => {
             });
         }
 
-        const resetToken = crypto.randomBytes(32).toString('hex') + Date.now().toString(36);
+        const randomPart = CryptoJS.lib.WordArray.random(32).toString(CryptoJS.enc.Hex);
+        const timestampPart = Date.now().toString(36);
+        const resetToken = randomPart + timestampPart;
         user.resetPasswordToken = resetToken;
         user.resetPasswordTokenExpiresAt = Date.now() + ms(process.env.RESET_TOKEN_EXPIRY);
         await user.save();
@@ -670,7 +672,7 @@ const checkAuth = async (req, res) => {
                 error: "Session expirée ou invalide",
             });
         }
-        
+
         const userRes = user.toJSON();
 
         return res.status(200).json({

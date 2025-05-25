@@ -3,7 +3,7 @@ const Reward = require('./Reward');
 //.env
 require('dotenv').config()
 
-mongoose.connect(/*MONGODB*/ process.env.MONGO_URI, {
+mongoose.connect(/*MONGODB*/ process.env.MONGO_VERCEL_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
