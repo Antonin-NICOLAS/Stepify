@@ -1068,7 +1068,7 @@ const rewards = [
             es: 'Alcanza el top 5 del ranking.',
             de: 'Erreiche die Top 5 der Rangliste.'
         },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747820901/rank-silver_def456.png',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821748/rank-silver_xjw5lk.png',
         criteria: 'rank',
         tier: 'silver',
         target: 5,
@@ -1222,7 +1222,7 @@ const rewards = [
 
 async function seedRewards() {
     try {
-        await Reward.deleteMany(); // facultatif : vide la collection avant
+        await Reward.deleteMany();
         await Reward.insertMany(rewards);
         console.log('Rewards successfully inserted!');
     } catch (err) {

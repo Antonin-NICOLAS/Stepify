@@ -4,7 +4,7 @@ require('dotenv').config();
 //middleware
 const { verifyToken } = require('../middlewares/VerifyToken')
 //controllers
-const { getAllRewards, getMyRewards, updateUserRewards } = require('../controllers/RewardController')
+const { getAllRewards, getMyRewards, getVitrineRewards, setInVitrine } = require('../controllers/RewardController')
 
 //router
 const router = express.Router()
@@ -20,12 +20,7 @@ router.use(
 //routes
 router.get('/:userId/all', verifyToken, getAllRewards);
 router.get('/:userId/myrewards', verifyToken, getMyRewards);
-router.patch('/:userId/update', verifyToken, updateUserRewards);
-
-router.patch('/:userId/:notificationId/read', verifyToken,);
-
-router.post('/:userId/friend-request', verifyToken,);
-router.post('/:userId/:inviteId/accept-friend', verifyToken,);
-router.post('/:userId/:inviteId/respond', verifyToken,);
+router.get('/:userId/vitrine', verifyToken, getVitrineRewards);
+router.post('/:userId/:rewardId/setinvitrine', verifyToken, setInVitrine);
 
 module.exports = router

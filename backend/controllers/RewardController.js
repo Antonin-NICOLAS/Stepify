@@ -5,42 +5,103 @@ const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 
 const getAllRewards = async (req, res) => {
 
-    try {
-        const rewards = await Reward.find();
+  try {
+    const rewards = await Reward.find();
 
-        if (!rewards) {
-            return res.status(404).json({ success: false, error: "No reward found" });
-        }
-
-        return res.status(200).json({ success: true, rewards });
-    } catch (error) {
-        console.error("Error fetching rewards:", error);
-        return res.status(500).json({ success: false, error: "Internal server error" });
+    if (!rewards) {
+      return res.status(404).json({ success: false, error: "No reward found" });
     }
+
+    return res.status(200).json({ success: true, rewards });
+  } catch (error) {
+    console.error("Error fetching rewards:", error);
+    return res.status(500).json({ success: false, error: "Internal server error" });
+  }
 }
 
 const getMyRewards = async (req, res) => {
-    const { userId } = req.params;
+  const { userId } = req.params;
 
-    if (checkAuthorization(req, res, userId)) return;
+  if (checkAuthorization(req, res, userId)) return;
 
-    try {
-        const user = await User.findById(userId).populate('rewardsUnlocked.rewardId', 'name description iconUrl criteria tier time earnedBy minLevel isInVitrine isRepeatable target');
+  try {
+    const user = await User.findById(userId).populate('rewardsUnlocked.rewardId', 'name description iconUrl criteria tier time earnedBy minLevel isInVitrine isRepeatable target');
 
-        if (!user) {
-            return res.status(404).json({ success: false, error: "User not found" });
-        }
-
-        return res.status(200).json({ success: true, rewards: user.rewardsUnlocked });
-    } catch (error) {
-        console.error("Error fetching user's rewards:", error);
-        return res.status(500).json({ success: false, error: "Internal server error" });
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
     }
+
+    return res.status(200).json({ success: true, rewards: user.rewardsUnlocked });
+  } catch (error) {
+    console.error("Error fetching user's rewards:", error);
+    return res.status(500).json({ success: false, error: "Internal server error" });
+  }
 }
 
-/** Main function to check and update all possible rewards for a user */
-const updateUserRewards = async (req, res) => {
+const getVitrineRewards = async (req, res) => {
   const { userId } = req.params;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  try {
+    const user = await User.findById(userId)
+      .populate('rewardsUnlocked.rewardId', 'name description iconUrl criteria tier')
+      .select('rewardsUnlocked');
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found" });
+    }
+
+    const vitrineRewards = user.rewardsUnlocked
+      .filter(r => r.isInVitrine)
+      .slice(0, 3);
+
+    return res.status(200).json({ success: true, vitrine: vitrineRewards });
+  } catch (error) {
+    console.error("Error fetching vitrine rewards:", error);
+    return res.status(500).json({ success: false, error: "Internal server error" });
+  }
+};
+
+const setInVitrine = async (req, res) => {
+  const { userId, rewardId } = req.params;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'Utilisateur non trouvé'
+      });
+    }
+    const reward = user.rewardsUnlocked.find(r => r.rewardId._id.toString() === rewardId);
+    if (!reward) {
+      return res.status(404).json({
+        success: false,
+        error: 'Récompense non trouvée dans les récompenses de l\'utilisateur'
+      });
+    }
+    // Toggle isInVitrine status
+    reward.isInVitrine === false ? reward.isInVitrine = true : reward.isInVitrine = false
+    await user.save();
+
+    res.status(200).json({
+      success: true
+    });
+
+  } catch (error) {
+    console.error('Erreur favoris entrée:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la mise en favoris de l\'entrée'
+    });
+  }
+};
+
+/** Main function to check and update all possible rewards for a user */
+const updateUserRewards = async (userId) => {
   try {
     const user = await User.findById(userId).populate('rewardsUnlocked.rewardId');
     if (!user) {
@@ -50,7 +111,10 @@ const updateUserRewards = async (req, res) => {
 
     // Get all rewards from database
     const allRewards = await Reward.find({});
-    
+
+    // Get all step entries once at the beginning for efficiency
+    const allStepEntries = await StepEntry.find({ user: user._id }).sort({ date: 1 });
+
     // Check each reward type
     for (const reward of allRewards) {
       // Skip level and rank rewards as requested
@@ -75,63 +139,60 @@ const updateUserRewards = async (req, res) => {
 
       switch (reward.criteria) {
         case 'steps':
-          shouldAward = await checkStepsReward(user, reward);
-          progress = calculateStepsProgress(user, reward);
-          console.log('REWARD PAS', reward.tier, 'pas totaux :', user.totalSteps, 'objectif :', reward.target, shouldAward, progress);
+          shouldAward = await checkStepsReward(reward, allStepEntries);
+          progress = await calculateStepsProgress(reward, allStepEntries);
           break;
-          
+
         case 'steps-time':
-          shouldAward = await checkStepsTimeReward(user, reward);
-          progress = calculateStepsTimeProgress(user, reward);
+          shouldAward = await checkStepsTimeReward(reward, allStepEntries);
+          progress = await calculateStepsTimeProgress(reward, allStepEntries);
           break;
-          
+
         case 'distance':
-          shouldAward = await checkDistanceReward(user, reward);
-          progress = calculateDistanceProgress(user, reward);
-                    console.log('REWARD DISTANCE', reward.tier, 'distance totaux :', user.totalDistance, 'objectif :', reward.target, shouldAward, progress);
+          shouldAward = await checkDistanceReward(reward, allStepEntries);
+          progress = await calculateDistanceProgress(reward, allStepEntries);
           break;
-          
+
         case 'distance-time':
-          shouldAward = await checkDistanceTimeReward(user, reward);
-          progress = calculateDistanceTimeProgress(user, reward);
+          shouldAward = await checkDistanceTimeReward(reward, allStepEntries);
+          progress = await calculateDistanceTimeProgress(reward, allStepEntries);
           break;
-          
+
         case 'calories':
-          shouldAward = await checkCaloriesReward(user, reward);
-          progress = calculateCaloriesProgress(user, reward);
-          console.log('REWARD calories', reward.tier, 'objectif :', reward.target, shouldAward, progress);
+          shouldAward = await checkCaloriesReward(reward, allStepEntries);
+          progress = await calculateCaloriesProgress(reward, allStepEntries);
           break;
-          
+
         case 'calories-time':
-          shouldAward = await checkCaloriesTimeReward(user, reward);
-          progress = calculateCaloriesTimeProgress(user, reward);
+          shouldAward = await checkCaloriesTimeReward(reward, allStepEntries);
+          progress = await calculateCaloriesTimeProgress(reward, allStepEntries);
           break;
-          
+
         case 'streak':
           shouldAward = await checkStreakReward(user, reward);
           progress = calculateStreakProgress(user, reward);
           break;
-          
+
         case 'customgoal':
           shouldAward = await checkCustomGoalReward(user, reward);
           progress = calculateCustomGoalProgress(user, reward);
           break;
-          
+
         case 'challenges':
           shouldAward = await checkChallengesReward(user, reward);
           progress = calculateChallengesProgress(user, reward);
           break;
-          
+
         case 'challenges-time':
           shouldAward = await checkChallengesTimeReward(user, reward);
           progress = calculateChallengesTimeProgress(user, reward);
           break;
-          
+
         case 'friend':
           shouldAward = await checkFriendReward(user, reward);
           progress = calculateFriendProgress(user, reward);
           break;
-          
+
         default:
           console.log(`Unknown reward criteria: ${reward.criteria}`);
       }
@@ -151,7 +212,7 @@ const updateUserRewards = async (req, res) => {
 // Helper function to update user's reward status
 const updateUserRewardStatus = async (user, reward, shouldAward, progress) => {
   const existingRewardIndex = user.rewardsUnlocked.findIndex(r => r.rewardId.equals(reward._id));
-  
+
   if (existingRewardIndex >= 0) {
     // Update existing reward
     if (shouldAward) {
@@ -171,12 +232,12 @@ const updateUserRewardStatus = async (user, reward, shouldAward, progress) => {
       unlockedAt: shouldAward ? new Date() : null
     });
   }
-  
+
   // Update the reward's earnedBy array if awarded
   if (shouldAward) {
     const rewardToUpdate = await Reward.findById(reward._id);
     const earnedByEntry = rewardToUpdate.earnedBy.find(e => e.user.equals(user._id));
-    
+
     if (earnedByEntry) {
       earnedByEntry.times += 1;
       earnedByEntry.date = new Date();
@@ -187,131 +248,156 @@ const updateUserRewardStatus = async (user, reward, shouldAward, progress) => {
         date: new Date()
       });
     }
-    
+
     await rewardToUpdate.save();
   }
-  
+
   await user.save();
 };
 
 // Steps-based rewards
-const checkStepsReward = async (user, reward) => {
-  const entries = await StepEntry.find({ user: user._id });
-  const maxStepsInDay = Math.max(...entries.map(entry => entry.totalSteps), 0);
+const checkStepsReward = async (reward, allStepEntries) => {
+  const maxStepsInDay = Math.max(...allStepEntries.map(entry => entry.totalSteps), 0);
   return maxStepsInDay >= reward.target;
 };
 
-const calculateStepsProgress = async (user, reward) => {
-  const entries = await StepEntry.find({ user: user._id });
-  const maxStepsInDay = Math.max(...entries.map(entry => entry.totalSteps), 0);
+const calculateStepsProgress = async (reward, allStepEntries) => {
+  const maxStepsInDay = Math.max(...allStepEntries.map(entry => entry.totalSteps), 0);
   return Math.min(Math.round((maxStepsInDay / reward.target) * 100), 100);
 };
 
-// Steps over time rewards
-const checkStepsTimeReward = async (user, reward) => {
-  const days = reward.time || 7; // default to 7 days if not specified
-  const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  
-  const entries = await StepEntry.find({
-    user: user._id,
-    date: { $gte: dateThreshold }
-  });
-  
-  const totalSteps = entries.reduce((sum, entry) => sum + entry.totalSteps, 0);
-  return totalSteps >= reward.target;
+// Steps over time rewards (now checks best historical period)
+const checkStepsTimeReward = async (reward, allStepEntries) => {
+  const daysRequired = reward.time || 7;
+
+  // Find all periods where the target was met for consecutive days
+  let currentStreak = 0;
+  let maxStreak = 0;
+
+  for (const entry of allStepEntries) {
+    if (entry.totalSteps >= reward.target) {
+      currentStreak++;
+      maxStreak = Math.max(maxStreak, currentStreak);
+    } else {
+      currentStreak = 0;
+    }
+  }
+
+  return maxStreak >= daysRequired;
 };
 
-const calculateStepsTimeProgress = async (user, reward) => {
-  const days = reward.time || 7;
-  const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  
-  const entries = await StepEntry.find({
-    user: user._id,
-    date: { $gte: dateThreshold }
-  });
-  
-  const totalSteps = entries.reduce((sum, entry) => sum + entry.totalSteps, 0);
-  return Math.min(Math.round((totalSteps / reward.target) * 100), 100);
+const calculateStepsTimeProgress = async (reward, allStepEntries) => {
+  const daysRequired = reward.time || 7;
+
+  let currentStreak = 0;
+  let maxStreak = 0;
+
+  for (const entry of allStepEntries) {
+    if (entry.totalSteps >= reward.target) {
+      currentStreak++;
+      maxStreak = Math.max(maxStreak, currentStreak);
+    } else {
+      currentStreak = 0;
+    }
+  }
+
+  return Math.min(Math.round((maxStreak / daysRequired) * 100), 100);
 };
 
 // Distance-based rewards
-const checkDistanceReward = async (user, reward) => {
-  const entries = await StepEntry.find({ user: user._id });
-  const maxDistanceInDay = Math.max(...entries.map(entry => entry.totalDistance), 0);
+const checkDistanceReward = async (reward, allStepEntries) => {
+  const maxDistanceInDay = Math.max(...allStepEntries.map(entry => entry.totalDistance), 0);
   return maxDistanceInDay >= reward.target;
 };
 
-const calculateDistanceProgress = async (user, reward) => {
-  const entries = await StepEntry.find({ user: user._id });
-  const maxDistanceInDay = Math.max(...entries.map(entry => entry.totalDistance), 0);
+const calculateDistanceProgress = async (reward, allStepEntries) => {
+  const maxDistanceInDay = Math.max(...allStepEntries.map(entry => entry.totalDistance), 0);
   return Math.min(Math.round((maxDistanceInDay / reward.target) * 100), 100);
 };
 
-// Distance over time rewards
-const checkDistanceTimeReward = async (user, reward) => {
-  const days = reward.time || 7;
-  const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  
-  const entries = await StepEntry.find({
-    user: user._id,
-    date: { $gte: dateThreshold }
-  });
-  
-  const totalDistance = entries.reduce((sum, entry) => sum + entry.totalDistance, 0);
-  return totalDistance >= reward.target;
+// Distance over time rewards (updated for historical data)
+const checkDistanceTimeReward = async (reward, allStepEntries) => {
+  const daysRequired = reward.time || 7;
+
+  let currentStreak = 0;
+  let maxStreak = 0;
+
+  for (const entry of allStepEntries) {
+    if (entry.totalDistance >= reward.target) {
+      currentStreak++;
+      maxStreak = Math.max(maxStreak, currentStreak);
+    } else {
+      currentStreak = 0;
+    }
+  }
+
+  return maxStreak >= daysRequired;
 };
 
-const calculateDistanceTimeProgress = async (user, reward) => {
-  const days = reward.time || 7;
-  const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  
-  const entries = await StepEntry.find({
-    user: user._id,
-    date: { $gte: dateThreshold }
-  });
-  
-  const totalDistance = entries.reduce((sum, entry) => sum + entry.totalDistance, 0);
-  return Math.min(Math.round((totalDistance / reward.target) * 100), 100);
+const calculateDistanceTimeProgress = async (reward, allStepEntries) => {
+  const daysRequired = reward.time || 7;
+
+  let currentStreak = 0;
+  let maxStreak = 0;
+
+  for (const entry of allStepEntries) {
+    if (entry.totalDistance >= reward.target) {
+      currentStreak++;
+      maxStreak = Math.max(maxStreak, currentStreak);
+    } else {
+      currentStreak = 0;
+    }
+  }
+
+  return Math.min(Math.round((maxStreak / daysRequired) * 100), 100);
 };
 
 // Calories-based rewards
-const checkCaloriesReward = async (user, reward) => {
-  const entries = await StepEntry.find({ user: user._id });
-  const maxCaloriesInDay = Math.max(...entries.map(entry => entry.totalCalories), 0);
+const checkCaloriesReward = async (reward, allStepEntries) => {
+  const maxCaloriesInDay = Math.max(...allStepEntries.map(entry => entry.totalCalories), 0);
   return maxCaloriesInDay >= reward.target;
 };
 
-const calculateCaloriesProgress = async (user, reward) => {
-  const entries = await StepEntry.find({ user: user._id });
-  const maxCaloriesInDay = Math.max(...entries.map(entry => entry.totalCalories), 0);
+const calculateCaloriesProgress = async (reward, allStepEntries) => {
+  const maxCaloriesInDay = Math.max(...allStepEntries.map(entry => entry.totalCalories), 0);
   return Math.min(Math.round((maxCaloriesInDay / reward.target) * 100), 100);
 };
 
-// Calories over time rewards
-const checkCaloriesTimeReward = async (user, reward) => {
-  const days = reward.time || 7;
-  const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  
-  const entries = await StepEntry.find({
-    user: user._id,
-    date: { $gte: dateThreshold }
-  });
-  
-  const totalCalories = entries.reduce((sum, entry) => sum + entry.totalCalories, 0);
-  return totalCalories >= reward.target;
+// Calories over time rewards (updated for historical data)
+const checkCaloriesTimeReward = async (reward, allStepEntries) => {
+  const daysRequired = reward.time || 7;
+
+  let currentStreak = 0;
+  let maxStreak = 0;
+
+  for (const entry of allStepEntries) {
+    if (entry.totalCalories >= reward.target) {
+      currentStreak++;
+      maxStreak = Math.max(maxStreak, currentStreak);
+    } else {
+      currentStreak = 0;
+    }
+  }
+
+  return maxStreak >= daysRequired;
 };
 
-const calculateCaloriesTimeProgress = async (user, reward) => {
-  const days = reward.time || 7;
-  const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  
-  const entries = await StepEntry.find({
-    user: user._id,
-    date: { $gte: dateThreshold }
-  });
-  
-  const totalCalories = entries.reduce((sum, entry) => sum + entry.totalCalories, 0);
-  return Math.min(Math.round((totalCalories / reward.target) * 100), 100);
+const calculateCaloriesTimeProgress = async (reward, allStepEntries) => {
+  const daysRequired = reward.time || 7;
+
+  let currentStreak = 0;
+  let maxStreak = 0;
+
+  for (const entry of allStepEntries) {
+    if (entry.totalCalories >= reward.target) {
+      currentStreak++;
+      maxStreak = Math.max(maxStreak, currentStreak);
+    } else {
+      currentStreak = 0;
+    }
+  }
+
+  return Math.min(Math.round((maxStreak / daysRequired) * 100), 100);
 };
 
 // Streak-based rewards
@@ -345,22 +431,22 @@ const calculateChallengesProgress = (user, reward) => {
 const checkChallengesTimeReward = async (user, reward) => {
   const days = reward.time || 30; // default to 30 days for challenges
   const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  
-  const completedChallenges = user.challenges.filter(c => 
+
+  const completedChallenges = user.challenges.filter(c =>
     c.completed && c.lastUpdated >= dateThreshold
   );
-  
+
   return completedChallenges.length >= reward.target;
 };
 
 const calculateChallengesTimeProgress = async (user, reward) => {
   const days = reward.time || 30;
   const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-  
-  const completedChallenges = user.challenges.filter(c => 
+
+  const completedChallenges = user.challenges.filter(c =>
     c.completed && c.lastUpdated >= dateThreshold
   );
-  
+
   return Math.min(Math.round((completedChallenges.length / reward.target) * 100), 100);
 };
 
@@ -373,15 +459,10 @@ const calculateFriendProgress = (user, reward) => {
   return Math.min(Math.round((user.friends.length / reward.target) * 100), 100);
 };
 
-// Helper function to get total calories (placeholder - implement based on your data model)
-const getTotalCaloriesForUser = async (userId) => {
-  const entries = await StepEntry.find({ user: userId });
-  console.log(entries.reduce((sum, entry) => sum + (entry.totalCalories || 0), 0));
-  return entries.reduce((sum, entry) => sum + (entry.totalCalories || 0), 0);
-};
-
 module.exports = {
-    getAllRewards,
-    getMyRewards,
-    updateUserRewards
+  getAllRewards,
+  getMyRewards,
+  getVitrineRewards,
+  setInVitrine,
+  updateUserRewards
 }

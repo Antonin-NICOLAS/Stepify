@@ -37,7 +37,6 @@ const rewardSchema = new Schema({
   //isBadge: { type: Boolean, default: true }
   //isHiddenUntilUnlocked: { type: Boolean, default: false }
   minLevel: { type: Number, default: 0 }, //level minimum pour débloquer
-  isInVitrine: { type: Boolean, default: false }, // vitrine de récompenses
   isRepeatable: { type: Boolean, default: false },
   target: { type: Number, required: true }, // ex: 10000 pas
 })

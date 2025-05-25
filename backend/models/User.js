@@ -166,6 +166,10 @@ const userSchema = new Schema({
       min: 0,
       max: 100
     },
+    isInVitrine: {
+      type: Boolean,
+      default: false
+    },
     unlockedAt: {
       type: Date,
       default: Date.now
@@ -320,7 +324,7 @@ userSchema.methods.calculateTodayProgress = async function () {
 
   const entry = await StepEntry.findOne({ user: this._id, day: today });
   const todaySteps = entry?.totalSteps || 0;
-  return Math.min(Math.round((todaySteps / this.dailyGoal) * 1000)/10, 100); // max 100%
+  return Math.min(Math.round((todaySteps / this.dailyGoal) * 1000) / 10, 100); // max 100%
 };
 
 // Index pour améliorer les performances

@@ -30,7 +30,6 @@ function ResetPassword() {
         setConfirmPassword("")
         setIsSuccess(true)
       })
-      console.log(isSuccess)
     } catch (error) {
       toast.error(error)
     } finally {

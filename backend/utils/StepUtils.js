@@ -7,6 +7,7 @@ const updateUserStatsAfterImport = async (userId, newEntries) => {
 
   const stepsPerDay = {};
   let totalStepsToAdd = 0;
+  let caloriestoAdd = 0;
   let distanceToAdd = 0;
   let totalXPToAdd = 0;
 

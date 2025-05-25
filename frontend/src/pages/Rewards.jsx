@@ -1,5 +1,9 @@
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
+// Context
+import { useRewards } from "../hooks/useRewards"
+import { useAuth } from "../context/AuthContext"
+// Icons & charts
 import {
   Trophy,
   Medal,
@@ -30,8 +34,7 @@ import {
 } from "lucide-react"
 import { Pie, Bar } from "react-chartjs-2"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from "chart.js"
-import { useRewards } from "../hooks/useRewards"
-import { useAuth } from "../context/AuthContext"
+// CSS
 import "./Rewards.css"
 
 // Register Chart.js components
@@ -42,7 +45,7 @@ const Rewards = () => {
   const { user } = useAuth()
 
   // Use the real rewards hook
-  const { rewards, myRewards } = useRewards(user?._id)
+  const { rewards, myRewards, vitrine, setInVitrine } = useRewards(user?._id)
 
   // State for active tab
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -71,9 +74,6 @@ const Rewards = () => {
     recentlyUnlocked: null,
     nextToUnlock: null,
   })
-
-  // State for showcase
-  const [showcaseRewards, setShowcaseRewards] = useState([])
 
   // State for reward detail modal
   const [selectedReward, setSelectedReward] = useState(null)
@@ -109,9 +109,8 @@ const Rewards = () => {
         return {
           ...reward,
           progress: myReward ? myReward.progress : 0,
-          unlocked: myReward ? myReward.unlocked : false,
+          unlocked: myReward ? myReward.progress === 100 : false,
           unlockedAt: myReward ? myReward.unlockedAt : null,
-          // Calculate a fake percentage of users who unlocked this reward
           unlockedPercentage:
             Math.round(Math.random() * 80) +
             (reward.tier === "bronze"
@@ -128,16 +127,6 @@ const Rewards = () => {
 
       // Calculate stats
       calculateRewardStats(rewards, userRewards)
-
-      // Set initial showcase rewards (top 3 rarest unlocked)
-      const initialShowcase = userRewards
-        .filter((reward) => reward.unlocked)
-        .sort((a, b) => a.unlockedPercentage - b.unlockedPercentage)
-        .slice(0, 3)
-
-      if (initialShowcase.length > 0) {
-        setShowcaseRewards(initialShowcase)
-      }
     }
   }, [rewards, myRewards])
 
@@ -330,18 +319,13 @@ const Rewards = () => {
     setShowRewardModal(true)
   }
 
-  // Handle adding/removing reward from showcase
-  const handleToggleShowcase = (reward) => {
-    if (showcaseRewards.some((r) => (r._id || r.id) === (reward._id || reward.id))) {
-      // Remove from showcase
-      setShowcaseRewards(showcaseRewards.filter((r) => (r._id || r.id) !== (reward._id || reward.id)))
-    } else {
-      // Add to showcase (max 3)
-      if (showcaseRewards.length < 3) {
-        setShowcaseRewards([...showcaseRewards, reward])
-      } else {
-        alert("Vous ne pouvez mettre que 3 récompenses en vitrine. Veuillez en retirer une d'abord.")
-      }
+  // Handle adding/removing reward from vitrine
+  const handleToggleShowcase = async(reward) => {
+    try {
+      await setInVitrine(reward._id)
+    } catch (error) {
+      console.error("Error seting vitrine:", error);
+    } finally {
     }
   }
 
@@ -1174,18 +1158,18 @@ const Rewards = () => {
               {reward.unlocked && (
                 <div className="reward-actions">
                   <button
-                    className={`showcase-button ${showcaseRewards.some((r) => (r._id || r.id) === (reward._id || reward.id)) ? "active" : ""}`}
+                    className={`showcase-button ${vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id)) ? "active" : ""}`}
                     onClick={(e) => {
                       e.stopPropagation()
                       handleToggleShowcase(reward)
                     }}
                     title={
-                      showcaseRewards.some((r) => (r._id || r.id) === (reward._id || reward.id))
+                      vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id))
                         ? "Retirer de la vitrine"
                         : "Ajouter à la vitrine"
                     }
                   >
-                    {showcaseRewards.some((r) => (r._id || r.id) === (reward._id || reward.id)) ? (
+                    {vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id)) ? (
                       <Bookmark size={16} />
                     ) : (
                       <BookmarkPlus size={16} />
@@ -1221,36 +1205,36 @@ const Rewards = () => {
         </div>
 
         <div className="showcase-featured">
-          {showcaseRewards.length > 0 ? (
-            showcaseRewards.map((reward) => (
+          {vitrine.length > 0 ? (
+            vitrine.map((reward) => (
               <div
                 key={reward._id || reward.id}
-                className={`featured-reward ${getTierColorClass(reward.tier)}`}
-                onClick={() => handleRewardClick(reward)}
+                className={`featured-reward ${getTierColorClass(reward.rewardId.tier)}`}
+                onClick={() => handleRewardClick(reward.rewardId)}
               >
                 <div className="featured-icon">
                   <img
-                    src={reward.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
-                    alt={reward.name?.fr || "Récompense"}
+                    src={reward.rewardId.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
+                    alt={reward.rewardId.name?.fr || "Récompense"}
                   />
                   <div className="featured-shine"></div>
                 </div>
                 <div className="featured-info">
-                  <h3 className="featured-name">{reward.name?.fr || reward.name?.en || "Récompense"}</h3>
+                  <h3 className="featured-name">{reward.rewardId.name?.fr || reward.rewardId.name?.en || "Récompense"}</h3>
                   <p className="featured-description">
-                    {reward.description?.fr || reward.description?.en || "Description de la récompense"}
+                    {reward.rewardId.description?.fr || reward.rewardId.description?.en || "Description de la récompense"}
                   </p>
                   <div className="featured-meta">
-                    <span className="featured-tier">{getTierLabel(reward.tier)}</span>
-                    <span className="featured-criteria">{getCriteriaLabel(reward.criteria)}</span>
-                    <span className="featured-rarity">{reward.unlockedPercentage}% des utilisateurs</span>
+                    <span className="featured-tier">{getTierLabel(reward.rewardId.tier)}</span>
+                    <span className="featured-criteria">{getCriteriaLabel(reward.rewardId.criteria)}</span>
+                    <span className="featured-rarity">{reward.rewardId.unlockedPercentage}% des utilisateurs</span>
                   </div>
                 </div>
                 <button
                   className="remove-showcase"
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleToggleShowcase(reward)
+                    handleToggleShowcase(reward.rewardId)
                   }}
                   title="Retirer de la vitrine"
                 >
@@ -1295,14 +1279,14 @@ const Rewards = () => {
                     <h4>{reward.name?.fr || reward.name?.en || "Récompense"}</h4>
                     <p>{reward.description?.fr || reward.description?.en || "Description de la récompense"}</p>
                   </div>
-                  {!showcaseRewards.some((r) => (r._id || r.id) === (reward._id || reward.id)) && (
+                  {!vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id)) && (
                     <button
                       className="add-to-showcase"
                       onClick={(e) => {
                         e.stopPropagation()
                         handleToggleShowcase(reward)
                       }}
-                      disabled={showcaseRewards.length >= 3}
+                      disabled={vitrine.length >= 3}
                     >
                       <BookmarkPlus size={16} />
                       <span>Ajouter à la vitrine</span>
@@ -1827,17 +1811,17 @@ const Rewards = () => {
                     <>
                       <button
                         className={`showcase-action ${
-                          showcaseRewards.some((r) => (r._id || r.id) === (selectedReward._id || selectedReward.id))
+                          vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id))
                             ? "active"
                             : ""
                         }`}
                         onClick={() => handleToggleShowcase(selectedReward)}
                         disabled={
-                          showcaseRewards.length >= 3 &&
-                          !showcaseRewards.some((r) => (r._id || r.id) === (selectedReward._id || selectedReward.id))
+                          vitrine.length >= 3 &&
+                          !vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id))
                         }
                       >
-                        {showcaseRewards.some((r) => (r._id || r.id) === (selectedReward._id || selectedReward.id)) ? (
+                        {vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id)) ? (
                           <>
                             <Bookmark size={16} />
                             <span>Retirer de la vitrine</span>

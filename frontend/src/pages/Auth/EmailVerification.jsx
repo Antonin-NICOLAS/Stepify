@@ -48,10 +48,6 @@ function EmailVerification() {
     }
   }, [countdown, resendDisabled])
 
-  useEffect(() => {
-    console.log('isVerified state modified :', isVerified);
-  }, [isVerified]);
-
   // Handle input change and auto-focus next input
   const handleChange = (index, value) => {
     if (value.length > 1) {
@@ -116,7 +112,6 @@ function EmailVerification() {
     setIsLoading(true)
     try {
       await verifyEmail(otpCode, () => {
-        console.log('function successful')
         setIsVerified(true)
         setTimeout(() => {
           navigate("/dashboard")

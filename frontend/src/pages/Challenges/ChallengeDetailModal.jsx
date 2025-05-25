@@ -276,7 +276,15 @@ const ChallengeDetailModal = ({ challenge, onClose, onDelete, onLeave, user }) =
                                         {formatDate(challenge.startDate)} - {formatDate(challenge.endDate)}
                                     </span>
                                 </div>
-
+                                {challenge.time && (
+                                    <div className="info-item">
+                                        <span className="info-label">Durée</span>
+                                        <span className="info-value">
+                                            <Clock size={16} />
+                                            {challenge.time} jours
+                                        </span>
+                                    </div>
+                                )}
                                 <div className="info-item">
                                     <span className="info-label">Objectif</span>
                                     <span className="info-value">
