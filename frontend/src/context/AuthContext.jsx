@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import GlobalLoader from '../utils/GlobalLoader';
 import { toast } from 'react-hot-toast';
 
 const API_AUTH = process.env.NODE_ENV === 'production' ? '/api/auth' : '/auth';
@@ -82,13 +81,15 @@ export const AuthProvider = ({ children }) => {
         }
       });
 
-      if (res.data.errors.username || res.data.errors.email) {
-        toast.error(res.data.errors.username && res.data.errors.email || res.data.errors.username || res.data.errors.email);
+      const data = res.data;
+
+      if (data.errors.username || data.errors.email) {
+        toast.error(data.errors.username && data.errors.email || data.errors.username || data.errors.email);
       } else {
-        setUser(res.data.user);
+        setUser(data.user);
         setIsAuthenticated(true);
         resetForm();
-        toast.success(res.data.message);
+        toast.success(data.message);
       }
     } catch (err) {
       toast.error(err.response?.data?.errors?.username && err.response?.data?.errors?.email || err.response?.data?.errors?.username || err.response?.data?.errors?.email || "Erreur lors de l'inscription");
@@ -279,13 +280,25 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await axios.post(`${API_AUTH}/logout`, {}, { withCredentials: true });
       setIsAuthenticated(false)
-      setUser(false)
+      setUser(null)
       toast.success(res.data.message || "Déconnecté avec succès");
       onSuccess();
     } catch (err) {
       toast.error("Erreur lors de la déconnexion");
     }
-  });
+  }, []);
+
+  const deleteUser = useCallback(async (onSuccess) => {
+    try {
+      const res = await axios.post(`${API_AUTH}/${user?._id}/logout`, {}, { withCredentials: true });
+      setIsAuthenticated(false)
+      setUser(null)
+      toast.success(res.data.message || "Compte supprimé");
+      onSuccess();
+    } catch (err) {
+      toast.error("Erreur lors de la suppression");
+    }
+  }, [])
 
   useEffect(() => {
     checkAuth();
@@ -303,7 +316,7 @@ export const AuthProvider = ({ children }) => {
       forgotPassword,
       resetPassword,
       verifyEmail,
-      //TODO : delete account
+      deleteUser,
       changeVerificationEmail,
       resendVerificationCode,
       logout

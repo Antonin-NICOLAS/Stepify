@@ -72,5 +72,5 @@ export const RequireAdmin = ({ children }) => {
   }, [checkAuth]);
 
   if (isCheckingAuth) return <GlobalLoader />;
-  return user?.isAdmin ? children : <Navigate to="/dashboard" replace />;
+  return user?.role === "admin" ? children : <Navigate to="/dashboard" replace />;
 };

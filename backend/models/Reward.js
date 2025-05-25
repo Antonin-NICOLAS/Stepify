@@ -27,7 +27,7 @@ const rewardSchema = new Schema({
     enum: ['bronze', 'silver', 'gold', 'platinum', 'ruby', 'sapphire', 'diamond'],
     default: 'bronze'
   },
-  time: { type: Number, min: 0 }, //days
+  time: { type: Number, min: 1 }, //days
 
   earnedBy: [{
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
@@ -38,7 +38,7 @@ const rewardSchema = new Schema({
   //isHiddenUntilUnlocked: { type: Boolean, default: false }
   minLevel: { type: Number, default: 0 }, //level minimum pour débloquer
   isRepeatable: { type: Boolean, default: false },
-  target: { type: Number, required: true }, // ex: 10000 pas
+  target: { type: Number, min: 1, required: true }, // ex: 10000 pas
 })
 
 module.exports = mongoose.model('Reward', rewardSchema)

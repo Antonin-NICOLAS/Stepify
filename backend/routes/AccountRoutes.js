@@ -11,11 +11,17 @@ const { updateAvatar,
     updatePassword,
     updateStatus,
     updateDailyGoal,
-    updateThemePreference,
-    updateLanguagePreference,
-    updatePrivacySettings,
-    getUserProfile
+    getUserProfile,
+    getActiveSessions,
+    revokeSession,
+    revokeAllSessions
 } = require('../controllers/AccountController')
+const {
+    updateLanguagePreference,
+    updateThemePreference,
+    updatePrivacySettings,
+    updateNotificationPreferences
+} = require('../controllers/PreferencesController')
 
 //router
 const router = express.Router()
@@ -28,17 +34,24 @@ router.use(
     })
 );
 
-//routes
-router.patch('/:userId/avatar', verifyToken, upload.single('avatar'), updateAvatar)
-router.patch('/:userId/updateprofile', verifyToken, updateProfile)
-router.patch('/:userId/email', verifyToken, updateEmail)
-router.patch('/:userId/password', verifyToken, updatePassword)
-router.patch('/:userId/status', verifyToken, updateStatus)
-router.patch('/:userId/daily-goal', verifyToken, updateDailyGoal)
+// account
+router.get('/:userId/profile', verifyToken, getUserProfile)
+router.patch('/:userId/avatar', verifyToken, upload.single('avatar'), updateAvatar);
+router.patch('/:userId/profile', verifyToken, updateProfile);
+router.patch('/:userId/email', verifyToken, updateEmail);
+router.patch('/:userId/daily-goal', verifyToken, updateDailyGoal);
+router.patch('/:userId/password', verifyToken, updatePassword);
+router.patch('/:userId/status', verifyToken, updateStatus);
 
+// preferences
 router.patch('/:userId/theme', verifyToken, updateThemePreference);
 router.patch('/:userId/language', verifyToken, updateLanguagePreference);
 router.patch('/:userId/privacy', verifyToken, updatePrivacySettings);
-router.get('/:userId/profile', verifyToken, getUserProfile);
+router.patch('/:userId/notifications', verifyToken, updateNotificationPreferences);
+
+// sessions
+router.get('/:userId/sessions', verifyToken, getActiveSessions);
+router.delete('/:userId/sessions/:sessionId', verifyToken, revokeSession);
+router.delete('/:userId/sessions', verifyToken, revokeAllSessions);
 
 module.exports = router

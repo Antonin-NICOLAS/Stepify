@@ -3,7 +3,7 @@ const cloudinary = require('../config/cloudinary');
 const bcrypt = require('bcryptjs')
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 const { generateVerificationCode } = require('../utils/GenerateCode')
-const { GenerateAuthCookie } = require('../utils/GenerateAuthCookie')
+const { GenerateAuthCookie, validateEmail, validateUsername } = require('../utils/AuthHelpers')
 const { sendVerificationEmail, sendResetPasswordSuccessfulEmail } = require('../utils/SendMail');
 //.env
 require('dotenv').config()
@@ -62,7 +62,7 @@ const updateProfile = async (req, res) => {
     try {
         // Validation des champs
         if (updates.username) {
-            if (!/^[a-zA-Z0-9_]{3,30}$/.test(updates.username)) {
+            if (!validateEmail(updates.username)) {
                 return res.status(400).json({
                     success: false,
                     error: "Nom d'utilisateur invalide (3-30 caractères alphanumériques)"
@@ -92,11 +92,19 @@ const updateProfile = async (req, res) => {
             });
         }
 
-        const user = await UserModel.findByIdAndUpdate(
-            userId,
-            updates,
-            { new: true }
-        ).select('-password -verificationToken -resetPasswordToken -activeSessions');
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: "Utilisateur non trouvé"
+            });
+        }
+
+        if (updates.username) user.username = updates.username;
+        if (updates.firstName) user.firstName = updates.firstName;
+        if (updates.lastName) user.lastName = updates.lastName;
+        await user.save();
+
 
         res.status(200).json({
             success: true,
@@ -121,8 +129,11 @@ const updateEmail = async (req, res) => {
         const user = await UserModel.findById(req.userId)
         if (!user) return res.status(404).json({ success: false, error: 'Utilisateur introuvable' })
 
-        if (!newEmail) {
-            return res.status(400).json({ success: false, error: "Nouvel email requis" });
+        if (!newEmail || !validateEmail(newEmail)) {
+            return res.status(400).json({
+                success: false,
+                error: "Une adresse email valide est requise"
+            });
         }
 
         if (user.email === newEmail) {
@@ -173,8 +184,8 @@ const updatePassword = async (req, res) => {
         if (!currentPassword || !newPassword) {
             return res.status(400).json({ success: false, error: 'Les deux mots de passe sont requis' })
         }
-        if (newPassword.length < 6) {
-            return res.status(400).json({ success: false, error: 'Le mot de passe doit contenir au moins 6 caractères' })
+        if (newPassword.length < 8) {
+            return res.status(400).json({ success: false, error: 'Le mot de passe doit contenir au moins 8 caractères' })
         }
         const user = await UserModel.findById(req.userId)
         if (!user) return res.status(404).json({ success: false, error: 'Utilisateur introuvable' })
@@ -239,130 +250,21 @@ const updateDailyGoal = async (req, res) => {
     }
 };
 
-const updateThemePreference = async (req, res) => {
-    const { userId } = req.params;
-    const { themePreference } = req.body;
-
-    if (checkAuthorization(req, res, userId)) return;
-
-    try {
-        if (!['light', 'dark', 'auto'].includes(themePreference)) {
-            return res.status(400).json({
-                success: false,
-                error: "Préférence de thème invalide"
-            });
-        }
-
-        const user = await UserModel.findByIdAndUpdate(
-            userId,
-            { themePreference },
-            { new: true }
-        ).select('-password -verificationToken');
-
-        res.status(200).json({
-            success: true,
-            message: 'Préférence de thème mise à jour',
-            themePreference: user.themePreference
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la mise à jour du thème"
-        });
-    }
-};
-
-const updateLanguagePreference = async (req, res) => {
-    const { userId } = req.params;
-    const { languagePreference } = req.body;
-
-    if (checkAuthorization(req, res, userId)) return;
-
-    try {
-        // Liste des langues supportées - à adapter selon vos besoins
-        const supportedLanguages = ['fr', 'en', 'es', 'de'];
-        if (!supportedLanguages.includes(languagePreference)) {
-            return res.status(400).json({
-                success: false,
-                error: "Langue non supportée"
-            });
-        }
-
-        const user = await UserModel.findByIdAndUpdate(
-            userId,
-            { languagePreference },
-            { new: true }
-        ).select('-password -verificationToken');
-
-        res.status(200).json({
-            success: true,
-            message: 'Préférence linguistique mise à jour',
-            languagePreference: user.languagePreference
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la mise à jour de la langue"
-        });
-    }
-};
-
-const updatePrivacySettings = async (req, res) => {
-    const { userId } = req.params;
-    const {
-        showActivityToFriends,
-        showStatsPublicly,
-        allowFriendRequests
-    } = req.body;
-
-    if (checkAuthorization(req, res, userId)) return;
-
-    try {
-        const updates = {
-            privacySettings: {
-                showActivityToFriends: !!showActivityToFriends,
-                showStatsPublicly: !!showStatsPublicly,
-                allowFriendRequests: !!allowFriendRequests
-            }
-        };
-
-        const user = await UserModel.findByIdAndUpdate(
-            userId,
-            updates,
-            { new: true }
-        ).select('-password -verificationToken');
-
-        res.status(200).json({
-            success: true,
-            message: 'Paramètres de confidentialité mis à jour',
-            privacySettings: user.privacySettings
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la mise à jour des paramètres"
-        });
-    }
-};
-
 const getUserProfile = async (req, res) => {
-    const { userId } = { ...req.params };
-
-    if (checkAuthorization(req, res, userId)) return;
+    const { userId } = req.params;
 
     try {
         const user = await UserModel.findById(userId)
             .populate([
                 {
-                  path: 'friends.userId',
-                  select: 'username avatarUrl firstName lastName'
+                    path: 'friends.userId',
+                    select: 'username avatarUrl firstName lastName'
                 },
                 {
-                  path: 'rewardsUnlocked.rewardId',
-                  select: 'name description imageUrl'
+                    path: 'rewardsUnlocked.rewardId',
+                    select: 'name description iconUrl'
                 }
-              ])
-        const todayProgress = await user.calculateTodayProgress();
+            ])
 
         if (!user) {
             return res.status(404).json({
@@ -371,31 +273,106 @@ const getUserProfile = async (req, res) => {
             });
         }
 
-        //    // Masquer certaines infos si l'utilisateur n'est pas ami avec le demandeur
-        //    const isOwner = req.userId === userId;
-        //    const isFriend = user.friends.some(f => f.userId._id.toString() === req.userId);
-        //
-        //    if (!isOwner && !isFriend) {
-        //        delete user.email;
-        //        delete user.friendRequests;
-        //        delete user.customGoals;
-        //        if (user.privacySettings && !user.privacySettings.showStatsPublicly) {
-        //            delete user.dailyStats;
-        //            delete user.totalSteps;
-        //            delete user.totalDistance;
-        //        }
-        //    }
+        const isOwner = req.userId === userId;
+        const isFriend = user.friends.some(f => f.userId._id.toString() === req.userId);
+        const todayProgress = await user.calculateTodayProgress();
 
         const userResponse = user.toJSON();
 
+        if (!isOwner) {
+            delete userResponse.email;
+            delete userResponse.friendRequests;
+            delete userResponse.customGoals;
+
+            if (!isFriend && !userResponse.privacySettings.showStatsPublicly) {
+                delete userResponse.dailyStats;
+                delete userResponse.totalSteps;
+                delete userResponse.totalDistance;
+                delete userResponse.totalCalories;
+            }
+        }
+
         res.status(200).json({
             success: true,
-            user: {...userResponse, todayProgress }
+            user: { ...userResponse, todayProgress }
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            error: `Erreur lors de la récupération du profil: ${error}`
+            error: "Erreur lors de la récupération du profil"
+        });
+    }
+};
+
+// gestion des sessions actives
+const getActiveSessions = async (req, res) => {
+    const { userId } = req.params;
+
+    if (checkAuthorization(req, res, userId)) return;
+
+    try {
+        const user = await UserModel.findById(userId)
+            .select('activeSessions');
+
+        // Filtrer les sessions expirées
+        const activeSessions = user.activeSessions.filter(
+            session => new Date(session.expiresAt) > new Date()
+        );
+
+        res.status(200).json({
+            success: true,
+            sessions: activeSessions
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: "Erreur lors de la récupération des sessions"
+        });
+    }
+};
+
+const revokeSession = async (req, res) => {
+    const { userId, sessionId } = req.params;
+
+    if (checkAuthorization(req, res, userId)) return;
+
+    try {
+        const user = await UserModel.findById(userId);
+        user.activeSessions = user.activeSessions.filter(
+            session => session._id.toString() !== sessionId
+        );
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Session révoquée"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: "Erreur lors de la révocation de la session"
+        });
+    }
+};
+
+const revokeAllSessions = async (req, res) => {
+    const { userId } = req.params;
+
+    if (checkAuthorization(req, res, userId)) return;
+
+    try {
+        await UserModel.findByIdAndUpdate(userId, {
+            activeSessions: []
+        });
+
+        res.status(200).json({
+            success: true,
+            message: "Toutes les sessions ont été révoquées"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: "Erreur lors de la révocation des sessions"
         });
     }
 };
@@ -407,8 +384,8 @@ module.exports = {
     updatePassword,
     updateStatus,
     updateDailyGoal,
-    updateThemePreference,
-    updateLanguagePreference,
-    updatePrivacySettings,
-    getUserProfile
+    getUserProfile,
+    getActiveSessions,
+    revokeSession,
+    revokeAllSessions
 }

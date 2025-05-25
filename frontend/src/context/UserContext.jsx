@@ -270,6 +270,7 @@ export const UserProvider = ({ children }) => {
       updateLanguagePreference,
       updatePrivacySettings,
       getUserProfile
+      //TODO: sessions & notif pref
      }}>
             {isLoading && <GlobalLoader />}
       {children}

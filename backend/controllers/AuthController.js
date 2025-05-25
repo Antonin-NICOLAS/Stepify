@@ -6,8 +6,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const ms = require('ms');
 const CryptoJS = require('crypto-js');
+const cloudinary = require('../config/cloudinary');
 const { generateVerificationCode } = require('../utils/GenerateCode');
-const { GenerateAuthCookie } = require('../utils/GenerateAuthCookie');
+const { GenerateAuthCookie, validateEmail, validateUsername, generateSessionFingerprint } = require('../utils/AuthHelpers');
 const {
     sendVerificationEmail,
     sendWelcomeEmail,
@@ -15,15 +16,6 @@ const {
     sendResetPasswordSuccessfulEmail
 } = require('../utils/SendMail');
 require('dotenv').config();
-
-// Validation helpers
-const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-};
-
-const validateUsername = (username) => {
-    return /^[a-zA-Z0-9_]{3,30}$/.test(username);
-};
 
 //// ACCOUNT MANAGEMENT ////
 
@@ -113,16 +105,14 @@ const createUser = async (req, res) => {
         newUser.activeSessions.push({
             ipAddress,
             userAgent,
+            fingerprint: generateSessionFingerprint(req),
             expiresAt: new Date(Date.now() + sessionDuration)
         });
 
         await newUser.save();
 
         // Ne pas renvoyer les informations sensibles
-        const userResponse = newUser.toObject();
-        delete userResponse.password;
-        delete userResponse.verificationToken;
-        delete userResponse.resetPasswordToken;
+        const userResponse = newUser.toJSON();
 
         return res.status(201).json({
             success: true,
@@ -190,11 +180,7 @@ const verifyEmail = async (req, res) => {
 
         await sendWelcomeEmail(user.email, user.firstName);
 
-        const userResponse = user.toObject();
-        delete userResponse.password;
-        delete userResponse.verificationToken;
-        delete userResponse.resetPasswordToken;
-        delete userResponse.activeSessions;
+        const userResponse = user.toJSON();
 
         return res.status(200).json({
             success: true,
@@ -393,7 +379,13 @@ const deleteUser = async (req, res) => {
             { $pull: { friendRequests: { userId: userId } } }
         );
 
-        // 7. Supprimer enfin l'utilisateur lui-même
+        // 7. Supprimer l'avatar de l'utilisateur
+        if (user.avatarUrl && user.avatarUrl.includes('res.cloudinary.com')) {
+            const publicId = user.avatarUrl.split('/').slice(-1)[0].split('.')[0];
+            await cloudinary.uploader.destroy(`stepify/avatars/${publicId}`);
+        }
+
+        // 8. Supprimer enfin l'utilisateur lui-même
         await UserModel.findByIdAndDelete(userId);
 
         res.clearCookie("jwtauth", {
@@ -450,6 +442,9 @@ const loginUser = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             user.loginAttempts += 1;
+            const delay = Math.min(1000 * Math.pow(2, user.loginAttempts), 30000); // Délai exponentiel max 30s
+            await new Promise(resolve => setTimeout(resolve, delay));
+
             if (user.loginAttempts >= 5) {
                 user.lockUntil = Date.now() + 15 * 60 * 1000;
                 await user.save();
@@ -458,6 +453,7 @@ const loginUser = async (req, res) => {
                     error: "Trop de tentatives. Votre compte est temporairement verrouillé."
                 });
             }
+            await user.save();
             return res.status(401).json({
                 success: false,
                 error: "Mot de passe incorrect"
@@ -487,6 +483,7 @@ const loginUser = async (req, res) => {
         user.activeSessions.push({
             ipAddress,
             userAgent,
+            fingerprint: generateSessionFingerprint(req),
             expiresAt: new Date(Date.now() + sessionDuration)
         });
 
@@ -494,10 +491,7 @@ const loginUser = async (req, res) => {
 
         GenerateAuthCookie(res, user, stayLoggedIn);
 
-        const userResponse = user.toObject();
-        delete userResponse.password;
-        delete userResponse.verificationToken;
-        delete userResponse.resetPasswordToken;
+        const userResponse = user.toJSON();
 
         return res.status(200).json({
             success: true,
@@ -652,19 +646,18 @@ const checkAuth = async (req, res) => {
                 error: "Utilisateur non trouvé"
             });
         }
-        const ip = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        const userAgent = req.headers['user-agent'] || 'unknown';
+
+        const currentFingerprint = generateSessionFingerprint(req);
         const currentSession = user.activeSessions.find(session =>
-            session.ipAddress === ip &&
-            session.userAgent === userAgent &&
-            new Date(session.expiresAt) > new Date(),
+            session.fingerprint === currentFingerprint &&
+            new Date(session.expiresAt) > new Date()
         );
 
         if (!currentSession) {
             res.clearCookie("jwtauth", {
                 secure: process.env.NODE_ENV === "production" ? true : false,
                 httpOnly: process.env.NODE_ENV === "production" ? true : false,
-                sameSite: process.env.NODE_ENV === "production" ? 'lax' : '',
+                sameSite: process.env.NODE_ENV === "production" ? 'strict' : '',
                 ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
             });
             return res.status(200).json({

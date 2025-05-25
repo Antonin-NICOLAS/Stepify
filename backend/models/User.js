@@ -53,9 +53,11 @@ const userSchema = new Schema({
   },
 
   // --- Authentification & Sécurité ---
-  isAdmin: {
-    type: Boolean,
-    default: false
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
+    required: true,
   },
   isVerified: {
     type: Boolean,
@@ -76,6 +78,7 @@ const userSchema = new Schema({
   activeSessions: [{
     ipAddress: String,
     userAgent: String,
+    fingerprint: String,
     createdAt: { type: Date, default: Date.now },
     expiresAt: { type: Date, default: () => Date.now() + 7 * 24 * 60 * 60 * 1000 }
   }],
@@ -110,13 +113,21 @@ const userSchema = new Schema({
   customGoals: [{
     type: {
       type: String,
-      enum: ['steps', 'distance', 'calories', 'time'],
+      enum: ['steps', 'steps-time', 'distance', 'distance-time', 'calories', 'calories-time', 'xp',
+        'xp-time', 'streak', 'challenges', 'challenges-time', 'rank'],
       required: true
     },
     target: {
       type: Number,
       required: true,
       min: 1
+    },
+    time: {
+      type: Number,
+      min: 0,
+      required: function () {
+        return ['steps-time', 'distance-time', 'calories-time', 'xp-time'].includes(this.type);
+      }
     },
     deadline: {
       type: Date,
@@ -242,10 +253,6 @@ const userSchema = new Schema({
     allowFriendRequests: {
       type: Boolean,
       default: true
-    },
-    showLastLogin: {
-      type: Boolean,
-      default: false
     }
   },
 

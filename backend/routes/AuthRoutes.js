@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 //middleware
 const { verifyToken } = require('../middlewares/VerifyToken')
+const authLimiter = require('../middlewares/AuthLimiter');
 //controllers
 const { createUser,
     verifyEmail,
@@ -35,8 +36,8 @@ router.post("/change-verification-email", verifyToken, ChangeVerificationEmail);
 
 router.delete('/:userId/delete', deleteUser)
 
-router.post('/login', loginUser)
-router.post('/forgot-password', forgotPassword)
+router.post('/login', authLimiter, loginUser)
+router.post('/forgot-password', authLimiter, forgotPassword)
 router.post('/reset-password/:token', resetPassword)
 router.post('/logout', logoutUser)
 
