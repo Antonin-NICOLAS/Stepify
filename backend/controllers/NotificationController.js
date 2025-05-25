@@ -28,10 +28,7 @@ const sendFriendRequest = async (req, res) => {
       return res.status(400).json({ success: false, error: "Vous êtes déjà amis." });
     }
 
-    recipient.friendRequests.push({ userId: fromId, sentAt: new Date(), status: 'unread' });
-    await recipient.save();
-
-    await Notification.create({
+    const notification = await Notification.create({
       recipient: userId,
       sender: fromId,
       type: 'friend_request',
@@ -39,6 +36,9 @@ const sendFriendRequest = async (req, res) => {
       status: 'unread',
       DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
+
+    recipient.friendRequests.push({ notificationId: notification._id });
+    await recipient.save();
 
     res.status(200).json({ success: true, message: 'Demande d\'ami envoyée.' });
   } catch (err) {
@@ -48,7 +48,7 @@ const sendFriendRequest = async (req, res) => {
 
 /** Accept a friend request */
 const acceptFriendRequest = async (req, res) => {
-  const { userId, inviteId } = req.params; // Celui qui accepte
+  const { userId, notificationId } = req.params;
   const requesterId = req.body.requesterId;
 
   if (checkAuthorization(req, res, userId)) return;
@@ -56,31 +56,31 @@ const acceptFriendRequest = async (req, res) => {
   try {
     const user = await UserModel.findById(userId);
     const requester = await UserModel.findById(requesterId);
+    const notification = await Notification.findById(notificationId);
 
-    if (!user || !requester) {
-      return res.status(404).json({ success: false, error: "Utilisateur introuvable." });
+    if (!user || !requester || !notification) {
+      return res.status(404).json({ success: false, error: "Utilisateur ou notification introuvable." });
     }
-    if (!user.friendRequests.some(f => f.userId.toString() === requesterId)) {
-      await Notification.findByIdAndDelete(inviteId);
-      return res.status(400).json({ success: false, error: "Aucune demande à accepter." });
+
+    if (notification.recipient.toString() !== userId || notification.sender.toString() !== requesterId) {
+      return res.status(403).json({ success: false, error: "Notification non valide pour cette action." });
     }
+
     if (user.friends.some(f => f.userId.toString() === requesterId)) {
-      await Notification.findByIdAndDelete(inviteId);
+      await Notification.findByIdAndDelete(notificationId);
       return res.status(400).json({ success: false, error: "Vous êtes déjà amis." });
     }
 
-    // Ajout réciproque
     user.friends.push({ userId: requesterId, since: new Date() });
     requester.friends.push({ userId: userId, since: new Date() });
 
-    user.friendRequests = user.friendRequests.filter(id => id.toString() !== requesterId);
+    // Supprime la demande de la liste
+    user.friendRequests = user.friendRequests.filter(f => f.notificationId.toString() !== notificationId);
     await user.save();
     await requester.save();
 
-    // Delete the notification
-    await Notification.findByIdAndDelete(inviteId);
+    await Notification.findByIdAndDelete(notificationId);
 
-    // Create notification for the requester
     await Notification.create({
       recipient: requesterId,
       sender: userId,
@@ -96,15 +96,170 @@ const acceptFriendRequest = async (req, res) => {
   }
 };
 
+/** Cancel a sent friend request */
+const cancelFriendRequest = async (req, res) => {
+  const { userId, notificationId } = req.params;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  try {
+    const notification = await Notification.findById(notificationId);
+    if (!notification || notification.sender.toString() !== userId || notification.type !== 'friend_request') {
+      return res.status(404).json({ success: false, error: 'Demande introuvable ou non valide' });
+    }
+
+    const recipient = await UserModel.findById(notification.recipient);
+    recipient.friendRequests = recipient.friendRequests.filter(r => r.notificationId.toString() !== notificationId);
+    await recipient.save();
+
+    await notification.deleteOne();
+
+    return res.status(200).json({ success: true, message: 'Demande d\'ami annulée.' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erreur lors de l\'annulation de la demande.' });
+  }
+};
+
+/** Decline a friend request */
+const declineFriendRequest = async (req, res) => {
+  const { userId, notificationId } = req.params;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  try {
+    const notification = await Notification.findById(notificationId);
+    if (!notification || notification.recipient.toString() !== userId || notification.type !== 'friend_request') {
+      return res.status(404).json({ success: false, error: 'Demande introuvable ou non valide' });
+    }
+
+    const user = await UserModel.findById(userId);
+    user.friendRequests = user.friendRequests.filter(r => r.notificationId.toString() !== notificationId);
+    await user.save();
+
+    // Create a decline notification for the sender
+    await Notification.create({
+      recipient: notification.sender,
+      sender: userId,
+      type: 'friend_decline',
+      content: `${user.username} a refusé votre demande d'ami !`,
+      status: 'unread',
+      DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    });
+
+    await notification.deleteOne();
+
+    return res.status(200).json({ success: true, message: 'Demande refusée.' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erreur lors du refus de la demande.' });
+  }
+};
+
+/** Remove a friend */
+const removeFriend = async (req, res) => {
+  const { userId, friendId } = req.params;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  try {
+    const user = await UserModel.findById(userId);
+    const friend = await UserModel.findById(friendId);
+
+    if (!user || !friend) {
+      return res.status(404).json({ success: false, error: 'Utilisateur introuvable.' });
+    }
+
+    user.friends = user.friends.filter(f => f.userId.toString() !== friendId);
+    friend.friends = friend.friends.filter(f => f.userId.toString() !== userId);
+    user.friendRequests = user.friendRequests.filter(r => r.userId.toString() !== friendId);
+    friend.friendRequests = friend.friendRequests.filter(r => r.userId.toString() !== userId);
+
+    await user.save();
+    await friend.save();
+
+    return res.status(200).json({ success: true, message: 'Ami supprimé.' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erreur lors de la suppression de l\'ami.' });
+  }
+};
+
+/** Delete a notification */
+const deleteNotification = async (req, res) => {
+  const { userId, notificationId } = req.params;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  try {
+    const notification = await Notification.findById(notificationId);
+    if (!notification || notification.recipient.toString() !== userId) {
+      return res.status(404).json({ success: false, error: 'Notification introuvable ou non autorisée' });
+    }
+
+    await notification.deleteOne();
+    return res.status(200).json({ success: true, message: 'Notification supprimée' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erreur lors de la suppression de la notification' });
+  }
+};
+
+/** Mark all notifications as read */
+const markAllNotificationsAsRead = async (req, res) => {
+  const { userId } = req.params;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  try {
+    await Notification.updateMany({ recipient: userId, status: 'unread' }, { $set: { status: 'read' } });
+    return res.status(200).json({ success: true, message: 'Toutes les notifications ont été marquées comme lues' });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erreur lors de la mise à jour des notifications' });
+  }
+};
+
+/** Get all friends of a user */
+const getFriendsList = async (req, res) => {
+  const { userId } = req.params;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  try {
+    const user = await UserModel.findById(userId).populate('friends.userId', 'username avatarUrl firstName lastName');
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'Utilisateur introuvable' });
+    }
+
+    return res.status(200).json({ success: true, friends: user.friends });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erreur lors de la récupération des amis' });
+  }
+};
+
+/** Get pending friend requests */
+const getPendingFriendRequests = async (req, res) => {
+  const { userId } = req.params;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  try {
+    const user = await UserModel.findById(userId).populate('friendRequests.notificationId');
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'Utilisateur introuvable' });
+    }
+
+    return res.status(200).json({ success: true, requests: user.friendRequests });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: 'Erreur lors de la récupération des demandes' });
+  }
+};
+
 /** accpet or decline challenge invitation */
 const respondToChallengeInvite = async (req, res) => {
-  const { userId, inviteId } = req.params;
+  const { userId, notificationId } = req.params;
   const { action } = req.body;
 
   if (checkAuthorization(req, res, userId)) return;
 
   try {
-    const invitation = await Notification.findById(inviteId);
+    const invitation = await Notification.findById(notificationId);
     const user = await UserModel.findById(userId);
     if (!invitation) {
       return res.status(404).json({ success: false, error: 'Invitation introuvable' });
@@ -115,7 +270,7 @@ const respondToChallengeInvite = async (req, res) => {
     }
 
     if (invitation.status === 'accepted' || invitation.status === 'declined') {
-      await Notification.findByIdAndDelete(inviteId);
+      await Notification.findByIdAndDelete(notificationId);
       return res.status(400).json({ success: false, error: 'Cette invitation a déjà été traitée' });
     }
 
@@ -128,7 +283,7 @@ const respondToChallengeInvite = async (req, res) => {
       // Add user to challenge participants
       const alreadyParticipant = challenge.participants.find(p => p.user.toString() === userId);
       if (alreadyParticipant) {
-        await Notification.findByIdAndDelete(inviteId);
+        await Notification.findByIdAndDelete(notificationId);
         return res.status(400).json({ success: false, error: 'Vous participez déjà à ce challenge' });
       }
 
@@ -147,7 +302,7 @@ const respondToChallengeInvite = async (req, res) => {
       await challenge.save();
 
       // Delete the notification
-      await Notification.findByIdAndDelete(inviteId);
+      await Notification.findByIdAndDelete(notificationId);
 
       // Create acceptance notification for sender
       await Notification.create({
@@ -164,7 +319,7 @@ const respondToChallengeInvite = async (req, res) => {
       invitation.status = 'declined';
 
       // Delete the notification
-      await Notification.findByIdAndDelete(inviteId);
+      await Notification.findByIdAndDelete(notificationId);
 
       // Create decline notification for sender
       await Notification.create({
@@ -270,8 +425,15 @@ const getChallengeNotifications = async (req, res) => {
 module.exports = {
   sendFriendRequest,
   acceptFriendRequest,
+  cancelFriendRequest,
+  declineFriendRequest,
+  removeFriend,
+  deleteNotification,
+  markAllNotificationsAsRead,
   respondToChallengeInvite,
   markNotificationAsRead,
   getNotifications,
   getChallengeNotifications,
+  getFriendsList,
+  getPendingFriendRequests,
 };

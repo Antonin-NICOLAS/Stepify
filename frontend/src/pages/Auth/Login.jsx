@@ -158,6 +158,7 @@ function Auth() {
                     id="login-email"
                     type="email"
                     placeholder="Enter your email"
+                    autoComplete="email"
                     value={loginData.email}
                     onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                     required
@@ -175,6 +176,7 @@ function Auth() {
                     id="login-password"
                     type={showLPassword ? "text" : "password"}
                     placeholder="Enter your password"
+                    autoComplete="password"
                     value={loginData.password}
                     onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                     required
@@ -233,6 +235,7 @@ function Auth() {
                       id="register-firstname"
                       type="text"
                       placeholder="Your first name"
+                      autoComplete="given-name"
                       value={registerData.firstName}
                       onChange={(e) => setRegisterData({ ...registerData, firstName: e.target.value })}
                       required
@@ -250,6 +253,7 @@ function Auth() {
                       id="register-lastname"
                       type="text"
                       placeholder="Your last name"
+                      autoComplete="family-name"
                       value={registerData.lastName}
                       onChange={(e) => setRegisterData({ ...registerData, lastName: e.target.value })}
                       required
@@ -285,6 +289,7 @@ function Auth() {
                     id="register-email"
                     type="email"
                     placeholder="Your email address"
+                    autoComplete="email"
                     value={registerData.email}
                     onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
                     required
@@ -302,6 +307,7 @@ function Auth() {
                     id="register-password"
                     type={showRPassword ? "text" : "password"}
                     placeholder="Create a password"
+                    autoComplete="new-password"
                     value={registerData.password}
                     onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
                     required
@@ -327,6 +333,7 @@ function Auth() {
                     id="register-confirm-password"
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm your password"
+                    autoComplete="new-password"
                     value={registerData.confirmPassword}
                     onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
                     required

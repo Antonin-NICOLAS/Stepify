@@ -224,19 +224,10 @@ const userSchema = new Schema({
     }
   }],
   friendRequests: [{
-    userId: {
+    notificationId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Notification',
       required: true
-    },
-    sentAt: {
-      type: Date,
-      default: Date.now
-    },
-    status: {
-      type: String,
-      enum: ['pending', 'accepted', 'declined'],
-      default: 'pending'
     }
   }],
   privacySettings: {
