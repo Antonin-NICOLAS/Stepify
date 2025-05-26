@@ -227,6 +227,28 @@ export const useNotifications = (userId) => {
         }
     };
 
+    // In your useNotifications hook
+    const searchUsers = async (query) => {
+        if (!userId) return [];
+
+        try {
+            const { data } = await axios.get(`${API_NOTIFICATION}/${userId}/search`, {
+                params: { query },
+                withCredentials: true
+            });
+
+            if (data.success) {
+                return data.results;
+            } else {
+                return [];
+            }
+        } catch (err) {
+            console.error("Search error:", err);
+            toast.error(err.response?.data?.error || "Erreur de recherche");
+            return [];
+        }
+    };
+
     useEffect(() => {
         if (userId) {
             fetchNotifications();
@@ -249,6 +271,7 @@ export const useNotifications = (userId) => {
         cancelFriendRequest,
         removeFriend,
         respondToChallengeInvite,
-        markNotificationAsRead
+        markNotificationAsRead,
+        searchUsers
     };
 };

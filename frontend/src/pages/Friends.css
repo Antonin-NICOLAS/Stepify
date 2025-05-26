@@ -564,7 +564,7 @@
   }
 
   .result-actions .action-button {
-    width: 100%;
+    display: inline-flex;
     justify-content: center;
   }
 
@@ -912,13 +912,13 @@
   .privacy-link {
     background: none;
     border: none;
-    color: var(--Couleur1);
-    text-decoration: underline;
+    color: var(--Couleur4);
+    text-decoration: none;
     cursor: pointer;
   }
 
   .privacy-link:hover {
-    color: var(--bleu);
+    text-decoration: underline;
   }
 }
 

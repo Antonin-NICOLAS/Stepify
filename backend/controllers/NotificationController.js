@@ -3,6 +3,53 @@ const UserModel = require('../models/User');
 const Challenge = require('../models/Challenge');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 
+/** Search for users */
+const searchUsers = async (req, res) => {
+  const { userId } = req.params;
+  const { query } = req.query;
+
+  if (checkAuthorization(req, res, userId)) return;
+
+  if (!query || query.trim() === '') {
+    return res.status(400).json({
+      success: false,
+      error: 'Search query is required'
+    });
+  }
+
+  try {
+    const users = await UserModel.find({
+      $or: [
+        { firstName: { $regex: query, $options: 'i' } },
+        { lastName: { $regex: query, $options: 'i' } },
+        { username: { $regex: query, $options: 'i' } }
+      ],
+      _id: { $ne: userId } // Exclude the current user
+    })
+      .select('firstName lastName username avatarUrl totalSteps totalXP level')
+      .limit(10);
+
+    // Check friend status for each user
+    const currentUser = await UserModel.findById(userId);
+    const results = users.map(user => {
+      const isFriend = currentUser.friends.some(f => f.userId.toString() === user._id.toString());
+      const hasPendingRequest = currentUser.friendRequests.some(
+        r => r.userId.toString() === user._id.toString()
+      );
+
+      return {
+        ...user.toObject(),
+        requestStatus: isFriend ? 'friends' :
+          hasPendingRequest ? 'sent' : 'none'
+      };
+    });
+
+    res.status(200).json({ success: true, results });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error searching users' });
+  }
+};
+
 /** Send a friend request */
 const sendFriendRequest = async (req, res) => {
   const { userId } = req.params;
@@ -240,13 +287,21 @@ const getPendingFriendRequests = async (req, res) => {
   if (checkAuthorization(req, res, userId)) return;
 
   try {
-    const user = await UserModel.findById(userId).populate('friendRequests.notificationId');
+    const user = await UserModel.findById(userId)
+  .populate({
+    path: 'friendRequests.notificationId',
+    populate: {
+      path: 'sender',
+      select: 'username avatarUrl firstName lastName'
+    }
+  });
     if (!user) {
       return res.status(404).json({ success: false, error: 'Utilisateur introuvable' });
     }
 
     return res.status(200).json({ success: true, requests: user.friendRequests });
   } catch (error) {
+    console.error('Error fetching pending friend requests:', error);
     return res.status(500).json({ success: false, error: 'Erreur lors de la récupération des demandes' });
   }
 };
@@ -423,6 +478,7 @@ const getChallengeNotifications = async (req, res) => {
 };
 
 module.exports = {
+  searchUsers,
   sendFriendRequest,
   acceptFriendRequest,
   cancelFriendRequest,

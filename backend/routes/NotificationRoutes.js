@@ -5,6 +5,7 @@ require('dotenv').config();
 const { verifyToken } = require('../middlewares/VerifyToken')
 //controllers
 const {
+    searchUsers,
     sendFriendRequest,
     acceptFriendRequest,
     cancelFriendRequest,
@@ -46,6 +47,8 @@ router.post('/:userId/:notificationId/cancel-friend', verifyToken, cancelFriendR
 router.post('/:userId/:notificationId/decline-friend', verifyToken, declineFriendRequest);
 router.post('/:userId/:friendId/remove-friend', verifyToken, removeFriend);
 router.post('/:userId/:notificationId/respond', verifyToken, respondToChallengeInvite);
+
+router.get('/:userId/search', verifyToken, searchUsers);
 
 router.delete('/:userId/:notificationId', verifyToken, deleteNotification);
 

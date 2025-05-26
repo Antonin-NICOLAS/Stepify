@@ -25,6 +25,7 @@ const Friends = () => {
         declineFriendRequest,
         cancelFriendRequest,
         removeFriend,
+        searchUsers
     } = useNotifications(user?._id)
 
     // State for active tab
@@ -93,21 +94,21 @@ const Friends = () => {
     //TODO: Handle search for users
     const handleSearch = async (query) => {
         if (!query.trim()) {
-            setSearchResults([])
-            return
+            setSearchResults([]);
+            return;
         }
 
-        setIsSearching(true)
+        setIsSearching(true);
         try {
-            const mockResults = generateMockSearchResults(query)
-            setSearchResults(mockResults)
+            const results = await searchUsers(query);
+            setSearchResults(results);
         } catch (error) {
-            console.error("Error searching users:", error)
-            setSearchResults([])
+            console.error("Error searching users:", error);
+            setSearchResults([]);
         } finally {
-            setIsSearching(false)
+            setIsSearching(false);
         }
-    }
+    };
 
     // Handle friend request actions
     const handleSendFriendRequest = async (userId) => {
@@ -129,10 +130,11 @@ const Friends = () => {
         }
     }
 
-    const handleAcceptFriendRequest = async (notificationId) => {
+    const handleAcceptFriendRequest = async (requesterId, notificationId) => {
+        console.log(notificationId)
         setIsLoading(true)
         try {
-            await acceptFriendRequest(notificationId)
+            await acceptFriendRequest(requesterId, notificationId)
         } catch (error) {
             console.error("Error accepting friend request:", error)
         } finally {
@@ -196,51 +198,6 @@ const Friends = () => {
         setShowFriendModal(true)
     }
 
-    // Generate mock search results
-    const generateMockSearchResults = (query) => {
-        const mockUsers = [
-            {
-                _id: "user1",
-                firstName: "Thomas",
-                lastName: "Martin",
-                username: "thomas_martin",
-                avatarUrl: "/placeholder.svg?height=100&width=100&text=TM",
-                totalSteps: 125000,
-                totalXP: 2500,
-                level: 5,
-                requestStatus: "none", // none, sent, received, friends
-            },
-            {
-                _id: "user2",
-                firstName: "Emma",
-                lastName: "Bernard",
-                username: "emma_bernard",
-                avatarUrl: "/placeholder.svg?height=100&width=100&text=EB",
-                totalSteps: 98000,
-                totalXP: 1800,
-                level: 4,
-                requestStatus: "none",
-            },
-            {
-                _id: "user3",
-                firstName: "Lucas",
-                lastName: "Dubois",
-                username: "lucas_dubois",
-                avatarUrl: "/placeholder.svg?height=100&width=100&text=LD",
-                totalSteps: 156000,
-                totalXP: 3200,
-                level: 6,
-                requestStatus: "sent",
-            },
-        ]
-
-        return mockUsers.filter(user =>
-            user.firstName.toLowerCase().includes(query.toLowerCase()) ||
-            user.lastName.toLowerCase().includes(query.toLowerCase()) ||
-            user.username.toLowerCase().includes(query.toLowerCase())
-        )
-    }
-
     // Sort friends based on selected criteria
     const sortedFriends = () => {
         if (!friends || friends.length === 0) return []
@@ -280,34 +237,6 @@ const Friends = () => {
             month: "short",
             year: "numeric"
         })
-    }
-
-    // Get activity status
-    const getActivityStatus = (lastLoginAt) => {
-        if (!lastLoginAt) return "Inactif"
-
-        const now = new Date()
-        const lastLogin = new Date(lastLoginAt)
-        const diffHours = (now - lastLogin) / (1000 * 60 * 60)
-
-        if (diffHours < 1) return "En ligne"
-        if (diffHours < 24) return "Actif aujourd'hui"
-        if (diffHours < 168) return "Actif cette semaine"
-        return "Inactif"
-    }
-
-    // Get activity status color
-    const getActivityStatusColor = (status) => {
-        switch (status) {
-            case "En ligne":
-                return "status-online"
-            case "Actif aujourd'hui":
-                return "status-today"
-            case "Actif cette semaine":
-                return "status-week"
-            default:
-                return "status-inactive"
-        }
     }
 
     // Empty state components
@@ -365,12 +294,6 @@ const Friends = () => {
                             <Users size={20} />
                             <span>{friends.length} {friends.length === 1 ? 'ami' : 'amis'}</span>
                         </div>
-                        <div className="stat-item">
-                            <Activity size={20} />
-                            <span>
-                                {friends.filter(f => getActivityStatus(f.lastLoginAt) === "En ligne").length} en ligne
-                            </span>
-                        </div>
                     </div>
 
                     <div className="friends-controls">
@@ -421,7 +344,7 @@ const Friends = () => {
                                     src={friend.userId.avatarUrl || "/placeholder.svg"}
                                     alt={friend.userId.username}
                                 />
-                                <div className={`activity-indicator ${getActivityStatusColor(getActivityStatus(friend.lastLoginAt))}`}></div>
+                                <div className={`activity-indicator`}></div> {/*TODO: status color indicator */}
                             </div>
 
                             <div className="friend-info">
@@ -441,9 +364,6 @@ const Friends = () => {
                                 </div>
 
                                 <div className="friend-meta">
-                                    <span className={`activity-status ${getActivityStatusColor(getActivityStatus(friend.userId.lastLoginAt))}`}>
-                                        {getActivityStatus(friend.userId.lastLoginAt)}
-                                    </span>
                                     <span className="added-date">
                                         Ami depuis {formatDate(friend.addedAt)}
                                     </span>
@@ -480,7 +400,7 @@ const Friends = () => {
     }
 
     const getRequestsContent = () => {
-        const receivedRequests = pendingRequests?.filter(req => req.type === 'friend_request') || []
+        const receivedRequests = pendingRequests?.filter(req => req.notificationId.type === 'friend_request') || []
         const sentRequestsList = sentRequests || []
 
         if (receivedRequests.length === 0 && sentRequestsList.length === 0) {
@@ -494,34 +414,34 @@ const Friends = () => {
                         <h3>Demandes reçues ({receivedRequests.length})</h3>
                         <div className="requests-list">
                             {receivedRequests.map((request) => (
-                                <div key={request._id} className="request-card received">
+                                <div key={request.notificationId._id} className="request-card received">
                                     <div className="request-avatar">
                                         <img
-                                            src={request.sender?.avatarUrl || "/placeholder.svg"}
-                                            alt={request.sender?.username}
+                                            src={request.notificationId.sender?.avatarUrl || "/placeholder.svg"}
+                                            alt={request.notificationId.sender?.username}
                                         />
                                     </div>
 
                                     <div className="request-info">
-                                        <h4>{request.sender?.firstName} {request.sender?.lastName}</h4>
-                                        <p>@{request.sender?.username}</p>
+                                        <h4>{request.notificationId.sender?.fullName}</h4>
+                                        <p>@{request.notificationId.sender?.username}</p>
                                         <span className="request-date">
                                             <Clock size={14} />
-                                            {formatDate(request.createdAt)}
+                                            {formatDate(request.notificationId.createdAt)}
                                         </span>
                                     </div>
 
                                     <div className="request-actions">
                                         <button
                                             className="action-button primary"
-                                            onClick={() => handleAcceptFriendRequest(request._id)}
+                                            onClick={() =>  handleAcceptFriendRequest(request.notificationId.sender._id, request.notificationId._id)}
                                         >
                                             <Check size={16} />
                                             <span>Accepter</span>
                                         </button>
                                         <button
                                             className="action-button secondary"
-                                            onClick={() => handleDeclineFriendRequest(request._id)}
+                                            onClick={() => handleDeclineFriendRequest(request.notificationId._id)}
                                         >
                                             <X size={16} />
                                             <span>Refuser</span>
@@ -538,27 +458,27 @@ const Friends = () => {
                         <h3>Demandes envoyées ({sentRequestsList.length})</h3>
                         <div className="requests-list">
                             {sentRequestsList.map((request) => (
-                                <div key={request._id} className="request-card sent">
+                                <div key={request.notificationId._id} className="request-card sent">
                                     <div className="request-avatar">
                                         <img
-                                            src={request.recipient?.avatarUrl || "/placeholder.svg"}
-                                            alt={request.recipient?.username}
+                                            src={request.notificationId.recipient?.avatarUrl || "/placeholder.svg"}
+                                            alt={request.notificationId.recipient?.username}
                                         />
                                     </div>
 
                                     <div className="request-info">
-                                        <h4>{request.recipient?.firstName} {request.recipient?.lastName}</h4>
-                                        <p>@{request.recipient?.username}</p>
+                                        <h4>{request.notificationId.recipient?.firstName} {request.notificationId.recipient?.lastName}</h4>
+                                        <p>@{request.notificationId.recipient?.username}</p>
                                         <span className="request-date">
                                             <Send size={14} />
-                                            Envoyée {formatDate(request.createdAt)}
+                                            Envoyée {formatDate(request.notificationId.createdAt)}
                                         </span>
                                     </div>
 
                                     <div className="request-actions">
                                         <button
                                             className="action-button secondary"
-                                            onClick={() => handleCancelFriendRequest(request._id)}
+                                            onClick={() => handleCancelFriendRequest(request.notificationId._id)}
                                         >
                                             <X size={16} />
                                             <span>Annuler</span>
@@ -871,15 +791,15 @@ const Friends = () => {
                                         src={selectedFriend.userId.avatarUrl || "/placeholder.svg"}
                                         alt={selectedFriend.userId.username}
                                     />
-                                    <div className={`activity-indicator ${getActivityStatusColor(getActivityStatus(selectedFriend.userId.lastLoginAt))}`}></div>
+                                    <div className={`activity-indicator`}></div> {/*TODO: status color indicator */}
                                 </div>
 
                                 <div className="friend-detail-info">
                                     <h2>{selectedFriend.userId.firstName} {selectedFriend.userId.lastName}</h2>
                                     <p className="username">@{selectedFriend.userId.username}</p>
                                     <p className="status">{selectedFriend.userId.status || "Aucun statut"}</p>
-                                    <span className={`activity-status ${getActivityStatusColor(getActivityStatus(selectedFriend.lastLoginAt))}`}>
-                                        {getActivityStatus(selectedFriend.lastLoginAt)}
+                                    <span className={`activity-status`}>
+                                        {/*TODO: status color indicator */}
                                     </span>
                                 </div>
                             </div>

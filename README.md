@@ -9,6 +9,7 @@ Summer Contest
 • Challenge OK
 • Rewards OK
 • Steps OK
+• Friends OK
 - fonction calcul de rank et temps passé à ce rank pour potentiellement mise en pllace de reward : exemple : tu as passé un jour à la 1ere place !
 - add frontend password verif — — - - -
 - ajouter une fonctionnalité nouveau record
