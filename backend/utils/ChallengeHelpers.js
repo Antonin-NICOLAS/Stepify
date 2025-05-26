@@ -13,8 +13,8 @@ const calculateUserProgress = async (userId, challenge) => {
 
     // Vérifier si le challenge est actif
     if (now < challengeStart || (challengeEnd && now > challengeEnd)) {
-      return { 
-        progress: 0, 
+      return {
+        progress: 0,
         completed: false,
         details: { reason: 'Challenge not active' }
       };
@@ -37,10 +37,12 @@ const calculateUserProgress = async (userId, challenge) => {
       case 'steps':
       case 'steps-time':
         const stepsData = await StepEntry.aggregate([
-          { $match: { 
-            user: mongoose.Types.ObjectId(userId),
-            date: { $gte: challengeStart, $lte: challengeEnd || now }
-          }},
+          {
+            $match: {
+              user: mongoose.Types.ObjectId(userId),
+              date: { $gte: challengeStart, $lte: challengeEnd || now }
+            }
+          },
           { $group: { _id: null, total: { $sum: "$totalSteps" } } }
         ]);
         userValue = stepsData[0]?.total || 0;
@@ -50,10 +52,12 @@ const calculateUserProgress = async (userId, challenge) => {
       case 'distance':
       case 'distance-time':
         const distanceData = await StepEntry.aggregate([
-          { $match: { 
-            user: mongoose.Types.ObjectId(userId),
-            date: { $gte: challengeStart, $lte: challengeEnd || now }
-          }},
+          {
+            $match: {
+              user: mongoose.Types.ObjectId(userId),
+              date: { $gte: challengeStart, $lte: challengeEnd || now }
+            }
+          },
           { $group: { _id: null, total: { $sum: "$totalDistance" } } }
         ]);
         userValue = distanceData[0]?.total || 0;
@@ -63,10 +67,12 @@ const calculateUserProgress = async (userId, challenge) => {
       case 'calories':
       case 'calories-time':
         const caloriesData = await StepEntry.aggregate([
-          { $match: { 
-            user: mongoose.Types.ObjectId(userId),
-            date: { $gte: challengeStart, $lte: challengeEnd || now }
-          }},
+          {
+            $match: {
+              user: mongoose.Types.ObjectId(userId),
+              date: { $gte: challengeStart, $lte: challengeEnd || now }
+            }
+          },
           { $group: { _id: null, total: { $sum: "$totalCalories" } } }
         ]);
         userValue = caloriesData[0]?.total || 0;
@@ -88,24 +94,30 @@ const calculateUserProgress = async (userId, challenge) => {
         // Prend la meilleure progression parmi toutes les métriques
         const [steps, distance, calories] = await Promise.all([
           StepEntry.aggregate([
-            { $match: { 
-              user: mongoose.Types.ObjectId(userId),
-              date: { $gte: challengeStart, $lte: challengeEnd || now }
-            }},
+            {
+              $match: {
+                user: mongoose.Types.ObjectId(userId),
+                date: { $gte: challengeStart, $lte: challengeEnd || now }
+              }
+            },
             { $group: { _id: null, total: { $sum: "$totalSteps" } } }
           ]),
           StepEntry.aggregate([
-            { $match: { 
-              user: mongoose.Types.ObjectId(userId),
-              date: { $gte: challengeStart, $lte: challengeEnd || now }
-            }},
+            {
+              $match: {
+                user: mongoose.Types.ObjectId(userId),
+                date: { $gte: challengeStart, $lte: challengeEnd || now }
+              }
+            },
             { $group: { _id: null, total: { $sum: "$totalDistance" } } }
           ]),
           StepEntry.aggregate([
-            { $match: { 
-              user: mongoose.Types.ObjectId(userId),
-              date: { $gte: challengeStart, $lte: challengeEnd || now }
-            }},
+            {
+              $match: {
+                user: mongoose.Types.ObjectId(userId),
+                date: { $gte: challengeStart, $lte: challengeEnd || now }
+              }
+            },
             { $group: { _id: null, total: { $sum: "$totalCalories" } } }
           ])
         ]);
@@ -116,7 +128,7 @@ const calculateUserProgress = async (userId, challenge) => {
           calories[0]?.total || 0,
           user.totalXP || 0
         ];
-        
+
         userValue = Math.max(...values);
         details.bestMetric = userValue;
         break;
@@ -130,9 +142,16 @@ const calculateUserProgress = async (userId, challenge) => {
     let completed = false;
 
     if (challenge.activityType.endsWith('-time')) {
-      // Challenges avec objectif quotidien (ex: 10,000 pas/jour pendant 7 jours)
       const dailyGoal = challenge.goal;
-      const achievedDays = await calculateAchievedDays(userId, challenge, dailyGoal);
+      const startDate = new Date(challenge.startDate);
+      const endDate = challenge.endDate ? new Date(challenge.endDate) : new Date();
+
+      // Pour les nouveaux participants, on ne compte que les jours depuis leur arrivée
+      if (participant && participant.joinedAt > startDate) {
+        startDate = new Date(participant.joinedAt);
+      }
+
+      const achievedDays = await calculateAchievedDays(userId, challenge, dailyGoal, startDate, endDate);
       progress = Math.min(100, (achievedDays / challenge.time) * 100);
       completed = achievedDays >= challenge.time;
       details.achievedDays = achievedDays;
@@ -143,7 +162,7 @@ const calculateUserProgress = async (userId, challenge) => {
       completed = userValue >= challenge.goal;
     }
 
-    return { 
+    return {
       progress: Math.round(progress * 100) / 100, // Arrondi à 2 décimales
       completed,
       details
@@ -151,21 +170,64 @@ const calculateUserProgress = async (userId, challenge) => {
 
   } catch (error) {
     console.error('Error calculating user progress:', error);
-    return { 
-      progress: 0, 
+    return {
+      progress: 0,
       completed: false,
       details: { error: error.message }
     };
   }
 };
 
-/**
- * Calcule le nombre de jours où l'objectif quotidien a été atteint
- */
-const calculateAchievedDays = async (userId, challenge, dailyGoal) => {
-  const startDate = new Date(challenge.startDate);
-  const endDate = challenge.endDate ? new Date(challenge.endDate) : new Date();
-  
+// ChallengeHelpers.js
+const updateSingleChallengeProgress = async (userId, challengeId) => {
+  try {
+    const now = new Date();
+    const challenge = await Challenge.findOne({
+      _id: challengeId,
+      'participants.user': userId,
+      status: 'active',
+      startDate: { $lte: now },
+      $or: [
+        { endDate: null },
+        { endDate: { $gte: now } }
+      ]
+    }).populate('participants.user');
+
+    if (!challenge) return;
+
+    const participant = challenge.participants.find(p => p.user._id.toString() === userId);
+    if (!participant) return;
+
+    const progressData = await calculateUserProgress(userId, challenge);
+
+    participant.progress = progressData.progress;
+    participant.completed = progressData.completed;
+    participant.lastUpdated = now;
+
+    if (progressData.completed && !participant.xpEarned) {
+      participant.xpEarned = challenge.xpReward;
+      await User.findByIdAndUpdate(userId, { $inc: { totalXP: challenge.xpReward } });
+
+      await Notification.create({
+        recipient: userId,
+        type: 'challenge_complete',
+        challenge: challenge._id,
+        content: {
+          en: `You completed "${challenge.name.en}"! +${challenge.xpReward}XP`,
+          fr: `Défi "${challenge.name.fr}" réussi ! +${challenge.xpReward}XP`
+        },
+        status: 'unread'
+      });
+    }
+
+    await challenge.save();
+  } catch (error) {
+    console.error('Single challenge progress update error:', error);
+  }
+};
+
+/** Calcule le nombre de jours où l'objectif quotidien a été atteint */
+const calculateAchievedDays = async (userId, challenge, dailyGoal, startDate, endDate) => {
   // Pour les challenges de type 'xp-time', on utilise les données utilisateur
   if (challenge.activityType === 'xp-time') {
     const xpEntries = await StepEntry.find({
@@ -230,4 +292,7 @@ const getFieldForActivityType = (activityType) => {
   }
 };
 
-module.exports = { calculateUserProgress };
+module.exports = {
+  calculateUserProgress,
+  updateSingleChallengeProgress
+};

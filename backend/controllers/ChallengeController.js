@@ -1,7 +1,7 @@
 const Challenge = require('../models/Challenge');
 const Notification = require('../models/Notification');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization');
-const { calculateUserProgress } = require('../utils/ChallengeHelpers')
+const { calculateUserProgress, updateSingleChallengeProgress } = require('../utils/ChallengeHelpers')
 
 
 // Helper function to generate a random 6-character access code (A-Z, 0-9)
@@ -187,6 +187,7 @@ const createChallenge = async (req, res) => {
     });
 
     await newChallenge.save();
+   await updateSingleChallengeProgress(userId, newChallenge._id);
 
     // Send invitations if private and has participants
     if (isPrivate && participants && participants.length > 0) {
@@ -336,6 +337,7 @@ const joinChallenge = async (req, res) => {
     });
 
     await challenge.save();
+    await updateSingleChallengeProgress(userId, challenge._id);
 
     return res.status(200).json({
       success: true,
