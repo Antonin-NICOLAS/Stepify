@@ -43,7 +43,7 @@ const userSchema = new Schema({
   },
   avatarUrl: {
     type: String,
-    default: "https://step-ify.vercel.app/assets/account-B-Y-cm6M.png",
+    default: "https://res.cloudinary.com/dpqhhckyj/image/upload/v1748294425/account_saz7sx.jpg",
     match: [/^https?:\/\/.+\..+$/, "L'URL de l'avatar doit être une URL valide"]
   },
   status: {

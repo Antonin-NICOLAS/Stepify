@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 //images
-import Account from "../assets/account.png";
+import Account from "../assets/account.jpeg";
 import Logo from "../assets/icon.png";
 //icons
 import {
