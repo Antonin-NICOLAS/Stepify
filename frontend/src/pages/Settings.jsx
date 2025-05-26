@@ -5,7 +5,7 @@ import { useUser } from "../context/UserContext"
 import { toast } from "react-hot-toast";
 //icons
 import { Camera, Edit, Upload, Globe, Moon, Sun, ChevronDown, Check, SunMoon } from "lucide-react"
-import AccountImage from "../assets/account.jpeg"
+import AccountImage from "../assets/account.png"
 //CSS
 import "./Settings.css"
 

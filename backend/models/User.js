@@ -43,7 +43,7 @@ const userSchema = new Schema({
   },
   avatarUrl: {
     type: String,
-    default: "https://res.cloudinary.com/dpqhhckyj/image/upload/v1748294425/account_saz7sx.jpg",
+    default: "https://res.cloudinary.com/dpqhhckyj/image/upload/v1748295671/account_hpeh3t.png",
     match: [/^https?:\/\/.+\..+$/, "L'URL de l'avatar doit être une URL valide"]
   },
   status: {
