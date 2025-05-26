@@ -244,6 +244,7 @@
 .steps-container .action-button {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
     border: 1px solid var(--Couleur2);
@@ -265,6 +266,12 @@
 
 .steps-container .action-button.primary:hover {
     background-color: var(--bleu);
+}
+
+.steps-container .action-button:disabled {
+    background-color: var(--Gris);
+    color: var(--Noir);
+    cursor: not-allowed;
 }
 
 /* Dropdown */
@@ -383,11 +390,13 @@
     background-color: var(--body-color);
     color: var(--Noir);
 }
+
 .steps-container .metric-selector .metric-select__input-container,
 .steps-container .mode-filter .mode-select__input-container,
 .steps-container .form-group .mode-select__input-container {
     display: none;
 }
+
 .steps-container .metric-selector .metric-select__menu-list,
 .steps-container .mode-filter .mode-select__menu-list,
 .steps-container .form-group .mode-select__menu-list {
@@ -686,6 +695,46 @@
 
 .steps-container .save-button:hover {
     background-color: var(--bleu);
+}
+
+/* Data import modal */
+.steps-container .import-instructions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+}
+
+.steps-container .import-instructions p {
+    line-height: calc(2vh + 1rem);
+}
+
+.steps-container .dropzone {
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    background-color: var(--shadow-color);
+}
+
+.steps-container .dropzone:hover {
+    border-color: #007bff;
+}
+
+.steps-container .dropzone-icon {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.steps-container .dropzone-text {
+    font-size: 16px;
+    color: #555;
+}
+
+.steps-container .hidden-file-input {
+    display: none;
 }
 
 /* Responsive Styles */

@@ -6,11 +6,11 @@ const API_NOTIFICATION = process.env.NODE_ENV === 'production' ? '/api/notificat
 
 export const useNotifications = (userId) => {
     const [notifications, setNotifications] = useState([])
+    const [friends, setFriends] = useState([])
+    const [pendingRequests, setPendingRequests] = useState([])
     const [challengeNotifications, setChallengeNotifications] = useState([])
-    const [isLoading, setIsLoading] = useState(false)
 
     const fetchNotifications = useCallback(async () => {
-        setIsLoading(true)
         try {
             const { data } = await axios.get(`${API_NOTIFICATION}/${userId}/all`,
                 { withCredentials: true }
@@ -24,13 +24,10 @@ export const useNotifications = (userId) => {
         } catch (err) {
             console.error("Fetch error:", err);
             toast.error(err.response?.data?.error || "Erreur de connexion au serveur");
-        } finally {
-            setIsLoading(false)
         }
     }, []);
 
     const fetchChallengeNotifications = useCallback(async () => {
-        setIsLoading(true)
         try {
             const { data } = await axios.get(`${API_NOTIFICATION}/${userId}/challenge`,
                 { withCredentials: true }
@@ -44,13 +41,44 @@ export const useNotifications = (userId) => {
         } catch (err) {
             console.error("Fetch error:", err);
             toast.error(err.response?.data?.error || "Erreur de connexion au serveur");
-        } finally {
-            setIsLoading(false)
+        }
+    }, [userId]);
+
+    const fetchFriendsList = useCallback(async () => {
+        try {
+            const { data } = await axios.get(`${API_NOTIFICATION}/${userId}/friends`,
+                { withCredentials: true }
+            );
+
+            if (data.success) {
+                setFriends(data.friends);
+            } else {
+                toast.error(data.error || "Erreur lors du chargement des données");
+            }
+        } catch (err) {
+            console.error("Fetch error:", err);
+            toast.error(err.response?.data?.error || "Erreur de connexion au serveur");
+        }
+    }, [userId]);
+
+    const fetchPendingFriendRequests = useCallback(async () => {
+        try {
+            const { data } = await axios.get(`${API_NOTIFICATION}/${userId}/pending-friend-requests`,
+                { withCredentials: true }
+            );
+
+            if (data.success) {
+                setPendingRequests(data.requests);
+            } else {
+                toast.error(data.error || "Erreur lors du chargement des données");
+            }
+        } catch (err) {
+            console.error("Fetch error:", err);
+            toast.error(err.response?.data?.error || "Erreur de connexion au serveur");
         }
     }, [userId]);
 
     const sendFriendRequest = async (toId) => {
-        setIsLoading(true)
         if (userId === toId) {
             toast.error("Vous ne pouvez pas vous envoyer une demande d'ami");
             return false;
@@ -63,7 +91,7 @@ export const useNotifications = (userId) => {
 
             if (data.success) {
                 await fetchNotifications();
-                toast.success("Notification envoyée");
+                toast.success(data.message || "Notification envoyée");
             } else {
                 toast.error(data.error || "Erreur lors de l'envoi de la notification");
                 return false;
@@ -72,13 +100,10 @@ export const useNotifications = (userId) => {
             console.error("Error sending friend request:", error);
             toast.error(error.response?.data?.error || "Erreur lors de l'envoi de la notification");
             return false;
-        } finally {
-            setIsLoading(false)
         }
     };
 
     const acceptFriendRequest = async (requesterId, inviteId) => {
-        setIsLoading(true)
         try {
             const { data } = await axios.post(`${API_NOTIFICATION}/${userId}/${inviteId}/accept-friend`,
                 { requesterId },
@@ -86,7 +111,9 @@ export const useNotifications = (userId) => {
             );
 
             if (data.success) {
-                toast.success("Demande d'ami acceptée");
+                toast.success(data.message || "Demande d'ami acceptée");
+                await fetchFriendsList();
+                await fetchPendingFriendRequests();
                 return true
             } else {
                 toast.error(data.error || "Erreur lors de l'acceptation de la demande");
@@ -96,21 +123,77 @@ export const useNotifications = (userId) => {
             console.error("Error accepting friend:", error);
             toast.error(error.response?.data?.error || "Erreur lors de l'acceptation de la demande");
             return false;
-        } finally {
-            setIsLoading(false)
         }
     };
 
-    const respondToChallengeInvite = async (inviteId, action) => {
-        setIsLoading(true)
+    const declineFriendRequest = async (inviteId) => {
         try {
-            const { data } = await axios.post(`${API_NOTIFICATION}/${userId}/${inviteId}/respond`,
-                { action },
+            const { data } = await axios.post(`${API_NOTIFICATION}/${userId}/${inviteId}/decline-friend`,
                 { withCredentials: true }
             );
 
             if (data.success) {
-                toast.success("Réponse à l'invitation envoyée");
+                toast.success(data.message || "Demande d'ami refusée");
+                return true
+            } else {
+                toast.error(data.error || "Erreur lors du refus de la demande");
+                return false;
+            }
+        } catch (error) {
+            console.error("Error refusing friend request:", error);
+            toast.error(error.response?.data?.error || "Erreur lors du refus de la demande");
+            return false;
+        }
+    };
+
+    const cancelFriendRequest = async (inviteId) => {
+        try {
+            const { data } = await axios.post(`${API_NOTIFICATION}/${userId}/${inviteId}/cancel-friend`,
+                { withCredentials: true }
+            );
+
+            if (data.success) {
+                toast.success(data.message || "Demande d'ami annulée");
+                return true
+            } else {
+                toast.error(data.error || "Erreur lors de l'annulation de la demande");
+                return false;
+            }
+        } catch (error) {
+            console.error("Error cancelling friend request:", error);
+            toast.error(error.response?.data?.error || "Erreur lors de l'annulation de la demande");
+            return false;
+        }
+    };
+
+    const removeFriend = async (friendId) => {
+        try {
+            const { data } = await axios.post(`${API_NOTIFICATION}/${userId}/${friendId}/remove-friend`,
+                { withCredentials: true }
+            );
+
+            if (data.success) {
+                toast.success(data.message || "Demande d'ami annulée");
+                return true
+            } else {
+                toast.error(data.error || "Erreur lors de l'annulation de la demande");
+                return false;
+            }
+        } catch (error) {
+            console.error("Error cancelling friend request:", error);
+            toast.error(error.response?.data?.error || "Erreur lors de l'annulation de la demande");
+            return false;
+        }
+    }
+
+    const respondToChallengeInvite = async (inviteId) => {
+        try {
+            const { data } = await axios.post(`${API_NOTIFICATION}/${userId}/${inviteId}/remove-friend`,
+                { withCredentials: true }
+            );
+
+            if (data.success) {
+                toast.success(data.message || "Réponse à l'invitation envoyée");
                 await fetchNotifications();
                 await fetchChallengeNotifications();
                 return true
@@ -122,32 +205,27 @@ export const useNotifications = (userId) => {
             console.error("Send Challenge response error:", error);
             toast.error(error.response?.data?.error || "Erreur lors de l'envoi de la réponse");
             return false;
-        } finally {
-            setIsLoading(false)
         }
     };
 
     const markNotificationAsRead = async (notificationId) => {
-    setIsLoading(true)
-    try {
-        const { data } = await axios.patch(
-            `${API_NOTIFICATION}/${userId}/${notificationId}/read`,
-            {},
-            { withCredentials: true }
-        );
+        try {
+            const { data } = await axios.patch(
+                `${API_NOTIFICATION}/${userId}/${notificationId}/read`,
+                {},
+                { withCredentials: true }
+            );
 
-        if (data.success) {
-            await fetchNotifications();
-        } else {
-            toast.error(data.error || "Erreur lors du marquage comme lu");
+            if (data.success) {
+                await fetchNotifications();
+            } else {
+                toast.error(data.error || "Erreur lors du marquage comme lu");
+            }
+        } catch (error) {
+            console.error("Mark as read error:", error);
+            toast.error(error.response?.data?.error || "Erreur lors du marquage comme lu");
         }
-    } catch (error) {
-        console.error("Mark as read error:", error);
-        toast.error(error.response?.data?.error || "Erreur lors du marquage comme lu");
-    } finally {
-        setIsLoading(false)
-    }
-};
+    };
 
     useEffect(() => {
         if (userId) {
@@ -159,11 +237,17 @@ export const useNotifications = (userId) => {
     return {
         notifications,
         challengeNotifications,
-        isLoading,
+        friends,
+        pendingRequests,
         fetchNotifications,
         fetchChallengeNotifications,
+        fetchFriendsList,
+        fetchPendingFriendRequests,
         sendFriendRequest,
         acceptFriendRequest,
+        declineFriendRequest,
+        cancelFriendRequest,
+        removeFriend,
         respondToChallengeInvite,
         markNotificationAsRead
     };

@@ -246,14 +246,22 @@ const userSchema = new Schema({
       type: Boolean,
       default: true
     },
+    allowFriendRequests: {
+      type: Boolean,
+      default: true
+    },
+    allowChallengeInvites: {
+      type: Boolean,
+      default: true
+    },
+    showLastLogin: {
+      type: Boolean,
+      default: false
+    },
     showStatsPublicly: {
       type: Boolean,
       default: false
     },
-    allowFriendRequests: {
-      type: Boolean,
-      default: true
-    }
   },
 
   // --- Préférences utilisateur ---

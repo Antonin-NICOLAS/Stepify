@@ -66,7 +66,7 @@ export const useRewards = (userId) => {
                 { withCredentials: true }
             );
             if (data.success) {
-                toast.success("La vitrine a bien été changée");
+                toast.success(data.message || "La vitrine a bien été changée");
                 fetchRewards();
                 fetchMyRewards();
                 fetchVitrineRewards();

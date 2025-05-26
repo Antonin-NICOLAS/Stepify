@@ -54,7 +54,7 @@ export const useChallenge = (userId) => {
             if (data.success) {
                 await fetchChallenges();
                 await fetchMyChallenges();
-                toast.success("Challenge créé avec succès");
+                toast.success(data.message || "Challenge créé avec succès");
             } else {
                 toast.error(data.error || "Erreur lors de la création du challenge");
                 return false;
@@ -93,7 +93,7 @@ export const useChallenge = (userId) => {
             );
 
             if (data.success) {
-                toast.success("Challenge modifié avec succès");
+                toast.success(data.message || "Challenge modifié avec succès");
                 await fetchChallenges();
                 await fetchMyChallenges();
                 return true;
@@ -116,7 +116,7 @@ export const useChallenge = (userId) => {
             );
 
             if (data.success) {
-                toast.success("Challenge rejoint avec succès");
+                toast.success(data.message || "Challenge rejoint avec succès");
                 await fetchChallenges();
                 await fetchMyChallenges();
                 return true;
@@ -138,7 +138,7 @@ export const useChallenge = (userId) => {
             );
 
             if (data.success) {
-                toast.success("Challenge quitté avec succès");
+                toast.success(data.message || "Challenge quitté avec succès");
                 await fetchChallenges();
                 await fetchMyChallenges();
                 return true;
@@ -160,7 +160,7 @@ export const useChallenge = (userId) => {
             );
 
             if (data.success) {
-                toast.success("Challenge supprimée avec succès");
+                toast.success(data.message || "Challenge supprimée avec succès");
                 await fetchChallenges();
                 await fetchMyChallenges();
                 return true;

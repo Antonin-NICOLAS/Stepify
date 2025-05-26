@@ -72,20 +72,19 @@ const updateLanguagePreference = async (req, res) => {
 
 const updatePrivacySettings = async (req, res) => {
     const { userId } = req.params;
-    const {
-        showActivityToFriends,
-        showStatsPublicly,
-        allowFriendRequests
-    } = req.body;
+    const { privacySettings } = req.body;
 
     if (checkAuthorization(req, res, userId)) return;
 
     try {
         const updates = {
             privacySettings: {
-                showActivityToFriends: !!showActivityToFriends,
-                showStatsPublicly: !!showStatsPublicly,
-                allowFriendRequests: !!allowFriendRequests
+                showActivityToFriends: privacySettings.showActivityToFriends,
+                showStatsPublicly: privacySettings.showStatsPublicly,
+                allowFriendRequests: privacySettings.allowFriendRequests,
+                allowChallengeInvites: privacySettings.allowChallengeInvites,
+                showLastLogin: privacySettings.showLastLogin
+
             }
         };
 

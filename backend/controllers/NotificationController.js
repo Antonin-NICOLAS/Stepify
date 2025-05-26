@@ -222,7 +222,7 @@ const getFriendsList = async (req, res) => {
   if (checkAuthorization(req, res, userId)) return;
 
   try {
-    const user = await UserModel.findById(userId).populate('friends.userId', 'username avatarUrl firstName lastName');
+    const user = await UserModel.findById(userId).populate('friends.userId', 'username avatarUrl firstName lastName status totalSteps totalXP level lastLoginAt');
     if (!user) {
       return res.status(404).json({ success: false, error: 'Utilisateur introuvable' });
     }

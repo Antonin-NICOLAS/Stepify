@@ -39,7 +39,7 @@ export const useSteps = (userId) => {
             );
 
             if (data.success) {
-                toast.success("Entrée ajoutée avec succès");
+                toast.success(data.message || "Entrée ajoutée");
                 await fetchStepEntries();
                 await getUserProfile(userId);
                 return true;
@@ -65,7 +65,7 @@ export const useSteps = (userId) => {
             );
 
             if (data.success) {
-                toast.success("Entrée modifiée avec succès");
+                toast.success(data.message || "Entrée modifiée");
                 await fetchStepEntries();
                 await getUserProfile(userId)
                 return true;
@@ -113,7 +113,7 @@ export const useSteps = (userId) => {
             );
 
             if (data.success) {
-                toast.success("Entrée supprimée avec succès");
+                toast.success(data.message || "Entrée supprimée");
                 await fetchStepEntries();
                 await getUserProfile(userId)
                 return true;
@@ -147,7 +147,7 @@ export const useSteps = (userId) => {
             );
 
             if (data.success) {
-                toast.success('Le fichier a bien été importé');
+                toast.success(data.message || 'Le fichier a bien été importé');
                 await fetchStepEntries();
                 await getUserProfile(userId)
                 return true;

@@ -3,34 +3,13 @@ import { Link } from "react-router-dom"
 // Context
 import { useRewards } from "../hooks/useRewards"
 import { useAuth } from "../context/AuthContext"
+// Loader
+import GlobalLoader from "../utils/GlobalLoader";
 // Icons & charts
 import {
-  Trophy,
-  Medal,
-  Star,
-  Filter,
-  Search,
-  ChevronDown,
-  ChevronUp,
-  Clock,
-  Award,
-  Target,
-  Zap,
-  Users,
-  Info,
-  X,
-  ArrowUp,
-  BarChart2,
-  Flame,
-  Gift,
-  Crown,
-  Bookmark,
-  BookmarkPlus,
-  Share2,
-  Sparkles,
-  BadgeInfo,
-  LucideAward,
-  ThumbsUp,
+  Trophy, Medal, Star, Filter, Search, ChevronDown, ChevronUp, Clock, Award, Target, Zap,
+  Users, Info, X, ArrowUp, BarChart2, Flame, Gift, Crown, Bookmark, BookmarkPlus, Share2,
+  Sparkles, BadgeInfo, LucideAward, ThumbsUp,
 } from "lucide-react"
 import { Pie, Bar } from "react-chartjs-2"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from "chart.js"
@@ -41,30 +20,16 @@ import "./Rewards.css"
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title)
 
 const Rewards = () => {
-  // Get the current user
   const { user } = useAuth()
-
-  // Use the real rewards hook
-  const { rewards, myRewards, vitrine, setInVitrine } = useRewards(user?._id)
-
-  // State for active tab
   const [activeTab, setActiveTab] = useState("dashboard")
-
-  // State for filters
   const [filters, setFilters] = useState({
     type: "all",
     tier: "all",
     status: "all",
     search: "",
   })
-
-  // State for sort
   const [sortBy, setSortBy] = useState("progress")
-
-  // State for show filters
   const [showFilters, setShowFilters] = useState(false)
-
-  // State for reward stats
   const [rewardStats, setRewardStats] = useState({
     total: 0,
     unlocked: 0,
@@ -74,19 +39,18 @@ const Rewards = () => {
     recentlyUnlocked: null,
     nextToUnlock: null,
   })
-
-  // State for reward detail modal
   const [selectedReward, setSelectedReward] = useState(null)
   const [showRewardModal, setShowRewardModal] = useState(false)
-  const RewardModalRef = useRef(null)
-
-  // State for animation
   const [animateReward, setAnimateReward] = useState(null)
-
-  // Refs for animations
   const confettiRef = useRef(null)
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Use the real rewards hook
+  const { rewards, myRewards, vitrine, setInVitrine } = useRewards(user?._id)
 
   // modal close handler
+  const RewardModalRef = useRef(null)
+
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       setShowRewardModal(false)
@@ -98,8 +62,8 @@ const Rewards = () => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         () => {
-      setShowRewardModal(false)
-      setSelectedReward(null)
+          setShowRewardModal(false)
+          setSelectedReward(null)
         }
       }
     }
@@ -346,11 +310,13 @@ const Rewards = () => {
 
   // Handle adding/removing reward from vitrine
   const handleToggleShowcase = async (reward) => {
+    setIsLoading(true);
     try {
       await setInVitrine(reward._id)
     } catch (error) {
       console.error("Error seting vitrine:", error);
     } finally {
+      setIsLoading(false);
     }
   }
 
@@ -1713,6 +1679,7 @@ const Rewards = () => {
 
   return (
     <div className="rewards-container">
+      {isLoading && <GlobalLoader />}
       <div className="rewards-header">
         <h1>Mes Récompenses</h1>
         <p>Découvrez et suivez votre progression à travers les différentes récompenses</p>
@@ -1836,8 +1803,8 @@ const Rewards = () => {
                     <>
                       <button
                         className={`showcase-action ${vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id))
-                            ? "active"
-                            : ""
+                          ? "active"
+                          : ""
                           }`}
                         onClick={() => handleToggleShowcase(selectedReward)}
                         disabled={

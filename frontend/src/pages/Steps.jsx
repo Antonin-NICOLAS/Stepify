@@ -11,7 +11,7 @@ import { useStepsStats } from "../hooks/useStepsStats"
 import { Line } from "react-chartjs-2"
 import { Chart, registerables } from "chart.js"
 //ICONS
-import { Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart, Footprints, Spline, Flame, Clock, ArrowLeft, ArrowRight } from "lucide-react"
+import { Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart, Footprints, Spline, Flame, Clock, ArrowLeft, ArrowRight, UploadCloud } from "lucide-react"
 //CSS
 import "./Steps.css"
 
@@ -228,6 +228,25 @@ const Steps = () => {
                 return "👣"
         }
     }
+
+    // Drag & drop
+    const fileInputRef = useRef();
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            setImportFile(file);
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current?.click();
+    };
 
     // CHART DATA
 
@@ -1043,15 +1062,27 @@ const Steps = () => {
                                         4. Uploadez le fichier CSV reçu ci-dessous
                                     </p>
                                 )}
-
-                                <input
-                                    type="file"
-                                    accept={importSource === 'Apple Health' ? '.xml' : '.csv'}
-                                    onChange={(e) => setImportFile(e.target.files[0])}
-                                />
+                                <div
+                                    className="dropzone"
+                                    onDrop={handleDrop}
+                                    onDragOver={handleDragOver}
+                                    onClick={triggerFileInput}
+                                >
+                                    <UploadCloud size={40} className="dropzone-icon" />
+                                    <p className="dropzone-text">
+                                        {importFile ? importFile.name : 'Déposez un fichier ici ou cliquez pour sélectionner'}
+                                    </p>
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        className="hidden-file-input"
+                                        accept={importSource === 'Apple Health' ? '.xml' : '.csv'}
+                                        onChange={(e) => setImportFile(e.target.files[0])}
+                                    />
+                                </div>
 
                                 <button
-                                    className="import-button"
+                                    className="action-button primary"
                                     onClick={handleFileImport}
                                     disabled={!importFile}
                                 >

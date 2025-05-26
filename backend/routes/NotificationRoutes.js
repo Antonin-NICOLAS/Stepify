@@ -44,7 +44,7 @@ router.post('/:userId/friend-request', verifyToken, sendFriendRequest);
 router.post('/:userId/:notificationId/accept-friend', verifyToken, acceptFriendRequest);
 router.post('/:userId/:notificationId/cancel-friend', verifyToken, cancelFriendRequest);
 router.post('/:userId/:notificationId/decline-friend', verifyToken, declineFriendRequest);
-router.post('/:userId/:notificationId/remove-friend', verifyToken, removeFriend);
+router.post('/:userId/:friendId/remove-friend', verifyToken, removeFriend);
 router.post('/:userId/:notificationId/respond', verifyToken, respondToChallengeInvite);
 
 router.delete('/:userId/:notificationId', verifyToken, deleteNotification);

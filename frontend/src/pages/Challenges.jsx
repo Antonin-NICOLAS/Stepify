@@ -48,14 +48,12 @@ const Challenges = () => {
     const {
         challenges,
         publicChallenges,
-        progress,
         createChallenge,
         fetchChallengeDetails,
         updateChallenge,
         joinChallenge,
         leaveChallenge,
         deleteChallenge,
-        updateChallengeProgress,
     } = useChallenge(user?._id);
 
     const { challengeNotifications, respondToChallengeInvite } = useNotifications(user?._id);
