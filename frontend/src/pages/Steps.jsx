@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import Select from 'react-select';
 //Hooks & context
@@ -75,8 +75,33 @@ const Steps = () => {
     );
 
     const stats = useStepsStats(filteredEntries);
+    const EntryModalRef = useRef(null);
+    const ImportModalRef = useRef(null)
+
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            setShowModal(false)
+            setShowImportModal(false)
+            setCurrentEntry(null)
+        }
+    }
 
     // UseEffect
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                setShowModal(false)
+                setShowImportModal(false)
+                setCurrentEntry(null)
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyDown)
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [setShowModal, setShowImportModal])
 
     useEffect(() => {
         if (currentEntry?.mode) {
@@ -836,7 +861,7 @@ const Steps = () => {
 
             {/* Add/Edit Entry Modal */}
             {showModal && (
-                <div className="modal-overlay">
+                <div className="modal-overlay" ref={EntryModalRef} onClick={handleOverlayClick}>
                     <div className="modal">
                         <div className="modal-header">
                             <h3>{currentEntry ? "Modifier une entrée" : "Ajouter une entrée"}</h3>
@@ -851,25 +876,25 @@ const Steps = () => {
                             </button>
                         </div>
                         <form className="entry-form" onSubmit={handleSubmit}>
-                        {currentEntry && (
-                            <div className="hour-navigation">
-                                <button type="button"
-                                    onClick={() => handleHourNavigation(-1)}
-                                    disabled={selectedHourIndex === 0}
-                                >
-                                    <ArrowLeft size={25} />
-                                </button>
-                                <span>
-                                    Heure: {currentEntry.hourlyData[selectedHourIndex].hour.toString().padStart(2, '0')}:00
-                                </span>
-                                <button type="button"
-                                    onClick={() => handleHourNavigation(1)}
-                                    disabled={selectedHourIndex === currentEntry.hourlyData.length - 1}
-                                >
-                                    <ArrowRight size={25} />
-                                </button>
-                            </div>
-                        )}
+                            {currentEntry && (
+                                <div className="hour-navigation">
+                                    <button type="button"
+                                        onClick={() => handleHourNavigation(-1)}
+                                        disabled={selectedHourIndex === 0}
+                                    >
+                                        <ArrowLeft size={25} />
+                                    </button>
+                                    <span>
+                                        Heure: {currentEntry.hourlyData[selectedHourIndex].hour.toString().padStart(2, '0')}:00
+                                    </span>
+                                    <button type="button"
+                                        onClick={() => handleHourNavigation(1)}
+                                        disabled={selectedHourIndex === currentEntry.hourlyData.length - 1}
+                                    >
+                                        <ArrowRight size={25} />
+                                    </button>
+                                </div>
+                            )}
                             <div className="form-group">
                                 <label htmlFor="date">Date</label>
                                 <input
@@ -992,7 +1017,7 @@ const Steps = () => {
             {/* Data import Modal */}
             {
                 showImportModal && (
-                    <div className="modal-overlay">
+                    <div className="modal-overlay" ref={ImportModalRef} onClick={handleOverlayClick}>
                         <div className="modal">
                             <div className="modal-header">
                                 <h3>Importer depuis {importSource}</h3>

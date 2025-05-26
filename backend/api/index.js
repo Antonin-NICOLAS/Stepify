@@ -3,7 +3,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 //cron
-const { scheduleStatusUpdates, deleteExpiredNotifications, scheduleDailyRewardUpdates } = require('./ScheduledTasks');
+const { scheduleStatusUpdates, deleteExpiredNotifications, scheduleDailyRewardUpdates, deleteLonelyChallenges } = require('./ScheduledTasks');
 //routes
 const AuthRoutes = require('../routes/AuthRoutes')
 const UserRoutes = require('../routes/AccountRoutes')
@@ -67,4 +67,5 @@ app.listen(port, function () {
     scheduleStatusUpdates();
     deleteExpiredNotifications();
     scheduleDailyRewardUpdates();
+    deleteLonelyChallenges();
 });

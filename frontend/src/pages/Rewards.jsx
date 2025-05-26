@@ -78,12 +78,37 @@ const Rewards = () => {
   // State for reward detail modal
   const [selectedReward, setSelectedReward] = useState(null)
   const [showRewardModal, setShowRewardModal] = useState(false)
+  const RewardModalRef = useRef(null)
 
   // State for animation
   const [animateReward, setAnimateReward] = useState(null)
 
   // Refs for animations
   const confettiRef = useRef(null)
+
+  // modal close handler
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      setShowRewardModal(false)
+      setSelectedReward(null)
+    }
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        () => {
+      setShowRewardModal(false)
+      setSelectedReward(null)
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [setShowRewardModal, setSelectedReward]);
 
   // Process rewards data when it changes
   useEffect(() => {
@@ -320,7 +345,7 @@ const Rewards = () => {
   }
 
   // Handle adding/removing reward from vitrine
-  const handleToggleShowcase = async(reward) => {
+  const handleToggleShowcase = async (reward) => {
     try {
       await setInVitrine(reward._id)
     } catch (error) {
@@ -1003,7 +1028,7 @@ const Rewards = () => {
                       filteredRewards()
                         .filter((r) => !r.unlocked)
                         .reduce((sum, r) => sum + r.progress, 0) /
-                        Math.max(1, filteredRewards().filter((r) => !r.unlocked).length),
+                      Math.max(1, filteredRewards().filter((r) => !r.unlocked).length),
                     )}
                     %
                   </span>
@@ -1716,7 +1741,7 @@ const Rewards = () => {
 
       {/* Reward Detail Modal */}
       {showRewardModal && selectedReward && (
-        <div className="modal-overlay">
+        <div className="modal-overlay" ref={RewardModalRef} onClick={handleOverlayClick}>
           <div className="modal reward-modal">
             <div className="modal-header">
               <h3>Détails de la récompense</h3>
@@ -1800,8 +1825,8 @@ const Rewards = () => {
                       {selectedReward.progress > 0
                         ? `Continuez vos efforts ! Vous êtes sur la bonne voie pour débloquer cette récompense.`
                         : `Commencez à accumuler des ${getCriteriaLabel(
-                            selectedReward.criteria,
-                          ).toLowerCase()} pour progresser vers cette récompense.`}
+                          selectedReward.criteria,
+                        ).toLowerCase()} pour progresser vers cette récompense.`}
                     </p>
                   </div>
                 )}
@@ -1810,11 +1835,10 @@ const Rewards = () => {
                   {selectedReward.unlocked ? (
                     <>
                       <button
-                        className={`showcase-action ${
-                          vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id))
+                        className={`showcase-action ${vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id))
                             ? "active"
                             : ""
-                        }`}
+                          }`}
                         onClick={() => handleToggleShowcase(selectedReward)}
                         disabled={
                           vitrine.length >= 3 &&

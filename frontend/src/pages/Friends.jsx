@@ -1,7 +1,6 @@
 import { useNotifications } from "../hooks/useNotifications";
 import { useAuth } from "../context/AuthContext";
 import { Mail, AlertTriangle, Users, Check, X } from "lucide-react"
-import { useEffect } from "react";
 
 const Friends = () => {
     const { user } = useAuth();

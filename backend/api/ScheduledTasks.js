@@ -61,9 +61,9 @@ const deleteExpiredNotifications = () => {
   });
 };
 
-// Update rewards for all users daily at 3 AM
+// Update rewards for all users - Every day at 1:02 AM
 const scheduleDailyRewardUpdates = () => {
-  cron.schedule('0 3 * * *', async () => {
+  cron.schedule('0 1 * * *', async () => {
     try {
       console.log('Starting daily reward updates for all users...');
       
@@ -101,8 +101,45 @@ const scheduleDailyRewardUpdates = () => {
   });
 };
 
+// Delete Challenges with only creators - Every day at 2 AM
+const deleteLonelyChallenges = () => {
+  cron.schedule('0 2 * * *', async () => {
+    try {
+      console.log('Checking for lonely challenges to delete...');
+      
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+      const challengesToDelete = await Challenge.find({
+        createdAt: { $lte: oneWeekAgo },
+        $expr: { 
+          $and: [
+            { $eq: [{ $size: "$participants" }, 1] },
+            { $eq: ["$participants.0.user", "$creator"] }
+          ]
+        }
+      });
+
+      const deletedCount = await Challenge.deleteMany({
+        _id: { $in: challengesToDelete.map(c => c._id) }
+      });
+
+      console.log(`Deleted ${deletedCount.deletedCount} lonely challenges`);
+      
+      // Supprimer les notifications associées
+      await Notification.deleteMany({
+        challenge: { $in: challengesToDelete.map(c => c._id) }
+      });
+
+    } catch (error) {
+      console.error('Error deleting lonely challenges:', error);
+    }
+  });
+};
+
 module.exports = { 
   scheduleStatusUpdates, 
   deleteExpiredNotifications,
-  scheduleDailyRewardUpdates
+  scheduleDailyRewardUpdates,
+  deleteLonelyChallenges
 };

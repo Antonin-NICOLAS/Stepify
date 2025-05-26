@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import Select from 'react-select';
 // Context
@@ -72,6 +72,35 @@ const Challenges = () => {
         filteredChallenges,
         filteredPublicChallenges
     } = useChallengesFilters(challenges, publicChallenges);
+
+    //modal close handler
+    const JoinModalRef = useRef(null)
+    const CreateModalRef = useRef(null)
+
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            setShowJoinModal(false)
+            setShowCreateModal(false)
+            setAccessCode("")
+        }
+    }
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                () => {
+                    setShowJoinModal(false)
+                    setShowCreateModal(false)
+                    setAccessCode("")
+                }
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyDown)
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [setShowJoinModal, setShowCreateModal]);
 
     // Calculate progress
     const computeGlobalProgress = (participants = []) => {
@@ -993,7 +1022,7 @@ const Challenges = () => {
 
             {/* Join Private Challenge Modal */}
             {showJoinModal && (
-                <div className="modal-overlay">
+                <div className="modal-overlay" onClick={handleOverlayClick} ref={JoinModalRef}>
                     <div className="modal join-challenge-modal">
                         <div className="modal-header">
                             <h3>Rejoindre un défi privé</h3>
@@ -1040,7 +1069,7 @@ const Challenges = () => {
 
             {/* Create Challenge Modal */}
             {showCreateModal && (
-                <div className="modal-overlay">
+                <div className="modal-overlay" onClick={handleOverlayClick} ref={CreateModalRef}>
                     <div className="modal create-challenge-modal">
                         <div className="modal-header">
                             <h3>Créer un nouveau défi</h3>
