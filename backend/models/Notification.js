@@ -18,6 +18,7 @@ const notificationSchema = new Schema({
       'challenge_invite',
       'challenge_accept',
       'challenge_decline',
+      'challenge_complete',
       'friend_request',
       'friend_accept',
       'friend_decline',

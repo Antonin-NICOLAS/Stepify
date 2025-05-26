@@ -108,10 +108,10 @@ export const useChallenge = (userId) => {
         }
     };
 
-    const joinChallenge = async (accessCode) => {
+    const joinChallenge = async (accessCode, challengeId) => {
         try {
             const { data } = await axios.put(`${API_CHALLENGE}/${userId}/join`,
-                { accessCode },
+                { accessCode, challengeId },
                 { withCredentials: true }
             );
 

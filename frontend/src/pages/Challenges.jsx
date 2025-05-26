@@ -222,7 +222,7 @@ const Challenges = () => {
     const handleJoinChallenge = async (challengeId) => {
         setIsLoading(true);
         try {
-            await joinChallenge(challengeId);
+            await joinChallenge(null, challengeId);
         } catch (error) {
             console.error("Error joining challenge:", error);
         } finally {
@@ -267,7 +267,7 @@ const Challenges = () => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            await joinChallenge(accessCode);
+            await joinChallenge(accessCode, null);
             setAccessCode("");
             setShowJoinModal(false);
         } catch (error) {

@@ -1,6 +1,8 @@
 const Challenge = require('../models/Challenge');
 const Notification = require('../models/Notification');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization');
+const { calculateUserProgress } = require('../utils/ChallengeHelpers')
+
 
 // Helper function to generate a random 6-character access code (A-Z, 0-9)
 const generateAccessCode = () => {
@@ -38,21 +40,26 @@ const determineChallengeStatus = (startDate, endDate) => {
   return 'active';
 };
 
-/** Get all challenges */
+/** Get public challenges */
 const getPublicChallenges = async (req, res) => {
-  const { userId } = req.params;
-
-  if (checkAuthorization(req, res, userId)) return;
+  const { limit = 10, skip = 0 } = req.query;
 
   try {
     const challenges = await Challenge.find({ isPrivate: false })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip))
       .populate('creator', 'username avatarUrl firstName lastName')
       .populate('participants.user', 'username avatarUrl firstName lastName')
       .sort({ createdAt: -1 });
 
+    const total = await Challenge.countDocuments({ isPrivate: false });
+
     return res.status(200).json({
       success: true,
-      challenges: challenges
+      challenges,
+      total,
+      limit: parseInt(limit),
+      skip: parseInt(skip)
     });
   } catch (error) {
     console.error('Error fetching challenges:', error);
@@ -66,6 +73,7 @@ const getPublicChallenges = async (req, res) => {
 /** Get user's challenges (created or participating in) */
 const getMyChallenges = async (req, res) => {
   const { userId } = req.params;
+  const { limit = 10, skip = 0 } = req.query;
 
   if (checkAuthorization(req, res, userId)) return;
 
@@ -76,6 +84,8 @@ const getMyChallenges = async (req, res) => {
         { 'participants.user': userId }
       ]
     })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip))
       .populate('creator', 'username avatarUrl')
       .populate('participants.user', 'username avatarUrl')
       .sort({ createdAt: -1 });
@@ -115,17 +125,17 @@ const createChallenge = async (req, res) => {
   if (checkAuthorization(req, res, userId)) return;
 
   try {
-    const { 
-      name, 
+    const {
+      name,
       description,
-      startDate, 
+      startDate,
       endDate,
-      activityType, 
+      activityType,
       goal,
       time,
-      xpReward, 
+      xpReward,
       participants,
-      isPrivate 
+      isPrivate
     } = req.body;
 
     // Validate required fields
@@ -211,38 +221,32 @@ const createChallenge = async (req, res) => {
 /** Update a challenge */
 const updateChallenge = async (req, res) => {
   const { userId, challengeId } = req.params;
+  const updates = req.body;
 
   if (checkAuthorization(req, res, userId)) return;
 
   try {
     const challenge = await Challenge.findById(challengeId);
     if (!challenge) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Challenge not found' 
+      return res.status(404).json({
+        success: false,
+        error: 'Challenge not found'
       });
     }
 
     // Check if user is the creator
     if (challenge.creator.toString() !== userId) {
-      return res.status(403).json({ 
-        success: false, 
-        error: 'Only the challenge creator can modify it' 
+      return res.status(403).json({
+        success: false,
+        error: 'Only the challenge creator can modify it'
       });
     }
-
-    // Prevent modification of certain fields
-    const updates = { ...req.body };
-    delete updates.creator;
-    delete updates.participants;
-    delete updates.accessCode;
-    delete updates.createdAt;
 
     // Validate dates if they're being updated
     if (updates.startDate || updates.endDate) {
       const startDate = updates.startDate || challenge.startDate;
       const endDate = updates.endDate || challenge.endDate;
-      
+
       const dateValidation = validateChallengeDates(startDate, endDate);
       if (!dateValidation.valid) {
         return res.status(400).json({
@@ -260,15 +264,15 @@ const updateChallenge = async (req, res) => {
     // Update status based on dates
     if (updates.startDate || updates.endDate) {
       challenge.status = determineChallengeStatus(
-        challenge.startDate, 
+        challenge.startDate,
         challenge.endDate
       );
     }
 
     await challenge.save();
-    return res.status(200).json({ 
-      success: true, 
-      challenge: challenge 
+    return res.status(200).json({
+      success: true,
+      challenge: challenge
     });
   } catch (error) {
     console.error('Error updating challenge:', error);
@@ -282,16 +286,29 @@ const updateChallenge = async (req, res) => {
 /** Join a challenge (private or public) */
 const joinChallenge = async (req, res) => {
   const { userId } = req.params;
-  const { accessCode } = req.body;
+  const { accessCode, challengeId } = req.body;
 
   if (checkAuthorization(req, res, userId)) return;
 
   try {
-    const challenge = await Challenge.findOne({ accessCode, isPrivate: true });
+    let challenge;
+    if (accessCode) {
+      challenge = await Challenge.findOne({ accessCode, isPrivate: true });
+    } else {
+      challenge = await Challenge.findById(challengeId);
+    }
+
     if (!challenge) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Challenge not found' 
+      return res.status(404).json({
+        success: false,
+        error: 'Challenge not found'
+      });
+    }
+
+    if (challenge.isPrivate && !accessCode) {
+      return res.status(403).json({
+        success: false,
+        error: 'Access code required for private challenges'
       });
     }
 
@@ -300,9 +317,9 @@ const joinChallenge = async (req, res) => {
       p => p.user.toString() === userId
     );
     if (existingParticipant) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'You are already participating in this challenge' 
+      return res.status(400).json({
+        success: false,
+        error: 'You are already participating in this challenge'
       });
     }
 
@@ -319,16 +336,16 @@ const joinChallenge = async (req, res) => {
     });
 
     await challenge.save();
-    
-    return res.status(200).json({ 
-      success: true, 
-      challenge: challenge 
+
+    return res.status(200).json({
+      success: true,
+      challenge: challenge
     });
   } catch (error) {
     console.error('Error joining challenge:', error);
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Error joining challenge' 
+    return res.status(500).json({
+      success: false,
+      error: 'Error joining challenge'
     });
   }
 };
@@ -342,9 +359,9 @@ const leaveChallenge = async (req, res) => {
   try {
     const challenge = await Challenge.findById(challengeId);
     if (!challenge) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Challenge not found' 
+      return res.status(404).json({
+        success: false,
+        error: 'Challenge not found'
       });
     }
 
@@ -353,90 +370,32 @@ const leaveChallenge = async (req, res) => {
       p => p.user.toString() === userId
     );
     if (participantIndex === -1) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'You are not participating in this challenge' 
+      return res.status(400).json({
+        success: false,
+        error: 'You are not participating in this challenge'
       });
     }
 
     // Remove participant (creator cannot leave)
     if (challenge.creator.toString() === userId) {
-      return res.status(403).json({ 
-        success: false, 
-        error: 'Challenge creator cannot leave. Please delete the challenge instead.' 
+      return res.status(403).json({
+        success: false,
+        error: 'Challenge creator cannot leave. Please delete the challenge instead.'
       });
     }
 
     challenge.participants.splice(participantIndex, 1);
     await challenge.save();
-    
-    return res.status(200).json({ 
-      success: true, 
-      challenge: challenge 
+
+    return res.status(200).json({
+      success: true,
+      challenge: challenge
     });
   } catch (error) {
     console.error('Error leaving challenge:', error);
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Error leaving challenge' 
-    });
-  }
-};
-
-/** Update challenge progress */
-const updateProgress = async (req, res) => {
-  const { userId, challengeId } = req.params;
-  const { goal, time } = req.body;
-
-  if (checkAuthorization(req, res, userId)) return;
-
-  try {
-    const challenge = await Challenge.findById(challengeId);
-    if (!challenge) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Challenge not found' 
-      });
-    }
-
-    // Find participant
-    const participant = challenge.participants.find(
-      p => p.user.toString() === userId
-    );
-    if (!participant) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'You are not participating in this challenge' 
-      });
-    }
-
-    // Update metrics
-    if (goal !== undefined) participant.goal = goal;
-    if (time !== undefined) participant.time = time;
-
-    // Calculate progress based on activity type
-    let progressValue;
-    if (challenge.activityType.includes('time')) {
-      progressValue = (participant.time / challenge.goal) * 100;
-    } else {
-      progressValue = (participant.goal / challenge.goal) * 100;
-    }
-
-    participant.progress = Math.min(progressValue, 100);
-    participant.completed = participant.progress >= 100;
-    participant.lastUpdated = new Date();
-
-    await challenge.save();
-    
-    return res.status(200).json({ 
-      success: true, 
-      user: participant 
-    });
-  } catch (error) {
-    console.error('Error updating progress:', error);
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Error updating progress' 
+    return res.status(500).json({
+      success: false,
+      error: 'Error leaving challenge'
     });
   }
 };
@@ -450,27 +409,27 @@ const deleteChallenge = async (req, res) => {
   try {
     const challenge = await Challenge.findById(challengeId);
     if (!challenge) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Challenge not found' 
+      return res.status(404).json({
+        success: false,
+        error: 'Challenge not found'
       });
     }
 
     if (challenge.creator.toString() !== userId) {
-      return res.status(403).json({ 
-        success: false, 
-        error: 'Only the challenge creator can delete it' 
+      return res.status(403).json({
+        success: false,
+        error: 'Only the challenge creator can delete it'
       });
     }
 
     await Challenge.deleteOne({ _id: challengeId });
-    
+
     // Delete related notifications
     await Notification.deleteMany({ challenge: challengeId });
-    
-    return res.status(200).json({ 
-      success: true, 
-      data: {} 
+
+    return res.status(200).json({
+      success: true,
+      data: {}
     });
   } catch (error) {
     console.error('Error deleting challenge:', error);
@@ -505,15 +464,15 @@ const regenerateAccessCode = async (req, res) => {
     challenge.accessCode = newAccessCode;
     await challenge.save();
 
-    return res.status(200).json({ 
-      success: true, 
-      code: { accessCode: newAccessCode } 
+    return res.status(200).json({
+      success: true,
+      code: newAccessCode
     });
   } catch (error) {
     console.error('Error regenerating access code:', error);
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Error regenerating access code' 
+    return res.status(500).json({
+      success: false,
+      error: 'Error regenerating access code'
     });
   }
 };
@@ -528,9 +487,9 @@ const getChallengeDetails = async (req, res) => {
       .populate('participants.user', 'username avatarUrl firstName lastName');
 
     if (!challenge) {
-      return res.status(404).json({ 
-        success: false, 
-        error: 'Challenge not found' 
+      return res.status(404).json({
+        success: false,
+        error: 'Challenge not found'
       });
     }
 
@@ -540,10 +499,71 @@ const getChallengeDetails = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching challenge:', error);
-    return res.status(500).json({ 
-      success: false, 
-      error: 'Error retrieving challenge' 
+    return res.status(500).json({
+      success: false,
+      error: 'Error retrieving challenge'
     });
+  }
+};
+
+// update challenge progress
+const updateChallengeProgress = async (userId) => {
+  try {
+    const now = new Date();
+    
+    const userChallenges = await Challenge.find({
+      'participants.user': userId,
+      status: 'active',
+      startDate: { $lte: now },
+      $or: [
+        { endDate: null },
+        { endDate: { $gte: now } }
+      ]
+    }).populate('participants.user');
+    
+    try {
+      for (const challenge of userChallenges) {
+        const participant = challenge.participants.find(p => p.user._id.toString() === userId);
+        if (!participant) continue;
+
+        const progressData = await calculateUserProgress(userId, challenge);
+        
+        // Maj seulement si nécessaire
+        if (participant.progress !== progressData.progress || 
+            participant.completed !== progressData.completed) {
+            
+          participant.progress = progressData.progress;
+          participant.completed = progressData.completed;
+          participant.lastUpdated = now;
+
+          if (progressData.completed && !participant.xpEarned) {
+            participant.xpEarned = challenge.xpReward;
+            await User.findByIdAndUpdate(
+              userId, 
+              { $inc: { totalXP: challenge.xpReward } }
+            );
+            
+            await Notification.create({
+              recipient: userId,
+              type: 'challenge_complete',
+              challenge: challenge._id,
+              content: {
+                en: `You completed "${challenge.name.en}"! +${challenge.xpReward}XP`,
+                fr: `Défi "${challenge.name.fr}" réussi ! +${challenge.xpReward}XP`
+              },
+              status: 'unread'
+            });
+          }
+
+          await challenge.save();
+        }
+      }
+    
+    } catch (error) {
+      throw error;
+    }
+  } catch (error) {
+    console.error('Challenge progress update error:', error);
   }
 };
 
@@ -552,9 +572,9 @@ module.exports = {
   getMyChallenges,
   createChallenge,
   updateChallenge,
+  updateChallengeProgress,
   joinChallenge,
   leaveChallenge,
-  updateProgress,
   deleteChallenge,
   regenerateAccessCode,
   getChallengeDetails

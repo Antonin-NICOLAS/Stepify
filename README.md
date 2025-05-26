@@ -1,7 +1,7 @@
 # Stepify
 Summer Contest
 ## Route
-- re-export emails (with good links) (+ create a "new connection email")(add 2h limit for pwd reset)
+- mail réinitialisation de mot de passe : préciser que lien disponible qu'une heure
 - convertir les chart acutels du dashboard en chartjs (au lieu de HighCharts)
 - universaliser tous les icones
 - ajouter une barre de progression lors de l'import d'un fichier de data
@@ -9,3 +9,4 @@ Summer Contest
 - fonction calcul de rank et temps passé à ce rank pour potentiellement mise en pllace de reward : exemple : tu as passé un jour à la 1ere place !
 - supprimer challenge après 7 jours si 1 seul participant
 - add frontend password verif — — - - -
+- ajouter une fonctionnalité nouveau record

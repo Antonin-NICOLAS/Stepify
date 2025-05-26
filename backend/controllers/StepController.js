@@ -1,7 +1,8 @@
 const StepEntry = require('../models/StepEntry');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 const { parseAppleHealthData, parseSamsungHealthData } = require('../utils/ParseHealthData')
-const { updateUserStatsAfterImport, updateUserStats } = require('../utils/StepUtils');
+const { updateUserStatsAfterImport, updateUserStats } = require('../utils/StepHelpers');
+const { updateChallengeProgress } = require('./ChallengeController');
 const { computeXpForEntry } = require('../utils/CalculateXP');
 const { updateUserRewards } = require('../controllers/RewardController');
 const csv = require('csv-parser');
@@ -159,6 +160,7 @@ const createStepEntry = async (req, res) => {
 
       await updateUserStats(userId);
       await updateUserRewards(userId);
+      await updateChallengeProgress(userId);
       return res.status(201).json({
         success: true,
         entry: newEntry
@@ -203,6 +205,7 @@ const updateStepEntry = async (req, res) => {
     await entry.save();
     await updateUserStats(userId);
     await updateUserRewards(userId);
+    await updateChallengeProgress(userId);
 
     res.status(200).json({
       success: true,
@@ -270,6 +273,7 @@ const deleteStepEntry = async (req, res) => {
     }
     await updateUserStats(userId);
     await updateUserRewards(userId);
+    await updateChallengeProgress(userId);
 
     res.status(200).json({
       success: true,
@@ -334,6 +338,7 @@ const importHealthData = async (req, res) => {
     await StepEntry.insertMany(filteredEntries);
     await updateUserStatsAfterImport(userId, filteredEntries);
     await updateUserRewards(userId);
+    await updateChallengeProgress(userId);
 
     res.json({
       success: true,
