@@ -3,7 +3,6 @@ import { Link } from "react-router-dom"
 import Select from 'react-select';
 // Context
 import { useAuth } from "../context/AuthContext";
-import { useUser } from "../context/UserContext";
 import { useChallenge } from "../hooks/useChallenges";
 import { useNotifications } from "../hooks/useNotifications";
 import { useChallengesFilters } from "../hooks/useChallengesFilters";
@@ -24,7 +23,6 @@ Chart.register(...registerables)
 
 const Challenges = () => {
     const { user } = useAuth();
-    const { getUserProfile } = useUser();
     const [activeTab, setActiveTab] = useState("my-challenges");
     const [showFilters, setShowFilters] = useState(false);
     const [selectedChallenge, setSelectedChallenge] = useState(null);
@@ -46,12 +44,6 @@ const Challenges = () => {
         isPrivate: false,
         participants: []
     });
-
-    useEffect(() => {
-        if (user) {
-            getUserProfile(user._id);
-        }
-    }, []);
 
     const {
         challenges,

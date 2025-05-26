@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useNotifications } from "../../hooks/useNotifications"
 // loader
 import GlobalLoader from "../../utils/GlobalLoader"
@@ -10,6 +10,26 @@ import { Line, Pie } from "react-chartjs-2"
 const ChallengeDetailModal = ({ challenge, onClose, onDelete, onLeave, user }) => {
     const { sendFriendRequest } = useNotifications(user?._id)
     const [isLoading, setIsLoading] = useState(false)
+    const modalRef = useRef(null)
+
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            onClose()
+        }
+    }
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                onClose()
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyDown)
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [onClose])
 
     const computeGlobalProgress = (participants = []) => {
         if (!Array.isArray(participants) || !participants.length) return 0;
@@ -216,7 +236,7 @@ const ChallengeDetailModal = ({ challenge, onClose, onDelete, onLeave, user }) =
     }
 
     return (
-        <div className="modal-overlay">
+        <div className="modal-overlay" onClick={handleOverlayClick} ref={modalRef}>
             {isLoading && <GlobalLoader />}
             <div className="modal challenge-detail-modal">
                 <div className="modal-header">
@@ -409,11 +429,11 @@ const ChallengeDetailModal = ({ challenge, onClose, onDelete, onLeave, user }) =
                                                         className="progress-bar"
                                                         style={{ width: `${participant.progress}%` }}
                                                     ></div>
-                                                    <span className="progress-text">{participant.user.progress}%</span>
+                                                    <span className="progress-text">{participant.progress}%</span>
                                                 </div>
                                             </div>
 
-                                            {participant.user._id !== user?._id && (
+                                            {participant.user._id !== user?._id && user.friends.some(f => f.userId === user?._id) && (
                                                 <div className="participant-actions">
                                                     <button
                                                         className="action-icon-button"

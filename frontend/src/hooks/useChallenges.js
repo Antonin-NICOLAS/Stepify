@@ -68,7 +68,7 @@ export const useChallenge = (userId) => {
 
     const fetchChallengeDetails = async (challengeId) => {
         try {
-            const { data } = await axios.get(`${API_CHALLENGE}/${userId}/${challengeId}`,
+            const { data } = await axios.get(`${API_CHALLENGE}/${challengeId}`,
                 { withCredentials: true }
             );
 
@@ -175,29 +175,6 @@ export const useChallenge = (userId) => {
         }
     };
 
-    const updateChallengeProgress = async (challengeId, progressData) => {
-        try {
-            const { data } = await axios.post(`${API_CHALLENGE}/${userId}/${challengeId}/progress`,
-                progressData,
-                {
-                    withCredentials: true,
-                }
-            );
-
-            if (data.success) {
-                fetchMyChallenges();
-                return true;
-            } else {
-                toast.error(data.error || 'Erreur lors de la mise à jour du progrès');
-                return false;
-            }
-        } catch (error) {
-            console.error('Progress update error:', error);
-            toast.error(error.response?.data?.error || 'Erreur lors de la mise à jour du progrès');
-            return false;
-        }
-    };
-
     useEffect(() => {
         if (userId) {
             fetchChallenges();
@@ -217,6 +194,5 @@ export const useChallenge = (userId) => {
         joinChallenge,
         leaveChallenge,
         deleteChallenge,
-        updateChallengeProgress,
     };
 };

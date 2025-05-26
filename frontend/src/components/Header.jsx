@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 //context
 import { useTheme } from '../context/ThemeContext';
@@ -31,6 +31,8 @@ function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const sidebarRef = useRef(null);
 
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -42,6 +44,42 @@ function Header() {
       setSidebarOpen(false);
     });
   };
+
+  // Vérifie si la vue est mobile (< 1150px)
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobileView(window.innerWidth < 1150);
+    };
+
+    // Vérifie au chargement
+    checkScreenSize();
+
+    // Écoute les changements de taille
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
+
+  // Gestion du clic en dehors de la sidebar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Si on est en vue mobile ET la sidebar est ouverte ET le clic n'est pas dans la sidebar
+      if (isMobileView && sidebarOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setSidebarOpen(false);
+      }
+    };
+
+    // Ajoute l'écouteur seulement en vue mobile
+    if (isMobileView) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileView, sidebarOpen]);
 
   return (
     <>
@@ -60,7 +98,11 @@ function Header() {
         </div>
       </header>
 
-      <nav className={`sidebar ${sidebarOpen ? "hide-sidebar" : ""}`} id="sidebar">
+      <nav 
+        className={`sidebar ${sidebarOpen ? "hide-sidebar" : ""}`} 
+        id="sidebar"
+        ref={sidebarRef}
+      >
         <div className="sidebar__container">
           <div className="sidebar__user">
             <div className={user ? "sidebar__img user" : "sidebar__img"}>
@@ -118,7 +160,7 @@ function Header() {
             )}
           </div>
         </div>
-      </nav >
+      </nav>
     </>
   );
 }

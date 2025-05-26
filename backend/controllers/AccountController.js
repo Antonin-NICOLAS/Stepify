@@ -274,7 +274,7 @@ const getUserProfile = async (req, res) => {
         }
 
         const isOwner = req.userId === userId;
-        const isFriend = user.friends.some(f => f.userId._id.toString() === req.userId);
+        const isFriend = user.friends.some(f => f.userId === req.userId);
         const todayProgress = await user.calculateTodayProgress();
 
         const userResponse = user.toJSON();
@@ -297,6 +297,7 @@ const getUserProfile = async (req, res) => {
             user: { ...userResponse, todayProgress }
         });
     } catch (error) {
+        console.error("Error fetching user profile:", error);
         res.status(500).json({
             success: false,
             error: "Erreur lors de la récupération du profil"
