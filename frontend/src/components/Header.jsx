@@ -14,7 +14,7 @@ import {
   ChevronsLeft,
   AlignStartVertical,
   Menu,
-  CircleGauge,
+  Dumbbell,
   Moon,
   Sun,
   Settings,
@@ -130,7 +130,7 @@ function Header() {
               <div className="sidebar__list">
                 <NavLink to="/dashboard" className="sidebar__link"><LayoutDashboard /><span>Dashboard</span></NavLink>
                 <NavLink to="/steps" className="sidebar__link"><Footprints /><span>Mes pas</span></NavLink>
-                <NavLink to="/challenges" className="sidebar__link"><CircleGauge /><span>Défis</span></NavLink>
+                <NavLink to="/challenges" className="sidebar__link"><Dumbbell /><span>Défis</span></NavLink>
                 <NavLink to="/rewards" className="sidebar__link"><Award /><span>Récompenses</span></NavLink>
                 <NavLink to="/leaderboard" className="sidebar__link"><AlignStartVertical /><span>Classement</span></NavLink>
                 <NavLink to="/friends" className="sidebar__link"><Users /><span>Amis</span></NavLink>

@@ -130,26 +130,29 @@ export const useSteps = (userId) => {
         }
     };
 
-    const importSteps = async (file) => {
+    const importSteps = async (file, onProgress) => {
         if (!file) return false;
 
         const formData = new FormData();
         formData.append('exported-data', file);
-
-        setIsLoading(true)
+        setIsLoading(true);
         try {
             const { data } = await axios.post(`${API_STEP}/${userId}/import`,
-                formData, 
+                formData,
                 {
                     withCredentials: true,
-                    headers: { 'Content-Type': 'multipart/form-data' }
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    onUploadProgress: (progressEvent) => {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        if (onProgress) onProgress(percentCompleted);
+                    }
                 }
             );
 
             if (data.success) {
                 toast.success(data.message || 'Le fichier a bien été importé');
                 await fetchStepEntries();
-                await getUserProfile(userId)
+                await getUserProfile(userId);
                 return true;
             } else {
                 toast.error('Erreur lors de l\'importation');
@@ -160,7 +163,7 @@ export const useSteps = (userId) => {
             toast.error(error.response?.data?.error || 'Erreur lors de l\'importation');
             return false;
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     };
 

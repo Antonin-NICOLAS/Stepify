@@ -11,7 +11,8 @@ import { useStepsStats } from "../hooks/useStepsStats"
 import { Line } from "react-chartjs-2"
 import { Chart, registerables } from "chart.js"
 //ICONS
-import { Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart, Footprints, Spline, Flame, Clock, ArrowLeft, ArrowRight, UploadCloud } from "lucide-react"
+import { Globe, Icon, Watch, Bike, Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart, Footprints, Spline, Flame, Clock, ArrowLeft, ArrowRight, UploadCloud, Zap, Check, Fingerprint, GitCompare } from "lucide-react"
+import { sneaker } from "@lucide/lab";
 //CSS
 import "./Steps.css"
 
@@ -52,6 +53,7 @@ const Steps = () => {
     const [showImportModal, setShowImportModal] = useState(false);
     const [importSource, setImportSource] = useState(null);
     const [importFile, setImportFile] = useState(null);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
     // State for chart
     const [chartMetric, setChartMetric] = useState("totalSteps");
@@ -133,15 +135,15 @@ const Steps = () => {
     ];
 
     const ModeOptionsChart = [
-        { value: 'all', label: ' Tous les modes', icon: '🌐' },
-        { value: 'walk', label: ' Marche', icon: '🚶' },
-        { value: 'run', label: ' Course', icon: '🏃' },
-        { value: 'bike', label: ' Vélo', icon: '🚴' },
+        { value: 'all', label: ' Tous les modes', icon: <Globe size={16} /> },
+        { value: 'walk', label: ' Marche', icon: <Icon iconNode={sneaker} size={16} /> },
+        { value: 'run', label: ' Course', icon: <Watch size={16} /> },
+        { value: 'bike', label: ' Vélo', icon: <Bike size={16} /> },
     ];
     const ModeOptions = [
-        { value: 'walk', label: ' Marche', icon: '🚶' },
-        { value: 'run', label: ' Course', icon: '🏃' },
-        { value: 'bike', label: ' Vélo', icon: '🚴' },
+        { value: 'walk', label: ' Marche', icon: <Icon iconNode={sneaker} size={20} /> },
+        { value: 'run', label: ' Course', icon: <Watch size={16} /> },
+        { value: 'bike', label: ' Vélo', icon: <Bike size={16} /> },
     ];
 
     // State for select
@@ -219,13 +221,13 @@ const Steps = () => {
     const getModeIcon = (mode) => {
         switch (mode) {
             case "walk":
-                return "🚶"
+                return <Footprints size={16} />
             case "run":
-                return "🏃"
+                return <Watch size={16} />
             case "bike":
-                return "🚴"
+                return <Bike size={16} />
             default:
-                return "👣"
+                return <Footprints size={16} />
         }
     }
 
@@ -463,7 +465,8 @@ const Steps = () => {
     // Handle import data
     const handleFileImport = async () => {
         if (!importFile) return;
-        await importSteps(importFile);
+        setUploadProgress(0);
+        await importSteps(importFile, setUploadProgress);
         setShowImportModal(false);
         setImportFile(null);
         setImportSource(null);
@@ -581,14 +584,26 @@ const Steps = () => {
 
     return (
         <div className="steps-container">
-            {isLoading && <GlobalLoader />}
+            {isLoading &&
+                <>
+                    <GlobalLoader />
+                    {uploadProgress > 0 && uploadProgress < 100 && (
+                        <div className="progress-container">
+                            <div
+                                className="progress-bar"
+                                style={{ width: `${uploadProgress}%` }}
+                            ></div>
+                        </div>
+                    )}
+                </>
+            }
             <div className="steps-header">
                 <h1>Mes Pas</h1>
 
                 {/* Stats Summary */}
                 <div className="stats-summary">
                     <div className="stat-item">
-                        <span className="stat-icon">👣</span>
+                        <span className="stat-icon"><Footprints size={30} /></span>
                         <div className="stat-content">
                             <span className="stat-value">{stats.totalSteps.toLocaleString("fr-FR")}</span>
                             <span className="stat-label">Total de pas</span>
@@ -596,7 +611,7 @@ const Steps = () => {
                     </div>
 
                     <div className="stat-item">
-                        <span className="stat-icon">📏</span>
+                        <span className="stat-icon"><Spline size={30} /></span>
                         <div className="stat-content">
                             <span className="stat-value">{stats.totalDistance} km</span>
                             <span className="stat-label">Distance parcourue</span>
@@ -604,7 +619,7 @@ const Steps = () => {
                     </div>
 
                     <div className="stat-item">
-                        <span className="stat-icon">🔥</span>
+                        <span className="stat-icon"><Flame size={30} /></span>
                         <div className="stat-content">
                             <span className="stat-value">{stats.totalCalories} kcal</span>
                             <span className="stat-label">Calories brûlées</span>
@@ -612,7 +627,7 @@ const Steps = () => {
                     </div>
 
                     <div className="stat-item">
-                        <span className="stat-icon">⏱️</span>
+                        <span className="stat-icon"><Clock size={30} /></span>
                         <div className="stat-content">
                             <span className="stat-value">{stats.totalActiveTime}</span>
                             <span className="stat-label">Temps actif</span>
@@ -620,13 +635,13 @@ const Steps = () => {
                     </div>
 
                     <div className="stat-item">
-                        <span className="stat-icon">🏅</span>
+                        <span className="stat-icon"><Zap size={30} /></span>
                         <div className="stat-content">
                             <div className="goal-progress">
                                 <div className="progress-bar" style={{ width: `${stats.goalPercentage}%` }}></div>
                                 <span className="progress-text">{stats.goalPercentage}%</span>
                             </div>
-                            <span className="stat-label">Objectif {stats.goalAchieved ? "✅" : "❌"}</span>
+                            <span className="stat-label">Objectif {stats.goalAchieved ? <Check size={20} /> : <X size={20} />}</span>
                         </div>
                     </div>
                 </div>
@@ -816,13 +831,13 @@ const Steps = () => {
                     <table className="entries-table">
                         <thead>
                             <tr>
-                                <th>📅 Date</th>
-                                <th>👣 Pas</th>
-                                <th>📏 Distance</th>
-                                <th>🔥 Calories</th>
-                                <th>🚶 Mode</th>
-                                <th>⏱️ Temps actif</th>
-                                <th>✅ Vérifié</th>
+                                <th><Calendar size={16} />  Date</th>
+                                <th><Fingerprint size={16} />  Pas</th>
+                                <th><Spline size={16} />  Distance</th>
+                                <th><Flame size={16} />  Calories</th>
+                                <th><Globe size={16} />  Mode</th>
+                                <th><Clock size={16} />  Temps actif</th>
+                                <th><Check size={16} />  Vérifié</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -838,7 +853,7 @@ const Steps = () => {
                                             {getModeIcon(entry.mode)} {entry.mode}
                                         </td>
                                         <td>{formatActiveTime(entry.totalActiveTime)}</td>
-                                        <td>{entry.isVerified ? "✅" : "❌"}</td>
+                                        <td>{entry.isVerified ? <Check /> : <X />}</td>
                                         <td>
                                             <div className="entry-actions">
                                                 <button className={`favorite-button ${entry.isFavorite && "favorite"}`} aria-label="Favoris" onClick={() => handleFavoriteChange(entry._id)}>
@@ -860,7 +875,7 @@ const Steps = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="8" className="no-data">
+                                    <td className="no-data" colSpan={8}>
                                         Aucune entrée pour cette période
                                     </td>
                                 </tr>

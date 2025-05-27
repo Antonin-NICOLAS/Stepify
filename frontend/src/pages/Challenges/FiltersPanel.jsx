@@ -1,4 +1,4 @@
-import { Calendar, Clock, BarChart2, Users, Trophy, MapPin, Zap, X, Search, Check } from 'lucide-react';
+import { Calendar, Clock, BarChart2, Users, Trophy, MapPin, Zap, X, Search, CheckCheck } from 'lucide-react';
 
 const FiltersPanel = ({
     showFilters,
@@ -116,7 +116,7 @@ const FiltersPanel = ({
                         className={filterStatus === "completed" ? "active" : ""}
                         onClick={() => setFilterStatus("completed")}
                     >
-                        <Check size={16} />
+                        <CheckCheck size={16} />
                         <span>Terminés</span>
                     </button>
                 </div>

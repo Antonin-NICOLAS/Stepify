@@ -11,7 +11,7 @@ import ChallengeDetailModal from "./Challenges/ChallengeDetailModal";
 // Loader
 import GlobalLoader from "../utils/GlobalLoader";
 // Icons
-import { Icon, Activity, Footprints, Watch, Spline, Flame, Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, Clock, Award, BarChart2, Target, X, Info, Zap, Star, MapPin, Plus, Lock, Check, AlertTriangle, Flag, Hash, Compass, Bookmark, Mail } from 'lucide-react'
+import { Icon, Activity, Footprints, Watch, Spline, Flame, Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, Clock, Award, BarChart2, Target, X, Info, Zap, Star, MapPin, Plus, Lock, Check, AlertTriangle, Flag, Hash, Compass, Bookmark, Mail, CheckCheck } from 'lucide-react'
 import { sneaker, watchActivity } from '@lucide/lab';
 // Charts
 import { Chart, registerables } from "chart.js"
@@ -217,7 +217,7 @@ const Challenges = () => {
             case "active":
                 return <span className="status-badge active"><Zap size={12} /> En cours</span>
             case "completed":
-                return <span className="status-badge completed"><Check size={12} /> Terminé</span>
+                return <span className="status-badge completed"><CheckCheck size={12} /> Terminé</span>
             default:
                 return null
         }

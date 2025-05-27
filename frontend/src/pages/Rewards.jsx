@@ -3,14 +3,17 @@ import { Link } from "react-router-dom"
 // Context
 import { useRewards } from "../hooks/useRewards"
 import { useAuth } from "../context/AuthContext"
+import { useTheme } from "../context/ThemeContext"
 // Loader
 import GlobalLoader from "../utils/GlobalLoader";
 // Icons & charts
 import {
+  Icon, Footprints, Spline, Watch, Dumbbell, CircleGauge,
   Trophy, Medal, Star, Filter, Search, ChevronDown, ChevronUp, Clock, Award, Target, Zap,
   Users, Info, X, ArrowUp, BarChart2, Flame, Gift, Crown, Bookmark, BookmarkPlus, Share2,
   Sparkles, BadgeInfo, LucideAward, ThumbsUp,
 } from "lucide-react"
+import { sneaker, watchActivity } from '@lucide/lab';
 import { Pie, Bar } from "react-chartjs-2"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from "chart.js"
 // CSS
@@ -21,6 +24,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 
 const Rewards = () => {
   const { user } = useAuth()
+  const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState("dashboard")
   const [filters, setFilters] = useState({
     type: "all",
@@ -39,6 +43,7 @@ const Rewards = () => {
     recentlyUnlocked: null,
     nextToUnlock: null,
   })
+  const [noir, setNoir] = useState(null)
   const [selectedReward, setSelectedReward] = useState(null)
   const [showRewardModal, setShowRewardModal] = useState(false)
   const [animateReward, setAnimateReward] = useState(null)
@@ -56,6 +61,17 @@ const Rewards = () => {
       setShowRewardModal(false)
       setSelectedReward(null)
     }
+  }
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setNoir(getCssVar('--Noir'));
+    }, 0);
+    return () => clearTimeout(timeout);
+  }, [theme]);
+
+  function getCssVar(name) {
+    return getComputedStyle(document.body).getPropertyValue(name).trim();
   }
 
   useEffect(() => {
@@ -366,14 +382,17 @@ const Rewards = () => {
   const getCriteriaIcon = (criteria) => {
     switch (criteria) {
       case "steps":
+        return <Footprints size={16} />;
       case "steps-time":
-        return <Trophy size={16} />
+        return <Icon iconNode={sneaker} size={16} />;
       case "distance":
+        return <Spline size={16} />
       case "distance-time":
-        return <Award size={16} />
+        return <Watch size={16} />
       case "calories":
-      case "calories-time":
         return <Flame size={16} />
+      case "calories-time":
+        return <Icon iconNode={watchActivity} size={16} />
       case "streak":
         return <Zap size={16} />
       case "level":
@@ -381,8 +400,9 @@ const Rewards = () => {
       case "customgoal":
         return <Target size={16} />
       case "challenges":
+        return <Dumbbell size={16} />
       case "challenges-time":
-        return <Gift size={16} />
+        return <CircleGauge size={16} />
       case "rank":
         return <Crown size={16} />
       case "friend":
@@ -947,7 +967,7 @@ const Rewards = () => {
                       legend: {
                         position: "right",
                         labels: {
-                          color: "var(--Noir)",
+                          color: noir,
                           font: {
                             size: 10,
                           },
@@ -1426,7 +1446,7 @@ const Rewards = () => {
                     legend: {
                       position: "right",
                       labels: {
-                        color: "var(--Noir)",
+                        color: noir,
                         font: {
                           size: 10,
                         },
@@ -1476,13 +1496,13 @@ const Rewards = () => {
                     x: {
                       stacked: true,
                       ticks: {
-                        color: "var(--Noir)",
+                        color: noir,
                       },
                     },
                     y: {
                       stacked: true,
                       ticks: {
-                        color: "var(--Noir)",
+                        color: noir,
                       },
                     },
                   },
@@ -1490,7 +1510,7 @@ const Rewards = () => {
                     legend: {
                       position: "top",
                       labels: {
-                        color: "var(--Noir)",
+                        color: noir,
                       },
                     },
                   },
@@ -1523,14 +1543,14 @@ const Rewards = () => {
                   scales: {
                     x: {
                       ticks: {
-                        color: "var(--Noir)",
+                        color: noir,
                       },
                     },
                     y: {
                       beginAtZero: true,
                       ticks: {
                         stepSize: 1,
-                        color: "var(--Noir)",
+                        color: noir,
                       },
                     },
                   },
@@ -1538,7 +1558,7 @@ const Rewards = () => {
                     legend: {
                       position: "top",
                       labels: {
-                        color: "var(--Noir)",
+                        color: noir,
                       },
                     },
                   },

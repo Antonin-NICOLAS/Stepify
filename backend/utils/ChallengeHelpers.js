@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+const Notification = require('../models/Notification');
 const StepEntry = require('../models/StepEntry');
 const User = require('../models/User');
 const Challenge = require('../models/Challenge');
