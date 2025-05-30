@@ -26,6 +26,7 @@ const app = express()
 //middleware
 app.use(express.json({limit: '50mb'}))
 app.use(cookieParser())
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }))
 app.use(accessLogger)
 app.use(localization)

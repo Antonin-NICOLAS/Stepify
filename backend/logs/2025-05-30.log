@@ -2313,3 +2313,194 @@ Data: {
 [2025-05-30T17:56:46.159Z] INFO: MongoDB connecté avec succès
 [2025-05-30T17:56:48.991Z] INFO: Serveur démarré sur le port 3500
 [2025-05-30T17:56:49.324Z] INFO: MongoDB connecté avec succès
+[2025-05-30T17:57:51.159Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T17:57:51.193Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T17:57:51.193Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 200,
+  "responseTime": 39,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "1085"
+}
+[2025-05-30T17:57:51.196Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T17:57:51.218Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T17:57:51.218Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 23,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T17:57:51.220Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T17:57:51.241Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T17:57:51.241Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 22,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T17:57:51.242Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T17:57:51.265Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T17:57:51.265Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 24,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T17:59:56.908Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T17:59:56.936Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T17:59:56.936Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 29,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T17:59:56.938Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T17:59:56.963Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T17:59:56.963Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 27,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T17:59:56.964Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T17:59:56.990Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T17:59:56.990Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 26,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T17:59:56.991Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T17:59:57.014Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T17:59:57.014Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 24,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T18:00:00.210Z] INFO: Running challenge status updates...
+[2025-05-30T18:00:00.213Z] INFO: Début de la suppression des notifications expirées
+[2025-05-30T18:00:00.217Z] INFO: Ranking history recorded
+[2025-05-30T18:00:00.215Z] INFO: Running ranking history recording...
+[2025-05-30T18:00:00.237Z] INFO: Suppression des notifications expirées terminée
+Data: {
+  "deletedCount": 0
+}
+[2025-05-30T18:00:00.284Z] INFO: Mise à jour des statuts des défis terminée
+Data: {
+  "startingChallenges": 0,
+  "endingChallenges": 0
+}
+[2025-05-30T18:00:00.284Z] INFO: [CRON] Status updates completed
+[2025-05-30T18:02:55.804Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/mysteps"
+}
+[2025-05-30T18:02:55.898Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T18:02:55.898Z",
+  "method": "GET",
+  "url": "/step/681e20f156d075af7ef67e5c/mysteps",
+  "status": 304,
+  "responseTime": 98,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": "681e20f156d075af7ef67e5c",
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T18:02:55.901Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/mysteps"
+}
+[2025-05-30T18:02:55.944Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T18:02:55.944Z",
+  "method": "GET",
+  "url": "/step/681e20f156d075af7ef67e5c/mysteps",
+  "status": 304,
+  "responseTime": 45,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": "681e20f156d075af7ef67e5c",
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T18:05:43.348Z] INFO: Serveur démarré sur le port 3500
+[2025-05-30T18:05:43.770Z] INFO: MongoDB connecté avec succès
+[2025-05-30T18:10:22.214Z] INFO: Serveur démarré sur le port 3500
+[2025-05-30T18:10:22.681Z] INFO: MongoDB connecté avec succès
+[2025-05-30T18:10:55.118Z] INFO: Serveur démarré sur le port 3500
+[2025-05-30T18:10:55.449Z] INFO: MongoDB connecté avec succès
