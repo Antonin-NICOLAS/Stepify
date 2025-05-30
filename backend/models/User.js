@@ -47,9 +47,10 @@ const userSchema = new Schema({
     match: [/^https?:\/\/.+\..+$/, "L'URL de l'avatar doit être une URL valide"]
   },
   status: {
-    type: String,
-    default: "Salut, j'utilise Stepify !",
-    maxlength: [150, "Le statut ne peut pas dépasser 150 caractères"]
+    fr: { type: String, default: "Salut, j'utilise Stepify !", maxlength: [150, "Le statut ne peut pas dépasser 150 caractères"] },
+    en: { type: String, default: "Hi, I am using Stepify!", maxlength: [150, "Status cannot exceed 150 characters"] },
+    es: { type: String, default: "¡Hola, uso Stepify!", maxlength: [150, "El estado no puede superar los 150 caracteres"] },
+    de: { type: String, default: "Hallo, ich benutze Stepify!", maxlength: [150, "Der Status kann nicht länger als 150 Zeichen sein"] },
   },
 
   // --- Authentification & Sécurité ---

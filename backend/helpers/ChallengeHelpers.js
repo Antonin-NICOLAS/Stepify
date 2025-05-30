@@ -4,6 +4,42 @@ const StepEntry = require('../models/StepEntry');
 const User = require('../models/User');
 const Challenge = require('../models/Challenge');
 
+// Helper function to generate a random 6-character access code (A-Z, 0-9)
+const generateAccessCode = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
+
+// Helper function to validate challenge dates
+const validateChallengeDates = (startDate, endDate) => {
+  const now = new Date();
+  const start = new Date(startDate);
+  const end = endDate ? new Date(endDate) : null;
+
+  if (start < now) {
+    return { valid: false, error: 'errors.challenges.past_start_date' };
+  }
+  if (end && end <= start) {
+    return { valid: false, error: 'errors.challenges.invalid_end_date' };
+  }
+  return { valid: true };
+};
+
+// Helper function to determine challenge status
+const determineChallengeStatus = (startDate, endDate) => {
+  const now = new Date();
+  const start = new Date(startDate);
+  const end = endDate ? new Date(endDate) : null;
+
+  if (start > now) return 'upcoming';
+  if (end && end < now) return 'completed';
+  return 'active';
+};
+
 const calculateUserProgress = async (userId, challenge) => {
   try {
     const user = await User.findById(userId);
@@ -180,7 +216,6 @@ const calculateUserProgress = async (userId, challenge) => {
   }
 };
 
-// ChallengeHelpers.js
 const updateSingleChallengeProgress = async (userId, challengeId) => {
   try {
     const now = new Date();
@@ -295,6 +330,9 @@ const getFieldForActivityType = (activityType) => {
 };
 
 module.exports = {
+  generateAccessCode,
+  validateChallengeDates,
+  determineChallengeStatus,
   calculateUserProgress,
   updateSingleChallengeProgress
 };

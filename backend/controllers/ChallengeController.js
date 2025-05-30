@@ -1,45 +1,9 @@
 const Challenge = require('../models/Challenge');
 const Notification = require('../models/Notification');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization');
-const { calculateUserProgress, updateSingleChallengeProgress } = require('../utils/ChallengeHelpers');
+const { generateAccessCode, validateChallengeDates, determineChallengeStatus, calculateUserProgress, updateSingleChallengeProgress } = require('../helpers/ChallengeHelpers');
 const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
-
-
-// Helper function to generate a random 6-character access code (A-Z, 0-9)
-const generateAccessCode = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-};
-
-// Helper function to validate challenge dates
-const validateChallengeDates = (startDate, endDate) => {
-  const now = new Date();
-  const start = new Date(startDate);
-  const end = endDate ? new Date(endDate) : null;
-
-  if (start < now) {
-    return { valid: false, error: 'errors.challenges.past_start_date' };
-  }
-  if (end && end <= start) {
-    return { valid: false, error: 'errors.challenges.invalid_end_date' };
-  }
-  return { valid: true };
-};
-
-// Helper function to determine challenge status
-const determineChallengeStatus = (startDate, endDate) => {
-  const now = new Date();
-  const start = new Date(startDate);
-  const end = endDate ? new Date(endDate) : null;
-
-  if (start > now) return 'upcoming';
-  if (end && end < now) return 'completed';
-  return 'active';
-};
+const { translateToAllLanguages } =require('../languages/translate')
 
 /** Get public challenges */
 const getPublicChallenges = async (req, res) => {
@@ -125,11 +89,12 @@ const createChallenge = async (req, res) => {
       time,
       xpReward,
       participants,
-      isPrivate
+      isPrivate,
+      difficulty = "hard"
     } = req.body;
 
     // Validate required fields
-    if (!name || !startDate || !activityType || !goal || !xpReward || isPrivate === undefined) {
+    if (!name || !startDate || !activityType || !goal || !xpReward || isPrivate === undefined || !difficulty) {
       return sendLocalizedError(res, 400, 'errors.challenges.fields_missing');
     }
 
@@ -144,6 +109,12 @@ const createChallenge = async (req, res) => {
       return sendLocalizedError(res, 400, 'errors.challenges.time_required', { activityType });
     }
 
+    // Traduire le nom et la description avec détection automatique de la langue
+    const [nameTranslations, descriptionTranslations] = await Promise.all([
+      translateToAllLanguages(name),
+      description ? translateToAllLanguages(description) : null
+    ]);
+
     // Generate access code if challenge is private
     const accessCode = isPrivate ? generateAccessCode() : null;
 
@@ -151,8 +122,17 @@ const createChallenge = async (req, res) => {
     const status = determineChallengeStatus(startDate, endDate);
 
     const newChallenge = new Challenge({
-      ...req.body,
+      name: nameTranslations,
+      description: descriptionTranslations,
+      startDate,
+      endDate,
       creator: userId,
+      activityType,
+      goal,
+      time,
+      xpReward,
+      difficulty,
+      isPrivate,
       accessCode,
       participants: [{
         user: userId,
@@ -180,10 +160,10 @@ const createChallenge = async (req, res) => {
           recipient: toId,
           type: 'challenge_invite',
           content: {
-            en: `You've been invited to join the challenge "${name}"!`,
-            fr: `Vous avez été invité à rejoindre le challenge "${name}" !`,
-            es: `¡Has sido invitado a unirte al desafío "${name}"!`,
-            de: `Du wurdest eingeladen, an der Challenge "${name}" teilzunehmen!`
+            en: `You've been invited to join the challenge "${newChallenge.name.en}"!`,
+            fr: `Vous avez été invité à rejoindre le challenge "${newChallenge.name.fr}" !`,
+            es: `¡Has sido invitado a unirte al desafío "${newChallenge.name.es}"!`,
+            de: `Du wurdest eingeladen, an der Challenge "${newChallenge.name.de}" teilzunehmen!`
           },
           status: 'unread',
           DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
@@ -490,6 +470,55 @@ const updateChallengeProgress = async (userId) => {
   }
 };
 
+/** Get challenge leaderboard */
+const getChallengeLeaderboard = async (req, res) => {
+  const { challengeId } = req.params;
+  const { limit = 10, skip = 0 } = req.query;
+
+  try {
+    const challenge = await Challenge.findById(challengeId)
+      .populate('participants.user', 'username avatarUrl firstName lastName totalXP')
+      .select('participants status activityType');
+
+    if (!challenge) {
+      return sendLocalizedError(res, 404, 'errors.challenges.not_found');
+    }
+
+    // Trier les participants par progression
+    const sortedParticipants = challenge.participants
+      .sort((a, b) => {
+        // D'abord par progression
+        if (b.progress !== a.progress) {
+          return b.progress - a.progress;
+        }
+        // Ensuite par XP total en cas d'égalité
+        return b.user.totalXP - a.user.totalXP;
+      })
+      .slice(parseInt(skip), parseInt(skip) + parseInt(limit))
+      .map((participant, index) => ({
+        rank: parseInt(skip) + index + 1,
+        userId: participant.user._id,
+        username: participant.user.username,
+        firstName: participant.user.firstName,
+        lastName: participant.user.lastName,
+        avatarUrl: participant.user.avatarUrl,
+        progress: participant.progress,
+        completed: participant.completed,
+        xpEarned: participant.xpEarned
+      }));
+
+    return sendLocalizedSuccess(res, null, {}, {
+      leaderboard: sortedParticipants,
+      total: challenge.participants.length,
+      challengeStatus: challenge.status,
+      activityType: challenge.activityType
+    });
+  } catch (error) {
+    console.error('Error getting challenge leaderboard:', error);
+    return sendLocalizedError(res, 500, 'errors.challenges.get_leaderboard_error');
+  }
+};
+
 module.exports = {
   getPublicChallenges,
   getMyChallenges,
@@ -500,5 +529,6 @@ module.exports = {
   leaveChallenge,
   deleteChallenge,
   regenerateAccessCode,
-  getChallengeDetails
+  getChallengeDetails,
+  getChallengeLeaderboard
 };

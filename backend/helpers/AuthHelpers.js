@@ -29,6 +29,10 @@ const GenerateAuthCookie = (res, user, stayLoggedIn) => {
   return token;
 };
 
+const generateVerificationCode = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 // Validation helpers
 const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -48,4 +52,4 @@ const generateSessionFingerprint = (req) => {
     return CryptoJS.SHA256(components.join('|')).toString();
 };
 
-module.exports = { GenerateAuthCookie, validateEmail, validateUsername, generateSessionFingerprint };
+module.exports = { GenerateAuthCookie, generateVerificationCode, validateEmail, validateUsername, generateSessionFingerprint };

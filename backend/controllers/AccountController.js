@@ -2,8 +2,8 @@ const UserModel = require('../models/User')
 const cloudinary = require('../config/cloudinary');
 const bcrypt = require('bcryptjs')
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
-const { generateVerificationCode } = require('../utils/GenerateCode')
-const { GenerateAuthCookie, validateEmail, validateUsername } = require('../utils/AuthHelpers')
+const { translateToAllLanguages } = require('../languages/translate')
+const { GenerateAuthCookie, generateVerificationCode, validateEmail, validateUsername } = require('../helpers/AuthHelpers')
 const { sendVerificationEmail, sendResetPasswordSuccessfulEmail } = require('../utils/SendMail');
 const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 //.env
@@ -200,7 +200,8 @@ const updateStatus = async (req, res) => {
     if (checkAuthorization(req, res, userId)) return;
 
     try {
-        const user = await UserModel.findByIdAndUpdate(userId, { status }, { new: true });
+        const statusTranslations = await translateToAllLanguages(status);
+        const user = await UserModel.findByIdAndUpdate(userId, { status: statusTranslations }, { new: true });
         return sendLocalizedSuccess(res, 'success.profile.status_updated', {}, { status: user.status });
     } catch (error) {
         console.error("Error in updateStatus:", error);
@@ -324,8 +325,8 @@ const revokeAllSessions = async (req, res) => {
             return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
         }
 
-        const currentSession = user.activeSessions.find(session => 
-            session.fingerprint === req.fingerprint && 
+        const currentSession = user.activeSessions.find(session =>
+            session.fingerprint === req.fingerprint &&
             new Date(session.expiresAt) > new Date()
         );
 

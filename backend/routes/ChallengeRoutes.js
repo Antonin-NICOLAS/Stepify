@@ -12,7 +12,8 @@ const { getPublicChallenges,
     joinChallenge,
     leaveChallenge,
     deleteChallenge,
-    getChallengeDetails
+    getChallengeDetails,
+    getChallengeLeaderboard
 } = require('../controllers/ChallengeController')
 
 //router
@@ -30,6 +31,7 @@ router.use(
 router.get('/challenges', getPublicChallenges)
 router.get('/:userId/mychallenges', verifyToken, getMyChallenges)
 router.get('/:challengeId', getChallengeDetails)
+router.get('/:challengeId/leaderboard', getChallengeLeaderboard)
 router.post('/:userId/new', verifyToken, createChallenge)
 
 router.put('/:userId/:challengeId/modify', verifyToken, updateChallenge)

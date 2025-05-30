@@ -7,8 +7,7 @@ const jwt = require('jsonwebtoken');
 const ms = require('ms');
 const CryptoJS = require('crypto-js');
 const cloudinary = require('../config/cloudinary');
-const { generateVerificationCode } = require('../utils/GenerateCode');
-const { GenerateAuthCookie, validateEmail, validateUsername, generateSessionFingerprint } = require('../utils/AuthHelpers');
+const { GenerateAuthCookie, generateVerificationCode, validateEmail, validateUsername, generateSessionFingerprint } = require('../helpers/AuthHelpers');
 const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 const {
     sendVerificationEmail,

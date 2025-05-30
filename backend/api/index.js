@@ -11,6 +11,7 @@ const StepRoutes = require('../routes/StepRoutes')
 const ChallengeRoutes = require('../routes/ChallengeRoutes')
 const NotificationRoutes = require('../routes/NotificationRoutes')
 const RewardRoutes = require('../routes/RewardRoutes')
+const StatsRoutes = require('../routes/StatsRoutes')
 //middleware
 const { localization } = require('../middlewares/Localization')
 const accessLogger = require('../middlewares/AccessLogger')
@@ -55,6 +56,7 @@ app.use('/step', StepRoutes)
 app.use('/challenge', ChallengeRoutes)
 app.use('/notification', NotificationRoutes)
 app.use('/reward', RewardRoutes)
+app.use('/stats', StatsRoutes)
 
 // Gestion des erreurs globale
 app.use((err, req, res, next) => {
@@ -63,7 +65,7 @@ app.use((err, req, res, next) => {
         stack: err.stack,
         path: req.path,
         method: req.method,
-        userId: req.user?._id || null
+        userId: req.user._id || null
     });
 
     res.status(500).json({
