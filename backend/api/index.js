@@ -3,7 +3,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 //cron
-const { scheduleStatusUpdates, deleteExpiredNotifications, scheduleDailyRewardUpdates, deleteLonelyChallenges } = require('./ScheduledTasks');
+const { scheduleStatusUpdates, deleteExpiredNotifications, scheduleDailyRewardUpdates, deleteLonelyChallenges, saveRank } = require('./ScheduledTasks');
 //routes
 const AuthRoutes = require('../routes/AuthRoutes')
 const UserRoutes = require('../routes/AccountRoutes')
@@ -11,6 +11,8 @@ const StepRoutes = require('../routes/StepRoutes')
 const ChallengeRoutes = require('../routes/ChallengeRoutes')
 const NotificationRoutes = require('../routes/NotificationRoutes')
 const RewardRoutes = require('../routes/RewardRoutes')
+//middleware
+const { localization } = require('../middlewares/Localization')
 //.env
 require('dotenv').config()
 
@@ -22,6 +24,8 @@ app.use(express.json({limit: '50mb'}))
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: false, limit: '50mb' }))
 
+//localization middleware
+app.use(localization)
 
 //cors
 const corsOptions = {
@@ -68,4 +72,5 @@ app.listen(port, function () {
     deleteExpiredNotifications();
     scheduleDailyRewardUpdates();
     deleteLonelyChallenges();
+    saveRank();
 });

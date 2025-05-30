@@ -3,6 +3,7 @@ const Challenge = require('../models/Challenge');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
 const { updateUserRewards } = require('../controllers/RewardController');
+const { recordRankingHistory } = require('../controllers/RankingController');
 
 // Update challenge statuses every hour
 const scheduleStatusUpdates = () => {
@@ -66,24 +67,24 @@ const scheduleDailyRewardUpdates = () => {
   cron.schedule('0 1 * * *', async () => {
     try {
       console.log('Starting daily reward updates for all users...');
-      
+
       // Get all user IDs (just the IDs for efficiency)
       const users = await User.find({}, '_id');
-      
+
       let processed = 0;
       const totalUsers = users.length;
-      
+
       // Process users in batches to avoid memory issues
       const batchSize = 100;
       for (let i = 0; i < totalUsers; i += batchSize) {
         const batch = users.slice(i, i + batchSize);
-        
+
         // Process each user in parallel
         await Promise.all(batch.map(async (user) => {
           try {
             await updateUserRewards(user._id);
             processed++;
-            
+
             // Log progress every 100 users
             if (processed % 100 === 0) {
               console.log(`Processed ${processed} of ${totalUsers} users...`);
@@ -93,7 +94,7 @@ const scheduleDailyRewardUpdates = () => {
           }
         }));
       }
-      
+
       console.log(`[CRON] Completed reward updates for ${processed} users.`);
     } catch (error) {
       console.error('[CRON] Error in daily reward updates:', error);
@@ -106,13 +107,13 @@ const deleteLonelyChallenges = () => {
   cron.schedule('0 2 * * *', async () => {
     try {
       console.log('Checking for lonely challenges to delete...');
-      
+
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
       const challengesToDelete = await Challenge.find({
         createdAt: { $lte: oneWeekAgo },
-        $expr: { 
+        $expr: {
           $and: [
             { $eq: [{ $size: "$participants" }, 1] },
             { $eq: ["$participants.0.user", "$creator"] }
@@ -125,7 +126,7 @@ const deleteLonelyChallenges = () => {
       });
 
       console.log(`Deleted ${deletedCount.deletedCount} lonely challenges`);
-      
+
       // Supprimer les notifications associées
       await Notification.deleteMany({
         challenge: { $in: challengesToDelete.map(c => c._id) }
@@ -137,9 +138,23 @@ const deleteLonelyChallenges = () => {
   });
 };
 
-module.exports = { 
-  scheduleStatusUpdates, 
+// Enregistre l'historique du classement toutes les heures
+const saveRank = () => {
+  cron.schedule('0 * * * *', () => {
+    try {
+      console.log('Running ranking history recording...');
+      recordRankingHistory();
+      console.log('Ranking history recorded');
+    } catch (error) {
+      console.error('[CRON] Error in daily reward updates:', error);
+    }
+  });
+}
+
+module.exports = {
+  scheduleStatusUpdates,
   deleteExpiredNotifications,
   scheduleDailyRewardUpdates,
-  deleteLonelyChallenges
+  deleteLonelyChallenges,
+  saveRank
 };

@@ -9,6 +9,7 @@ const CryptoJS = require('crypto-js');
 const cloudinary = require('../config/cloudinary');
 const { generateVerificationCode } = require('../utils/GenerateCode');
 const { GenerateAuthCookie, validateEmail, validateUsername, generateSessionFingerprint } = require('../utils/AuthHelpers');
+const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 const {
     sendVerificationEmail,
     sendWelcomeEmail,
@@ -147,7 +148,7 @@ const verifyEmail = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                error: "Utilisateur non trouvé"
+                error: "Utilisateur introuvable"
             });
         }
 
@@ -220,14 +221,14 @@ const resendVerificationEmail = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                error: "Utilisateur non trouvé"
+                error: "Utilisateur introuvable"
             });
         }
 
         if (user.isVerified) {
             return res.status(400).json({
                 success: false,
-                error: "L'email est déjà vérifié"
+                error: "Email déjà vérifié"
             });
         }
 
@@ -246,7 +247,7 @@ const resendVerificationEmail = async (req, res) => {
         console.error("Erreur lors de la demande de renvoi du code de vérification:", error);
         res.status(500).json({
             success: false,
-            error: "Une erreur est survenue lors du renvoi du code de vérification"
+            error: "Une erreur est survenue lors de l'envoi du nouveau code de vérification"
         });
     }
 };
@@ -274,7 +275,7 @@ const ChangeVerificationEmail = async (req, res) => {
         if (user.isVerified) {
             return res.status(400).json({
                 success: false,
-                error: "Votre compte est déjà vérifié"
+                error: "Email déjà vérifié"
             });
         }
 
@@ -289,7 +290,7 @@ const ChangeVerificationEmail = async (req, res) => {
         if (emailExists) {
             return res.status(400).json({
                 success: false,
-                error: "L'email est déjà associé à un compte"
+                error: "Email déjà utilisé"
             });
         }
 
@@ -416,25 +417,17 @@ const loginUser = async (req, res) => {
 
     try {
         if (!email || !password) {
-            return res.status(400).json({
-                success: false,
-                error: "L'email et le mot de passe sont requis"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.email_password_required');
         }
 
         const user = await UserModel.findOne({ email });
         if (!user) {
-            return res.status(401).json({
-                success: false,
-                error: "Email associé à aucun compte"
-            });
+            return sendLocalizedError(res, 401, 'errors.auth.email_not_found');
         }
 
         if (user.lockUntil && user.lockUntil > Date.now()) {
             const remainingTime = Math.ceil((user.lockUntil - Date.now()) / (1000 * 60));
-            return res.status(429).json({
-                success: false,
-                error: `Trop de tentatives. Réessayez dans ${remainingTime} minutes`,
+            return sendLocalizedError(res, 429, 'errors.auth.limit_reached', { remainingTime }, {
                 retryAfter: remainingTime * 60 // en secondes
             });
         }
@@ -448,16 +441,10 @@ const loginUser = async (req, res) => {
             if (user.loginAttempts >= 5) {
                 user.lockUntil = Date.now() + 15 * 60 * 1000;
                 await user.save();
-                return res.status(429).json({
-                    success: false,
-                    error: "Trop de tentatives. Votre compte est temporairement verrouillé."
-                });
+                return sendLocalizedError(res, 429, 'errors.auth.account_locked');
             }
             await user.save();
-            return res.status(401).json({
-                success: false,
-                error: "Mot de passe incorrect"
-            });
+            return sendLocalizedError(res, 401, 'errors.auth.password_incorrect');
         }
 
         // Mettre à jour la dernière connexion
@@ -493,17 +480,10 @@ const loginUser = async (req, res) => {
 
         const userResponse = user.toJSON();
 
-        return res.status(200).json({
-            success: true,
-            message: "Connexion réussie",
-            user: userResponse
-        });
+        return sendLocalizedSuccess(res, 'success.auth.successful_login', {}, { user: userResponse });
     } catch (error) {
         console.error("Erreur lors de la connexion:", error);
-        res.status(500).json({
-            success: false,
-            error: "Une erreur est survenue lors de la connexion"
-        });
+        return sendLocalizedError(res, 500, 'errors.auth.login_error');
     }
 };
 
@@ -523,7 +503,7 @@ const forgotPassword = async (req, res) => {
         if (!user) {
             return res.status(200).json({
                 success: true,
-                message: "Si l'email existe, un lien de réinitialisation a été envoyé"
+                message: "Un lien de réinitialisation a été envoyé à votre email, s'il existe"
             });
         }
 
@@ -539,7 +519,7 @@ const forgotPassword = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            message: "Un lien de réinitialisation a été envoyé à votre email"
+            message: "Un lien de réinitialisation a été envoyé à votre email, s'il existe"
         });
     } catch (error) {
         console.error("Erreur lors de la demande de réinitialisation de mot de passe:", error);
@@ -643,7 +623,7 @@ const checkAuth = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                error: "Utilisateur non trouvé"
+                error: "Utilisateur introuvable"
             });
         }
 

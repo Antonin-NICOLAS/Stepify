@@ -49,7 +49,8 @@ const updateAvatar = async (req, res) => {
         // Envoie le fichier à cloudinary
         result.end(file.buffer);
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        console.error("Error in updateAvatar:", error);
+        res.status(500).json({ success: false, error: "Une erreur est survenue lors de la mise à jour de l'avatar" });
     }
 };
 
@@ -96,7 +97,7 @@ const updateProfile = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                error: "Utilisateur non trouvé"
+                error: "Utilisateur introuvable"
             });
         }
 
@@ -112,9 +113,10 @@ const updateProfile = async (req, res) => {
             user
         });
     } catch (error) {
+        console.error("Error in updateProfile:", error);
         res.status(400).json({
             success: false,
-            error: error.message
+            error: "Une erreur est survenue lors de la mise à jour du profil"
         });
     }
 };
@@ -141,7 +143,7 @@ const updateEmail = async (req, res) => {
         }
 
         const existingUser = await UserModel.findOne({ email: newEmail })
-        if (existingUser) return res.status(400).json({ success: false, error: 'L\'email est déjà associé à un compte' })
+        if (existingUser) return res.status(400).json({ success: false, error: 'Email déjà utilisé' })
 
         user.email = newEmail
         user.isVerified = false
@@ -170,7 +172,8 @@ const updateEmail = async (req, res) => {
         })
     } catch (error) {
         if (error.code === 11000) return res.status(400).json({ error: 'Email déjà utilisé' })
-        res.status(400).json({ success: false, error: error.message })
+        console.error("Error in updateEmail:", error);
+        res.status(400).json({ success: false, error: "Une erreur est survenue lors de la mise à jour de l'email" })
     }
 }
 
@@ -182,7 +185,7 @@ const updatePassword = async (req, res) => {
 
     try {
         if (!currentPassword || !newPassword) {
-            return res.status(400).json({ success: false, error: 'Les deux mots de passe sont requis' })
+            return res.status(400).json({ success: false, error: 'Votre mot de passe actuel et le nouveau mot de passe sont requis' })
         }
         if (newPassword.length < 8) {
             return res.status(400).json({ success: false, error: 'Le mot de passe doit contenir au moins 8 caractères' })
@@ -204,7 +207,8 @@ const updatePassword = async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Votre mot de passe a été mis à jour' })
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message })
+        console.error("Error in updatePassword:", error);
+        res.status(400).json({ success: false, error: "Une erreur est survenue lors de la mise à jour du mot de passe" })
     }
 }
 
@@ -222,7 +226,8 @@ const updateStatus = async (req, res) => {
             status: user.status
         });
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        console.error("Error in updateStatus:", error);
+        res.status(400).json({ success: false, error: "Une erreur est survenue lors de la mise à jour du statut" });
     }
 };
 
@@ -246,7 +251,8 @@ const updateDailyGoal = async (req, res) => {
             dailyGoal: user.dailyGoal
         });
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        console.error("Error in updateDailyGoal:", error);
+        res.status(400).json({ success: false, error: "Une erreur est survenue lors de la mise à jour de l'objectif quotidien" });
     }
 };
 
@@ -269,7 +275,7 @@ const getUserProfile = async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                error: "Utilisateur non trouvé"
+                error: "Utilisateur introuvable"
             });
         }
 
@@ -349,6 +355,7 @@ const revokeSession = async (req, res) => {
             message: "Session révoquée"
         });
     } catch (error) {
+        console.error('Error in revokeSession:', error);
         res.status(500).json({
             success: false,
             error: "Erreur lors de la révocation de la session"
@@ -371,6 +378,7 @@ const revokeAllSessions = async (req, res) => {
             message: "Toutes les sessions ont été révoquées"
         });
     } catch (error) {
+        console.error('Error in revokeAllSessions:', error);
         res.status(500).json({
             success: false,
             error: "Erreur lors de la révocation des sessions"

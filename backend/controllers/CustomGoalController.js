@@ -1,5 +1,7 @@
 const UserModel = require('../models/UserModel');
+const Reward = require('../models/Reward');
 const { checkAuthorization } = require('../utils/authUtils');
+const { NotificationType, createSystemNotification } = require('../utils/NotificationManager');
 
 const addCustomGoal = async (req, res) => {
     const { userId } = req.params;
@@ -103,8 +105,72 @@ const deleteCustomGoal = async (req, res) => {
     }
 };
 
+const addCustomGoalFromReward = async (req, res) => {
+    try {
+        const { rewardId } = req.body;
+        const userId = req.user.id;
+
+        // Vérifier si la récompense existe
+        const reward = await Reward.findById(rewardId);
+        if (!reward) {
+            return res.status(404).json({
+                success: false,
+                error: "Récompense non trouvée"
+            });
+        }
+
+        // Vérifier si l'utilisateur n'a pas déjà cette récompense
+        const user = await UserModel.findById(userId);
+        const hasReward = user.rewardsUnlocked.some(r => r.rewardId.equals(rewardId));
+        if (hasReward) {
+            return res.status(400).json({
+                success: false,
+                error: "Vous avez déjà débloqué cette récompense"
+            });
+        }
+
+        // Créer l'objectif personnalisé basé sur la récompense
+        const deadline = new Date();
+        deadline.setDate(deadline.getDate() + (reward.time || 30)); // 30 jours par défaut si pas de temps spécifié
+
+        const newCustomGoal = {
+            type: reward.criteria,
+            target: reward.target,
+            time: reward.time,
+            deadline,
+            progress: 0,
+            isCompleted: false
+        };
+
+        // Ajouter l'objectif à l'utilisateur
+        user.customGoals.push(newCustomGoal);
+        await user.save();
+
+        // Créer une notification
+        await createSystemNotification({
+            recipient: userId,
+            type: NotificationType.CUSTOM_GOAL_ADDED,
+            sender: null,
+            content: `Nouvel objectif ajouté : ${reward.name[user.languagePreference] || reward.name.fr}`,
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Objectif personnalisé créé avec succès",
+            customGoal: newCustomGoal
+        });
+    } catch (error) {
+        console.error('Error adding custom goal from reward:', error);
+        return res.status(500).json({
+            success: false,
+            error: "Erreur lors de la création de l'objectif personnalisé"
+        });
+    }
+};
+
 module.exports = {
     addCustomGoal,
     updateCustomGoal,
-    deleteCustomGoal
+    deleteCustomGoal,
+    addCustomGoalFromReward
 };

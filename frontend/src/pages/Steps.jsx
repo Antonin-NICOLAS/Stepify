@@ -11,7 +11,7 @@ import { useStepsStats } from "../hooks/useStepsStats"
 import { Line } from "react-chartjs-2"
 import { Chart, registerables } from "chart.js"
 //ICONS
-import { Globe, Icon, Watch, Bike, Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart, Footprints, Spline, Flame, Clock, ArrowLeft, ArrowRight, UploadCloud, Zap, Check, Fingerprint, GitCompare } from "lucide-react"
+import { Globe, Icon, Watch, Bike, Calendar, Download, Upload, Plus, Filter, Edit, Trash2, X, Info, Heart, Footprints, Spline, Flame, Clock, ArrowLeft, ArrowRight, UploadCloud, Zap, Check, Fingerprint } from "lucide-react"
 import { sneaker } from "@lucide/lab";
 //CSS
 import "./Steps.css"

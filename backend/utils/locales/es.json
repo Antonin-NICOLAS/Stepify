@@ -1,0 +1,187 @@
+{
+  "errors": {
+    "generic": {
+      "req_auth": "Autenticación requerida",
+      "invalid_session": "Sesión expirada o inválida",
+      "internal_error": "Se produjo un error interno",
+      "retrieve_error": "Se produjo un error al recuperar los datos",
+      "unauthorized": "No autorizado",
+      "user_not_found": "Usuario no encontrado"
+    },
+    "auth": {
+      "firstName_required": "Se requiere un nombre válido (mínimo 2 caracteres)",
+      "lastName_required": "Se requiere un apellido válido (mínimo 2 caracteres)",
+      "email_required": "Se requiere una dirección de correo electrónico válida",
+      "invalid_username": "Se requiere un nombre de usuario válido (3-30 caracteres alfanuméricos)",
+      "invalid_password": "Se requiere una contraseña de al menos 8 caracteres",
+      "email_exists": "Correo electrónico ya en uso",
+      "username_exists": "Nombre de usuario ya en uso",
+      "email_verified": "Correo electrónico ya verificado",
+      "invalid_code": "Código de verificación inválido",
+      "code_expired": "El código de verificación ha expirado",
+      "invalid_token": "Token inválido",
+      "same_email_change": "El nuevo correo electrónico debe ser diferente del actual",
+      "password_required": "Se requiere contraseña para eliminar la cuenta",
+      "password_incorrect": "Contraseña incorrecta",
+      "email_password_required": "Se requieren correo electrónico y contraseña",
+      "email_not_found": "Correo electrónico no asociado a ninguna cuenta",
+      "limit_reached": "Demasiados intentos. Inténtelo de nuevo en ${remainingTime} minutos",
+      "account_locked": "Demasiados intentos. Su cuenta está temporalmente bloqueada.",
+      "invalid_reset_link": "Enlace inválido o expirado. Por favor, solicite un nuevo restablecimiento de contraseña.",
+      "account_creation_error": "Se produjo un error al crear la cuenta",
+      "email_verification_error": "Se produjo un error al verificar el correo electrónico",
+      "email_resent_error": "Se produjo un error al enviar el nuevo código de verificación",
+      "email_change_error": "Se produjo un error al cambiar el correo electrónico",
+      "account_deletion_error": "Se produjo un error al eliminar la cuenta",
+      "login_error": "Se produjo un error al iniciar sesión",
+      "forgot_password_error": "Se produjo un error al solicitar el restablecimiento de contraseña",
+      "reset_password_error": "Se produjo un error al restablecer la contraseña",
+      "logout_error": "Se produjo un error al cerrar sesión",
+      "check_auth_error": "Se produjo un error al verificar la autenticación"
+    },
+    "profile": {
+      "no_file_provided": "No se proporcionó ningún archivo",
+      "invalid_username": "Se requiere un nombre de usuario válido (3-30 caracteres alfanuméricos)",
+      "username_exists": "Nombre de usuario ya en uso",
+      "firstName_min": "El nombre debe contener al menos 2 caracteres",
+      "lastName_min": "El apellido debe contener al menos 2 caracteres",
+      "email_required": "Se requiere una dirección de correo electrónico válida",
+      "same_email_change": "El nuevo correo electrónico debe ser diferente del actual",
+      "email_exists": "Correo electrónico ya en uso",
+      "passwords_required": "Se requieren su contraseña actual y la nueva contraseña",
+      "invalid_password": "Se requiere una contraseña de al menos 8 caracteres",
+      "password_incorrect": "Contraseña actual incorrecta",
+      "same_password_change": "La nueva contraseña debe ser diferente",
+      "daily_goal_range": "El objetivo diario debe estar entre 1000 y 50000 pasos",
+      "avatar_update_error": "Se produjo un error al actualizar el avatar",
+      "profile_update_error": "Se produjo un error al actualizar el perfil",
+      "email_update_error": "Se produjo un error al actualizar el correo electrónico",
+      "password_update_error": "Se produjo un error al actualizar la contraseña",
+      "status_update_error": "Se produjo un error al actualizar el estado",
+      "daily_goal_update_error": "Se produjo un error al actualizar el objetivo diario",
+      "get_profile_error": "Se produjo un error al recuperar el perfil",
+      "get_sessions_error": "Se produjo un error al recuperar las sesiones",
+      "revoke_session_error": "Se produjo un error al revocar la sesión",
+      "revoke_all_sessions_error": "Se produjo un error al revocar todas las sesiones"
+    },
+    "friends": {
+      "add_self": "No puedes agregarte a ti mismo como amigo",
+      "user_not_found": "Usuario no encontrado",
+      "request_already_sent": "Solicitud ya enviada",
+      "already_friends": "Ya son amigos",
+      "search_required": "Se requiere un término de búsqueda"
+    },
+    "notifications": {
+      "not_found": "Notificación no encontrada",
+      "not_yours": "Esta notificación no te pertenece",
+      "fetch_error": "Error al recuperar las notificaciones",
+      "update_error": "Error al actualizar la notificación",
+      "fetch_requests_error": "Error al recuperar las solicitudes"
+    },
+    "challenges": {
+      "not_found": "Desafío no encontrado",
+      "fields_missing": "Faltan campos",
+      "time_required": "Se requiere tiempo para este tipo de actividad: ${activityType}",
+      "not_yours": "Esta invitación no es para ti",
+      "already_processed": "Esta invitación ya ha sido procesada",
+      "creator_modify_only": "Solo el creador del desafío puede modificarlo",
+      "creator_delete_only": "Solo el creador del desafío puede eliminarlo",
+      "creator_regenerate_only": "Solo el creador del desafío puede regenerar el código de acceso",
+      "past_start_date": "La fecha de inicio no puede estar en el pasado",
+      "invalid_end_date": "La fecha de finalización debe ser posterior a la fecha de inicio",
+      "access_code_required": "Se requiere código de acceso para los desafíos privados",
+      "private_only": "Solo los desafíos privados pueden tener códigos de acceso",
+      "already_participating": "Ya estás participando en este desafío",
+      "not_participating": "No estás participando en este desafío",
+      "creator_cannot_leave": "El creador del desafío no puede abandonar el desafío. Por favor, elimina el desafío.",
+      "get_challenges_error": "Error al recuperar los desafíos",
+      "creation_error": "Error al crear el desafío",
+      "update_error": "Error al actualizar el desafío",
+      "join_error": "Error al unirse al desafío",
+      "leave_error": "Error al abandonar el desafío",
+      "delete_error": "Error al eliminar el desafío",
+      "regenerate_error": "Error al regenerar el código de acceso",
+      "get_details_error": "Error al recuperar los detalles del desafío"
+    },
+    "steps": {
+      "not_found": "Entrada no encontrada",
+      "creation_error": "Error al crear la entrada",
+      "update_error": "Error al actualizar la entrada",
+      "favorite_error": "Error al marcar como favorita la entrada",
+      "delete_error": "Error al eliminar la entrada",
+      "no_hourly_data": "No se proporcionaron datos horarios",
+      "hour_required": "Se requiere la hora",
+      "invalid_hour": "Hora inválida",
+      "invalid_steps": "Número de pasos inválido",
+      "invalid_distance": "Distancia inválida",
+      "invalid_calories": "Calorías inválidas",
+      "invalid_active_time": "Tiempo activo inválido",
+      "invalid_mode": "Se deben proporcionar todos los campos requeridos (modo, fecha)",
+      "existing_entry": "Ya existen datos para las ${hour}h"
+    },
+    "custom_goals": {
+      "future_deadline": "La fecha límite debe estar en el futuro",
+      "time_required": "Se requiere tiempo para este tipo de actividad",
+      "creation_error": "Error al crear el objetivo personalizado"
+    },
+    "rewards": {
+      "not_found": "No se encontró ninguna recompensa",
+      "fetch_error": "Error al recuperar las recompensas"
+    },
+    "preferences": {
+      "update_error": "Error al actualizar las preferencias"
+    }
+  },
+  "success": {
+    "auth": {
+      "account_created": "Cuenta creada con éxito. Se ha enviado un correo electrónico de verificación.",
+      "email_verified": "Correo electrónico verificado con éxito",
+      "email_resent": "Se ha enviado un nuevo código de verificación a tu correo electrónico",
+      "email_updated": "Correo electrónico actualizado. Se ha enviado un nuevo código de verificación.",
+      "account_deleted": "Cuenta eliminada con éxito",
+      "successful_login": "Inicio de sesión exitoso",
+      "reset_password_email_sent": "Se ha enviado un enlace de restablecimiento a tu correo electrónico, si existe",
+      "reset_password_success": "Contraseña restablecida con éxito",
+      "logout_success": "Cierre de sesión exitoso"
+    },
+    "profile": {
+      "updated": "Perfil actualizado",
+      "email_updated": "Correo electrónico actualizado - Se requiere verificación",
+      "password_updated": "Contraseña actualizada",
+      "status_updated": "Estado actualizado",
+      "daily_goal_updated": "El objetivo diario ha sido actualizado",
+      "session_revoked": "Sesión revocada",
+      "all_sessions_revoked": "Todas las sesiones han sido revocadas"
+    },
+    "friends": {
+      "request_sent": "Solicitud de amistad enviada"
+    },
+    "challenges": {
+      "created": "Desafío creado",
+      "updated": "Desafío actualizado",
+      "joined": "Te has unido al desafío",
+      "left": "Has abandonado el desafío",
+      "deleted": "Desafío eliminado",
+      "regenerated": "Código de acceso regenerado",
+      "invitation_accepted": "Invitación aceptada",
+      "invitation_declined": "Invitación rechazada"
+    },
+    "steps": {
+      "created": "Entrada creada",
+      "updated": "Entrada actualizada",
+      "deleted": "Entrada eliminada"
+    },
+    "custom_goals": {
+      "created": "Objetivo personalizado añadido",
+      "updated": "Objetivo personalizado actualizado",
+      "deleted": "Objetivo personalizado eliminado"
+    },
+    "notifications": {
+      "marked_read": "Notificación marcada como leída",
+      "all_marked_read": "Todas las notificaciones han sido marcadas como leídas"
+    },
+    "preferences": {
+      "notifications_updated": "Preferencias de notificación actualizadas"
+    }
+  }
+} 

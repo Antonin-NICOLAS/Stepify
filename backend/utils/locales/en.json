@@ -1,0 +1,187 @@
+{
+  "errors": {
+    "generic": {
+      "req_auth": "Authentication required",
+      "invalid_session": "Session expired or invalid",
+      "internal_error": "An internal error occurred",
+      "retrieve_error": "An error occurred while retrieving data",
+      "unauthorized": "Unauthorized",
+      "user_not_found": "User not found"
+    },
+    "auth": {
+      "firstName_required": "A valid first name (minimum 2 characters) is required",
+      "lastName_required": "A valid last name (minimum 2 characters) is required",
+      "email_required": "A valid email address is required",
+      "invalid_username": "A valid username (3-30 alphanumeric characters) is required",
+      "invalid_password": "A password of at least 8 characters is required",
+      "email_exists": "Email already in use",
+      "username_exists": "Username already taken",
+      "email_verified": "Email already verified",
+      "invalid_code": "Invalid verification code",
+      "code_expired": "Verification code has expired",
+      "invalid_token": "Invalid token",
+      "same_email_change": "New email must be different from current",
+      "password_required": "Password is required to delete account",
+      "password_incorrect": "Incorrect password",
+      "email_password_required": "Email and password are required",
+      "email_not_found": "Email not associated with any account",
+      "limit_reached": "Too many attempts. Try again in ${remainingTime} minutes",
+      "account_locked": "Too many attempts. Your account is temporarily locked.",
+      "invalid_reset_link": "Invalid or expired link. Please request a new password reset.",
+      "account_creation_error": "An error occurred while creating the account",
+      "email_verification_error": "An error occurred while verifying the email",
+      "email_resent_error": "An error occurred while sending the new verification code",
+      "email_change_error": "An error occurred while changing the email",
+      "account_deletion_error": "An error occurred while deleting the account",
+      "login_error": "An error occurred while logging in",
+      "forgot_password_error": "An error occurred while requesting password reset",
+      "reset_password_error": "An error occurred while resetting password",
+      "logout_error": "An error occurred while logging out",
+      "check_auth_error": "An error occurred while checking authentication"
+    },
+    "profile": {
+      "no_file_provided": "No file provided",
+      "invalid_username": "A valid username (3-30 alphanumeric characters) is required",
+      "username_exists": "Username already taken",
+      "firstName_min": "First name must contain at least 2 characters",
+      "lastName_min": "Last name must contain at least 2 characters",
+      "email_required": "A valid email address is required",
+      "same_email_change": "New email must be different from current",
+      "email_exists": "Email already in use",
+      "passwords_required": "Your current password and new password are required",
+      "invalid_password": "A password of at least 8 characters is required",
+      "password_incorrect": "Current password incorrect",
+      "same_password_change": "New password must be different",
+      "daily_goal_range": "Daily goal must be between 1000 and 50000 steps",
+      "avatar_update_error": "An error occurred while updating avatar",
+      "profile_update_error": "An error occurred while updating profile",
+      "email_update_error": "An error occurred while updating email",
+      "password_update_error": "An error occurred while updating password",
+      "status_update_error": "An error occurred while updating status",
+      "daily_goal_update_error": "An error occurred while updating daily goal",
+      "get_profile_error": "An error occurred while retrieving profile",
+      "get_sessions_error": "An error occurred while retrieving sessions",
+      "revoke_session_error": "An error occurred while revoking session",
+      "revoke_all_sessions_error": "An error occurred while revoking all sessions"
+    },
+    "friends": {
+      "add_self": "You cannot add yourself as a friend",
+      "user_not_found": "User not found",
+      "request_already_sent": "Request already sent",
+      "already_friends": "You are already friends",
+      "search_required": "Search query is required"
+    },
+    "notifications": {
+      "not_found": "Notification not found",
+      "not_yours": "This notification does not belong to you",
+      "fetch_error": "Error retrieving notifications",
+      "update_error": "Error updating notification",
+      "fetch_requests_error": "Error retrieving requests"
+    },
+    "challenges": {
+      "not_found": "Challenge not found",
+      "fields_missing": "Fields are missing",
+      "time_required": "Time is required for this activity type: ${activityType}",
+      "not_yours": "This invitation is not for you",
+      "already_processed": "This invitation has already been processed",
+      "creator_modify_only": "Only the challenge creator can modify it",
+      "creator_delete_only": "Only the challenge creator can delete it",
+      "creator_regenerate_only": "Only the challenge creator can regenerate the access code",
+      "past_start_date": "Start date cannot be in the past",
+      "invalid_end_date": "End date must be after start date",
+      "access_code_required": "Access code is required for private challenges",
+      "private_only": "Only private challenges can have access codes",
+      "already_participating": "You are already participating in this challenge",
+      "not_participating": "You are not participating in this challenge",
+      "creator_cannot_leave": "The challenge creator cannot leave the challenge. Please delete the challenge.",
+      "get_challenges_error": "Error retrieving challenges",
+      "creation_error": "Error creating challenge",
+      "update_error": "Error updating challenge",
+      "join_error": "Error joining challenge",
+      "leave_error": "Error leaving challenge",
+      "delete_error": "Error deleting challenge",
+      "regenerate_error": "Error regenerating access code",
+      "get_details_error": "Error retrieving challenge details"
+    },
+    "steps": {
+      "not_found": "Entry not found",
+      "creation_error": "Error creating entry",
+      "update_error": "Error updating entry",
+      "favorite_error": "Error favoriting entry",
+      "delete_error": "Error deleting entry",
+      "no_hourly_data": "No hourly data provided",
+      "hour_required": "Hour is required",
+      "invalid_hour": "Invalid hour",
+      "invalid_steps": "Invalid steps count",
+      "invalid_distance": "Invalid distance",
+      "invalid_calories": "Invalid calories",
+      "invalid_active_time": "Invalid active time",
+      "invalid_mode": "All required fields (mode, date) must be provided",
+      "existing_entry": "Data already exists for ${hour}h"
+    },
+    "custom_goals": {
+      "future_deadline": "Deadline must be in the future",
+      "time_required": "Time is required for this activity type",
+      "creation_error": "Error creating custom goal"
+    },
+    "rewards": {
+      "not_found": "No reward found",
+      "fetch_error": "Error retrieving rewards"
+    },
+    "preferences": {
+      "update_error": "Error updating preferences"
+    }
+  },
+  "success": {
+    "auth": {
+      "account_created": "Account created successfully. A verification email has been sent.",
+      "email_verified": "Email verified successfully",
+      "email_resent": "A new verification code has been sent to your email",
+      "email_updated": "Email updated. A new verification code has been sent.",
+      "account_deleted": "Account deleted successfully",
+      "successful_login": "Login successful",
+      "reset_password_email_sent": "A reset link has been sent to your email, if it exists",
+      "reset_password_success": "Password reset successful",
+      "logout_success": "Logout successful"
+    },
+    "profile": {
+      "updated": "Profile updated",
+      "email_updated": "Email updated - Verification required",
+      "password_updated": "Password updated",
+      "status_updated": "Status updated",
+      "daily_goal_updated": "Daily goal has been updated",
+      "session_revoked": "Session revoked",
+      "all_sessions_revoked": "All sessions have been revoked"
+    },
+    "friends": {
+      "request_sent": "Friend request sent"
+    },
+    "challenges": {
+      "created": "Challenge created",
+      "updated": "Challenge updated",
+      "joined": "You have joined the challenge",
+      "left": "You have left the challenge",
+      "deleted": "Challenge deleted",
+      "regenerated": "Access code regenerated",
+      "invitation_accepted": "Invitation accepted",
+      "invitation_declined": "Invitation declined"
+    },
+    "steps": {
+      "created": "Entry created",
+      "updated": "Entry updated",
+      "deleted": "Entry deleted"
+    },
+    "custom_goals": {
+      "created": "Custom goal added",
+      "updated": "Custom goal updated",
+      "deleted": "Custom goal deleted"
+    },
+    "notifications": {
+      "marked_read": "Notification marked as read",
+      "all_marked_read": "All notifications have been marked as read"
+    },
+    "preferences": {
+      "notifications_updated": "Notification preferences updated"
+    }
+  }
+} 

@@ -122,11 +122,16 @@ const userSchema = new Schema({
       required: true,
       min: 1
     },
+    progress: {
+      type:Number,
+      min: 0,
+      max: 100
+    },
     time: {
       type: Number,
       min: 0,
       required: function () {
-        return ['steps-time', 'distance-time', 'calories-time', 'xp-time'].includes(this.type);
+        return ['steps-time', 'distance-time', 'calories-time', 'xp-time', 'challenges-time'].includes(this.type);
       }
     },
     deadline: {
@@ -156,9 +161,9 @@ const userSchema = new Schema({
 
   // --- Classement ---
   rankingHistory: [{
-    date: { type: Date, default: Date.now },
-    globalRank: Number,
-    challengeRank: Schema.Types.ObjectId, // Challenge associé si besoin
+    time: { type: Number }, // temps passé à la position en heure
+    globalRank: { type: Number },
+    challengeRank: { type: Schema.Types.ObjectId }, // Challenge associé si besoin
   }],
   level: {
     type: Number,

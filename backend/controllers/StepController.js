@@ -1,10 +1,13 @@
 const StepEntry = require('../models/StepEntry');
+const User = require('../models/User');
+const Notification = require('../models/Notification');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 const { parseAppleHealthData, parseSamsungHealthData } = require('../utils/ParseHealthData')
 const { updateUserStatsAfterImport, updateUserStats } = require('../utils/StepHelpers');
 const { updateChallengeProgress } = require('./ChallengeController');
 const { computeXpForEntry } = require('../utils/CalculateXP');
 const { updateUserRewards } = require('../controllers/RewardController');
+const { calculateLevel } = require('../utils/LevelSystem');
 const csv = require('csv-parser');
 
 // Récupérer toutes les entrées de l'utilisateur
@@ -138,9 +141,13 @@ const createStepEntry = async (req, res) => {
       await existingEntry.save();
       await updateUserStats(userId);
       await updateUserRewards(userId);
+      await updateChallengeProgress(userId);
+
+      await updateUserLevel(userId);
 
       return res.status(200).json({
         success: true,
+        message: "Entrée mise à jour",
         entry: existingEntry
       });
     } else {
@@ -161,8 +168,12 @@ const createStepEntry = async (req, res) => {
       await updateUserStats(userId);
       await updateUserRewards(userId);
       await updateChallengeProgress(userId);
+
+      await updateUserLevel(userId);
+
       return res.status(201).json({
         success: true,
+        message: "Entrée créée",
         entry: newEntry
       });
     }
@@ -188,7 +199,7 @@ const updateStepEntry = async (req, res) => {
     if (!entry) {
       return res.status(404).json({
         success: false,
-        error: 'Entrée non trouvée'
+        error: 'Entrée introuvable'
       });
     }
 
@@ -207,8 +218,11 @@ const updateStepEntry = async (req, res) => {
     await updateUserRewards(userId);
     await updateChallengeProgress(userId);
 
+    await updateUserLevel(userId);
+
     res.status(200).json({
       success: true,
+      message: "Entrée mise à jour",
       entry
     });
 
@@ -277,7 +291,7 @@ const deleteStepEntry = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Entrée supprimée avec succès'
+      message: 'Entrée supprimée'
     });
 
   } catch (error) {
@@ -350,6 +364,42 @@ const importHealthData = async (req, res) => {
     console.error('Erreur importation:', error);
     res.status(500).json({ error: 'Erreur lors de l\'importation' });
   }
+};
+
+const updateUserLevel = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+        if (!user) return;
+
+        const newLevel = calculateLevel(user.totalXP);
+        
+        if (newLevel > user.level) {
+            const levelUpXP = Math.floor((newLevel - user.level) * 100);
+            user.totalXP += levelUpXP;
+            
+            await createLevelUpNotification(user._id, newLevel);
+        }
+
+        user.level = newLevel;
+        await user.save();
+        await updateUserRewards(userId);
+    } catch (error) {
+        console.error('Error updating user level:', error);
+    }
+};
+
+const createLevelUpNotification = async (userId, newLevel) => {
+    try {
+        const notification = new Notification({
+            recipient: userId,
+            type: 'level_up',
+            content: `Félicitations ! Vous avez atteint le niveau ${newLevel} !`,
+            status: 'unread'
+        });
+        await notification.save();
+    } catch (error) {
+        console.error('Error creating level up notification:', error);
+    }
 };
 
 module.exports = {

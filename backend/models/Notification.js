@@ -24,6 +24,7 @@ const notificationSchema = new Schema({
       'friend_decline',
       'message',
       'badge_unlocked',
+      'level_up',
       'other'
     ],
     required: true

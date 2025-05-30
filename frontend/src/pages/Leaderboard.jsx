@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, MessageSquare, UserPlus, Clock, Award, BarChart2, Target, X, Info, Zap, Smile, Star, ArrowUp, ArrowDown, Medal, Crown, Heart, Share2, Settings, User, MapPin, Sliders } from 'lucide-react'
+import { Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, MessageSquare, UserPlus, Clock, Award, BarChart2, Target, X, Info, Zap, Smile, Star, ArrowUp, ArrowDown, Medal, Crown, Heart, Share2, Settings, User, MapPin, Sliders, Footprints, Spline } from 'lucide-react'
 import { Line, Pie } from "react-chartjs-2"
 import { Chart, registerables } from "chart.js"
 import "./Leaderboard.css"
@@ -135,10 +135,6 @@ const Leaderboard = () => {
           aValue = a.streak.max
           bValue = b.streak.max
           break
-        case "regularity":
-          aValue = a.regularityScore
-          bValue = b.regularityScore
-          break
         case "goal-completion":
           aValue = a.goalCompletionRate
           bValue = b.goalCompletionRate
@@ -173,9 +169,6 @@ const Leaderboard = () => {
         break
       case "streak":
         title = "Meilleures Streaks"
-        break
-      case "regularity":
-        title = "Régularité"
         break
       case "goal-completion":
         title = "Complétion d'Objectifs"
@@ -250,8 +243,6 @@ const Leaderboard = () => {
         return user.totalChallengesCompleted
       case "streak":
         return user.streak.max
-      case "regularity":
-        return user.regularityScore
       case "goal-completion":
         return user.goalCompletionRate
       default:
@@ -265,8 +256,6 @@ const Leaderboard = () => {
         return `${value.toFixed(1)} km`
       case "goal-completion":
         return `${value}%`
-      case "regularity":
-        return `${value}%`
       default:
         return value.toLocaleString("fr-FR")
     }
@@ -275,17 +264,15 @@ const Leaderboard = () => {
   const getMetricIcon = (type) => {
     switch (type) {
       case "xp":
-        return <Zap size={16} />
-      case "steps":
         return <Trophy size={16} />
+      case "steps":
+        return <Footprints size={16} />
       case "distance":
-        return <Award size={16} />
+        return <Spline size={16} />
       case "challenges":
         return <Target size={16} />
       case "streak":
         return <Zap size={16} />
-      case "regularity":
-        return <Clock size={16} />
       case "goal-completion":
         return <BarChart2 size={16} />
       default:
@@ -554,7 +541,6 @@ const Leaderboard = () => {
           lastAchieved: new Date(),
         },
 
-        regularityScore: Math.floor(50 + Math.random() * 50), // Percentage
         goalCompletionRate: Math.floor(60 + Math.random() * 40), // Percentage
 
         dailyGoal: 10000,
@@ -905,7 +891,7 @@ const Leaderboard = () => {
         <div className="your-position-card">
           <div className="position-header">
             <div className="position-title">
-              <Trophy size={24} />
+              <Crown size={24} />
               <h2>Votre position</h2>
             </div>
             <div className="position-rank">
@@ -915,21 +901,21 @@ const Leaderboard = () => {
           </div>
           <div className="position-stats">
             <div className="position-stat">
-              <div className="stat-icon">⭐</div>
+              <div className="stat-icon"><Trophy size={24}/></div>
               <div className="stat-content">
                 <span className="stat-value">{currentUser.totalXP.toLocaleString("fr-FR")}</span>
                 <span className="stat-label">XP total</span>
               </div>
             </div>
             <div className="position-stat">
-              <div className="stat-icon">👣</div>
+              <div className="stat-icon"><Footprints size={24}/></div>
               <div className="stat-content">
                 <span className="stat-value">{currentUser.totalSteps.toLocaleString("fr-FR")}</span>
                 <span className="stat-label">Pas totaux</span>
               </div>
             </div>
             <div className="position-stat">
-              <div className="stat-icon">🔥</div>
+              <div className="stat-icon"><Zap size={24}/></div>
               <div className="stat-content">
                 <span className="stat-value">{currentUser.streak.current}</span>
                 <span className="stat-label">Streak actuelle</span>
@@ -1008,21 +994,21 @@ const Leaderboard = () => {
                   className={leaderboardType === "xp" ? "active" : ""}
                   onClick={() => setLeaderboardType("xp")}
                 >
-                  <Zap size={16} />
+                  <Trophy size={16} />
                   <span>XP</span>
                 </button>
                 <button
                   className={leaderboardType === "steps" ? "active" : ""}
                   onClick={() => setLeaderboardType("steps")}
                 >
-                  <Trophy size={16} />
+                  <Footprints size={16} />
                   <span>Pas</span>
                 </button>
                 <button
                   className={leaderboardType === "distance" ? "active" : ""}
                   onClick={() => setLeaderboardType("distance")}
                 >
-                  <Award size={16} />
+                  <Spline size={16} />
                   <span>Distance</span>
                 </button>
                 <button
@@ -1038,13 +1024,6 @@ const Leaderboard = () => {
                 >
                   <Zap size={16} />
                   <span>Streak</span>
-                </button>
-                <button
-                  className={leaderboardType === "regularity" ? "active" : ""}
-                  onClick={() => setLeaderboardType("regularity")}
-                >
-                  <Clock size={16} />
-                  <span>Régularité</span>
                 </button>
                 <button
                   className={leaderboardType === "goal-completion" ? "active" : ""}

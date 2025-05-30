@@ -112,15 +112,11 @@ const updateUserRewards = async (userId) => {
     // Get all rewards from database
     const allRewards = await Reward.find({});
 
-    // Get all step entries once at the beginning for efficiency
+    // Get all step entries
     const allStepEntries = await StepEntry.find({ user: user._id }).sort({ date: 1 });
 
     // Check each reward type
     for (const reward of allRewards) {
-      // Skip level and rank rewards as requested
-      if (reward.criteria === 'level' || reward.criteria === 'rank') {
-        continue;
-      }
 
       // Check if user meets minimum level requirement
       if (user.level < reward.minLevel) {
@@ -187,6 +183,16 @@ const updateUserRewards = async (userId) => {
           shouldAward = await checkChallengesTimeReward(user, reward);
           progress = calculateChallengesTimeProgress(user, reward);
           break;
+        
+        case 'level':
+            shouldAward = await checkLevelReward(user, reward);
+            progress = calculateLevelProgress(user, reward);
+            break;
+        
+        case 'rank':
+            shouldAward = await checkRankReward(user, reward);
+            progress = calculateRankProgress(user, reward);
+            break;
 
         case 'friend':
           shouldAward = await checkFriendReward(user, reward);
@@ -448,6 +454,39 @@ const calculateChallengesTimeProgress = async (user, reward) => {
   );
 
   return Math.min(Math.round((completedChallenges.length / reward.target) * 100), 100);
+};
+
+// Level-based rewards
+const checkLevelReward = async (user, reward) => {
+  return user.level >= reward.target;
+};
+
+const calculateLevelProgress = (user, reward) => {
+  return Math.min(Math.round((user.level / reward.target) * 100), 100);
+};
+
+// Rank-based rewards
+const checkRankReward = async (user, reward) => {
+  const requiredLevel = getRankRequiredLevel(reward.tier);
+  return user.level >= requiredLevel;
+};
+
+const calculateRankProgress = (user, reward) => {
+  const requiredLevel = getRankRequiredLevel(reward.tier);
+  return Math.min(Math.round((user.level / requiredLevel) * 100), 100);
+};
+
+const getRankRequiredLevel = (tier) => {
+  switch (tier) {
+      case 'bronze': return 10;
+      case 'silver': return 20;
+      case 'gold': return 30;
+      case 'platinum': return 40;
+      case 'ruby': return 42;
+      case 'sapphire': return 45;
+      case 'diamond': return 50;
+      default: return 999;
+  }
 };
 
 // Friend-based rewards

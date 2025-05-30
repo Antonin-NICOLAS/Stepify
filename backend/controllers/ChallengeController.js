@@ -208,13 +208,14 @@ const createChallenge = async (req, res) => {
 
     return res.status(201).json({
       success: true,
+      message: "Challenge créé",
       challenge: newChallenge
     });
   } catch (error) {
     console.error('Error creating challenge:', error);
     return res.status(400).json({
       success: false,
-      error: error.message
+      error: "Une erreur est survenue lors de la création du challenge"
     });
   }
 };
@@ -273,13 +274,14 @@ const updateChallenge = async (req, res) => {
     await challenge.save();
     return res.status(200).json({
       success: true,
+      message: "Challenge mis à jour",
       challenge: challenge
     });
   } catch (error) {
     console.error('Error updating challenge:', error);
     return res.status(400).json({
       success: false,
-      error: error.message
+      error: "Erreur lors de la mise à jour du challenge"
     });
   }
 };
@@ -341,6 +343,7 @@ const joinChallenge = async (req, res) => {
 
     return res.status(200).json({
       success: true,
+      message: "Vous avez rejoint le challenge",
       challenge: challenge
     });
   } catch (error) {
@@ -391,6 +394,7 @@ const leaveChallenge = async (req, res) => {
 
     return res.status(200).json({
       success: true,
+      message: "Vous avez quitté le challenge",
       challenge: challenge
     });
   } catch (error) {
@@ -431,6 +435,7 @@ const deleteChallenge = async (req, res) => {
 
     return res.status(200).json({
       success: true,
+      message: "Challenge supprimé",
       data: {}
     });
   } catch (error) {
@@ -468,13 +473,14 @@ const regenerateAccessCode = async (req, res) => {
 
     return res.status(200).json({
       success: true,
+      message: "Code d'accès régénéré",
       code: newAccessCode
     });
   } catch (error) {
     console.error('Error regenerating access code:', error);
     return res.status(500).json({
       success: false,
-      error: 'Error regenerating access code'
+      error: 'Erreur lors de la régénération du code d\'accès'
     });
   }
 };
@@ -503,7 +509,7 @@ const getChallengeDetails = async (req, res) => {
     console.error('Error fetching challenge:', error);
     return res.status(500).json({
       success: false,
-      error: 'Error retrieving challenge'
+      error: 'Erreur lors de la récupération des détails du challenge'
     });
   }
 };

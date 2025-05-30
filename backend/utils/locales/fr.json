@@ -1,0 +1,187 @@
+{
+    "errors": {
+        "generic": {
+            "req_auth": "Authentification requise",
+            "invalid_session": "Session expirée ou invalide",
+            "internal_error": "Une erreur interne est survenue",
+            "retrieve_error": "Une erreur est survenue lors de la récupération des données",
+            "unauthorized": "Non autorisé",
+            "user_not_found": "Utilisateur introuvable"
+        },
+        "auth": {
+            "firstName_required": "Un prénom valide (2 caractères minimum) est requis",
+            "lastName_required": "Un nom valide (2 caractères minimum) est requis",
+            "email_required": "Une adresse email valide est requise",
+            "invalid_username": "Un nom d'utilisateur valide (3-30 caractères alphanumériques) est requis",
+            "invalid_password": "Un mot de passe de 8 caractères minimum est requis",
+            "email_exists": "Email déjà utilisé",
+            "username_exists": "Nom d'utilisateur déjà pris",
+            "email_verified": "Email déjà vérifié",
+            "invalid_code": "Code de vérification invalide",
+            "code_expired": "Le code de vérification a expiré",
+            "invalid_token": "Token invalide",
+            "same_email_change": "Le nouvel email doit être différent de l'actuel",
+            "password_required": "Le mot de passe est requis pour supprimer le compte",
+            "password_incorrect": "Mot de passe incorrect",
+            "email_password_required": "L'email et le mot de passe sont requis",
+            "email_not_found": "Email associé à aucun compte",
+            "limit_reached": "Trop de tentatives. Réessayez dans ${remainingTime} minutes",
+            "account_locked": "Trop de tentatives. Votre compte est temporairement verrouillé.",
+            "invalid_reset_link": "Lien invalide ou expiré. Veuillez faire une nouvelle demande de réinitialisation.",
+            "account_creation_error": "Une erreur est survenue lors de la création du compte",
+            "email_verification_error": "Une erreur est survenue lors de la vérification de l'email",
+            "email_resent_error": "Une erreur est survenue lors de l'envoi du nouveau code de vérification",
+            "email_change_error": "Une erreur est survenue lors du changement d'email",
+            "account_deletion_error": "Une erreur est survenue lors de la suppression du compte",
+            "login_error": "Une erreur est survenue lors de la connexion",
+            "forgot_password_error": "Une erreur est survenue lors de la demande de réinitialisation de mot de passe",
+            "reset_password_error": "Une erreur est survenue lors de la réinitialisation du mot de passe",
+            "logout_error": "Une erreur est survenue lors de la déconnexion",
+            "check_auth_error": "Une erreur est survenue lors de la vérification de l'authentification"
+        },
+        "profile": {
+            "no_file_provided": "Aucun fichier fourni",
+            "invalid_username": "Un nom d'utilisateur valide (3-30 caractères alphanumériques) est requis",
+            "username_exists": "Nom d'utilisateur déjà pris",
+            "firstName_min": "Le prénom doit contenir au moins 2 caractères",
+            "lastName_min": "Le nom doit contenir au moins 2 caractères",
+            "email_required": "Une adresse email valide est requise",
+            "same_email_change": "Le nouvel email doit être différent de l'actuel",
+            "email_exists": "Email déjà utilisé",
+            "passwords_required": "Votre mot de passe actuel et le nouveau mot de passe sont requis",
+            "invalid_password": "Un mot de passe de 8 caractères minimum est requis",
+            "password_incorrect": "Mot de passe actuel incorrect",
+            "same_password_change": "Le nouveau mot de passe doit être différent",
+            "daily_goal_range": "L'objectif quotidien doit être compris entre 1000 et 50000 pas",
+            "avatar_update_error": "Une erreur est survenue lors de la mise à jour de l'avatar",
+            "profile_update_error": "Une erreur est survenue lors de la mise à jour du profil",
+            "email_update_error": "Une erreur est survenue lors de la mise à jour de l'email",
+            "password_update_error": "Une erreur est survenue lors de la mise à jour du mot de passe",
+            "status_update_error": "Une erreur est survenue lors de la mise à jour du statut",
+            "daily_goal_update_error": "Une erreur est survenue lors de la mise à jour de l'objectif quotidien",
+            "get_profile_error": "Une erreur est survenue lors de la récupération du profil",
+            "get_sessions_error": "Une erreur est survenue lors de la récupération des sessions",
+            "revoke_session_error": "Une erreur est survenue lors de la révocation de la session",
+            "revoke_all_sessions_error": "Une erreur est survenue lors de la révocation de toutes les sessions"
+        },
+        "friends": {
+            "add_self": "Vous ne pouvez pas vous ajouter vous-même",
+            "user_not_found": "Utilisateur introuvable",
+            "request_already_sent": "Demande déjà envoyée",
+            "already_friends": "Vous êtes déjà amis",
+            "search_required": "Un terme de recherche est requis"
+        },
+        "notifications": {
+            "not_found": "Notification introuvable",
+            "not_yours": "Cette notification ne vous est pas destinée",
+            "fetch_error": "Erreur lors de la récupération des notifications",
+            "update_error": "Erreur lors de la mise à jour de la notification",
+            "fetch_requests_error": "Erreur lors de la récupération des demandes"
+        },
+        "challenges": {
+            "not_found": "Challenge introuvable",
+            "fields_missing": "Des champs sont manquants",
+            "time_required": "La durée est requise pour ce type d'activité : ${activityType}",
+            "not_yours": "Cette invitation ne vous est pas destinée",
+            "already_processed": "Cette invitation a déjà été traitée",
+            "creator_modify_only": "Seul le créateur du challenge peut le modifier",
+            "creator_delete_only": "Seul le créateur du challenge peut le supprimer",
+            "creator_regenerate_only": "Seul le créateur du challenge peut régénérer le code d'accès",
+            "past_start_date": "La date de début ne peut pas être dans le passé",
+            "invalid_end_date": "La date de fin doit être après la date de début",
+            "access_code_required": "Le code d'accès est requis pour les challenges privés",
+            "private_only": "Seuls les challenges privés peuvent avoir des codes d'accès",
+            "already_participating": "Vous êtes déjà participant à ce challenge",
+            "not_participating": "Vous n'êtes pas participant à ce challenge",
+            "creator_cannot_leave": "Le créateur du challenge ne peut pas quitter le challenge. Veuillez supprimer le challenge.",
+            "get_challenges_error": "Erreur lors de la récupération des challenges",
+            "creation_error": "Erreur lors de la création du challenge",
+            "update_error": "Erreur lors de la mise à jour du challenge",
+            "join_error": "Erreur lors de l'ajout au challenge",
+            "leave_error": "Erreur lors de la sortie du challenge",
+            "delete_error": "Erreur lors de la suppression du challenge",
+            "regenerate_error": "Erreur lors de la régénération du code d'accès",
+            "get_details_error": "Erreur lors de la récupération des détails du challenge"
+        },
+        "steps": {
+            "not_found": "Entrée introuvable",
+            "creation_error": "Erreur lors de la création de l'entrée",
+            "update_error": "Erreur lors de la mise à jour de l'entrée",
+            "favorite_error": "Erreur lors de la mise en favoris de l'entrée",
+            "delete_error": "Erreur lors de la suppression de l'entrée",
+            "no_hourly_data": "Aucune donnée horaire fournie",
+            "hour_required": "L'heure est requise",
+            "invalid_hour": "Heure invalide",
+            "invalid_steps": "Nombre de pas invalide",
+            "invalid_distance": "Distance invalide",
+            "invalid_calories": "Calories invalides",
+            "invalid_active_time": "Temps d'activité invalide",
+            "invalid_mode": "Tous les champs requis (mode, date) doivent être fournis",
+            "existing_entry": "Données déjà présentes pour ${hour}h"
+        },
+        "custom_goals": {
+            "future_deadline": "La date limite doit être dans le futur",
+            "time_required": "La durée est requise pour ce type d'activité",
+            "creation_error": "Erreur lors de la création de l'objectif personnalisé"
+        },
+        "rewards": {
+            "not_found": "Aucune récompense trouvée",
+            "fetch_error": "Erreur lors de la récupération des récompenses"
+        },
+        "preferences": {
+            "update_error": "Erreur lors de la mise à jour des préférences"
+        }
+    },
+    "success": {
+        "auth": {
+            "account_created": "Compte créé avec succès. Un email de vérification a été envoyé.",
+            "email_verified": "Email vérifié avec succès",
+            "email_resent": "Un nouveau code de vérification a été envoyé à votre email",
+            "email_updated": "Email mis à jour. Un nouveau code de vérification a été envoyé.",
+            "account_deleted": "Compte supprimé avec succès",
+            "successful_login": "Connexion réussie",
+            "reset_password_email_sent": "Un lien de réinitialisation a été envoyé à votre email, s'il existe",
+            "reset_password_success": "Mot de passe réinitialisé avec succès",
+            "logout_success": "Déconnexion réussie"
+        },
+        "profile": {
+            "updated": "Profil mis à jour",
+            "email_updated": "Email mis à jour - Vérification requise",
+            "password_updated": "Mot de passe mis à jour",
+            "status_updated": "Statut mis à jour",
+            "daily_goal_updated": "L'objectif quotidien a été mis à jour",
+            "session_revoked": "Session révoquée",
+            "all_sessions_revoked": "Toutes les sessions ont été révoquées"
+        },
+        "friends": {
+            "request_sent": "Demande d'ami envoyée"
+        },
+        "challenges": {
+            "created": "Challenge créé",
+            "updated": "Challenge mis à jour",
+            "joined": "Vous avez rejoint le challenge",
+            "left": "Vous avez quitté le challenge",
+            "deleted": "Challenge supprimé",
+            "regenerated": "Code d'accès régénéré",
+            "invitation_accepted": "Invitation acceptée",
+            "invitation_declined": "Invitation déclinée"
+        },
+        "steps": {
+            "created": "Entrée créée",
+            "updated": "Entrée mise à jour",
+            "deleted": "Entrée supprimée"
+        },
+        "custom_goals": {
+            "created": "Objectif personnalisé ajouté",
+            "updated": "Objectif personnalisé mis à jour",
+            "deleted": "Objectif personnalisé supprimé"
+        },
+        "notifications": {
+            "marked_read": "Notification marquée comme lue",
+            "all_marked_read": "Toutes les notifications ont été marquées comme lues"
+        },
+        "preferences": {
+            "notifications_updated": "Préférences de notification mises à jour"
+        }
+    }
+}
