@@ -1,7 +1,7 @@
 {
     "errors": {
         "generic": {
-            "req_auth": "Authentification requise",
+            "authentication_required": "Authentification requise",
             "invalid_session": "Session expirée ou invalide",
             "internal_error": "Une erreur interne est survenue",
             "retrieve_error": "Une erreur est survenue lors de la récupération des données",
@@ -11,14 +11,11 @@
         "auth": {
             "firstName_required": "Un prénom valide (2 caractères minimum) est requis",
             "lastName_required": "Un nom valide (2 caractères minimum) est requis",
-            "email_required": "Une adresse email valide est requise",
+            "invalid_email": "Une adresse email valide est requise",
             "invalid_username": "Un nom d'utilisateur valide (3-30 caractères alphanumériques) est requis",
             "invalid_password": "Un mot de passe de 8 caractères minimum est requis",
             "email_exists": "Email déjà utilisé",
             "username_exists": "Nom d'utilisateur déjà pris",
-            "email_verified": "Email déjà vérifié",
-            "invalid_code": "Code de vérification invalide",
-            "code_expired": "Le code de vérification a expiré",
             "invalid_token": "Token invalide",
             "same_email_change": "Le nouvel email doit être différent de l'actuel",
             "password_required": "Le mot de passe est requis pour supprimer le compte",
@@ -28,16 +25,20 @@
             "limit_reached": "Trop de tentatives. Réessayez dans ${remainingTime} minutes",
             "account_locked": "Trop de tentatives. Votre compte est temporairement verrouillé.",
             "invalid_reset_link": "Lien invalide ou expiré. Veuillez faire une nouvelle demande de réinitialisation.",
-            "account_creation_error": "Une erreur est survenue lors de la création du compte",
             "email_verification_error": "Une erreur est survenue lors de la vérification de l'email",
             "email_resent_error": "Une erreur est survenue lors de l'envoi du nouveau code de vérification",
             "email_change_error": "Une erreur est survenue lors du changement d'email",
-            "account_deletion_error": "Une erreur est survenue lors de la suppression du compte",
             "login_error": "Une erreur est survenue lors de la connexion",
-            "forgot_password_error": "Une erreur est survenue lors de la demande de réinitialisation de mot de passe",
-            "reset_password_error": "Une erreur est survenue lors de la réinitialisation du mot de passe",
             "logout_error": "Une erreur est survenue lors de la déconnexion",
-            "check_auth_error": "Une erreur est survenue lors de la vérification de l'authentification"
+            "check_auth_error": "Une erreur est survenue lors de la vérification de l'authentification",
+            "verification_code_expired": "Le code de vérification a expiré",
+            "invalid_verification_code": "Code de vérification invalide",
+            "already_verified": "Email déjà vérifié",
+            "creation_error": "Une erreur est survenue lors de la création du compte",
+            "deletion_error": "Une erreur est survenue lors de la suppression du compte",
+            "reset_request_error": "Une erreur est survenue lors de la demande de réinitialisation de mot de passe",
+            "reset_error": "Une erreur est survenue lors de la réinitialisation du mot de passe",
+            "session_expired": "Session expirée"
         },
         "profile": {
             "no_file_provided": "Aucun fichier fourni",
@@ -65,6 +66,7 @@
             "revoke_all_sessions_error": "Une erreur est survenue lors de la révocation de toutes les sessions"
         },
         "friends": {
+            "fetch_error": "Erreur lors de la récupération des amis",
             "add_self": "Vous ne pouvez pas vous ajouter vous-même",
             "user_not_found": "Utilisateur introuvable",
             "request_already_sent": "Demande déjà envoyée",
@@ -76,7 +78,24 @@
             "not_yours": "Cette notification ne vous est pas destinée",
             "fetch_error": "Erreur lors de la récupération des notifications",
             "update_error": "Erreur lors de la mise à jour de la notification",
-            "fetch_requests_error": "Erreur lors de la récupération des demandes"
+            "fetch_requests_error": "Erreur lors de la récupération des demandes",
+            "search_query_required": "Un terme de recherche est requis",
+            "search_error": "Erreur lors de la recherche d'utilisateurs",
+            "cannot_add_self": "Vous ne pouvez pas vous ajouter vous-même",
+            "request_not_found": "Demande introuvable",
+            "invalid_request": "Demande non valide",
+            "friend_request_error": "Erreur lors de l'envoi de la demande d'ami",
+            "friend_request_accept_error": "Erreur lors de l'acceptation de la demande d'ami",
+            "friend_request_cancel_error": "Erreur lors de l'annulation de la demande d'ami",
+            "friend_request_decline_error": "Erreur lors du refus de la demande d'ami",
+            "friend_remove_error": "Erreur lors de la suppression de l'ami",
+            "delete_error": "Erreur lors de la suppression de la notification",
+            "pending_requests_error": "Erreur lors de la récupération des demandes en attente",
+            "invitation_not_found": "Invitation introuvable",
+            "unauthorized_invitation": "Cette invitation ne vous est pas destinée",
+            "invitation_already_handled": "Cette invitation a déjà été traitée",
+            "invalid_action": "Action invalide",
+            "invitation_response_error": "Erreur lors du traitement de l'invitation"
         },
         "challenges": {
             "not_found": "Challenge introuvable",
@@ -105,6 +124,7 @@
         },
         "steps": {
             "not_found": "Entrée introuvable",
+            "file_too_big": "Fichier trop volumineux (max 100MB)",
             "creation_error": "Erreur lors de la création de l'entrée",
             "update_error": "Erreur lors de la mise à jour de l'entrée",
             "favorite_error": "Erreur lors de la mise en favoris de l'entrée",
@@ -119,30 +139,44 @@
             "invalid_mode": "Tous les champs requis (mode, date) doivent être fournis",
             "existing_entry": "Données déjà présentes pour ${hour}h"
         },
-        "custom_goals": {
-            "future_deadline": "La date limite doit être dans le futur",
-            "time_required": "La durée est requise pour ce type d'activité",
-            "creation_error": "Erreur lors de la création de l'objectif personnalisé"
+        "goals": {
+            "not_found": "Objectif introuvable",
+            "future_deadline_required": "La date limite doit être dans le futur",
+            "time_required": "La durée est requise pour ce type d'activité : ${type}",
+            "creation_error": "Erreur lors de la création de l'objectif",
+            "update_error": "Erreur lors de la mise à jour de l'objectif",
+            "delete_error": "Erreur lors de la suppression de l'objectif"
         },
         "rewards": {
-            "not_found": "Aucune récompense trouvée",
-            "fetch_error": "Erreur lors de la récupération des récompenses"
+            "none_found": "Aucune récompense trouvée",
+            "not_found": "Récompense introuvable",
+            "already_unlocked": "Vous avez déjà débloqué cette récompense",
+            "fetch_error": "Erreur lors de la récupération des récompenses",
+            "vitrine_update_error": "Erreur lors de la mise à jour de la vitrine"
         },
         "preferences": {
-            "update_error": "Erreur lors de la mise à jour des préférences"
+            "invalid_theme": "Préférence de thème invalide",
+            "theme_update_error": "Erreur lors de la mise à jour du thème",
+            "unsupported_language": "Langue non supportée",
+            "language_update_error": "Erreur lors de la mise à jour de la langue",
+            "privacy_update_error": "Erreur lors de la mise à jour des paramètres de confidentialité",
+            "notifications_update_error": "Erreur lors de la mise à jour des préférences de notification"
+        },
+        "ranking": {
+            "fetch_error": "Erreur lors de la récupération du classement"
         }
     },
     "success": {
         "auth": {
             "account_created": "Compte créé avec succès. Un email de vérification a été envoyé.",
             "email_verified": "Email vérifié avec succès",
-            "email_resent": "Un nouveau code de vérification a été envoyé à votre email",
-            "email_updated": "Email mis à jour. Un nouveau code de vérification a été envoyé.",
+            "verification_code_sent": "Un nouveau code de vérification a été envoyé à votre email",
+            "email_updated": "Email mis à jour. Un code de vérification a été envoyé.",
             "account_deleted": "Compte supprimé avec succès",
             "successful_login": "Connexion réussie",
-            "reset_password_email_sent": "Un lien de réinitialisation a été envoyé à votre email, s'il existe",
-            "reset_password_success": "Mot de passe réinitialisé avec succès",
-            "logout_success": "Déconnexion réussie"
+            "reset_link_sent": "Un lien de réinitialisation a été envoyé à votre email, s'il existe",
+            "password_reset": "Mot de passe réinitialisé avec succès",
+            "logged_out": "Déconnexion réussie"
         },
         "profile": {
             "updated": "Profil mis à jour",
@@ -153,8 +187,17 @@
             "session_revoked": "Session révoquée",
             "all_sessions_revoked": "Toutes les sessions ont été révoquées"
         },
-        "friends": {
-            "request_sent": "Demande d'ami envoyée"
+        "notifications": {
+            "friend_request_sent": "Demande d'ami envoyée",
+            "friend_request_accepted": "Demande d'ami acceptée",
+            "friend_request_cancelled": "Demande d'ami annulée",
+            "friend_request_declined": "Demande d'ami refusée",
+            "friend_removed": "Ami supprimé",
+            "deleted": "Notification supprimée",
+            "marked_read": "Notification marquée comme lue",
+            "all_marked_read": "Toutes les notifications ont été marquées comme lues",
+            "challenge_accepted": "Invitation au challenge acceptée",
+            "challenge_declined": "Invitation au challenge refusée"
         },
         "challenges": {
             "created": "Challenge créé",
@@ -171,16 +214,19 @@
             "updated": "Entrée mise à jour",
             "deleted": "Entrée supprimée"
         },
-        "custom_goals": {
+        "goals": {
             "created": "Objectif personnalisé ajouté",
+            "created_from_reward": "Objectif personnalisé créé à partir de la récompense",
             "updated": "Objectif personnalisé mis à jour",
             "deleted": "Objectif personnalisé supprimé"
         },
-        "notifications": {
-            "marked_read": "Notification marquée comme lue",
-            "all_marked_read": "Toutes les notifications ont été marquées comme lues"
+        "rewards": {
+            "vitrine_updated": "Vitrine mise à jour"
         },
         "preferences": {
+            "theme_updated": "Préférence de thème mise à jour",
+            "language_updated": "Préférence linguistique mise à jour",
+            "privacy_updated": "Paramètres de confidentialité mis à jour",
             "notifications_updated": "Préférences de notification mises à jour"
         }
     }

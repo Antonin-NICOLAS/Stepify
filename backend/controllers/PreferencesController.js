@@ -1,6 +1,7 @@
 // preferencesController.js
 const UserModel = require('../models/User');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization');
+const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 
 const updateThemePreference = async (req, res) => {
     const { userId } = req.params;
@@ -10,10 +11,7 @@ const updateThemePreference = async (req, res) => {
 
     try {
         if (!['light', 'dark', 'auto'].includes(themePreference)) {
-            return res.status(400).json({
-                success: false,
-                error: "Préférence de thème invalide"
-            });
+            return sendLocalizedError(res, 400, 'errors.preferences.invalid_theme');
         }
 
         const user = await UserModel.findByIdAndUpdate(
@@ -22,16 +20,12 @@ const updateThemePreference = async (req, res) => {
             { new: true }
         ).select('-password -verificationToken');
 
-        res.status(200).json({
-            success: true,
-            message: 'Préférence de thème mise à jour',
+        return sendLocalizedSuccess(res, 'success.preferences.theme_updated', {}, {
             themePreference: user.themePreference
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la mise à jour du thème"
-        });
+        console.error('Error updating theme preference:', error);
+        return sendLocalizedError(res, 500, 'errors.preferences.theme_update_error');
     }
 };
 
@@ -45,10 +39,7 @@ const updateLanguagePreference = async (req, res) => {
         // Liste des langues supportées - à adapter selon vos besoins
         const supportedLanguages = ['fr', 'en', 'es', 'de'];
         if (!supportedLanguages.includes(languagePreference)) {
-            return res.status(400).json({
-                success: false,
-                error: "Langue non supportée"
-            });
+            return sendLocalizedError(res, 400, 'errors.preferences.unsupported_language');
         }
 
         const user = await UserModel.findByIdAndUpdate(
@@ -57,16 +48,12 @@ const updateLanguagePreference = async (req, res) => {
             { new: true }
         ).select('-password -verificationToken');
 
-        res.status(200).json({
-            success: true,
-            message: 'Préférence linguistique mise à jour',
+        return sendLocalizedSuccess(res, 'success.preferences.language_updated', {}, {
             languagePreference: user.languagePreference
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la mise à jour de la langue"
-        });
+        console.error('Error updating language preference:', error);
+        return sendLocalizedError(res, 500, 'errors.preferences.language_update_error');
     }
 };
 
@@ -84,7 +71,6 @@ const updatePrivacySettings = async (req, res) => {
                 allowFriendRequests: privacySettings.allowFriendRequests,
                 allowChallengeInvites: privacySettings.allowChallengeInvites,
                 showLastLogin: privacySettings.showLastLogin
-
             }
         };
 
@@ -94,16 +80,12 @@ const updatePrivacySettings = async (req, res) => {
             { new: true }
         ).select('-password -verificationToken');
 
-        res.status(200).json({
-            success: true,
-            message: 'Paramètres de confidentialité mis à jour',
+        return sendLocalizedSuccess(res, 'success.preferences.privacy_updated', {}, {
             privacySettings: user.privacySettings
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la mise à jour des paramètres"
-        });
+        console.error('Error updating privacy settings:', error);
+        return sendLocalizedError(res, 500, 'errors.preferences.privacy_update_error');
     }
 };
 
@@ -126,16 +108,12 @@ const updateNotificationPreferences = async (req, res) => {
             notificationPreferences: validPreferences
         });
 
-        res.status(200).json({
-            success: true,
-            message: "Préférences de notification mises à jour",
+        return sendLocalizedSuccess(res, 'success.preferences.notifications_updated', {}, {
             preferences: validPreferences
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la mise à jour des préférences"
-        });
+        console.error('Error updating notification preferences:', error);
+        return sendLocalizedError(res, 500, 'errors.preferences.notifications_update_error');
     }
 };
 

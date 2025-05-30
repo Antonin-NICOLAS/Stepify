@@ -1,21 +1,21 @@
 const Reward = require('../models/Reward');
 const User = require('../models/User');
 const StepEntry = require('../models/StepEntry');
-const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
+const { checkAuthorization } = require('../middlewares/VerifyAuthorization');
+const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 
 const getAllRewards = async (req, res) => {
-
   try {
     const rewards = await Reward.find();
 
     if (!rewards) {
-      return res.status(404).json({ success: false, error: "No reward found" });
+      return sendLocalizedError(res, 404, 'errors.rewards.none_found');
     }
 
-    return res.status(200).json({ success: true, rewards });
+    return sendLocalizedSuccess(res, null, {}, { rewards });
   } catch (error) {
     console.error("Error fetching rewards:", error);
-    return res.status(500).json({ success: false, error: "Internal server error" });
+    return sendLocalizedError(res, 500, 'errors.rewards.fetch_error');
   }
 }
 
@@ -28,13 +28,13 @@ const getMyRewards = async (req, res) => {
     const user = await User.findById(userId).populate('rewardsUnlocked.rewardId', 'name description iconUrl criteria tier time earnedBy minLevel isInVitrine isRepeatable target');
 
     if (!user) {
-      return res.status(404).json({ success: false, error: "User not found" });
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
     }
 
-    return res.status(200).json({ success: true, rewards: user.rewardsUnlocked });
+    return sendLocalizedSuccess(res, null, {}, { rewards: user.rewardsUnlocked });
   } catch (error) {
     console.error("Error fetching user's rewards:", error);
-    return res.status(500).json({ success: false, error: "Internal server error" });
+    return sendLocalizedError(res, 500, 'errors.rewards.fetch_error');
   }
 }
 
@@ -49,17 +49,17 @@ const getVitrineRewards = async (req, res) => {
       .select('rewardsUnlocked');
 
     if (!user) {
-      return res.status(404).json({ success: false, error: "User not found" });
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
     }
 
     const vitrineRewards = user.rewardsUnlocked
       .filter(r => r.isInVitrine)
       .slice(0, 3);
 
-    return res.status(200).json({ success: true, vitrine: vitrineRewards });
+    return sendLocalizedSuccess(res, null, {}, { vitrine: vitrineRewards });
   } catch (error) {
     console.error("Error fetching vitrine rewards:", error);
-    return res.status(500).json({ success: false, error: "Internal server error" });
+    return sendLocalizedError(res, 500, 'errors.rewards.fetch_error');
   }
 };
 
@@ -71,32 +71,21 @@ const setInVitrine = async (req, res) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        error: 'Utilisateur non trouvé'
-      });
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
     }
+
     const reward = user.rewardsUnlocked.find(r => r.rewardId._id.toString() === rewardId);
     if (!reward) {
-      return res.status(404).json({
-        success: false,
-        error: 'Récompense non trouvée dans les récompenses de l\'utilisateur'
-      });
+      return sendLocalizedError(res, 404, 'errors.rewards.not_found');
     }
     // Toggle isInVitrine status
     reward.isInVitrine === false ? reward.isInVitrine = true : reward.isInVitrine = false
     await user.save();
 
-    res.status(200).json({
-      success: true
-    });
-
+    return sendLocalizedSuccess(res, 'success.rewards.vitrine_updated');
   } catch (error) {
-    console.error('Erreur favoris entrée:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la mise en favoris de l\'entrée'
-    });
+    console.error('Error updating vitrine status:', error);
+    return sendLocalizedError(res, 500, 'errors.rewards.vitrine_update_error');
   }
 };
 
@@ -183,16 +172,16 @@ const updateUserRewards = async (userId) => {
           shouldAward = await checkChallengesTimeReward(user, reward);
           progress = calculateChallengesTimeProgress(user, reward);
           break;
-        
+
         case 'level':
-            shouldAward = await checkLevelReward(user, reward);
-            progress = calculateLevelProgress(user, reward);
-            break;
-        
+          shouldAward = await checkLevelReward(user, reward);
+          progress = calculateLevelProgress(user, reward);
+          break;
+
         case 'rank':
-            shouldAward = await checkRankReward(user, reward);
-            progress = calculateRankProgress(user, reward);
-            break;
+          shouldAward = await checkRankReward(user, reward);
+          progress = calculateRankProgress(user, reward);
+          break;
 
         case 'friend':
           shouldAward = await checkFriendReward(user, reward);
@@ -458,35 +447,20 @@ const calculateChallengesTimeProgress = async (user, reward) => {
 
 // Level-based rewards
 const checkLevelReward = async (user, reward) => {
-  return user.level >= reward.target;
+  return user.level <= reward.target;
 };
 
 const calculateLevelProgress = (user, reward) => {
-  return Math.min(Math.round((user.level / reward.target) * 100), 100);
+  return Math.min(Math.round((reward.target / user.level) * 100), 100);
 };
 
-// Rank-based rewards
+//TODO: Rank-based rewards
 const checkRankReward = async (user, reward) => {
-  const requiredLevel = getRankRequiredLevel(reward.tier);
-  return user.level >= requiredLevel;
+  return user.level <= reward.target;
 };
 
 const calculateRankProgress = (user, reward) => {
-  const requiredLevel = getRankRequiredLevel(reward.tier);
-  return Math.min(Math.round((user.level / requiredLevel) * 100), 100);
-};
-
-const getRankRequiredLevel = (tier) => {
-  switch (tier) {
-      case 'bronze': return 10;
-      case 'silver': return 20;
-      case 'gold': return 30;
-      case 'platinum': return 40;
-      case 'ruby': return 42;
-      case 'sapphire': return 45;
-      case 'diamond': return 50;
-      default: return 999;
-  }
+  return Math.min(Math.round((reward.target / user.level) * 100), 100);
 };
 
 // Friend-based rewards

@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken')
+const { sendLocalizedError } = require('../utils/ResponseHelper')
 
 const verifyToken = (req, res, next) => {
   const jwtauth = req.cookies.jwtauth;
   if (!jwtauth) {
-    return res.status(401).json({ success: false, error: "Authentification requise" });
+    return sendLocalizedError(res, 401, 'errors.generic.authentication_required');
   }
   
   try {
@@ -12,18 +13,14 @@ const verifyToken = (req, res, next) => {
     });
 
     if (!decoded) {
-      return res.status(401).json({ success: false, error: "Token invalide" });
+      return sendLocalizedError(res, 401, 'errors.auth.invalid_token');
     }
     req.userId = decoded.id;
     req.token = jwtauth;
     next();
   } catch (error) {
     console.error("Token verification error:", error);
-    return res.status(401).json({ 
-      success: false, 
-      error: "Session invalide",
-      details: error.name === 'TokenExpiredError' ? 'Token expiré' : 'Token invalide'
-    });
+    return sendLocalizedError(res, 401, error.name === 'TokenExpiredError' ? 'errors.generic.invalid_session' : 'errors.auth.invalid_token');
   }
 };
 

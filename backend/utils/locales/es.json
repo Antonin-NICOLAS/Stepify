@@ -1,7 +1,7 @@
 {
   "errors": {
     "generic": {
-      "req_auth": "Autenticación requerida",
+      "authentication_required": "Autenticación requerida",
       "invalid_session": "Sesión expirada o inválida",
       "internal_error": "Se produjo un error interno",
       "retrieve_error": "Se produjo un error al recuperar los datos",
@@ -16,9 +16,6 @@
       "invalid_password": "Se requiere una contraseña de al menos 8 caracteres",
       "email_exists": "Correo electrónico ya en uso",
       "username_exists": "Nombre de usuario ya en uso",
-      "email_verified": "Correo electrónico ya verificado",
-      "invalid_code": "Código de verificación inválido",
-      "code_expired": "El código de verificación ha expirado",
       "invalid_token": "Token inválido",
       "same_email_change": "El nuevo correo electrónico debe ser diferente del actual",
       "password_required": "Se requiere contraseña para eliminar la cuenta",
@@ -28,16 +25,20 @@
       "limit_reached": "Demasiados intentos. Inténtelo de nuevo en ${remainingTime} minutos",
       "account_locked": "Demasiados intentos. Su cuenta está temporalmente bloqueada.",
       "invalid_reset_link": "Enlace inválido o expirado. Por favor, solicite un nuevo restablecimiento de contraseña.",
-      "account_creation_error": "Se produjo un error al crear la cuenta",
       "email_verification_error": "Se produjo un error al verificar el correo electrónico",
       "email_resent_error": "Se produjo un error al enviar el nuevo código de verificación",
       "email_change_error": "Se produjo un error al cambiar el correo electrónico",
-      "account_deletion_error": "Se produjo un error al eliminar la cuenta",
       "login_error": "Se produjo un error al iniciar sesión",
-      "forgot_password_error": "Se produjo un error al solicitar el restablecimiento de contraseña",
-      "reset_password_error": "Se produjo un error al restablecer la contraseña",
       "logout_error": "Se produjo un error al cerrar sesión",
-      "check_auth_error": "Se produjo un error al verificar la autenticación"
+      "check_auth_error": "Se produjo un error al verificar la autenticación",
+      "verification_code_expired": "El código de verificación ha expirado",
+      "invalid_verification_code": "Código de verificación inválido",
+      "already_verified": "Correo electrónico ya verificado",
+      "creation_error": "Se produjo un error al crear la cuenta",
+      "deletion_error": "Se produjo un error al eliminar la cuenta",
+      "reset_request_error": "Se produjo un error al solicitar el restablecimiento",
+      "reset_error": "Se produjo un error al restablecer",
+      "session_expired": "Sesión expirada"
     },
     "profile": {
       "no_file_provided": "No se proporcionó ningún archivo",
@@ -65,6 +66,7 @@
       "revoke_all_sessions_error": "Se produjo un error al revocar todas las sesiones"
     },
     "friends": {
+      "fetch_error": "Error al recuperar los amigos",
       "add_self": "No puedes agregarte a ti mismo como amigo",
       "user_not_found": "Usuario no encontrado",
       "request_already_sent": "Solicitud ya enviada",
@@ -76,7 +78,24 @@
       "not_yours": "Esta notificación no te pertenece",
       "fetch_error": "Error al recuperar las notificaciones",
       "update_error": "Error al actualizar la notificación",
-      "fetch_requests_error": "Error al recuperar las solicitudes"
+      "fetch_requests_error": "Error al recuperar las solicitudes",
+      "search_query_required": "Se requiere un término de búsqueda",
+      "search_error": "Error al buscar usuarios",
+      "cannot_add_self": "No puedes agregarte a ti mismo",
+      "request_not_found": "Solicitud no encontrada",
+      "invalid_request": "Solicitud inválida",
+      "friend_request_error": "Error al enviar la solicitud de amistad",
+      "friend_request_accept_error": "Error al aceptar la solicitud de amistad",
+      "friend_request_cancel_error": "Error al cancelar la solicitud de amistad",
+      "friend_request_decline_error": "Error al rechazar la solicitud de amistad",
+      "friend_remove_error": "Error al eliminar al amigo",
+      "delete_error": "Error al eliminar la notificación",
+      "pending_requests_error": "Error al recuperar las solicitudes pendientes",
+      "invitation_not_found": "Invitación no encontrada",
+      "unauthorized_invitation": "Esta invitación no es para ti",
+      "invitation_already_handled": "Esta invitación ya ha sido procesada",
+      "invalid_action": "Acción inválida",
+      "invitation_response_error": "Error al procesar la invitación"
     },
     "challenges": {
       "not_found": "Desafío no encontrado",
@@ -105,6 +124,7 @@
     },
     "steps": {
       "not_found": "Entrada no encontrada",
+      "file_too_big": "Archivo demasiado grande (máx. 100 MB)",
       "creation_error": "Error al crear la entrada",
       "update_error": "Error al actualizar la entrada",
       "favorite_error": "Error al marcar como favorita la entrada",
@@ -119,30 +139,44 @@
       "invalid_mode": "Se deben proporcionar todos los campos requeridos (modo, fecha)",
       "existing_entry": "Ya existen datos para las ${hour}h"
     },
-    "custom_goals": {
-      "future_deadline": "La fecha límite debe estar en el futuro",
-      "time_required": "Se requiere tiempo para este tipo de actividad",
-      "creation_error": "Error al crear el objetivo personalizado"
+    "goals": {
+      "not_found": "Objetivo no encontrado",
+      "future_deadline_required": "La fecha límite debe estar en el futuro",
+      "time_required": "Se requiere tiempo para este tipo de actividad: ${type}",
+      "creation_error": "Error al crear el objetivo",
+      "update_error": "Error al actualizar el objetivo",
+      "delete_error": "Error al eliminar el objetivo"
     },
     "rewards": {
-      "not_found": "No se encontró ninguna recompensa",
-      "fetch_error": "Error al recuperar las recompensas"
+      "none_found": "No se encontraron recompensas",
+      "not_found": "Recompensa no encontrada",
+      "already_unlocked": "Ya has desbloqueado esta recompensa",
+      "fetch_error": "Error al recuperar las recompensas",
+      "vitrine_update_error": "Error al actualizar la vitrina"
     },
     "preferences": {
-      "update_error": "Error al actualizar las preferencias"
+      "invalid_theme": "Preferencia de tema inválida",
+      "theme_update_error": "Error al actualizar el tema",
+      "unsupported_language": "Idioma no soportado",
+      "language_update_error": "Error al actualizar el idioma",
+      "privacy_update_error": "Error al actualizar la configuración de privacidad",
+      "notifications_update_error": "Error al actualizar las preferencias de notificación"
+    },
+    "ranking": {
+      "fetch_error": "Error al recuperar el ranking"
     }
   },
   "success": {
     "auth": {
       "account_created": "Cuenta creada con éxito. Se ha enviado un correo electrónico de verificación.",
       "email_verified": "Correo electrónico verificado con éxito",
-      "email_resent": "Se ha enviado un nuevo código de verificación a tu correo electrónico",
+      "verification_code_sent": "Se ha enviado un nuevo código de verificación a tu correo electrónico",
       "email_updated": "Correo electrónico actualizado. Se ha enviado un nuevo código de verificación.",
       "account_deleted": "Cuenta eliminada con éxito",
       "successful_login": "Inicio de sesión exitoso",
-      "reset_password_email_sent": "Se ha enviado un enlace de restablecimiento a tu correo electrónico, si existe",
-      "reset_password_success": "Contraseña restablecida con éxito",
-      "logout_success": "Cierre de sesión exitoso"
+      "reset_link_sent": "Se ha enviado un enlace de restablecimiento a tu correo electrónico, si existe",
+      "password_reset": "Contraseña restablecida con éxito",
+      "logged_out": "Cierre de sesión exitoso"
     },
     "profile": {
       "updated": "Perfil actualizado",
@@ -153,8 +187,17 @@
       "session_revoked": "Sesión revocada",
       "all_sessions_revoked": "Todas las sesiones han sido revocadas"
     },
-    "friends": {
-      "request_sent": "Solicitud de amistad enviada"
+    "notifications": {
+      "friend_request_sent": "Solicitud de amistad enviada",
+      "friend_request_accepted": "Solicitud de amistad aceptada",
+      "friend_request_cancelled": "Solicitud de amistad cancelada",
+      "friend_request_declined": "Solicitud de amistad rechazada",
+      "friend_removed": "Amigo eliminado",
+      "deleted": "Notificación eliminada",
+      "marked_read": "Notificación marcada como leída",
+      "all_marked_read": "Todas las notificaciones han sido marcadas como leídas",
+      "challenge_accepted": "Invitación al desafío aceptada",
+      "challenge_declined": "Invitación al desafío rechazada"
     },
     "challenges": {
       "created": "Desafío creado",
@@ -171,16 +214,19 @@
       "updated": "Entrada actualizada",
       "deleted": "Entrada eliminada"
     },
-    "custom_goals": {
+    "goals": {
       "created": "Objetivo personalizado añadido",
+      "created_from_reward": "Objetivo personalizado creado a partir de la recompensa",
       "updated": "Objetivo personalizado actualizado",
       "deleted": "Objetivo personalizado eliminado"
     },
-    "notifications": {
-      "marked_read": "Notificación marcada como leída",
-      "all_marked_read": "Todas las notificaciones han sido marcadas como leídas"
+    "rewards": {
+      "vitrine_updated": "Vitrina actualizada"
     },
     "preferences": {
+      "theme_updated": "Preferencia de tema actualizada",
+      "language_updated": "Preferencia de idioma actualizada",
+      "privacy_updated": "Configuración de privacidad actualizada",
       "notifications_updated": "Preferencias de notificación actualizadas"
     }
   }

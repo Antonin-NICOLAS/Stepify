@@ -1,7 +1,7 @@
 {
   "errors": {
     "generic": {
-      "req_auth": "Authentifizierung erforderlich",
+      "authentication_required": "Authentifizierung erforderlich",
       "invalid_session": "Sitzung abgelaufen oder ungültig",
       "internal_error": "Ein interner Fehler ist aufgetreten",
       "retrieve_error": "Beim Abrufen der Daten ist ein Fehler aufgetreten",
@@ -16,9 +16,6 @@
       "invalid_password": "Ein Passwort mit mindestens 8 Zeichen ist erforderlich",
       "email_exists": "E-Mail wird bereits verwendet",
       "username_exists": "Benutzername bereits vergeben",
-      "email_verified": "E-Mail bereits verifiziert",
-      "invalid_code": "Ungültiger Verifizierungscode",
-      "code_expired": "Verifizierungscode ist abgelaufen",
       "invalid_token": "Ungültiges Token",
       "same_email_change": "Neue E-Mail muss sich von der aktuellen unterscheiden",
       "password_required": "Passwort ist erforderlich, um das Konto zu löschen",
@@ -28,16 +25,20 @@
       "limit_reached": "Zu viele Versuche. Versuchen Sie es in ${remainingTime} Minuten erneut",
       "account_locked": "Zu viele Versuche. Ihr Konto ist vorübergehend gesperrt.",
       "invalid_reset_link": "Ungültiger oder abgelaufener Link. Bitte fordern Sie ein neues Passwort-Reset an.",
-      "account_creation_error": "Bei der Kontoerstellung ist ein Fehler aufgetreten",
       "email_verification_error": "Bei der E-Mail-Verifizierung ist ein Fehler aufgetreten",
       "email_resent_error": "Beim Senden des neuen Verifizierungscodes ist ein Fehler aufgetreten",
       "email_change_error": "Bei der Änderung der E-Mail-Adresse ist ein Fehler aufgetreten",
-      "account_deletion_error": "Bei der Löschung des Kontos ist ein Fehler aufgetreten",
       "login_error": "Bei der Anmeldung ist ein Fehler aufgetreten",
-      "forgot_password_error": "Bei der Anforderung des Passwort-Resets ist ein Fehler aufgetreten",
-      "reset_password_error": "Beim Zurücksetzen des Passworts ist ein Fehler aufgetreten",
       "logout_error": "Bei der Abmeldung ist ein Fehler aufgetreten",
-      "check_auth_error": "Bei der Überprüfung der Authentifizierung ist ein Fehler aufgetreten"
+      "check_auth_error": "Bei der Überprüfung der Authentifizierung ist ein Fehler aufgetreten",
+      "verification_code_expired": "Verifizierungscode ist abgelaufen",
+      "invalid_verification_code": "Ungültiger Verifizierungscode",
+      "already_verified": "E-Mail bereits verifiziert",
+      "creation_error": "Bei der Kontoerstellung ist ein Fehler aufgetreten",
+      "deletion_error": "Bei der Kontolöschung ist ein Fehler aufgetreten",
+      "reset_request_error": "Bei der Reset-Anforderung ist ein Fehler aufgetreten",
+      "reset_error": "Beim Zurücksetzen ist ein Fehler aufgetreten",
+      "session_expired": "Sitzung abgelaufen"
     },
     "profile": {
       "no_file_provided": "Keine Datei bereitgestellt",
@@ -65,6 +66,7 @@
       "revoke_all_sessions_error": "Beim Widerrufen aller Sitzungen ist ein Fehler aufgetreten"
     },
     "friends": {
+      "fetch_error": "Fehler beim Abrufen von Freunden",
       "add_self": "Du kannst dich nicht selbst als Freund hinzufügen",
       "user_not_found": "Benutzer nicht gefunden",
       "request_already_sent": "Anfrage bereits gesendet",
@@ -76,7 +78,24 @@
       "not_yours": "Diese Benachrichtigung gehört nicht dir",
       "fetch_error": "Fehler beim Abrufen der Benachrichtigungen",
       "update_error": "Fehler beim Aktualisieren der Benachrichtigung",
-      "fetch_requests_error": "Fehler beim Abrufen der Anfragen"
+      "fetch_requests_error": "Fehler beim Abrufen der Anfragen",
+      "search_query_required": "Suchbegriff erforderlich",
+      "search_error": "Fehler bei der Benutzersuche",
+      "cannot_add_self": "Du kannst dich nicht selbst hinzufügen",
+      "request_not_found": "Anfrage nicht gefunden",
+      "invalid_request": "Ungültige Anfrage",
+      "friend_request_error": "Fehler beim Senden der Freundschaftsanfrage",
+      "friend_request_accept_error": "Fehler beim Akzeptieren der Freundschaftsanfrage",
+      "friend_request_cancel_error": "Fehler beim Abbrechen der Freundschaftsanfrage",
+      "friend_request_decline_error": "Fehler beim Ablehnen der Freundschaftsanfrage",
+      "friend_remove_error": "Fehler beim Entfernen des Freundes",
+      "delete_error": "Fehler beim Löschen der Benachrichtigung",
+      "pending_requests_error": "Fehler beim Abrufen der ausstehenden Anfragen",
+      "invitation_not_found": "Einladung nicht gefunden",
+      "unauthorized_invitation": "Diese Einladung ist nicht für dich",
+      "invitation_already_handled": "Diese Einladung wurde bereits bearbeitet",
+      "invalid_action": "Ungültige Aktion",
+      "invitation_response_error": "Fehler bei der Verarbeitung der Einladung"
     },
     "challenges": {
       "not_found": "Herausforderung nicht gefunden",
@@ -105,6 +124,7 @@
     },
     "steps": {
       "not_found": "Eintrag nicht gefunden",
+      "file_too_big": "Datei zu groß (max. 100MB)",
       "creation_error": "Fehler beim Erstellen des Eintrags",
       "update_error": "Fehler beim Aktualisieren des Eintrags",
       "favorite_error": "Fehler beim Markieren des Eintrags als Favorit",
@@ -119,30 +139,44 @@
       "invalid_mode": "Alle erforderlichen Felder (Modus, Datum) müssen angegeben werden",
       "existing_entry": "Daten existieren bereits für ${hour}h"
     },
-    "custom_goals": {
-      "future_deadline": "Die Frist muss in der Zukunft liegen",
-      "time_required": "Zeit ist für diesen Aktivitätstyp erforderlich",
-      "creation_error": "Fehler beim Erstellen des benutzerdefinierten Ziels"
+    "goals": {
+      "not_found": "Ziel nicht gefunden",
+      "future_deadline_required": "Die Frist muss in der Zukunft liegen",
+      "time_required": "Zeit ist für diesen Aktivitätstyp erforderlich: ${type}",
+      "creation_error": "Fehler beim Erstellen des Ziels",
+      "update_error": "Fehler beim Aktualisieren des Ziels",
+      "delete_error": "Fehler beim Löschen des Ziels"
     },
     "rewards": {
-      "not_found": "Keine Belohnung gefunden",
-      "fetch_error": "Fehler beim Abrufen der Belohnungen"
+      "none_found": "Keine Belohnungen gefunden",
+      "not_found": "Belohnung nicht gefunden",
+      "already_unlocked": "Du hast diese Belohnung bereits freigeschaltet",
+      "fetch_error": "Fehler beim Abrufen der Belohnungen",
+      "vitrine_update_error": "Fehler beim Aktualisieren der Vitrine"
     },
     "preferences": {
-      "update_error": "Fehler beim Aktualisieren der Einstellungen"
+      "invalid_theme": "Ungültige Theme-Einstellung",
+      "theme_update_error": "Fehler beim Aktualisieren des Themes",
+      "unsupported_language": "Nicht unterstützte Sprache",
+      "language_update_error": "Fehler beim Aktualisieren der Sprache",
+      "privacy_update_error": "Fehler beim Aktualisieren der Privatsphäre-Einstellungen",
+      "notifications_update_error": "Fehler beim Aktualisieren der Benachrichtigungseinstellungen"
+    },
+    "ranking": {
+      "fetch_error": "Fehler beim Abrufen der Rangliste"
     }
   },
   "success": {
     "auth": {
       "account_created": "Konto erfolgreich erstellt. Eine Bestätigungs-E-Mail wurde gesendet.",
       "email_verified": "E-Mail erfolgreich verifiziert",
-      "email_resent": "Ein neuer Verifizierungscode wurde an Ihre E-Mail gesendet",
+      "verification_code_sent": "Ein neuer Verifizierungscode wurde an Ihre E-Mail gesendet",
       "email_updated": "E-Mail aktualisiert. Ein neuer Verifizierungscode wurde gesendet.",
       "account_deleted": "Konto erfolgreich gelöscht",
       "successful_login": "Anmeldung erfolgreich",
-      "reset_password_email_sent": "Ein Reset-Link wurde an Ihre E-Mail gesendet, falls sie existiert",
-      "reset_password_success": "Passwort erfolgreich zurückgesetzt",
-      "logout_success": "Abmeldung erfolgreich"
+      "reset_link_sent": "Ein Reset-Link wurde an Ihre E-Mail gesendet, falls sie existiert",
+      "password_reset": "Passwort erfolgreich zurückgesetzt",
+      "logged_out": "Abmeldung erfolgreich"
     },
     "profile": {
       "updated": "Profil aktualisiert",
@@ -153,8 +187,17 @@
       "session_revoked": "Sitzung widerrufen",
       "all_sessions_revoked": "Alle Sitzungen wurden widerrufen"
     },
-    "friends": {
-      "request_sent": "Freundschaftsanfrage gesendet"
+    "notifications": {
+      "friend_request_sent": "Freundschaftsanfrage gesendet",
+      "friend_request_accepted": "Freundschaftsanfrage akzeptiert",
+      "friend_request_cancelled": "Freundschaftsanfrage abgebrochen",
+      "friend_request_declined": "Freundschaftsanfrage abgelehnt",
+      "friend_removed": "Freund entfernt",
+      "deleted": "Benachrichtigung gelöscht",
+      "marked_read": "Benachrichtigung als gelesen markiert",
+      "all_marked_read": "Alle Benachrichtigungen wurden als gelesen markiert",
+      "challenge_accepted": "Herausforderungseinladung angenommen",
+      "challenge_declined": "Herausforderungseinladung abgelehnt"
     },
     "challenges": {
       "created": "Herausforderung erstellt",
@@ -171,16 +214,19 @@
       "updated": "Eintrag aktualisiert",
       "deleted": "Eintrag gelöscht"
     },
-    "custom_goals": {
+    "goals": {
       "created": "Benutzerdefiniertes Ziel hinzugefügt",
+      "created_from_reward": "Benutzerdefiniertes Ziel aus Belohnung erstellt",
       "updated": "Benutzerdefiniertes Ziel aktualisiert",
       "deleted": "Benutzerdefiniertes Ziel gelöscht"
     },
-    "notifications": {
-      "marked_read": "Benachrichtigung als gelesen markiert",
-      "all_marked_read": "Alle Benachrichtigungen wurden als gelesen markiert"
+    "rewards": {
+      "vitrine_updated": "Vitrine aktualisiert"
     },
     "preferences": {
+      "theme_updated": "Theme-Einstellung aktualisiert",
+      "language_updated": "Spracheinstellung aktualisiert",
+      "privacy_updated": "Privatsphäre-Einstellungen aktualisiert",
       "notifications_updated": "Benachrichtigungseinstellungen aktualisiert"
     }
   }

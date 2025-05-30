@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 
 // Récupérer le classement global
 const getGlobalRanking = async (req, res) => {
@@ -14,10 +15,10 @@ const getGlobalRanking = async (req, res) => {
       rank: index + 1
     }));
 
-    return res.status(200).json({ success: true, ranking: rankedUsers });
+    return sendLocalizedSuccess(res, null, {}, { ranking: rankedUsers });
   } catch (error) {
     console.error("Error fetching global ranking:", error);
-    return res.status(500).json({ success: false, error: "Internal server error" });
+    return sendLocalizedError(res, 500, 'errors.ranking.fetch_error');
   }
 };
 
@@ -31,7 +32,7 @@ const getFriendsRanking = async (req, res) => {
       .populate('friends.userId', 'firstName lastName username avatarUrl totalSteps totalDistance totalCalories totalXP level');
 
     if (!user) {
-      return res.status(404).json({ success: false, error: "User not found" });
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
     }
 
     // Crée un tableau avec l'utilisateur et ses amis
@@ -47,10 +48,10 @@ const getFriendsRanking = async (req, res) => {
       rank: index + 1
     }));
 
-    return res.status(200).json({ success: true, ranking: rankedUsers });
+    return sendLocalizedSuccess(res, null, {}, { ranking: rankedUsers });
   } catch (error) {
     console.error("Error fetching friends ranking:", error);
-    return res.status(500).json({ success: false, error: "Internal server error" });
+    return sendLocalizedError(res, 500, 'errors.ranking.fetch_error');
   }
 };
 

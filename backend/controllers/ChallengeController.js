@@ -1,7 +1,8 @@
 const Challenge = require('../models/Challenge');
 const Notification = require('../models/Notification');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization');
-const { calculateUserProgress, updateSingleChallengeProgress } = require('../utils/ChallengeHelpers')
+const { calculateUserProgress, updateSingleChallengeProgress } = require('../utils/ChallengeHelpers');
+const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 
 
 // Helper function to generate a random 6-character access code (A-Z, 0-9)
@@ -21,10 +22,10 @@ const validateChallengeDates = (startDate, endDate) => {
   const end = endDate ? new Date(endDate) : null;
 
   if (start < now) {
-    return { valid: false, error: 'Start date cannot be in the past' };
+    return { valid: false, error: 'errors.challenges.past_start_date' };
   }
   if (end && end <= start) {
-    return { valid: false, error: 'End date must be after start date' };
+    return { valid: false, error: 'errors.challenges.invalid_end_date' };
   }
   return { valid: true };
 };
@@ -54,8 +55,7 @@ const getPublicChallenges = async (req, res) => {
 
     const total = await Challenge.countDocuments({ isPrivate: false });
 
-    return res.status(200).json({
-      success: true,
+    return sendLocalizedSuccess(res, null, {}, {
       challenges,
       total,
       limit: parseInt(limit),
@@ -63,10 +63,7 @@ const getPublicChallenges = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching challenges:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Error retrieving challenges'
-    });
+    return sendLocalizedError(res, 500, 'errors.challenges.get_challenges_error');
   }
 };
 
@@ -104,17 +101,10 @@ const getMyChallenges = async (req, res) => {
       };
     });
 
-    return res.status(200).json({
-      success: true,
-      challenges,
-      userProgress
-    });
+    return sendLocalizedSuccess(res, null, {}, { challenges, userProgress });
   } catch (error) {
     console.error('Error fetching user challenges:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Error retrieving user challenges'
-    });
+    return sendLocalizedError(res, 500, 'errors.challenges.get_challenges_error');
   }
 };
 
@@ -140,27 +130,18 @@ const createChallenge = async (req, res) => {
 
     // Validate required fields
     if (!name || !startDate || !activityType || !goal || !xpReward || isPrivate === undefined) {
-      return res.status(400).json({
-        success: false,
-        error: 'Des champs sont manquants'
-      });
+      return sendLocalizedError(res, 400, 'errors.challenges.fields_missing');
     }
 
     // Validate dates
     const dateValidation = validateChallengeDates(startDate, endDate);
     if (!dateValidation.valid) {
-      return res.status(400).json({
-        success: false,
-        error: dateValidation.error
-      });
+      return sendLocalizedError(res, 400, dateValidation.error);
     }
 
     // Validate activity type specific requirements
     if (['steps-time', 'distance-time', 'calories-time', 'xp-time'].includes(activityType) && !time) {
-      return res.status(400).json({
-        success: false,
-        error: `Time is required for activity type: ${activityType}`
-      });
+      return sendLocalizedError(res, 400, 'errors.challenges.time_required', { activityType });
     }
 
     // Generate access code if challenge is private
@@ -187,7 +168,7 @@ const createChallenge = async (req, res) => {
     });
 
     await newChallenge.save();
-   await updateSingleChallengeProgress(userId, newChallenge._id);
+    await updateSingleChallengeProgress(userId, newChallenge._id);
 
     // Send invitations if private and has participants
     if (isPrivate && participants && participants.length > 0) {
@@ -198,7 +179,12 @@ const createChallenge = async (req, res) => {
           sender: userId,
           recipient: toId,
           type: 'challenge_invite',
-          content: `You've been invited to join the challenge "${name}"!`,
+          content: {
+            en: `You've been invited to join the challenge "${name}"!`,
+            fr: `Vous avez été invité à rejoindre le challenge "${name}" !`,
+            es: `¡Has sido invitado a unirte al desafío "${name}"!`,
+            de: `Du wurdest eingeladen, an der Challenge "${name}" teilzunehmen!`
+          },
           status: 'unread',
           DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         }));
@@ -206,17 +192,10 @@ const createChallenge = async (req, res) => {
       await Notification.insertMany(invitations);
     }
 
-    return res.status(201).json({
-      success: true,
-      message: "Challenge créé",
-      challenge: newChallenge
-    });
+    return sendLocalizedSuccess(res, 'success.challenges.created', {}, { challenge: newChallenge });
   } catch (error) {
     console.error('Error creating challenge:', error);
-    return res.status(400).json({
-      success: false,
-      error: "Une erreur est survenue lors de la création du challenge"
-    });
+    return sendLocalizedError(res, 500, 'errors.challenges.creation_error');
   }
 };
 
@@ -230,18 +209,12 @@ const updateChallenge = async (req, res) => {
   try {
     const challenge = await Challenge.findById(challengeId);
     if (!challenge) {
-      return res.status(404).json({
-        success: false,
-        error: 'Challenge not found'
-      });
+      return sendLocalizedError(res, 404, 'errors.challenges.not_found');
     }
 
     // Check if user is the creator
     if (challenge.creator.toString() !== userId) {
-      return res.status(403).json({
-        success: false,
-        error: 'Only the challenge creator can modify it'
-      });
+      return sendLocalizedError(res, 403, 'errors.challenges.creator_modify_only');
     }
 
     // Validate dates if they're being updated
@@ -251,10 +224,16 @@ const updateChallenge = async (req, res) => {
 
       const dateValidation = validateChallengeDates(startDate, endDate);
       if (!dateValidation.valid) {
-        return res.status(400).json({
-          success: false,
-          error: dateValidation.error
-        });
+        return sendLocalizedError(res, 400, dateValidation.error);
+      }
+    }
+
+    if (updates.isPrivate !== undefined) {
+      if (updates.isPrivate && !challenge.accessCode) {
+        return sendLocalizedError(res, 400, 'errors.challenges.access_code_required');
+      }
+      if (!updates.isPrivate && challenge.accessCode) {
+        updates.accessCode = null;
       }
     }
 
@@ -271,25 +250,18 @@ const updateChallenge = async (req, res) => {
       );
     }
 
-    await challenge.save();
-    return res.status(200).json({
-      success: true,
-      message: "Challenge mis à jour",
-      challenge: challenge
-    });
+    const updatedChallenge = await challenge.save();
+    return sendLocalizedSuccess(res, 'success.challenges.updated', {}, { challenge: updatedChallenge });
   } catch (error) {
     console.error('Error updating challenge:', error);
-    return res.status(400).json({
-      success: false,
-      error: "Erreur lors de la mise à jour du challenge"
-    });
+    return sendLocalizedError(res, 500, 'errors.challenges.update_error');
   }
 };
 
 /** Join a challenge (private or public) */
 const joinChallenge = async (req, res) => {
-  const { userId } = req.params;
-  const { accessCode, challengeId } = req.body;
+  const { userId, challengeId } = req.params;
+  const { accessCode } = req.body;
 
   if (checkAuthorization(req, res, userId)) return;
 
@@ -302,28 +274,17 @@ const joinChallenge = async (req, res) => {
     }
 
     if (!challenge) {
-      return res.status(404).json({
-        success: false,
-        error: 'Challenge not found'
-      });
+      return sendLocalizedError(res, 404, 'errors.challenges.not_found');
     }
 
-    if (challenge.isPrivate && !accessCode) {
-      return res.status(403).json({
-        success: false,
-        error: 'Access code required for private challenges'
-      });
+    if (challenge.isPrivate && challenge.accessCode !== accessCode) {
+      return sendLocalizedError(res, 403, 'errors.challenges.access_code_required');
     }
 
     // Check if user is already a participant
-    const existingParticipant = challenge.participants.find(
-      p => p.user.toString() === userId
-    );
-    if (existingParticipant) {
-      return res.status(400).json({
-        success: false,
-        error: 'You are already participating in this challenge'
-      });
+    const isParticipant = challenge.participants.some(p => p.user.toString() === userId);
+    if (isParticipant) {
+      return sendLocalizedError(res, 400, 'errors.challenges.already_participating');
     }
 
     // Add user as participant
@@ -341,17 +302,13 @@ const joinChallenge = async (req, res) => {
     await challenge.save();
     await updateSingleChallengeProgress(userId, challenge._id);
 
-    return res.status(200).json({
-      success: true,
-      message: "Vous avez rejoint le challenge",
-      challenge: challenge
-    });
+    const populatedChallenge = await Challenge.findById(challengeId)
+      .populate('creator participants.user');
+
+    return sendLocalizedSuccess(res, 'success.challenges.joined', {}, { challenge: populatedChallenge });
   } catch (error) {
     console.error('Error joining challenge:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Error joining challenge'
-    });
+    return sendLocalizedError(res, 500, 'errors.challenges.join_error');
   }
 };
 
@@ -364,10 +321,7 @@ const leaveChallenge = async (req, res) => {
   try {
     const challenge = await Challenge.findById(challengeId);
     if (!challenge) {
-      return res.status(404).json({
-        success: false,
-        error: 'Challenge not found'
-      });
+      return sendLocalizedError(res, 404, 'errors.challenges.not_found');
     }
 
     // Check if user is a participant
@@ -375,34 +329,21 @@ const leaveChallenge = async (req, res) => {
       p => p.user.toString() === userId
     );
     if (participantIndex === -1) {
-      return res.status(400).json({
-        success: false,
-        error: 'You are not participating in this challenge'
-      });
+      return sendLocalizedError(res, 400, 'errors.challenges.not_participating');
     }
 
     // Remove participant (creator cannot leave)
     if (challenge.creator.toString() === userId) {
-      return res.status(403).json({
-        success: false,
-        error: 'Challenge creator cannot leave. Please delete the challenge instead.'
-      });
+      return sendLocalizedError(res, 400, 'errors.challenges.creator_cannot_leave');
     }
 
     challenge.participants.splice(participantIndex, 1);
     await challenge.save();
 
-    return res.status(200).json({
-      success: true,
-      message: "Vous avez quitté le challenge",
-      challenge: challenge
-    });
+    return sendLocalizedSuccess(res, 'success.challenges.left');
   } catch (error) {
     console.error('Error leaving challenge:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Error leaving challenge'
-    });
+    return sendLocalizedError(res, 500, 'errors.challenges.leave_error');
   }
 };
 
@@ -415,17 +356,11 @@ const deleteChallenge = async (req, res) => {
   try {
     const challenge = await Challenge.findById(challengeId);
     if (!challenge) {
-      return res.status(404).json({
-        success: false,
-        error: 'Challenge not found'
-      });
+      return sendLocalizedError(res, 404, 'errors.challenges.not_found');
     }
 
     if (challenge.creator.toString() !== userId) {
-      return res.status(403).json({
-        success: false,
-        error: 'Only the challenge creator can delete it'
-      });
+      return sendLocalizedError(res, 403, 'errors.challenges.creator_delete_only');
     }
 
     await Challenge.deleteOne({ _id: challengeId });
@@ -433,17 +368,10 @@ const deleteChallenge = async (req, res) => {
     // Delete related notifications
     await Notification.deleteMany({ challenge: challengeId });
 
-    return res.status(200).json({
-      success: true,
-      message: "Challenge supprimé",
-      data: {}
-    });
+    return sendLocalizedSuccess(res, 'success.challenges.deleted');
   } catch (error) {
     console.error('Error deleting challenge:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Error deleting challenge'
-    });
+    return sendLocalizedError(res, 500, 'errors.challenges.delete_error');
   }
 };
 
@@ -456,32 +384,25 @@ const regenerateAccessCode = async (req, res) => {
   try {
     const challenge = await Challenge.findById(challengeId);
     if (!challenge) {
-      return res.status(404).json({ success: false, error: 'Challenge not found' });
+      return sendLocalizedError(res, 404, 'errors.challenges.not_found');
     }
 
     if (challenge.creator.toString() !== userId) {
-      return res.status(403).json({ success: false, error: 'Only the challenge creator can regenerate the access code' });
+      return sendLocalizedError(res, 403, 'errors.challenges.creator_regenerate_only');
     }
 
     if (!challenge.isPrivate) {
-      return res.status(400).json({ success: false, error: 'Only private challenges can have access codes' });
+      return sendLocalizedError(res, 400, 'errors.challenges.private_only');
     }
 
     const newAccessCode = generateAccessCode();
     challenge.accessCode = newAccessCode;
     await challenge.save();
 
-    return res.status(200).json({
-      success: true,
-      message: "Code d'accès régénéré",
-      code: newAccessCode
-    });
+    return sendLocalizedSuccess(res, 'success.challenges.regenerated', {}, { accessCode: newAccessCode });
   } catch (error) {
     console.error('Error regenerating access code:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la régénération du code d\'accès'
-    });
+    return sendLocalizedError(res, 500, 'errors.challenges.regenerate_error');
   }
 };
 
@@ -495,22 +416,13 @@ const getChallengeDetails = async (req, res) => {
       .populate('participants.user', 'username avatarUrl firstName lastName');
 
     if (!challenge) {
-      return res.status(404).json({
-        success: false,
-        error: 'Challenge not found'
-      });
+      return sendLocalizedError(res, 404, 'errors.challenges.not_found');
     }
 
-    return res.status(200).json({
-      success: true,
-      challenge: challenge
-    });
+    return sendLocalizedSuccess(res, null, {}, { challenge });
   } catch (error) {
-    console.error('Error fetching challenge:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la récupération des détails du challenge'
-    });
+    console.error('Error getting challenge details:', error);
+    return sendLocalizedError(res, 500, 'errors.challenges.get_details_error');
   }
 };
 
@@ -556,10 +468,13 @@ const updateChallengeProgress = async (userId) => {
               type: 'challenge_complete',
               challenge: challenge._id,
               content: {
-                en: `You completed "${challenge.name.en}"! +${challenge.xpReward}XP`,
-                fr: `Défi "${challenge.name.fr}" réussi ! +${challenge.xpReward}XP`
+                en: `You completed "${challenge.name}"! +${challenge.xpReward}XP`,
+                fr: `Défi "${challenge.name}" réussi ! +${challenge.xpReward}XP`,
+                es: `¡Has completado "${challenge.name}"! +${challenge.xpReward}XP`,
+                de: `Du hast "${challenge.name}" abgeschlossen! +${challenge.xpReward}XP`
               },
-              status: 'unread'
+              status: 'unread',
+              DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
             });
           }
 
@@ -571,7 +486,7 @@ const updateChallengeProgress = async (userId) => {
       throw error;
     }
   } catch (error) {
-    console.error('Challenge progress update error:', error);
+    console.error('Error updating challenge progress:', error);
   }
 };
 

@@ -1,7 +1,7 @@
 {
   "errors": {
     "generic": {
-      "req_auth": "Authentication required",
+      "authentication_required": "Authentication required",
       "invalid_session": "Session expired or invalid",
       "internal_error": "An internal error occurred",
       "retrieve_error": "An error occurred while retrieving data",
@@ -16,9 +16,6 @@
       "invalid_password": "A password of at least 8 characters is required",
       "email_exists": "Email already in use",
       "username_exists": "Username already taken",
-      "email_verified": "Email already verified",
-      "invalid_code": "Invalid verification code",
-      "code_expired": "Verification code has expired",
       "invalid_token": "Invalid token",
       "same_email_change": "New email must be different from current",
       "password_required": "Password is required to delete account",
@@ -28,16 +25,20 @@
       "limit_reached": "Too many attempts. Try again in ${remainingTime} minutes",
       "account_locked": "Too many attempts. Your account is temporarily locked.",
       "invalid_reset_link": "Invalid or expired link. Please request a new password reset.",
-      "account_creation_error": "An error occurred while creating the account",
       "email_verification_error": "An error occurred while verifying the email",
       "email_resent_error": "An error occurred while sending the new verification code",
       "email_change_error": "An error occurred while changing the email",
-      "account_deletion_error": "An error occurred while deleting the account",
       "login_error": "An error occurred while logging in",
-      "forgot_password_error": "An error occurred while requesting password reset",
-      "reset_password_error": "An error occurred while resetting password",
       "logout_error": "An error occurred while logging out",
-      "check_auth_error": "An error occurred while checking authentication"
+      "check_auth_error": "An error occurred while checking authentication",
+      "verification_code_expired": "Verification code has expired",
+      "invalid_verification_code": "Invalid verification code",
+      "already_verified": "Email already verified",
+      "creation_error": "An error occurred while creating account",
+      "deletion_error": "An error occurred while deleting account",
+      "reset_request_error": "An error occurred while requesting reset",
+      "reset_error": "An error occurred while resetting",
+      "session_expired": "Session expired"
     },
     "profile": {
       "no_file_provided": "No file provided",
@@ -65,6 +66,7 @@
       "revoke_all_sessions_error": "An error occurred while revoking all sessions"
     },
     "friends": {
+      "fetch_error": "Error retrieving friends",
       "add_self": "You cannot add yourself as a friend",
       "user_not_found": "User not found",
       "request_already_sent": "Request already sent",
@@ -76,7 +78,24 @@
       "not_yours": "This notification does not belong to you",
       "fetch_error": "Error retrieving notifications",
       "update_error": "Error updating notification",
-      "fetch_requests_error": "Error retrieving requests"
+      "fetch_requests_error": "Error retrieving requests",
+      "search_query_required": "Search query is required",
+      "search_error": "Error searching users",
+      "cannot_add_self": "You cannot add yourself",
+      "request_not_found": "Request not found",
+      "invalid_request": "Invalid request",
+      "friend_request_error": "Error sending friend request",
+      "friend_request_accept_error": "Error accepting friend request",
+      "friend_request_cancel_error": "Error cancelling friend request",
+      "friend_request_decline_error": "Error declining friend request",
+      "friend_remove_error": "Error removing friend",
+      "delete_error": "Error deleting notification",
+      "pending_requests_error": "Error retrieving pending requests",
+      "invitation_not_found": "Invitation not found",
+      "unauthorized_invitation": "This invitation is not for you",
+      "invitation_already_handled": "This invitation has already been handled",
+      "invalid_action": "Invalid action",
+      "invitation_response_error": "Error processing invitation"
     },
     "challenges": {
       "not_found": "Challenge not found",
@@ -105,6 +124,7 @@
     },
     "steps": {
       "not_found": "Entry not found",
+      "file_too_big": "File too large (max 100MB)",
       "creation_error": "Error creating entry",
       "update_error": "Error updating entry",
       "favorite_error": "Error favoriting entry",
@@ -119,30 +139,44 @@
       "invalid_mode": "All required fields (mode, date) must be provided",
       "existing_entry": "Data already exists for ${hour}h"
     },
-    "custom_goals": {
-      "future_deadline": "Deadline must be in the future",
-      "time_required": "Time is required for this activity type",
-      "creation_error": "Error creating custom goal"
+    "goals": {
+      "not_found": "Goal not found",
+      "future_deadline_required": "Deadline must be in the future",
+      "time_required": "Time is required for this activity type: ${type}",
+      "creation_error": "Error creating goal",
+      "update_error": "Error updating goal",
+      "delete_error": "Error deleting goal"
     },
     "rewards": {
-      "not_found": "No reward found",
-      "fetch_error": "Error retrieving rewards"
+      "none_found": "No rewards found",
+      "not_found": "Reward not found",
+      "already_unlocked": "You have already unlocked this reward",
+      "fetch_error": "Error retrieving rewards",
+      "vitrine_update_error": "Error updating showcase"
     },
     "preferences": {
-      "update_error": "Error updating preferences"
+      "invalid_theme": "Invalid theme preference",
+      "theme_update_error": "Error updating theme",
+      "unsupported_language": "Unsupported language",
+      "language_update_error": "Error updating language",
+      "privacy_update_error": "Error updating privacy settings",
+      "notifications_update_error": "Error updating notification preferences"
+    },
+    "ranking": {
+      "fetch_error": "Error retrieving ranking"
     }
   },
   "success": {
     "auth": {
       "account_created": "Account created successfully. A verification email has been sent.",
       "email_verified": "Email verified successfully",
-      "email_resent": "A new verification code has been sent to your email",
+      "verification_code_sent": "A new verification code has been sent to your email",
       "email_updated": "Email updated. A new verification code has been sent.",
       "account_deleted": "Account deleted successfully",
       "successful_login": "Login successful",
-      "reset_password_email_sent": "A reset link has been sent to your email, if it exists",
-      "reset_password_success": "Password reset successful",
-      "logout_success": "Logout successful"
+      "reset_link_sent": "A reset link has been sent to your email, if it exists",
+      "password_reset": "Password reset successful",
+      "logged_out": "Logout successful"
     },
     "profile": {
       "updated": "Profile updated",
@@ -153,8 +187,17 @@
       "session_revoked": "Session revoked",
       "all_sessions_revoked": "All sessions have been revoked"
     },
-    "friends": {
-      "request_sent": "Friend request sent"
+    "notifications": {
+      "friend_request_sent": "Friend request sent",
+      "friend_request_accepted": "Friend request accepted",
+      "friend_request_cancelled": "Friend request cancelled",
+      "friend_request_declined": "Friend request declined",
+      "friend_removed": "Friend removed",
+      "deleted": "Notification deleted",
+      "marked_read": "Notification marked as read",
+      "all_marked_read": "All notifications have been marked as read",
+      "challenge_accepted": "Challenge invitation accepted",
+      "challenge_declined": "Challenge invitation declined"
     },
     "challenges": {
       "created": "Challenge created",
@@ -171,16 +214,19 @@
       "updated": "Entry updated",
       "deleted": "Entry deleted"
     },
-    "custom_goals": {
+    "goals": {
       "created": "Custom goal added",
+      "created_from_reward": "Custom goal created from reward",
       "updated": "Custom goal updated",
       "deleted": "Custom goal deleted"
     },
-    "notifications": {
-      "marked_read": "Notification marked as read",
-      "all_marked_read": "All notifications have been marked as read"
+    "rewards": {
+      "vitrine_updated": "Showcase updated"
     },
     "preferences": {
+      "theme_updated": "Theme preference updated",
+      "language_updated": "Language preference updated",
+      "privacy_updated": "Privacy settings updated",
       "notifications_updated": "Notification preferences updated"
     }
   }

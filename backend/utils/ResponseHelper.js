@@ -8,12 +8,16 @@
  * @param {Object} additionalData - Données supplémentaires à inclure dans la réponse
  */
 const sendLocalizedResponse = (res, statusCode, success, messagePath, params = {}, additionalData = {}) => {
-    const message = res.locals.t(messagePath, params);
-    res.status(statusCode).json({
+    const response = {
         success,
-        message,
         ...additionalData
-    });
+    };
+
+    if (messagePath) {
+        response.message = res.locals.t(messagePath, params);
+    }
+
+    res.status(statusCode).json(response);
 };
 
 /**

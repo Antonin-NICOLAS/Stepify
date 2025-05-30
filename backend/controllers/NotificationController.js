@@ -1,7 +1,8 @@
 const Notification = require('../models/Notification');
 const UserModel = require('../models/User');
 const Challenge = require('../models/Challenge');
-const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
+const { checkAuthorization } = require('../middlewares/VerifyAuthorization');
+const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 
 /** Search for users */
 const searchUsers = async (req, res) => {
@@ -11,10 +12,7 @@ const searchUsers = async (req, res) => {
   if (checkAuthorization(req, res, userId)) return;
 
   if (!query || query.trim() === '') {
-    return res.status(400).json({
-      success: false,
-      error: 'Search query is required'
-    });
+    return sendLocalizedError(res, 400, 'errors.notifications.search_query_required');
   }
 
   try {
@@ -44,9 +42,10 @@ const searchUsers = async (req, res) => {
       };
     });
 
-    res.status(200).json({ success: true, results });
+    return sendLocalizedSuccess(res, null, {}, { results });
   } catch (error) {
-    res.status(500).json({ success: false, error: 'Error searching users' });
+    console.error('Error searching users:', error);
+    return sendLocalizedError(res, 500, 'errors.notifications.search_error');
   }
 };
 
@@ -58,7 +57,7 @@ const sendFriendRequest = async (req, res) => {
   if (checkAuthorization(req, res, fromId)) return;
 
   if (fromId === userId) {
-    return res.status(400).json({ success: false, error: "Vous ne pouvez pas vous ajouter vous-même." });
+    return sendLocalizedError(res, 400, 'errors.notifications.cannot_add_self');
   }
 
   try {
@@ -66,20 +65,27 @@ const sendFriendRequest = async (req, res) => {
     const sender = await UserModel.findById(fromId);
 
     if (!recipient || !sender) {
-      return res.status(404).json({ success: false, error: "Utilisateur introuvable." });
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
     }
+
     if (recipient.friendRequests.some(f => f.userId.toString() === fromId)) {
-      return res.status(400).json({ success: false, error: "Demande déjà envoyée." });
+      return sendLocalizedError(res, 400, 'errors.notifications.request_already_sent');
     }
+
     if (recipient.friends.some(f => f.userId.toString() === fromId)) {
-      return res.status(400).json({ success: false, error: "Vous êtes déjà amis." });
+      return sendLocalizedError(res, 400, 'errors.notifications.already_friends');
     }
 
     const notification = await Notification.create({
       recipient: userId,
       sender: fromId,
       type: 'friend_request',
-      content: `${sender.username} vous a envoyé une demande d'ami !`,
+      content: {
+        en: `${sender.username} sent you a friend request!`,
+        fr: `${sender.username} vous a envoyé une demande d'ami !`,
+        es: `${sender.username} te envió una solicitud de amistad!`,
+        de: `${sender.username} hat dir eine Freundschaftsanfrage gesendet!`
+      },
       status: 'unread',
       DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
@@ -87,9 +93,10 @@ const sendFriendRequest = async (req, res) => {
     recipient.friendRequests.push({ notificationId: notification._id });
     await recipient.save();
 
-    res.status(200).json({ success: true, message: 'Demande d\'ami envoyée.' });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    return sendLocalizedSuccess(res, 'success.notifications.friend_request_sent');
+  } catch (error) {
+    console.error('Error sending friend request:', error);
+    return sendLocalizedError(res, 500, 'errors.notifications.friend_request_error');
   }
 };
 
@@ -106,16 +113,16 @@ const acceptFriendRequest = async (req, res) => {
     const notification = await Notification.findById(notificationId);
 
     if (!user || !requester || !notification) {
-      return res.status(404).json({ success: false, error: "Utilisateur ou notification introuvable." });
+      return sendLocalizedError(res, 404, 'errors.notifications.request_not_found');
     }
 
     if (notification.recipient.toString() !== userId || notification.sender.toString() !== requesterId) {
-      return res.status(403).json({ success: false, error: "Notification non valide pour cette action." });
+      return sendLocalizedError(res, 403, 'errors.notifications.invalid_request');
     }
 
     if (user.friends.some(f => f.userId.toString() === requesterId)) {
       await Notification.findByIdAndDelete(notificationId);
-      return res.status(400).json({ success: false, error: "Vous êtes déjà amis." });
+      return sendLocalizedError(res, 400, 'errors.notifications.already_friends');
     }
 
     user.friends.push({ userId: requesterId, since: new Date() });
@@ -132,14 +139,20 @@ const acceptFriendRequest = async (req, res) => {
       recipient: requesterId,
       sender: userId,
       type: 'friend_accept',
-      content: `${user.username} a accepté votre demande d'ami !`,
+      content: {
+        en: `${user.username} accepted your friend request!`,
+        fr: `${user.username} a accepté votre demande d'ami !`,
+        es: `${user.username} aceptó tu solicitud de amistad!`,
+        de: `${user.username} hat deine Freundschaftsanfrage angenommen!`
+      },
       status: 'unread',
       DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
 
-    res.status(200).json({ success: true, message: "Ami ajouté avec succès." });
-  } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    return sendLocalizedSuccess(res, 'success.notifications.friend_request_accepted');
+  } catch (error) {
+    console.error('Error accepting friend request:', error);
+    return sendLocalizedError(res, 500, 'errors.notifications.friend_request_accept_error');
   }
 };
 
@@ -152,7 +165,7 @@ const cancelFriendRequest = async (req, res) => {
   try {
     const notification = await Notification.findById(notificationId);
     if (!notification || notification.sender.toString() !== userId || notification.type !== 'friend_request') {
-      return res.status(404).json({ success: false, error: 'Demande introuvable ou non valide' });
+      return sendLocalizedError(res, 404, 'errors.notifications.request_not_found');
     }
 
     const recipient = await UserModel.findById(notification.recipient);
@@ -161,9 +174,10 @@ const cancelFriendRequest = async (req, res) => {
 
     await notification.deleteOne();
 
-    return res.status(200).json({ success: true, message: 'Demande d\'ami annulée.' });
+    return sendLocalizedSuccess(res, 'success.notifications.friend_request_cancelled');
   } catch (error) {
-    return res.status(500).json({ success: false, error: 'Erreur lors de l\'annulation de la demande.' });
+    console.error('Error cancelling friend request:', error);
+    return sendLocalizedError(res, 500, 'errors.notifications.friend_request_cancel_error');
   }
 };
 
@@ -176,7 +190,7 @@ const declineFriendRequest = async (req, res) => {
   try {
     const notification = await Notification.findById(notificationId);
     if (!notification || notification.recipient.toString() !== userId || notification.type !== 'friend_request') {
-      return res.status(404).json({ success: false, error: 'Demande introuvable ou non valide' });
+      return sendLocalizedError(res, 404, 'errors.notifications.request_not_found');
     }
 
     const user = await UserModel.findById(userId);
@@ -188,16 +202,22 @@ const declineFriendRequest = async (req, res) => {
       recipient: notification.sender,
       sender: userId,
       type: 'friend_decline',
-      content: `${user.username} a refusé votre demande d'ami !`,
+      content: {
+        en: `${user.username} declined your friend request!`,
+        fr: `${user.username} a refusé votre demande d'ami !`,
+        es: `${user.username} rechazó tu solicitud de amistad!`,
+        de: `${user.username} hat deine Freundschaftsanfrage abgelehnt!`
+      },
       status: 'unread',
       DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     });
 
     await notification.deleteOne();
 
-    return res.status(200).json({ success: true, message: 'Demande refusée.' });
+    return sendLocalizedSuccess(res, 'success.notifications.friend_request_declined');
   } catch (error) {
-    return res.status(500).json({ success: false, error: 'Erreur lors du refus de la demande.' });
+    console.error('Error declining friend request:', error);
+    return sendLocalizedError(res, 500, 'errors.notifications.friend_request_decline_error');
   }
 };
 
@@ -212,7 +232,7 @@ const removeFriend = async (req, res) => {
     const friend = await UserModel.findById(friendId);
 
     if (!user || !friend) {
-      return res.status(404).json({ success: false, error: 'Utilisateur introuvable.' });
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
     }
 
     user.friends = user.friends.filter(f => f.userId.toString() !== friendId);
@@ -223,9 +243,10 @@ const removeFriend = async (req, res) => {
     await user.save();
     await friend.save();
 
-    return res.status(200).json({ success: true, message: 'Ami supprimé.' });
+    return sendLocalizedSuccess(res, 'success.notifications.friend_removed');
   } catch (error) {
-    return res.status(500).json({ success: false, error: 'Erreur lors de la suppression de l\'ami.' });
+    console.error('Error removing friend:', error);
+    return sendLocalizedError(res, 500, 'errors.notifications.friend_remove_error');
   }
 };
 
@@ -238,13 +259,14 @@ const deleteNotification = async (req, res) => {
   try {
     const notification = await Notification.findById(notificationId);
     if (!notification || notification.recipient.toString() !== userId) {
-      return res.status(404).json({ success: false, error: 'Notification introuvable ou non autorisée' });
+      return sendLocalizedError(res, 404, 'errors.notifications.not_found');
     }
 
     await notification.deleteOne();
-    return res.status(200).json({ success: true, message: 'Notification supprimée' });
+    return sendLocalizedSuccess(res, 'success.notifications.deleted');
   } catch (error) {
-    return res.status(500).json({ success: false, error: 'Erreur lors de la suppression de la notification' });
+    console.error('Error deleting notification:', error);
+    return sendLocalizedError(res, 500, 'errors.notifications.delete_error');
   }
 };
 
@@ -256,9 +278,9 @@ const markAllNotificationsAsRead = async (req, res) => {
 
   try {
     await Notification.updateMany({ recipient: userId, status: 'unread' }, { $set: { status: 'read' } });
-    return res.status(200).json({ success: true, message: 'Toutes les notifications ont été marquées comme lues' });
+    return sendLocalizedSuccess(res, 'success.notifications.all_marked_read');
   } catch (error) {
-    return res.status(500).json({ success: false, error: 'Erreur lors de la mise à jour des notifications' });
+    return sendLocalizedError(res, 500, 'errors.notifications.mark_read_error');
   }
 };
 
@@ -271,12 +293,13 @@ const getFriendsList = async (req, res) => {
   try {
     const user = await UserModel.findById(userId).populate('friends.userId', 'username avatarUrl firstName lastName status totalSteps totalXP level lastLoginAt');
     if (!user) {
-      return res.status(404).json({ success: false, error: 'Utilisateur introuvable' });
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
     }
-
-    return res.status(200).json({ success: true, friends: user.friends });
+    const friends = user.friends
+    return sendLocalizedSuccess(res, null, {}, { friends });
   } catch (error) {
-    return res.status(500).json({ success: false, error: 'Erreur lors de la récupération des amis' });
+    console.error('Error fetching friends:', error);
+    return sendLocalizedError(res, 500, 'errors.friends.fetch_error');
   }
 };
 
@@ -288,21 +311,21 @@ const getPendingFriendRequests = async (req, res) => {
 
   try {
     const user = await UserModel.findById(userId)
-  .populate({
-    path: 'friendRequests.notificationId',
-    populate: {
-      path: 'sender',
-      select: 'username avatarUrl firstName lastName'
-    }
-  });
+      .populate({
+        path: 'friendRequests.notificationId',
+        populate: {
+          path: 'sender',
+          select: 'username avatarUrl firstName lastName'
+        }
+      });
     if (!user) {
-      return res.status(404).json({ success: false, error: 'Utilisateur introuvable' });
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
     }
 
-    return res.status(200).json({ success: true, requests: user.friendRequests });
+    return sendLocalizedSuccess(res, null, {}, { requests: user.friendRequests });
   } catch (error) {
     console.error('Error fetching pending friend requests:', error);
-    return res.status(500).json({ success: false, error: 'Erreur lors de la récupération des demandes' });
+    return sendLocalizedError(res, 500, 'errors.notifications.pending_requests_error');
   }
 };
 
@@ -317,21 +340,21 @@ const respondToChallengeInvite = async (req, res) => {
     const invitation = await Notification.findById(notificationId);
     const user = await UserModel.findById(userId);
     if (!invitation) {
-      return res.status(404).json({ success: false, error: 'Invitation introuvable' });
+      return sendLocalizedError(res, 404, 'errors.notifications.invitation_not_found');
     }
 
     if (invitation.recipient.toString() !== userId) {
-      return res.status(403).json({ success: false, error: 'Cette invitation ne vous est pas destinée' });
+      return sendLocalizedError(res, 403, 'errors.notifications.unauthorized_invitation');
     }
 
     if (invitation.status === 'accepted' || invitation.status === 'declined') {
       await Notification.findByIdAndDelete(notificationId);
-      return res.status(400).json({ success: false, error: 'Cette invitation a déjà été traitée' });
+      return sendLocalizedError(res, 400, 'errors.notifications.invitation_already_handled');
     }
 
     const challenge = await Challenge.findById(invitation.challenge);
     if (!challenge) {
-      return res.status(404).json({ success: false, error: 'Challenge introuvable' });
+      return sendLocalizedError(res, 404, 'errors.challenges.not_found');
     }
 
     if (action === 'accept') {
@@ -339,7 +362,7 @@ const respondToChallengeInvite = async (req, res) => {
       const alreadyParticipant = challenge.participants.find(p => p.user.toString() === userId);
       if (alreadyParticipant) {
         await Notification.findByIdAndDelete(notificationId);
-        return res.status(400).json({ success: false, error: 'Vous participez déjà à ce challenge' });
+        return sendLocalizedError(res, 400, 'errors.challenges.already_participating');
       }
 
       challenge.participants.push({
@@ -365,10 +388,17 @@ const respondToChallengeInvite = async (req, res) => {
         sender: userId,
         challenge: challenge._id,
         type: 'challenge_accept',
-        content: `${user.username} a accepté votre invitation au challenge "${challenge.name}"`,
+        content: {
+          en: `${user.username} accepted your invitation to the challenge "${challenge.name}"!`,
+          fr: `${user.username} a accepté votre invitation au challenge "${challenge.name}" !`,
+          es: `${user.username} aceptó tu invitación al desafío "${challenge.name}"!`,
+          de: `${user.username} hat deine Einladung zur Challenge "${challenge.name}" angenommen!`
+        },
         status: 'unread',
         DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
+
+      return sendLocalizedSuccess(res, 'success.notifications.challenge_accepted');
 
     } else if (action === 'decline') {
       invitation.status = 'declined';
@@ -382,20 +412,23 @@ const respondToChallengeInvite = async (req, res) => {
         sender: userId,
         challenge: challenge._id,
         type: 'challenge_decline',
-        content: `${user.username} a décliné votre invitation au challenge "${challenge.name}"`,
+        content: {
+          en: `${user.username} declined your invitation to the challenge "${challenge.name}"!`,
+          fr: `${user.username} a décliné votre invitation au challenge "${challenge.name}" !`,
+          es: `${user.username} rechazó tu invitación al desafío "${challenge.name}"!`,
+          de: `${user.username} hat deine Einladung zur Challenge "${challenge.name}" abgelehnt!`
+        },
         status: 'unread',
         DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
+
+      return sendLocalizedSuccess(res, 'success.notifications.challenge_declined');
     } else {
-      return res.status(400).json({ success: false, error: 'Action invalide' });
+      return sendLocalizedError(res, 400, 'errors.notifications.invalid_action');
     }
-
-    await invitation.save();
-
-    return res.status(200).json({ success: true, message: `Invitation ${action}ée avec succès.` });
   } catch (error) {
     console.error('Error handling invitation response:', error);
-    return res.status(500).json({ success: false, error: 'Erreur lors du traitement de l\'invitation' });
+    return sendLocalizedError(res, 500, 'errors.notifications.invitation_response_error');
   }
 };
 
@@ -408,20 +441,20 @@ const markNotificationAsRead = async (req, res) => {
   try {
     const notification = await Notification.findById(notificationId);
     if (!notification) {
-      return res.status(404).json({ success: false, error: 'Notification not found' });
+      return sendLocalizedError(res, 404, 'errors.notifications.not_found');
     }
 
     if (notification.recipient.toString() !== userId) {
-      return res.status(403).json({ success: false, error: 'This notification does not belong to you' });
+      return sendLocalizedError(res, 403, 'errors.notifications.unauthorized');
     }
 
     notification.status = 'read';
     await notification.save();
 
-    return res.status(200).json({ success: true, notification: notification });
+    return sendLocalizedSuccess(res, 'success.notifications.marked_read', {}, { notification });
   } catch (error) {
     console.error('Error marking notification as read:', error);
-    return res.status(500).json({ success: false, error: 'Error updating notification' });
+    return sendLocalizedError(res, 500, 'errors.notifications.mark_read_error');
   }
 };
 
@@ -438,16 +471,10 @@ const getNotifications = async (req, res) => {
       .populate('challenge', 'name')
       .sort({ createdAt: -1 });
 
-    return res.status(200).json({
-      success: true,
-      notifications: notifications
-    });
+    return sendLocalizedSuccess(res, null, {}, { notifications });
   } catch (error) {
     console.error('Error fetching notifications:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Error retrieving notifications'
-    });
+    return sendLocalizedError(res, 500, 'errors.notifications.fetch_error');
   }
 };
 
@@ -464,16 +491,10 @@ const getChallengeNotifications = async (req, res) => {
       .populate('challenge', 'name')
       .sort({ createdAt: -1 });
 
-    return res.status(200).json({
-      success: true,
-      notifications: notifications
-    });
+    return sendLocalizedSuccess(res, null, {}, { notifications });
   } catch (error) {
     console.error('Error fetching challenge notifications:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Error retrieving challenge notifications'
-    });
+    return sendLocalizedError(res, 500, 'errors.notifications.challenge_fetch_error');
   }
 };
 

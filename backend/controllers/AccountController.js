@@ -5,6 +5,7 @@ const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 const { generateVerificationCode } = require('../utils/GenerateCode')
 const { GenerateAuthCookie, validateEmail, validateUsername } = require('../utils/AuthHelpers')
 const { sendVerificationEmail, sendResetPasswordSuccessfulEmail } = require('../utils/SendMail');
+const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 //.env
 require('dotenv').config()
 
@@ -15,7 +16,7 @@ const updateAvatar = async (req, res) => {
     const file = req.file; // image envoyée via multer
 
     if (!file) {
-        return res.status(400).json({ success: false, error: 'Aucun fichier fourni' });
+        return sendLocalizedError(res, 400, 'errors.profile.no_file_provided');
     }
 
     if (checkAuthorization(req, res, userId)) return;
@@ -37,12 +38,12 @@ const updateAvatar = async (req, res) => {
                 resource_type: 'image',
             },
             async (error, result) => {
-                if (error) return res.status(500).json({ success: false, error: error.message });
+                if (error) return sendLocalizedError(res, 500, 'errors.profile.avatar_update_error');
 
                 user.avatarUrl = result.secure_url;
                 await user.save();
 
-                return res.status(200).json({ success: true, avatarUrl: result.secure_url });
+                return sendLocalizedSuccess(res, 'success.profile.updated', {}, { avatarUrl: result.secure_url });
             }
         );
 
@@ -50,7 +51,7 @@ const updateAvatar = async (req, res) => {
         result.end(file.buffer);
     } catch (error) {
         console.error("Error in updateAvatar:", error);
-        res.status(500).json({ success: false, error: "Une erreur est survenue lors de la mise à jour de l'avatar" });
+        return sendLocalizedError(res, 500, 'errors.profile.avatar_update_error');
     }
 };
 
@@ -63,42 +64,27 @@ const updateProfile = async (req, res) => {
     try {
         // Validation des champs
         if (updates.username) {
-            if (!validateEmail(updates.username)) {
-                return res.status(400).json({
-                    success: false,
-                    error: "Nom d'utilisateur invalide (3-30 caractères alphanumériques)"
-                });
+            if (!validateUsername(updates.username)) {
+                return sendLocalizedError(res, 400, 'errors.profile.invalid_username');
             }
 
             const existingUser = await UserModel.findOne({ username: updates.username });
             if (existingUser && existingUser._id.toString() !== userId) {
-                return res.status(400).json({
-                    success: false,
-                    error: "Ce nom d'utilisateur est déjà pris"
-                });
+                return sendLocalizedError(res, 400, 'errors.profile.username_exists');
             }
         }
 
         if (updates.firstName && updates.firstName.length < 2) {
-            return res.status(400).json({
-                success: false,
-                error: "Le prénom doit contenir au moins 2 caractères"
-            });
+            return sendLocalizedError(res, 400, 'errors.profile.firstName_min');
         }
 
         if (updates.lastName && updates.lastName.length < 2) {
-            return res.status(400).json({
-                success: false,
-                error: "Le nom doit contenir au moins 2 caractères"
-            });
+            return sendLocalizedError(res, 400, 'errors.profile.lastName_min');
         }
 
         const user = await UserModel.findById(userId);
         if (!user) {
-            return res.status(404).json({
-                success: false,
-                error: "Utilisateur introuvable"
-            });
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
         }
 
         if (updates.username) user.username = updates.username;
@@ -106,52 +92,44 @@ const updateProfile = async (req, res) => {
         if (updates.lastName) user.lastName = updates.lastName;
         await user.save();
 
-
-        res.status(200).json({
-            success: true,
-            message: 'Profil mis à jour',
-            user
-        });
+        return sendLocalizedSuccess(res, 'success.profile.updated', {}, { user });
     } catch (error) {
         console.error("Error in updateProfile:", error);
-        res.status(400).json({
-            success: false,
-            error: "Une erreur est survenue lors de la mise à jour du profil"
-        });
+        return sendLocalizedError(res, 500, 'errors.profile.profile_update_error');
     }
 };
 
 const updateEmail = async (req, res) => {
-    const { newEmail } = req.body
+    const { newEmail } = req.body;
     const { userId } = req.params;
 
     if (checkAuthorization(req, res, userId)) return;
 
     try {
-        const user = await UserModel.findById(req.userId)
-        if (!user) return res.status(404).json({ success: false, error: 'Utilisateur introuvable' })
+        const user = await UserModel.findById(req.userId);
+        if (!user) {
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
+        }
 
         if (!newEmail || !validateEmail(newEmail)) {
-            return res.status(400).json({
-                success: false,
-                error: "Une adresse email valide est requise"
-            });
+            return sendLocalizedError(res, 400, 'errors.profile.email_required');
         }
 
         if (user.email === newEmail) {
-            return res.status(400).json({ success: false, error: 'Le nouvel email doit être différent' })
+            return sendLocalizedError(res, 400, 'errors.profile.same_email_change');
         }
 
-        const existingUser = await UserModel.findOne({ email: newEmail })
-        if (existingUser) return res.status(400).json({ success: false, error: 'Email déjà utilisé' })
+        const existingUser = await UserModel.findOne({ email: newEmail });
+        if (existingUser) {
+            return sendLocalizedError(res, 400, 'errors.profile.email_exists');
+        }
 
-        user.email = newEmail
-        user.isVerified = false
-        user.verificationToken = generateVerificationCode()
-        user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000
-        await user.save()
+        user.email = newEmail;
+        user.isVerified = false;
+        user.verificationToken = generateVerificationCode();
+        user.verificationTokenExpiresAt = Date.now() + 24 * 60 * 60 * 1000;
+        await user.save();
 
-        // Supprimer le cookie de l'ancien email
         res.clearCookie("jwtauth", {
             secure: process.env.NODE_ENV === "production" ? true : false,
             httpOnly: process.env.NODE_ENV === "production" ? true : false,
@@ -159,58 +137,61 @@ const updateEmail = async (req, res) => {
             ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
         });
 
-        await sendVerificationEmail(newEmail, user.verificationToken)
+        await sendVerificationEmail(newEmail, user.verificationToken);
 
         // Générer un nouveau cookie avec le nouvel email
         GenerateAuthCookie(res, user, false);
 
-        res.status(200).json({
-            success: true,
-            message: 'Email mis à jour - Vérification requise',
+        return sendLocalizedSuccess(res, 'success.profile.email_updated', {}, {
             email: user.email,
             isVerified: user.isVerified
-        })
+        });
     } catch (error) {
-        if (error.code === 11000) return res.status(400).json({ error: 'Email déjà utilisé' })
         console.error("Error in updateEmail:", error);
-        res.status(400).json({ success: false, error: "Une erreur est survenue lors de la mise à jour de l'email" })
+        return sendLocalizedError(res, 500, 'errors.profile.email_update_error');
     }
-}
+};
 
 const updatePassword = async (req, res) => {
-    const { currentPassword, newPassword } = req.body
+    const { currentPassword, newPassword } = req.body;
     const { userId } = req.params;
 
     if (checkAuthorization(req, res, userId)) return;
 
     try {
         if (!currentPassword || !newPassword) {
-            return res.status(400).json({ success: false, error: 'Votre mot de passe actuel et le nouveau mot de passe sont requis' })
+            return sendLocalizedError(res, 400, 'errors.profile.passwords_required');
         }
-        if (newPassword.length < 8) {
-            return res.status(400).json({ success: false, error: 'Le mot de passe doit contenir au moins 8 caractères' })
-        }
-        const user = await UserModel.findById(req.userId)
-        if (!user) return res.status(404).json({ success: false, error: 'Utilisateur introuvable' })
 
-        const isMatch = await bcrypt.compare(currentPassword, user.password)
-        if (!isMatch) return res.status(401).json({ success: false, error: 'Mot de passe actuel incorrect' })
+        if (newPassword.length < 8) {
+            return sendLocalizedError(res, 400, 'errors.profile.invalid_password');
+        }
+
+        const user = await UserModel.findById(req.userId);
+        if (!user) {
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
+        }
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return sendLocalizedError(res, 401, 'errors.profile.password_incorrect');
+        }
 
         if (await bcrypt.compare(newPassword, user.password)) {
-            return res.status(400).json({ success: false, error: 'Le nouveau mot de passe doit être différent' })
+            return sendLocalizedError(res, 400, 'errors.profile.same_password_change');
         }
 
-        user.password = await bcrypt.hash(newPassword, 12)
-        await user.save()
+        user.password = await bcrypt.hash(newPassword, 12);
+        await user.save();
 
-        await sendResetPasswordSuccessfulEmail(user.email, user.firstName)
+        await sendResetPasswordSuccessfulEmail(user.email, user.firstName);
 
-        res.status(200).json({ success: true, message: 'Votre mot de passe a été mis à jour' })
+        return sendLocalizedSuccess(res, 'success.profile.password_updated');
     } catch (error) {
         console.error("Error in updatePassword:", error);
-        res.status(400).json({ success: false, error: "Une erreur est survenue lors de la mise à jour du mot de passe" })
+        return sendLocalizedError(res, 500, 'errors.profile.password_update_error');
     }
-}
+};
 
 const updateStatus = async (req, res) => {
     const { userId } = req.params;
@@ -220,14 +201,10 @@ const updateStatus = async (req, res) => {
 
     try {
         const user = await UserModel.findByIdAndUpdate(userId, { status }, { new: true });
-        res.status(200).json({
-            success: true,
-            message: 'Le statut a été mis à jour',
-            status: user.status
-        });
+        return sendLocalizedSuccess(res, 'success.profile.status_updated', {}, { status: user.status });
     } catch (error) {
         console.error("Error in updateStatus:", error);
-        res.status(400).json({ success: false, error: "Une erreur est survenue lors de la mise à jour du statut" });
+        return sendLocalizedError(res, 500, 'errors.profile.status_update_error');
     }
 };
 
@@ -239,20 +216,14 @@ const updateDailyGoal = async (req, res) => {
 
     try {
         if (dailyGoal < 1000 || dailyGoal > 50000) {
-            return res.status(400).json({
-                success: false,
-                error: "L'objectif quotidien doit être compris entre 1000 et 50000 pas"
-            });
+            return sendLocalizedError(res, 400, 'errors.profile.daily_goal_range');
         }
+
         const user = await UserModel.findByIdAndUpdate(userId, { dailyGoal }, { new: true });
-        res.status(200).json({
-            success: true,
-            message: 'L\'objectif quotidien a été mis à jour',
-            dailyGoal: user.dailyGoal
-        });
+        return sendLocalizedSuccess(res, 'success.profile.daily_goal_updated', {}, { dailyGoal: user.dailyGoal });
     } catch (error) {
         console.error("Error in updateDailyGoal:", error);
-        res.status(400).json({ success: false, error: "Une erreur est survenue lors de la mise à jour de l'objectif quotidien" });
+        return sendLocalizedError(res, 500, 'errors.profile.daily_goal_update_error');
     }
 };
 
@@ -273,10 +244,7 @@ const getUserProfile = async (req, res) => {
             ])
 
         if (!user) {
-            return res.status(404).json({
-                success: false,
-                error: "Utilisateur introuvable"
-            });
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
         }
 
         const isOwner = req.userId === userId;
@@ -298,43 +266,29 @@ const getUserProfile = async (req, res) => {
             }
         }
 
-        res.status(200).json({
-            success: true,
-            user: { ...userResponse, todayProgress }
-        });
+        return sendLocalizedSuccess(res, null, {}, { user });
     } catch (error) {
-        console.error("Error fetching user profile:", error);
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la récupération du profil"
-        });
+        console.error("Error in getUserProfile:", error);
+        return sendLocalizedError(res, 500, 'errors.profile.get_profile_error');
     }
 };
 
-// gestion des sessions actives
 const getActiveSessions = async (req, res) => {
     const { userId } = req.params;
 
     if (checkAuthorization(req, res, userId)) return;
 
     try {
-        const user = await UserModel.findById(userId)
-            .select('activeSessions');
+        const user = await UserModel.findById(userId).select('activeSessions');
+        if (!user) {
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
+        }
 
-        // Filtrer les sessions expirées
-        const activeSessions = user.activeSessions.filter(
-            session => new Date(session.expiresAt) > new Date()
-        );
-
-        res.status(200).json({
-            success: true,
-            sessions: activeSessions
-        });
+        const currentSessions = user.activeSessions.filter(session => new Date(session.expiresAt) > new Date());
+        return sendLocalizedSuccess(res, null, {}, { sessions: currentSessions });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la récupération des sessions"
-        });
+        console.error("Error in getActiveSessions:", error);
+        return sendLocalizedError(res, 500, 'errors.profile.get_sessions_error');
     }
 };
 
@@ -345,21 +299,17 @@ const revokeSession = async (req, res) => {
 
     try {
         const user = await UserModel.findById(userId);
-        user.activeSessions = user.activeSessions.filter(
-            session => session._id.toString() !== sessionId
-        );
+        if (!user) {
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
+        }
+
+        user.activeSessions = user.activeSessions.filter(session => session._id.toString() !== sessionId);
         await user.save();
 
-        res.status(200).json({
-            success: true,
-            message: "Session révoquée"
-        });
+        return sendLocalizedSuccess(res, 'success.profile.session_revoked');
     } catch (error) {
-        console.error('Error in revokeSession:', error);
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la révocation de la session"
-        });
+        console.error("Error in revokeSession:", error);
+        return sendLocalizedError(res, 500, 'errors.profile.revoke_session_error');
     }
 };
 
@@ -369,20 +319,23 @@ const revokeAllSessions = async (req, res) => {
     if (checkAuthorization(req, res, userId)) return;
 
     try {
-        await UserModel.findByIdAndUpdate(userId, {
-            activeSessions: []
-        });
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
+        }
 
-        res.status(200).json({
-            success: true,
-            message: "Toutes les sessions ont été révoquées"
-        });
+        const currentSession = user.activeSessions.find(session => 
+            session.fingerprint === req.fingerprint && 
+            new Date(session.expiresAt) > new Date()
+        );
+
+        user.activeSessions = currentSession ? [currentSession] : [];
+        await user.save();
+
+        return sendLocalizedSuccess(res, 'success.profile.all_sessions_revoked');
     } catch (error) {
-        console.error('Error in revokeAllSessions:', error);
-        res.status(500).json({
-            success: false,
-            error: "Erreur lors de la révocation des sessions"
-        });
+        console.error("Error in revokeAllSessions:", error);
+        return sendLocalizedError(res, 500, 'errors.profile.revoke_all_sessions_error');
     }
 };
 
@@ -397,4 +350,4 @@ module.exports = {
     getActiveSessions,
     revokeSession,
     revokeAllSessions
-}
+};

@@ -27,34 +27,19 @@ const createUser = async (req, res) => {
     try {
         // Validations améliorées
         if (!firstName || firstName.length < 2) {
-            return res.status(400).json({
-                success: false,
-                error: "Un prénom valide (2 caractères minimum) est requis"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.firstName_min');
         }
         if (!lastName || lastName.length < 2) {
-            return res.status(400).json({
-                success: false,
-                error: "Un nom valide (2 caractères minimum) est requis"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.lastName_min');
         }
         if (!email || !validateEmail(email)) {
-            return res.status(400).json({
-                success: false,
-                error: "Une adresse email valide est requise"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.invalid_email');
         }
         if (!username || !validateUsername(username)) {
-            return res.status(400).json({
-                success: false,
-                error: "Un nom d'utilisateur valide (3-30 caractères alphanumériques) est requis"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.invalid_username');
         }
         if (!password || password.length < 8) {
-            return res.status(400).json({
-                success: false,
-                error: "Un mot de passe de 8 caractères minimum est requis"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.password_min');
         }
 
         // Vérifications email/username existant
@@ -63,14 +48,12 @@ const createUser = async (req, res) => {
         }).select('email username').lean();
 
         if (existingUser) {
-            const errors = {};
-            if (existingUser.email === email) errors.email = "Email déjà utilisé";
-            if (existingUser.username === username) errors.username = "Nom d'utilisateur déjà pris";
-
-            return res.status(400).json({
-                success: false,
-                errors
-            });
+            if (existingUser.email === email) {
+                return sendLocalizedError(res, 400, 'errors.auth.email_exists');
+            }
+            if (existingUser.username === username) {
+                return sendLocalizedError(res, 400, 'errors.auth.username_exists');
+            }
         }
 
         const hashedPassword = await bcrypt.hash(password, 12);
@@ -115,17 +98,10 @@ const createUser = async (req, res) => {
         // Ne pas renvoyer les informations sensibles
         const userResponse = newUser.toJSON();
 
-        return res.status(201).json({
-            success: true,
-            message: "Compte créé avec succès. Un email de vérification a été envoyé.",
-            user: userResponse
-        });
+        return sendLocalizedSuccess(res, 'success.auth.account_created', {}, { user: userResponse });
     } catch (error) {
         console.error("Erreur lors de la création du compte:", error);
-        res.status(500).json({
-            success: false,
-            error: "Une erreur est survenue lors de la création du compte"
-        });
+        return sendLocalizedError(res, 500, 'errors.auth.creation_error');
     }
 };
 
@@ -136,41 +112,26 @@ const verifyEmail = async (req, res) => {
 
     try {
         if (!jwtauth) {
-            return res.status(401).json({
-                success: false,
-                error: "Authentification requise"
-            });
+            return sendLocalizedError(res, 401, 'errors.generic.authentication_required');
         }
 
         const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET);
         const user = await UserModel.findById(decoded.id);
 
         if (!user) {
-            return res.status(404).json({
-                success: false,
-                error: "Utilisateur introuvable"
-            });
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
         }
 
         if (user.isVerified) {
-            return res.status(400).json({
-                success: false,
-                error: "Email déjà vérifié"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.already_verified');
         }
 
         if (user.verificationToken !== code) {
-            return res.status(400).json({
-                success: false,
-                error: "Code de vérification invalide"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.invalid_verification_code');
         }
 
         if (user.verificationTokenExpiresAt < Date.now()) {
-            return res.status(400).json({
-                success: false,
-                error: "Le code de vérification a expiré"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.verification_code_expired');
         }
 
         user.isVerified = true;
@@ -183,23 +144,13 @@ const verifyEmail = async (req, res) => {
 
         const userResponse = user.toJSON();
 
-        return res.status(200).json({
-            success: true,
-            message: "Email vérifié avec succès",
-            user: userResponse
-        });
+        return sendLocalizedSuccess(res, 'success.auth.email_verified', {}, { user: userResponse });
     } catch (error) {
         console.error("Erreur lors de la vérification de l'email:", error);
         if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({
-                success: false,
-                error: "Token invalide"
-            });
+            return sendLocalizedError(res, 401, 'errors.auth.invalid_token');
         }
-        res.status(500).json({
-            success: false,
-            error: "Une erreur est survenue lors de la vérification de l'email"
-        });
+        return sendLocalizedError(res, 500, 'errors.auth.email_verification_error');
     }
 };
 
@@ -209,27 +160,18 @@ const resendVerificationEmail = async (req, res) => {
 
     try {
         if (!jwtauth) {
-            return res.status(401).json({
-                success: false,
-                error: "Authentification requise"
-            });
+            return sendLocalizedError(res, 401, 'errors.generic.authentication_required');
         }
 
         const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET);
         const user = await UserModel.findById(decoded.id);
 
         if (!user) {
-            return res.status(404).json({
-                success: false,
-                error: "Utilisateur introuvable"
-            });
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
         }
 
         if (user.isVerified) {
-            return res.status(400).json({
-                success: false,
-                error: "Email déjà vérifié"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.already_verified');
         }
 
         // Générer un nouveau code avec une expiration
@@ -239,16 +181,10 @@ const resendVerificationEmail = async (req, res) => {
 
         await sendVerificationEmail(user.email, user.verificationToken);
 
-        return res.status(200).json({
-            success: true,
-            message: "Un nouveau code de vérification a été envoyé à votre email"
-        });
+        return sendLocalizedSuccess(res, 'success.auth.verification_code_sent');
     } catch (error) {
         console.error("Erreur lors de la demande de renvoi du code de vérification:", error);
-        res.status(500).json({
-            success: false,
-            error: "Une erreur est survenue lors de l'envoi du nouveau code de vérification"
-        });
+        return sendLocalizedError(res, 500, 'errors.auth.email_resent_error');
     }
 };
 
@@ -258,40 +194,25 @@ const ChangeVerificationEmail = async (req, res) => {
 
     try {
         if (!newEmail || !validateEmail(newEmail)) {
-            return res.status(400).json({
-                success: false,
-                error: "Une adresse email valide est requise"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.invalid_email');
         }
 
         const user = await UserModel.findById(req.userId);
         if (!user) {
-            return res.status(404).json({
-                success: false,
-                error: "Utilisateur introuvable"
-            });
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
         }
 
         if (user.isVerified) {
-            return res.status(400).json({
-                success: false,
-                error: "Email déjà vérifié"
-            });
+            return sendLocalizedError(res, 404, 'errors.auth.already_verified');
         }
 
         if (user.email === newEmail) {
-            return res.status(400).json({
-                success: false,
-                error: "Le nouvel email doit être différent de l'actuel"
-            });
+            return sendLocalizedError(res, 404, 'errors.auth.same_email_change');
         }
 
         const emailExists = await UserModel.findOne({ email: newEmail });
         if (emailExists) {
-            return res.status(400).json({
-                success: false,
-                error: "Email déjà utilisé"
-            });
+            return sendLocalizedError(res, 404, 'errors.auth.email_exists');
         }
 
         user.email = newEmail;
@@ -310,16 +231,10 @@ const ChangeVerificationEmail = async (req, res) => {
         await sendVerificationEmail(user.email, user.verificationToken);
         GenerateAuthCookie(res, user, false);
 
-        return res.status(200).json({
-            success: true,
-            message: "Email mis à jour. Un nouveau code de vérification a été envoyé."
-        });
+        return sendLocalizedSuccess(res, 'success.auth.email_updated');
     } catch (error) {
         console.error("Erreur lors du changement d'email:", error);
-        res.status(500).json({
-            success: false,
-            error: "Une erreur est survenue lors du changement d'email"
-        });
+        return sendLocalizedError(res, 500, 'errors.auth.email_change_error');
     }
 };
 
@@ -330,27 +245,19 @@ const deleteUser = async (req, res) => {
 
     try {
         if (!password) {
-            return res.status(400).json({
-                success: false,
-                error: "Le mot de passe est requis pour supprimer le compte"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.password_required');
         }
 
         const user = await UserModel.findById(userId);
         if (!user) {
-            return res.status(404).json({
-                success: false,
-                error: "Utilisateur introuvable"
-            });
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({
-                success: false,
-                error: "Mot de passe incorrect"
-            });
+            return sendLocalizedError(res, 401, 'errors.auth.password_incorrect');
         }
+
         // 1. Supprimer les challenges créés par l'utilisateur
         await ChallengeModel.deleteMany({ creator: userId });
 
@@ -396,16 +303,10 @@ const deleteUser = async (req, res) => {
             ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
         });
 
-        return res.status(200).json({
-            success: true,
-            message: "Compte supprimé avec succès"
-        });
+        return sendLocalizedSuccess(res, 'success.auth.account_deleted');
     } catch (error) {
         console.error("Erreur lors de la suppression du compte:", error);
-        res.status(500).json({
-            success: false,
-            error: "Une erreur est survenue lors de la suppression du compte"
-        });
+        return sendLocalizedError(res, 500, 'errors.auth.deletion_error');
     }
 };
 
@@ -479,6 +380,14 @@ const loginUser = async (req, res) => {
         GenerateAuthCookie(res, user, stayLoggedIn);
 
         const userResponse = user.toJSON();
+        delete userResponse.lockUntil
+        delete userResponse.lastLoginAt
+        delete userResponse.customGoals
+        delete userResponse.challenges
+        delete userResponse.rewardsUnlocked
+        delete userResponse.friendRequests
+        delete userResponse.privacySettings
+        delete userResponse.notificationPreferences
 
         return sendLocalizedSuccess(res, 'success.auth.successful_login', {}, { user: userResponse });
     } catch (error) {
@@ -493,18 +402,12 @@ const forgotPassword = async (req, res) => {
 
     try {
         if (!email || !validateEmail(email)) {
-            return res.status(400).json({
-                success: false,
-                error: "Une adresse email valide est requise"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.invalid_email');
         }
 
         const user = await UserModel.findOne({ email });
         if (!user) {
-            return res.status(200).json({
-                success: true,
-                message: "Un lien de réinitialisation a été envoyé à votre email, s'il existe"
-            });
+            return sendLocalizedSuccess(res, 'success.auth.reset_link_sent');
         }
 
         const randomPart = CryptoJS.lib.WordArray.random(32).toString(CryptoJS.enc.Hex);
@@ -517,16 +420,10 @@ const forgotPassword = async (req, res) => {
         const resetUrl = `${process.env.FRONTEND_SERVER}/reset-password/${resetToken}`;
         await sendResetPasswordEmail(user.email, resetUrl);
 
-        return res.status(200).json({
-            success: true,
-            message: "Un lien de réinitialisation a été envoyé à votre email, s'il existe"
-        });
+        return sendLocalizedSuccess(res, 'success.auth.reset_link_sent');
     } catch (error) {
         console.error("Erreur lors de la demande de réinitialisation de mot de passe:", error);
-        res.status(500).json({
-            success: false,
-            error: "Une erreur est survenue lors de la demande de réinitialisation"
-        });
+        return sendLocalizedError(res, 500, 'errors.auth.reset_request_error');
     }
 };
 
@@ -537,10 +434,7 @@ const resetPassword = async (req, res) => {
 
     try {
         if (!password || password.length < 8) {
-            return res.status(400).json({
-                success: false,
-                error: "Un mot de passe de 8 caractères minimum est requis"
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.password_min');
         }
 
         const user = await UserModel.findOne({
@@ -549,10 +443,7 @@ const resetPassword = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(400).json({
-                success: false,
-                error: "Lien invalide ou expiré. Veuillez faire une nouvelle demande de réinitialisation."
-            });
+            return sendLocalizedError(res, 400, 'errors.auth.invalid_reset_link');
         }
 
         const hashedPassword = await bcrypt.hash(password, 12);
@@ -563,16 +454,10 @@ const resetPassword = async (req, res) => {
 
         await sendResetPasswordSuccessfulEmail(user.email, user.firstName);
 
-        return res.status(200).json({
-            success: true,
-            message: "Mot de passe réinitialisé avec succès"
-        });
+        return sendLocalizedSuccess(res, 'success.auth.password_reset');
     } catch (error) {
         console.error("Erreur lors de la réinitialisation du mot de passe:", error);
-        res.status(500).json({
-            success: false,
-            error: "Une erreur est survenue lors de la réinitialisation du mot de passe"
-        });
+        return sendLocalizedError(res, 500, 'errors.auth.reset_error');
     }
 };
 
@@ -581,7 +466,9 @@ const logoutUser = async (req, res) => {
     try {
         if (req.userId) {
             const user = await UserModel.findById(req.userId);
-            if (user) {
+            if (!user) {
+                return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
+            } else {
                 const userAgent = req.headers['user-agent'] || 'unknown';
                 const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
@@ -600,16 +487,10 @@ const logoutUser = async (req, res) => {
             ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
         });
 
-        return res.status(200).json({
-            success: true,
-            message: "Déconnexion réussie"
-        });
+        return sendLocalizedSuccess(res, 'success.auth.logged_out');
     } catch (error) {
         console.error("Erreur lors de la déconnexion:", error);
-        res.status(500).json({
-            success: false,
-            error: "Une erreur est survenue lors de la déconnexion"
-        });
+        return sendLocalizedError(res, 500, 'errors.auth.logout_error');
     }
 };
 
@@ -621,10 +502,7 @@ const checkAuth = async (req, res) => {
         const user = await UserModel.findById(req.userId)
 
         if (!user) {
-            return res.status(404).json({
-                success: false,
-                error: "Utilisateur introuvable"
-            });
+            return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
         }
 
         const currentFingerprint = generateSessionFingerprint(req);
@@ -640,24 +518,25 @@ const checkAuth = async (req, res) => {
                 sameSite: process.env.NODE_ENV === "production" ? 'strict' : '',
                 ...(process.env.NODE_ENV === "production" && { domain: 'step-ify.vercel.app' })
             });
-            return res.status(200).json({
-                success: false,
-                error: "Session expirée ou invalide",
-            });
+            return sendLocalizedError(res, 401, 'errors.auth.session_expired');
         }
 
-        const userRes = user.toJSON();
-
-        return res.status(200).json({
-            success: true,
-            user: userRes
-        });
+        const userResponse = user.toJSON();
+        delete userResponse.lockUntil
+        delete userResponse.lastLoginAt
+        delete userResponse.customGoals
+        delete userResponse.challenges
+        delete userResponse.rewardsUnlocked
+        delete userResponse.friendRequests
+        delete userResponse.privacySettings
+        delete userResponse.notificationPreferences
+        return sendLocalizedSuccess(res, null, {}, { user: userResponse });
     } catch (error) {
         console.error("Erreur lors de la vérification de l'authentification:", error);
-        res.status(500).json({
-            success: false,
-            error: "Une erreur est survenue lors de la vérification de l'authentification"
-        });
+        if (error.name === 'JsonWebTokenError') {
+            return sendLocalizedError(res, 401, 'errors.auth.invalid_token');
+        }
+        return sendLocalizedError(res, 500, 'errors.auth.check_auth_error');
     }
 };
 

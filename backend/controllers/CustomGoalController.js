@@ -2,6 +2,7 @@ const UserModel = require('../models/UserModel');
 const Reward = require('../models/Reward');
 const { checkAuthorization } = require('../utils/authUtils');
 const { NotificationType, createSystemNotification } = require('../utils/NotificationManager');
+const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 
 const addCustomGoal = async (req, res) => {
     const { userId } = req.params;
@@ -10,18 +11,12 @@ const addCustomGoal = async (req, res) => {
     if (checkAuthorization(req, res, userId)) return;
 
     if (new Date(deadline) <= new Date()) {
-        return res.status(400).json({
-            success: false,
-            error: "La date limite doit être dans le futur"
-        });
+        return sendLocalizedError(res, 400, 'errors.goals.future_deadline_required');
     }
 
     // Validate activity type specific requirements
     if (['steps-time', 'distance-time', 'calories-time', 'xp-time'].includes(type) && !time) {
-        return res.status(400).json({
-            success: false,
-            error: `Time is required for activity type: ${type}`
-        });
+        return sendLocalizedError(res, 400, 'errors.goals.time_required', { type });
     }
 
     try {
@@ -30,13 +25,12 @@ const addCustomGoal = async (req, res) => {
         user.customGoals.push({ type, target, time, deadline });
         await user.save();
 
-        res.status(201).json({
-            success: true,
-            message: "Objectif personnalisé ajouté",
+        return sendLocalizedSuccess(res, 'success.goals.created', {}, {
             goal: user.customGoals[user.customGoals.length - 1]
         });
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        console.error('Error adding custom goal:', error);
+        return sendLocalizedError(res, 500, 'errors.goals.creation_error');
     }
 };
 
@@ -51,29 +45,20 @@ const updateCustomGoal = async (req, res) => {
         const goal = user.customGoals.id(goalId);
 
         if (!goal) {
-            return res.status(404).json({
-                success: false,
-                error: "Objectif non trouvé"
-            });
+            return sendLocalizedError(res, 404, 'errors.goals.not_found');
         }
 
         if (updates.deadline && new Date(updates.deadline) <= new Date()) {
-            return res.status(400).json({
-                success: false,
-                error: "La nouvelle date limite doit être dans le futur"
-            });
+            return sendLocalizedError(res, 400, 'errors.goals.future_deadline_required');
         }
 
         Object.assign(goal, updates);
         await user.save();
 
-        res.status(200).json({
-            success: true,
-            message: "Objectif mis à jour",
-            goal
-        });
+        return sendLocalizedSuccess(res, 'success.goals.updated', {}, { goal });
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        console.error('Error updating custom goal:', error);
+        return sendLocalizedError(res, 500, 'errors.goals.update_error');
     }
 };
 
@@ -87,21 +72,16 @@ const deleteCustomGoal = async (req, res) => {
         const goal = user.customGoals.id(goalId);
 
         if (!goal) {
-            return res.status(404).json({
-                success: false,
-                error: "Objectif non trouvé"
-            });
+            return sendLocalizedError(res, 404, 'errors.goals.not_found');
         }
 
         goal.remove();
         await user.save();
 
-        res.status(200).json({
-            success: true,
-            message: "Objectif supprimé"
-        });
+        return sendLocalizedSuccess(res, 'success.goals.deleted');
     } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
+        console.error('Error deleting custom goal:', error);
+        return sendLocalizedError(res, 500, 'errors.goals.delete_error');
     }
 };
 
@@ -113,20 +93,14 @@ const addCustomGoalFromReward = async (req, res) => {
         // Vérifier si la récompense existe
         const reward = await Reward.findById(rewardId);
         if (!reward) {
-            return res.status(404).json({
-                success: false,
-                error: "Récompense non trouvée"
-            });
+            return sendLocalizedError(res, 404, 'errors.rewards.not_found');
         }
 
         // Vérifier si l'utilisateur n'a pas déjà cette récompense
         const user = await UserModel.findById(userId);
         const hasReward = user.rewardsUnlocked.some(r => r.rewardId.equals(rewardId));
         if (hasReward) {
-            return res.status(400).json({
-                success: false,
-                error: "Vous avez déjà débloqué cette récompense"
-            });
+            return sendLocalizedError(res, 400, 'errors.rewards.already_unlocked');
         }
 
         // Créer l'objectif personnalisé basé sur la récompense
@@ -151,20 +125,18 @@ const addCustomGoalFromReward = async (req, res) => {
             recipient: userId,
             type: NotificationType.CUSTOM_GOAL_ADDED,
             sender: null,
-            content: `Nouvel objectif ajouté : ${reward.name[user.languagePreference] || reward.name.fr}`,
+            content: {
+                en: `New goal added: ${reward.name[user.languagePreference] || reward.name.en}`,
+                fr: `Nouvel objectif ajouté : ${reward.name[user.languagePreference] || reward.name.fr}`,
+                es: `Nuevo objetivo añadido: ${reward.name[user.languagePreference] || reward.name.es}`,
+                de: `Neues Ziel hinzugefügt: ${reward.name[user.languagePreference] || reward.name.de}`
+            }
         });
 
-        return res.status(200).json({
-            success: true,
-            message: "Objectif personnalisé créé avec succès",
-            customGoal: newCustomGoal
-        });
+        return sendLocalizedSuccess(res, 'success.goals.created_from_reward', {}, { customGoal: newCustomGoal });
     } catch (error) {
         console.error('Error adding custom goal from reward:', error);
-        return res.status(500).json({
-            success: false,
-            error: "Erreur lors de la création de l'objectif personnalisé"
-        });
+        return sendLocalizedError(res, 500, 'errors.goals.creation_error');
     }
 };
 

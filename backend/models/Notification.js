@@ -37,8 +37,10 @@ const notificationSchema = new Schema({
     }
   },
   content: {
-    type: String,
-    default: ''
+    fr: { type: String, default: '', required: true },
+    en: { type: String, default: '', required: true },
+    es: { type: String, default: '' },
+    de: { type: String, default: '' }
   },
   status: {
     type: String,

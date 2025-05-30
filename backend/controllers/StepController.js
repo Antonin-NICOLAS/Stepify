@@ -8,6 +8,7 @@ const { updateChallengeProgress } = require('./ChallengeController');
 const { computeXpForEntry } = require('../utils/CalculateXP');
 const { updateUserRewards } = require('../controllers/RewardController');
 const { calculateLevel } = require('../utils/LevelSystem');
+const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 const csv = require('csv-parser');
 
 // Récupérer toutes les entrées de l'utilisateur
@@ -21,17 +22,10 @@ const getMySteps = async (req, res) => {
       .sort({ date: -1 })
       .lean();
 
-    return res.status(200).json({
-      success: true,
-      steps: entries
-    });
-
+    return sendLocalizedSuccess(res, null, {}, { steps: entries });
   } catch (error) {
-    console.error('Erreur récupération données:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la récupération des données'
-    });
+    console.error('Error retrieving steps:', error);
+    return sendLocalizedError(res, 500, 'errors.steps.retrieve_error');
   }
 };
 
@@ -47,10 +41,7 @@ const createStepEntry = async (req, res) => {
 
     // Validate hourlyData exists and has at least one entry
     if (!hourlyData || hourlyData.length === 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'Aucune donnée horaire fournie'
-      });
+      return sendLocalizedError(res, 400, 'errors.steps.no_hourly_data');
     }
 
     // Extract the first hourly entry (assuming one entry per request)
@@ -59,10 +50,7 @@ const createStepEntry = async (req, res) => {
 
     // Validate required fields in the hourly entry
     if (hour === undefined) {
-      return res.status(400).json({
-        success: false,
-        error: 'L\'heure est requise'
-      });
+      return sendLocalizedError(res, 400, 'errors.steps.hour_required');
     }
 
     const parsedHour = parseInt(hour, 10);
@@ -72,64 +60,38 @@ const createStepEntry = async (req, res) => {
     const parsedActiveTime = parseFloat(activeTime);
 
     if (isNaN(parsedHour) || parsedHour < 0 || parsedHour > 23) {
-      return res.status(400).json({
-        success: false,
-        error: 'Heure invalide'
-      });
+      return sendLocalizedError(res, 400, 'errors.steps.invalid_hour');
     }
 
     if (isNaN(parsedSteps) || parsedSteps < 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'Nombre de pas invalide'
-      });
+      return sendLocalizedError(res, 400, 'errors.steps.invalid_steps');
     }
 
     if (isNaN(parsedDistance) || parsedDistance < 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'Distance invalide'
-      });
+      return sendLocalizedError(res, 400, 'errors.steps.invalid_distance');
     }
 
     if (isNaN(parsedCalories) || parsedCalories < 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'Calories invalides'
-      });
+      return sendLocalizedError(res, 400, 'errors.steps.invalid_calories');
     }
 
     if (isNaN(parsedActiveTime) || parsedActiveTime < 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'Temps actif invalide'
-      });
+      return sendLocalizedError(res, 400, 'errors.steps.invalid_active_time');
     }
 
-    // Validate other required fields
     if (!mode || !date || !day) {
-      return res.status(400).json({
-        success: false,
-        error: 'Tous les champs requis (mode, date) doivent être fournis'
-      });
+      return sendLocalizedError(res, 400, 'errors.steps.invalid_mode');
     }
 
-    // Proceed with existing entry check
     const existingEntry = await StepEntry.findOne({ user: userId, day });
 
     if (existingEntry) {
       const hourExists = existingEntry.hourlyData.some(data => data.hour === hour);
       if (hourExists) {
-        return res.status(409).json({
-          success: false,
-          error: `Données déjà présentes pour ${hour}h`
-        });
+        return sendLocalizedError(res, 409, 'errors.steps.existing_entry', { hour });
       }
 
-      // Add the new entry
       existingEntry.hourlyData.push(hourlyEntry);
-
-      // Sort the hourlyData array by hour (0-23)
       existingEntry.hourlyData.sort((a, b) => a.hour - b.hour);
 
       existingEntry.totalSteps += parsedSteps || 0;
@@ -140,18 +102,12 @@ const createStepEntry = async (req, res) => {
 
       await existingEntry.save();
       await updateUserStats(userId);
-      await updateUserRewards(userId);
       await updateChallengeProgress(userId);
-
       await updateUserLevel(userId);
+      await updateUserRewards(userId);
 
-      return res.status(200).json({
-        success: true,
-        message: "Entrée mise à jour",
-        entry: existingEntry
-      });
+      return sendLocalizedSuccess(res, 'success.steps.updated', {}, { entry: existingEntry });
     } else {
-      // For new entries, the array will naturally be sorted since it only has one element
       const newEntry = await StepEntry.create({
         user: userId,
         date: new Date(date),
@@ -166,23 +122,15 @@ const createStepEntry = async (req, res) => {
       });
 
       await updateUserStats(userId);
-      await updateUserRewards(userId);
       await updateChallengeProgress(userId);
-
       await updateUserLevel(userId);
+      await updateUserRewards(userId);
 
-      return res.status(201).json({
-        success: true,
-        message: "Entrée créée",
-        entry: newEntry
-      });
+      return sendLocalizedSuccess(res, 'success.steps.created', {}, { entry: newEntry });
     }
   } catch (error) {
-    console.error('Erreur création entrée:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la création de l\'entrée'
-    });
+    console.error('Error creating step entry:', error);
+    return sendLocalizedError(res, 500, 'errors.steps.creation_error');
   }
 };
 
@@ -197,41 +145,28 @@ const updateStepEntry = async (req, res) => {
     const entry = await StepEntry.findOne({ _id: entryId, user: userId });
 
     if (!entry) {
-      return res.status(404).json({
-        success: false,
-        error: 'Entrée introuvable'
-      });
+      return sendLocalizedError(res, 404, 'errors.steps.not_found');
     }
 
-    // Mise à jour des champs autorisés
     const allowedUpdates = ['totalSteps', 'totalDistance', 'totalCalories', 'totalActiveTime', 'dominantMode'];
     allowedUpdates.forEach(field => {
       if (updateData[field] !== undefined) {
         entry[field] = updateData[field];
       }
     });
-    entry.isVerified = false
-    entry.xp = computeXpForEntry(entry)
+    entry.isVerified = false;
+    entry.xp = computeXpForEntry(entry);
 
     await entry.save();
     await updateUserStats(userId);
-    await updateUserRewards(userId);
     await updateChallengeProgress(userId);
-
     await updateUserLevel(userId);
+    await updateUserRewards(userId);
 
-    res.status(200).json({
-      success: true,
-      message: "Entrée mise à jour",
-      entry
-    });
-
+    return sendLocalizedSuccess(res, 'success.steps.updated', {}, { entry });
   } catch (error) {
-    console.error('Erreur modification entrée:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la modification de l\'entrée'
-    });
+    console.error('Error updating step entry:', error);
+    return sendLocalizedError(res, 500, 'errors.steps.update_error');
   }
 };
 
@@ -245,25 +180,16 @@ const FavoriteStepEntry = async (req, res) => {
     const entry = await StepEntry.findOne({ _id: entryId, user: userId });
 
     if (!entry) {
-      return res.status(404).json({
-        success: false,
-        error: 'Entrée non trouvée'
-      });
+      return sendLocalizedError(res, 404, 'errors.steps.not_found');
     }
 
-    entry.isFavorite === false ? entry.isFavorite = true : entry.isFavorite = false
+    entry.isFavorite = !entry.isFavorite;
     await entry.save();
 
-    res.status(200).json({
-      success: true
-    });
-
+    return sendLocalizedSuccess(res, null, {}, { entry });
   } catch (error) {
-    console.error('Erreur favoris entrée:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la mise en favoris de l\'entrée'
-    });
+    console.error('Error favoriting step entry:', error);
+    return sendLocalizedError(res, 500, 'errors.steps.favorite_error');
   }
 };
 
@@ -274,32 +200,21 @@ const deleteStepEntry = async (req, res) => {
   if (checkAuthorization(req, res, userId)) return;
 
   try {
-    const entry = await StepEntry.findOneAndDelete({
-      _id: entryId,
-      user: userId
-    });
+    const entry = await StepEntry.findOne({ _id: entryId, user: userId });
 
     if (!entry) {
-      return res.status(404).json({
-        success: false,
-        error: 'Entrée non trouvée'
-      });
+      return sendLocalizedError(res, 404, 'errors.steps.not_found');
     }
+
+    await entry.remove();
     await updateUserStats(userId);
     await updateUserRewards(userId);
     await updateChallengeProgress(userId);
 
-    res.status(200).json({
-      success: true,
-      message: 'Entrée supprimée'
-    });
-
+    return sendLocalizedSuccess(res, 'success.steps.deleted');
   } catch (error) {
-    console.error('Erreur suppression entrée:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la suppression de l\'entrée'
-    });
+    console.error('Error deleting step entry:', error);
+    return sendLocalizedError(res, 500, 'errors.steps.delete_error');
   }
 };
 
@@ -309,11 +224,11 @@ const importHealthData = async (req, res) => {
   const file = req.file; // image envoyée via multer
 
   if (!file) {
-    return res.status(400).json({ success: false, error: 'Aucun fichier fourni' });
+    return sendLocalizedError(res, 400, 'errors.profile.no_file_provided');
   }
 
   if (file.size > 100 * 1024 * 1024) { // 100MB
-    return res.status(400).json({ success: false, error: 'Fichier trop volumineux (max 100MB)' });
+    return sendLocalizedError(res, 400, 'errors.steps.file_too_big');
   }
 
   if (checkAuthorization(req, res, userId)) return;
@@ -351,55 +266,53 @@ const importHealthData = async (req, res) => {
     // Sauvegarder en base
     await StepEntry.insertMany(filteredEntries);
     await updateUserStatsAfterImport(userId, filteredEntries);
-    await updateUserRewards(userId);
     await updateChallengeProgress(userId);
+    await updateUserLevel(userId);
+    await updateUserRewards(userId);
 
-    res.json({
-      success: true,
-      importedEntries: filteredEntries.length,
-      rejectedEntries: entries.length - filteredEntries.length
-    });
-
+    return sendLocalizedSuccess(res, 'success.steps.created', {}, { entries: filteredEntries });
   } catch (error) {
-    console.error('Erreur importation:', error);
-    res.status(500).json({ error: 'Erreur lors de l\'importation' });
+    console.error('Error importing health data:', error);
+    return sendLocalizedError(res, 500, 'errors.steps.creation_error');
   }
 };
 
 const updateUserLevel = async (userId) => {
-    try {
-        const user = await User.findById(userId);
-        if (!user) return;
+  try {
+    const user = await User.findById(userId);
+    if (!user) return;
 
-        const newLevel = calculateLevel(user.totalXP);
-        
-        if (newLevel > user.level) {
-            const levelUpXP = Math.floor((newLevel - user.level) * 100);
-            user.totalXP += levelUpXP;
-            
-            await createLevelUpNotification(user._id, newLevel);
-        }
+    const currentLevel = user.level;
+    const newLevel = calculateLevel(user.xp);
 
-        user.level = newLevel;
-        await user.save();
-        await updateUserRewards(userId);
-    } catch (error) {
-        console.error('Error updating user level:', error);
+    if (newLevel > currentLevel) {
+      user.level = newLevel;
+      await user.save();
+      await createLevelUpNotification(userId, newLevel);
     }
+  } catch (error) {
+    console.error('Error updating user level:', error);
+  }
 };
 
 const createLevelUpNotification = async (userId, newLevel) => {
-    try {
-        const notification = new Notification({
-            recipient: userId,
-            type: 'level_up',
-            content: `Félicitations ! Vous avez atteint le niveau ${newLevel} !`,
-            status: 'unread'
-        });
-        await notification.save();
-    } catch (error) {
-        console.error('Error creating level up notification:', error);
-    }
+  try {
+    await Notification.create({
+      recipient: userId,
+      sender: null,
+      type: 'level_up',
+      content: {
+        en: `Congratulations! You've reached level ${newLevel}!`,
+        fr: `Félicitations ! Vous avez atteint le niveau ${newLevel} !`,
+        es: `¡Felicitaciones! ¡Has alcanzado el nivel ${newLevel}!`,
+        de: `Herzlichen Glückwunsch! Du hast Level ${newLevel} erreicht!`
+      },
+      status: 'unread',
+      DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    });
+  } catch (error) {
+    console.error('Error creating level up notification:', error);
+  }
 };
 
 module.exports = {
@@ -409,4 +322,4 @@ module.exports = {
   FavoriteStepEntry,
   deleteStepEntry,
   importHealthData
-}
+};
