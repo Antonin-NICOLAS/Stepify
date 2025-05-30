@@ -63,7 +63,7 @@ app.use((err, req, res, next) => {
         stack: err.stack,
         path: req.path,
         method: req.method,
-        userId: req.user?._id
+        userId: req.user?._id || null
     });
 
     res.status(500).json({

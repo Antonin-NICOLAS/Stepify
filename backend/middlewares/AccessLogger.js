@@ -32,7 +32,7 @@ const accessLogger = (req, res, next) => {
             responseTime,
             ip: req.ip,
             userAgent: req.headers['user-agent'],
-            userId: req.user ? req.user._id : null,
+            userId: req.params ? req.params.userId || null : null,
             referer: req.headers.referer || req.headers.referrer,
             contentLength: res.getHeader('content-length'),
         };

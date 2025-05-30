@@ -184,3 +184,1126 @@ Data: {
   "userId": null,
   "referer": "http://localhost:5173/"
 }
+[2025-05-30T14:41:59.777Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/681e20f156d075af7ef67e5c/friends",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:41:59.778Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:41:59.778Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/friends",
+  "status": 401,
+  "responseTime": 2,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:41:59.780Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/681e20f156d075af7ef67e5c/friends",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:41:59.781Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:41:59.781Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/friends",
+  "status": 401,
+  "responseTime": 1,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:41:59.782Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:41:59.782Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/challenge",
+  "status": 401,
+  "responseTime": 0,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:41:59.782Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/681e20f156d075af7ef67e5c/challenge",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:41:59.783Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:41:59.783Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/challenge",
+  "status": 401,
+  "responseTime": 0,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:41:59.783Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/681e20f156d075af7ef67e5c/challenge",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:41:59.784Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/681e20f156d075af7ef67e5c/pending-friend-requests",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:41:59.784Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:41:59.784Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/pending-friend-requests",
+  "status": 401,
+  "responseTime": 0,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:41:59.785Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/681e20f156d075af7ef67e5c/all",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:41:59.785Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:41:59.785Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/all",
+  "status": 401,
+  "responseTime": 0,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:41:59.785Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/681e20f156d075af7ef67e5c/pending-friend-requests",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:41:59.786Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:41:59.786Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/pending-friend-requests",
+  "status": 401,
+  "responseTime": 1,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:41:59.787Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/681e20f156d075af7ef67e5c/all",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:41:59.787Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:41:59.787Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/all",
+  "status": 401,
+  "responseTime": 0,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:42:06.630Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/check-auth",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:42:06.630Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:42:06.630Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 401,
+  "responseTime": 1,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:42:06.639Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/check-auth",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:42:06.640Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:42:06.640Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 401,
+  "responseTime": 1,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:42:06.646Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/check-auth",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:42:06.647Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:42:06.647Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 401,
+  "responseTime": 1,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:42:06.653Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/check-auth",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:42:06.654Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:42:06.654Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 401,
+  "responseTime": 1,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:42:10.346Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/check-auth",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:42:10.347Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:42:10.347Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 401,
+  "responseTime": 1,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:42:10.353Z] WARN: Tentative d'accès sans token
+Data: {
+  "path": "/check-auth",
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
+}
+[2025-05-30T14:42:10.354Z] WARN: Erreur client
+Data: {
+  "timestamp": "2025-05-30T14:42:10.354Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 401,
+  "responseTime": 1,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "53"
+}
+[2025-05-30T14:42:53.290Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:42:53.289Z",
+  "method": "OPTIONS",
+  "url": "/auth/login",
+  "status": 204,
+  "responseTime": 0,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "0"
+}
+[2025-05-30T14:42:53.667Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:42:53.667Z",
+  "method": "POST",
+  "url": "/auth/login",
+  "status": 200,
+  "responseTime": 362,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "1114",
+  "body": {
+    "email": "antoninnicolas@protonmail.com",
+    "password": "***",
+    "stayLoggedIn": false
+  }
+}
+[2025-05-30T14:42:53.726Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T14:42:53.756Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:42:53.756Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 200,
+  "responseTime": 31,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "1085"
+}
+[2025-05-30T14:42:53.757Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T14:42:53.780Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:42:53.780Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 23,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:43:00.725Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T14:43:00.760Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:00.760Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 36,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:43:00.762Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T14:43:00.788Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:00.788Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 27,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:43:00.789Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T14:43:00.814Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:00.814Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 25,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:43:00.815Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T14:43:00.858Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:00.858Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 44,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:43:00.870Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/profile"
+}
+[2025-05-30T14:43:00.958Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:00.958Z",
+  "method": "GET",
+  "url": "/account/681e20f156d075af7ef67e5c/profile",
+  "status": 200,
+  "responseTime": 96,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "24222"
+}
+[2025-05-30T14:43:00.959Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/profile"
+}
+[2025-05-30T14:43:01.040Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:01.040Z",
+  "method": "GET",
+  "url": "/account/681e20f156d075af7ef67e5c/profile",
+  "status": 304,
+  "responseTime": 81,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:43:05.118Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:05.118Z",
+  "method": "OPTIONS",
+  "url": "/account/681e20f156d075af7ef67e5c/language",
+  "status": 204,
+  "responseTime": 0,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "0"
+}
+[2025-05-30T14:43:05.121Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/language"
+}
+[2025-05-30T14:43:05.155Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:05.155Z",
+  "method": "PATCH",
+  "url": "/account/681e20f156d075af7ef67e5c/language",
+  "status": 200,
+  "responseTime": 35,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "82",
+  "body": {
+    "languagePreference": "en"
+  }
+}
+[2025-05-30T14:43:05.160Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/profile"
+}
+[2025-05-30T14:43:05.250Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:05.250Z",
+  "method": "GET",
+  "url": "/account/681e20f156d075af7ef67e5c/profile",
+  "status": 200,
+  "responseTime": 91,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "24222"
+}
+[2025-05-30T14:43:08.488Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/language"
+}
+[2025-05-30T14:43:08.522Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:08.522Z",
+  "method": "PATCH",
+  "url": "/account/681e20f156d075af7ef67e5c/language",
+  "status": 200,
+  "responseTime": 36,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "82",
+  "body": {
+    "languagePreference": "fr"
+  }
+}
+[2025-05-30T14:43:08.526Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/profile"
+}
+[2025-05-30T14:43:08.617Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:08.617Z",
+  "method": "GET",
+  "url": "/account/681e20f156d075af7ef67e5c/profile",
+  "status": 200,
+  "responseTime": 92,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "24222"
+}
+[2025-05-30T14:43:11.454Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:11.454Z",
+  "method": "OPTIONS",
+  "url": "/account/681e20f156d075af7ef67e5c/language",
+  "status": 204,
+  "responseTime": 0,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "0"
+}
+[2025-05-30T14:43:11.458Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/language"
+}
+[2025-05-30T14:43:11.492Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:11.492Z",
+  "method": "PATCH",
+  "url": "/account/681e20f156d075af7ef67e5c/language",
+  "status": 200,
+  "responseTime": 36,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "82",
+  "body": {
+    "languagePreference": "es"
+  }
+}
+[2025-05-30T14:43:11.499Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/profile"
+}
+[2025-05-30T14:43:11.585Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:11.585Z",
+  "method": "GET",
+  "url": "/account/681e20f156d075af7ef67e5c/profile",
+  "status": 200,
+  "responseTime": 87,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "24222"
+}
+[2025-05-30T14:43:13.642Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/language"
+}
+[2025-05-30T14:43:13.672Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:13.672Z",
+  "method": "PATCH",
+  "url": "/account/681e20f156d075af7ef67e5c/language",
+  "status": 200,
+  "responseTime": 32,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "82",
+  "body": {
+    "languagePreference": "en"
+  }
+}
+[2025-05-30T14:43:13.679Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/profile"
+}
+[2025-05-30T14:43:13.769Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:43:13.769Z",
+  "method": "GET",
+  "url": "/account/681e20f156d075af7ef67e5c/profile",
+  "status": 200,
+  "responseTime": 91,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "24222"
+}
+[2025-05-30T14:44:36.670Z] INFO: Serveur démarré sur le port 3500
+[2025-05-30T14:44:37.105Z] INFO: MongoDB connecté avec succès
+[2025-05-30T14:44:49.644Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T14:44:49.682Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:44:49.682Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 200,
+  "responseTime": 43,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "1085"
+}
+[2025-05-30T14:44:49.684Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/check-auth"
+}
+[2025-05-30T14:44:49.705Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/challenge"
+}
+[2025-05-30T14:44:49.709Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:44:49.709Z",
+  "method": "GET",
+  "url": "/auth/check-auth",
+  "status": 304,
+  "responseTime": 26,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:44:49.710Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/all"
+}
+[2025-05-30T14:44:49.713Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/mychallenges"
+}
+[2025-05-30T14:44:49.725Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:44:49.725Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/challenge",
+  "status": 304,
+  "responseTime": 21,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:44:49.726Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/challenge"
+}
+[2025-05-30T14:44:49.746Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:44:49.746Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/challenge",
+  "status": 304,
+  "responseTime": 20,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:44:49.753Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:44:49.753Z",
+  "method": "GET",
+  "url": "/challenge/challenges",
+  "status": 304,
+  "responseTime": 42,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:44:49.807Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:44:49.807Z",
+  "method": "GET",
+  "url": "/challenge/challenges",
+  "status": 304,
+  "responseTime": 53,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:44:49.883Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:44:49.883Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/all",
+  "status": 200,
+  "responseTime": 173,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/",
+  "contentLength": "861"
+}
+[2025-05-30T14:44:49.884Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:44:49.884Z",
+  "method": "GET",
+  "url": "/challenge/681e20f156d075af7ef67e5c/mychallenges",
+  "status": 304,
+  "responseTime": 172,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:44:49.885Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/all"
+}
+[2025-05-30T14:44:49.886Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/mychallenges"
+}
+[2025-05-30T14:44:49.924Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:44:49.924Z",
+  "method": "GET",
+  "url": "/challenge/681e20f156d075af7ef67e5c/mychallenges",
+  "status": 304,
+  "responseTime": 38,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:44:49.925Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:44:49.925Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/all",
+  "status": 304,
+  "responseTime": 41,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:20.630Z] INFO: Serveur démarré sur le port 3500
+[2025-05-30T14:45:20.960Z] INFO: MongoDB connecté avec succès
+[2025-05-30T14:45:24.999Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/vitrine"
+}
+[2025-05-30T14:45:25.005Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/myrewards"
+}
+[2025-05-30T14:45:25.007Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/all"
+}
+[2025-05-30T14:45:25.054Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:25.054Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/all",
+  "status": 304,
+  "responseTime": 48,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:25.056Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/all"
+}
+[2025-05-30T14:45:25.076Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:25.076Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/vitrine",
+  "status": 304,
+  "responseTime": 83,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:25.082Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:25.082Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/myrewards",
+  "status": 304,
+  "responseTime": 78,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:25.091Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:25.090Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/all",
+  "status": 304,
+  "responseTime": 35,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:25.097Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/myrewards"
+}
+[2025-05-30T14:45:25.093Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/vitrine"
+}
+[2025-05-30T14:45:25.141Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:25.141Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/vitrine",
+  "status": 304,
+  "responseTime": 49,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:25.146Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:25.145Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/myrewards",
+  "status": 304,
+  "responseTime": 50,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:50.741Z] INFO: Serveur démarré sur le port 3500
+[2025-05-30T14:45:51.086Z] INFO: MongoDB connecté avec succès
+[2025-05-30T14:45:53.421Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/mychallenges"
+}
+[2025-05-30T14:45:53.423Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/all"
+}
+[2025-05-30T14:45:53.425Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/challenge"
+}
+[2025-05-30T14:45:53.453Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:53.453Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/challenge",
+  "status": 304,
+  "responseTime": 29,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:53.455Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/challenge"
+}
+[2025-05-30T14:45:53.458Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:53.458Z",
+  "method": "GET",
+  "url": "/challenge/challenges",
+  "status": 304,
+  "responseTime": 46,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:53.476Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:53.476Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/challenge",
+  "status": 304,
+  "responseTime": 22,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:53.527Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:53.527Z",
+  "method": "GET",
+  "url": "/challenge/challenges",
+  "status": 304,
+  "responseTime": 68,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:53.691Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:53.691Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/all",
+  "status": 304,
+  "responseTime": 268,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:53.693Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/all"
+}
+[2025-05-30T14:45:53.698Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:53.698Z",
+  "method": "GET",
+  "url": "/challenge/681e20f156d075af7ef67e5c/mychallenges",
+  "status": 304,
+  "responseTime": 279,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:53.699Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/mychallenges"
+}
+[2025-05-30T14:45:53.737Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:53.737Z",
+  "method": "GET",
+  "url": "/notification/681e20f156d075af7ef67e5c/all",
+  "status": 304,
+  "responseTime": 46,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:45:53.739Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:45:53.739Z",
+  "method": "GET",
+  "url": "/challenge/681e20f156d075af7ef67e5c/mychallenges",
+  "status": 304,
+  "responseTime": 41,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": null,
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:47:34.238Z] INFO: Serveur démarré sur le port 3500
+[2025-05-30T14:47:34.691Z] INFO: MongoDB connecté avec succès
+[2025-05-30T14:47:47.093Z] INFO: Serveur démarré sur le port 3500
+[2025-05-30T14:47:47.414Z] INFO: MongoDB connecté avec succès
+[2025-05-30T14:47:50.375Z] INFO: Serveur démarré sur le port 3500
+[2025-05-30T14:47:50.695Z] INFO: MongoDB connecté avec succès
+[2025-05-30T14:50:00.795Z] INFO: Serveur démarré sur le port 3500
+[2025-05-30T14:50:01.327Z] INFO: MongoDB connecté avec succès
+[2025-05-30T14:50:03.893Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/all"
+}
+[2025-05-30T14:50:03.899Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/myrewards"
+}
+[2025-05-30T14:50:03.901Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/vitrine"
+}
+[2025-05-30T14:50:03.948Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:50:03.948Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/all",
+  "status": 304,
+  "responseTime": 59,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": "681e20f156d075af7ef67e5c",
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:50:03.950Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/all"
+}
+[2025-05-30T14:50:03.977Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:50:03.977Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/all",
+  "status": 304,
+  "responseTime": 28,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": "681e20f156d075af7ef67e5c",
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:50:03.986Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:50:03.985Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/myrewards",
+  "status": 304,
+  "responseTime": 88,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": "681e20f156d075af7ef67e5c",
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:50:03.988Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:50:03.988Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/vitrine",
+  "status": 304,
+  "responseTime": 87,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": "681e20f156d075af7ef67e5c",
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:50:03.989Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/myrewards"
+}
+[2025-05-30T14:50:03.991Z] DEBUG: Token vérifié avec succès
+Data: {
+  "userId": "681e20f156d075af7ef67e5c",
+  "path": "/681e20f156d075af7ef67e5c/vitrine"
+}
+[2025-05-30T14:50:04.037Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:50:04.037Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/vitrine",
+  "status": 304,
+  "responseTime": 47,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": "681e20f156d075af7ef67e5c",
+  "referer": "http://localhost:5173/"
+}
+[2025-05-30T14:50:04.041Z] INFO: Requête traitée
+Data: {
+  "timestamp": "2025-05-30T14:50:04.041Z",
+  "method": "GET",
+  "url": "/reward/681e20f156d075af7ef67e5c/myrewards",
+  "status": 304,
+  "responseTime": 52,
+  "ip": "::1",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+  "userId": "681e20f156d075af7ef67e5c",
+  "referer": "http://localhost:5173/"
+}
