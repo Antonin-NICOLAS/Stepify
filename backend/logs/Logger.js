@@ -4,7 +4,8 @@ const path = require('path');
 class Logger {
     constructor() {
         this.logsDir = path.join(process.cwd(), 'logs');
-        if (!fs.existsSync(this.logsDir)) {
+
+        if (process.env.NODE_ENV !== 'production' && !fs.existsSync(this.logsDir)) {
             fs.mkdirSync(this.logsDir);
         }
     }
@@ -17,17 +18,21 @@ class Logger {
     _formatMessage(level, message, data = null) {
         const timestamp = new Date().toISOString();
         const dataStr = data ? `\nData: ${JSON.stringify(data, null, 2)}` : '';
-        return `[${timestamp}] ${level}: ${message}${dataStr}\n`;
+        return `[${timestamp}] ${level}: ${message}${dataStr}`;
     }
 
     async log(level, message, data = null) {
-        const logFile = path.join(this.logsDir, this._getLogFileName());
-        const logMessage = this._formatMessage(level, message, data);
-        
-        try {
-            await fs.promises.appendFile(logFile, logMessage);
-        } catch (error) {
-            console.error('Erreur lors de l\'écriture des logs:', error);
+        const formattedMessage = this._formatMessage(level, message, data);
+
+        if (process.env.NODE_ENV === 'production') {
+            console.log(formattedMessage);
+        } else {
+            const logFile = path.join(this.logsDir, this._getLogFileName());
+            try {
+                await fs.promises.appendFile(logFile, formattedMessage + '\n');
+            } catch (error) {
+                console.error('Erreur lors de l\'écriture des logs:', error);
+            }
         }
     }
 
@@ -50,4 +55,4 @@ class Logger {
     }
 }
 
-module.exports = new Logger(); 
+module.exports = new Logger();
