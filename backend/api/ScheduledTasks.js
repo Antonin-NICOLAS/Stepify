@@ -4,16 +4,34 @@ const Notification = require('../models/Notification');
 const User = require('../models/User');
 const { updateUserRewards } = require('../controllers/RewardController');
 const { recordRankingHistory } = require('../controllers/RankingController');
+const Cache = require('../logs/Cache')
+const Logger = require('../logs/Logger')
+
+const CleanCache = () => {
+  cron.schedule('0 * * * *', async () => {
+    try {
+      Cache.cleanup();
+      console.log('[CRON] Nettoyage du cache effectué');
+      Logger.info('[CRON] Nettoyage du cache effectué');
+    } catch (error) {
+      console.error(':', error);
+      Logger.error('[CRON] Impossible de nettoyer le cache')
+    }
+  })
+}
 
 // Update challenge statuses every hour
 const scheduleStatusUpdates = () => {
-  cron.schedule('0 * * * *', async () => { // Runs at the start of every hour
+  cron.schedule('*/30 * * * *', async () => { // Toutes les 30 minutes
     try {
       console.log('Running challenge status updates...');
+      Logger.info('Running challenge status updates...')
       await updateChallengeStatuses();
-      console.log('Status updates completed');
+      console.log('[CRON] Status updates completed');
+      Logger.info('[CRON] Status updates completed');
     } catch (error) {
-      console.error('Cron job error:', error);
+      console.error('[CRON] Error updating challenges status:', error);
+      Logger.error('[CRON] Error updating challenges status:', {error});
     }
   });
 };
@@ -23,50 +41,57 @@ const updateChallengeStatuses = async () => {
     const challenges = await Challenge.find();
     const now = new Date();
 
-    for (const challenge of challenges) {
-      let newStatus = challenge.status;
+      // Mettre à jour les défis qui doivent démarrer
+      const startingChallenges = await Challenge.updateMany(
+        {
+          status: 'upcoming',
+          startDate: { $lte: now }
+        },
+        { $set: { status: 'active' } }
+      );
 
-      if (challenge.startDate > now) {
-        newStatus = 'upcoming';
-      } else if (challenge.endDate && challenge.endDate < now) {
-        newStatus = 'completed';
-      } else if (challenge.startDate <= now) {
-        newStatus = 'active';
-      }
+      // Mettre à jour les défis qui doivent se terminer
+      const endingChallenges = await Challenge.updateMany(
+        {
+          status: 'active',
+          endDate: { $lte: now }
+        },
+        { $set: { status: 'completed' } }
+      );
 
-      if (newStatus !== challenge.status) {
-        challenge.status = newStatus;
-        await challenge.save();
-        console.log(`Updated challenge ${challenge._id} to ${newStatus}`);
-      }
+      Logger.info('Mise à jour des statuts des défis terminée', {
+        startingChallenges: startingChallenges.modifiedCount,
+        endingChallenges: endingChallenges.modifiedCount
+      });
+    } catch (error) {
+      Logger.error('Erreur lors de la mise à jour des statuts des défis', { error });
     }
-  } catch (error) {
-    console.error('Status update error:', error);
-    throw error;
   }
-};
 
 // Delete Notification 1 week after the response - Every day at 1 AM
 const deleteExpiredNotifications = () => {
-  cron.schedule('0 1 * * *', async () => {
+  cron.schedule('0 */2 * * *', async () => { // Toutes les 2 heures
     try {
-      const now = new Date();
+      Logger.info('Début de la suppression des notifications expirées');
       const result = await Notification.deleteMany({
-        DeleteAt: { $lte: now }
+        DeleteAt: { $lte: new Date() }
       });
-
-      console.log(`[CRON] Deleted ${result.deletedCount} expired invitations.`);
+      Logger.info('Suppression des notifications expirées terminée', {
+        deletedCount: result.deletedCount
+      });
     } catch (error) {
       console.error('[CRON] Error deleting notifications:', error);
+      Logger.error('Erreur lors de la suppression des notifications expirées', { error });
     }
   });
 };
 
 // Update rewards for all users - Every day at 1:02 AM
 const scheduleDailyRewardUpdates = () => {
-  cron.schedule('0 1 * * *', async () => {
+  cron.schedule('0 0 * * *', async () => { // Tous les jours à minuit
     try {
       console.log('Starting daily reward updates for all users...');
+      Logger.info('Starting daily reward updates for all users...');
 
       // Get all user IDs (just the IDs for efficiency)
       const users = await User.find({}, '_id');
@@ -95,18 +120,22 @@ const scheduleDailyRewardUpdates = () => {
         }));
       }
 
-      console.log(`[CRON] Completed reward updates for ${processed} users.`);
+      Logger.info('Mise à jour des récompenses quotidiennes terminée', {
+        totalUsers: users.length
+      });
     } catch (error) {
       console.error('[CRON] Error in daily reward updates:', error);
+      Logger.error('Erreur lors de la mise à jour des récompenses quotidiennes', { error });
     }
   });
 };
 
 // Delete Challenges with only creators - Every day at 2 AM
 const deleteLonelyChallenges = () => {
-  cron.schedule('0 2 * * *', async () => {
+  cron.schedule('0 3 * * *', async () => { // Tous les jours à 3h du matin
     try {
       console.log('Checking for lonely challenges to delete...');
+      Logger.info('Checking for lonely challenges to delete...');
 
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -126,6 +155,7 @@ const deleteLonelyChallenges = () => {
       });
 
       console.log(`Deleted ${deletedCount.deletedCount} lonely challenges`);
+      Logger.info(`Deleted ${deletedCount.deletedCount} lonely challenges`);
 
       // Supprimer les notifications associées
       await Notification.deleteMany({
@@ -133,7 +163,8 @@ const deleteLonelyChallenges = () => {
       });
 
     } catch (error) {
-      console.error('Error deleting lonely challenges:', error);
+      console.error('[CRON] Error deleting lonely challenges:', error);
+      Logger.error('[CRON] Error deleting lonely challenges:', {error});
     }
   });
 };
@@ -143,15 +174,19 @@ const saveRank = () => {
   cron.schedule('0 * * * *', () => {
     try {
       console.log('Running ranking history recording...');
+      Logger.info('Running ranking history recording...');
       recordRankingHistory();
       console.log('Ranking history recorded');
+      Logger.info('Ranking history recorded');
     } catch (error) {
       console.error('[CRON] Error in daily reward updates:', error);
+      Logger.error('[CRON] Error in daily reward updates:', {error});
     }
   });
 }
 
 module.exports = {
+  CleanCache,
   scheduleStatusUpdates,
   deleteExpiredNotifications,
   scheduleDailyRewardUpdates,

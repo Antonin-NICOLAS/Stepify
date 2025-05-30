@@ -1,8 +1,8 @@
 const UserModel = require('../models/User');
-const fr = require('../utils/locales/fr.json');
-const en = require('../utils/locales/en.json');
-const es = require('../utils/locales/es.json');
-const de = require('../utils/locales/de.json');
+const fr = require('../languages/fr.json');
+const en = require('../languages/en.json');
+const es = require('../languages/es.json');
+const de = require('../languages/de.json');
 
 const locales = { fr, en, es, de };
 const defaultLocale = 'en';
