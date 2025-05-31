@@ -1,18 +1,52 @@
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
-import Select from 'react-select';
+import Select from "react-select"
 // Context
-import { useAuth } from "../context/AuthContext";
-import { useChallenge } from "../hooks/useChallenges";
-import { useNotifications } from "../hooks/useNotifications";
-import { useChallengesFilters } from "../hooks/useChallengesFilters";
+import { useAuth } from "../context/AuthContext"
+import { useChallenge } from "../hooks/useChallenges"
+import { useNotifications } from "../hooks/useNotifications"
+import { useChallengesFilters } from "../hooks/useChallengesFilters"
 import FiltersPanel from "./Challenges/FiltersPanel"
-import ChallengeDetailModal from "./Challenges/ChallengeDetailModal";
+import ChallengeDetailModal from "./Challenges/ChallengeDetailModal"
 // Loader
-import GlobalLoader from "../utils/GlobalLoader";
+import GlobalLoader from "../utils/GlobalLoader"
 // Icons
-import { Icon, Activity, Footprints, Watch, Spline, Flame, Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, Clock, Award, Target, X, Info, Zap, Star, Plus, Lock, Check, AlertTriangle, Flag, Hash, Compass, Bookmark, Mail, CheckCheck, Gift, Heart, Skull } from 'lucide-react'
-import { sneaker, watchActivity } from '@lucide/lab';
+import {
+    Icon,
+    Activity,
+    Footprints,
+    Watch,
+    Spline,
+    Flame,
+    Trophy,
+    Users,
+    Filter,
+    ChevronDown,
+    ChevronUp,
+    Calendar,
+    Search,
+    Clock,
+    Award,
+    Target,
+    X,
+    Info,
+    Zap,
+    Star,
+    Plus,
+    Lock,
+    Check,
+    AlertTriangle,
+    Flag,
+    Hash,
+    Compass,
+    Bookmark,
+    Mail,
+    CheckCheck,
+    Gift,
+    Heart,
+    Skull,
+} from "lucide-react"
+import { sneaker, watchActivity } from "@lucide/lab"
 // Charts
 import { Chart, registerables } from "chart.js"
 //CSS
@@ -22,15 +56,15 @@ import "./Challenges.css"
 Chart.register(...registerables)
 
 const Challenges = () => {
-    const { user } = useAuth();
-    const [activeTab, setActiveTab] = useState("my-challenges");
-    const [showFilters, setShowFilters] = useState(false);
-    const [selectedChallenge, setSelectedChallenge] = useState(null);
-    const [showChallengeModal, setShowChallengeModal] = useState(false);
-    const [showJoinModal, setShowJoinModal] = useState(false);
-    const [accessCode, setAccessCode] = useState("");
-    const [showCreateModal, setShowCreateModal] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const { user } = useAuth()
+    const [activeTab, setActiveTab] = useState("my-challenges")
+    const [showFilters, setShowFilters] = useState(false)
+    const [selectedChallenge, setSelectedChallenge] = useState(null)
+    const [showChallengeModal, setShowChallengeModal] = useState(false)
+    const [showJoinModal, setShowJoinModal] = useState(false)
+    const [accessCode, setAccessCode] = useState("")
+    const [showCreateModal, setShowCreateModal] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
     const [newChallenge, setNewChallenge] = useState({
         name: "",
@@ -43,15 +77,23 @@ const Challenges = () => {
         xpReward: 100,
         isPrivate: false,
         difficulty: "easy",
-        participants: []
-    });
+        participants: [],
+    })
 
-    const { challenges, publicChallenges, fetchChallenges, fetchMyChallenges,
-        createChallenge, fetchChallengeDetails, updateChallenge,
-        joinChallenge, leaveChallenge, deleteChallenge,
-    } = useChallenge(user?._id);
+    const {
+        challenges,
+        publicChallenges,
+        fetchChallenges,
+        fetchMyChallenges,
+        createChallenge,
+        fetchChallengeDetails,
+        updateChallenge,
+        joinChallenge,
+        leaveChallenge,
+        deleteChallenge,
+    } = useChallenge(user?._id)
 
-    const { challengeNotifications, respondToChallengeInvite } = useNotifications(user?._id);
+    const { challengeNotifications, respondToChallengeInvite } = useNotifications(user?._id)
 
     const {
         sortBy,
@@ -63,8 +105,8 @@ const Challenges = () => {
         searchQuery,
         setSearchQuery,
         filteredChallenges,
-        filteredPublicChallenges
-    } = useChallengesFilters(user, challenges, publicChallenges);
+        filteredPublicChallenges,
+    } = useChallengesFilters(user, challenges, publicChallenges)
 
     //modal close handler
     const JoinModalRef = useRef(null)
@@ -81,17 +123,17 @@ const Challenges = () => {
     useEffect(() => {
         const fetchAll = async () => {
             if (user?._id) {
-                await fetchChallenges();
-                await fetchMyChallenges();
+                await fetchChallenges()
+                await fetchMyChallenges()
             }
-            setIsLoading(false);
-        };
-        fetchAll();
-    }, [user?._id, fetchChallenges, fetchMyChallenges]);
+            setIsLoading(false)
+        }
+        fetchAll()
+    }, [user?._id, fetchChallenges, fetchMyChallenges])
 
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === 'Escape') {
+            if (e.key === "Escape") {
                 () => {
                     setShowJoinModal(false)
                     setShowCreateModal(false)
@@ -100,75 +142,105 @@ const Challenges = () => {
             }
         }
 
-        document.addEventListener('keydown', handleKeyDown)
+        document.addEventListener("keydown", handleKeyDown)
         return () => {
-            document.removeEventListener('keydown', handleKeyDown)
+            document.removeEventListener("keydown", handleKeyDown)
         }
-    }, [setShowJoinModal, setShowCreateModal]);
+    }, [setShowJoinModal, setShowCreateModal])
 
     // Calculate progress
     const computeGlobalProgress = (participants = []) => {
-        if (!Array.isArray(participants) || !participants.length) return 0;
-        const total = participants.reduce((sum, p) => sum + (p.progress || 0), 0);
-        return Math.round(total / participants.length);
-    };
+        if (!Array.isArray(participants) || !participants.length) return 0
+        const total = participants.reduce((sum, p) => sum + (p.progress || 0), 0)
+        return Math.round(total / participants.length)
+    }
 
     // Select options
     const ActivityOptions = [
-        { value: 'steps', label: ' Pas', icon: <Footprints size={16} /> },
-        { value: 'steps-time', label: ' Pas par jour', icon: <Icon iconNode={sneaker} size={16} /> },
-        { value: 'xp', label: ' XP', icon: <Trophy size={16} /> },
-        { value: 'xp-time', label: ' XP par jour', icon: <Award size={16} /> },
-        { value: 'distance', label: ' Distance (km)', icon: <Spline size={16} /> },
-        { value: 'distance-time', label: ' Distance par jour', icon: <Watch size={16} /> },
-        { value: 'calories', label: ' Calories (kcal)', icon: <Flame size={16} /> },
-        { value: 'calories-time', label: ' Calories par jour', icon: <Icon iconNode={watchActivity} size={16} /> },
-        { value: 'any', label: ' Tout type d\'activité', icon: <Activity size={16} /> },
-    ];
+        { value: "steps", label: " Pas", icon: <Footprints size={16} /> },
+        { value: "steps-time", label: " Pas par jour", icon: <Icon iconNode={sneaker} size={16} /> },
+        { value: "xp", label: " XP", icon: <Trophy size={16} /> },
+        { value: "xp-time", label: " XP par jour", icon: <Award size={16} /> },
+        { value: "distance", label: " Distance (km)", icon: <Spline size={16} /> },
+        { value: "distance-time", label: " Distance par jour", icon: <Watch size={16} /> },
+        { value: "calories", label: " Calories (kcal)", icon: <Flame size={16} /> },
+        { value: "calories-time", label: " Calories par jour", icon: <Icon iconNode={watchActivity} size={16} /> },
+        { value: "any", label: " Tout type d'activité", icon: <Activity size={16} /> },
+    ]
 
     const DifficultyOptions = [
-        { value: 'easy', label: ' Facile', icon: <Gift size={16} /> },
-        { value: 'medium', label: ' Normal', icon: <Heart size={16} /> },
-        { value: 'hard', label: ' Difficile', icon: <Zap size={16} /> },
-        { value: 'extreme', label: ' Expert', icon: <Skull size={16} /> }
-    ];
+        { value: "easy", label: " Facile", icon: <Gift size={16} /> },
+        { value: "medium", label: " Normal", icon: <Heart size={16} /> },
+        { value: "hard", label: " Difficile", icon: <Zap size={16} /> },
+        { value: "extreme", label: " Expert", icon: <Skull size={16} /> },
+    ]
 
     const [selectedActivity, setSelectedActivity] = useState(
-        ActivityOptions.find(opt => opt.value === (newChallenge?.activityType || 'walk'))
-    );
+        ActivityOptions.find((opt) => opt.value === (newChallenge?.activityType || "walk")),
+    )
 
     const [selectedDifficulty, setSelectedDifficulty] = useState(
-        DifficultyOptions.find(opt => opt.value === (newChallenge?.difficulty || 'easy'))
-    );
+        DifficultyOptions.find((opt) => opt.value === (newChallenge?.difficulty || "easy")),
+    )
+
+    // Custom select styles
+    const customSelectStyles = {
+        control: (provided, state) => ({
+            ...provided,
+            backgroundColor: "var(--body-color)",
+            borderColor: state.isFocused ? "var(--Couleur1)" : "var(--Couleur2)",
+            boxShadow: state.isFocused ? "0 0 0 2px var(--Couleur2)" : "none",
+            "&:hover": {
+                borderColor: "var(--Couleur1)",
+            },
+        }),
+        menu: (provided) => ({
+            ...provided,
+            backgroundColor: "var(--body-color)",
+            border: "1px solid var(--Couleur2)",
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isSelected ? "var(--Couleur1)" : state.isFocused ? "var(--Couleur2)" : "transparent",
+            color: state.isSelected ? "white" : "var(--Noir)",
+            "&:hover": {
+                backgroundColor: "var(--Couleur2)",
+            },
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color: "var(--Noir)",
+        }),
+    }
 
     const customSingleValue = ({ data }) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             {data.icon}
             {data.label}
         </div>
-    );
+    )
 
     const customOption = (props) => {
-        const { data, innerRef, innerProps, isSelected, isFocused } = props;
+        const { data, innerRef, innerProps, isSelected, isFocused } = props
         return (
             <div
                 ref={innerRef}
                 {...innerProps}
-                className={`activity-select__option ${isSelected ? 'activity-select__option--is-selected' : ''} ${isFocused ? 'activity-select__option--is-focused' : ''}`}
-                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', borderRadius: '4px' }}
+                className={`activity-select__option ${isSelected ? "activity-select__option--is-selected" : ""} ${isFocused ? "activity-select__option--is-focused" : ""}`}
+                style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem", borderRadius: "4px" }}
             >
                 {data.icon}
                 {data.label}
             </div>
-        );
-    };
+        )
+    }
 
     // Format date
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString("fr-FR", {
             day: "numeric",
             month: "short",
-            year: "numeric"
+            year: "numeric",
         })
     }
 
@@ -184,23 +256,23 @@ const Challenges = () => {
     const formatgoal = (value, type) => {
         switch (type) {
             case "steps":
-                return `${value.toLocaleString("fr-FR")} pas`;
+                return `${value.toLocaleString("fr-FR")} pas`
             case "steps-time":
-                return `${value.toLocaleString("fr-FR")} pas par jour`;
+                return `${value.toLocaleString("fr-FR")} pas par jour`
             case "distance":
-                return `${value} km`;
+                return `${value} km`
             case "distance-time":
-                return `${value.toLocaleString("fr-FR")} km par jour`;
+                return `${value.toLocaleString("fr-FR")} km par jour`
             case "calories":
-                return `${value} kcal`;
+                return `${value} kcal`
             case "calories-time":
-                return `${value} kcal par jour`;
+                return `${value} kcal par jour`
             case "xp":
-                return `${value.toLocaleString("fr-FR")} XP`;
+                return `${value.toLocaleString("fr-FR")} XP`
             default:
-                return value.toLocaleString("fr-FR");
+                return value.toLocaleString("fr-FR")
         }
-    };
+    }
 
     // Get goal type icon
     const getActivityTypeIcon = (type) => {
@@ -210,9 +282,9 @@ const Challenges = () => {
             case "xp-time":
                 return <Award size={16} />
             case "steps":
-                return <Footprints size={16} />;
+                return <Footprints size={16} />
             case "steps-time":
-                return <Icon iconNode={sneaker} size={16} />;
+                return <Icon iconNode={sneaker} size={16} />
             case "distance":
                 return <Spline size={16} />
             case "distance-time":
@@ -224,17 +296,61 @@ const Challenges = () => {
             case "any":
                 return <Activity size={16} />
         }
-    };
+    }
 
-    // Get status badge
+    // Get status badge for time
     const getStatusBadge = (status) => {
         switch (status) {
             case "upcoming":
-                return <span className="status-badge upcoming"><Calendar size={12} /> À venir</span>
+                return (
+                    <span className="status-badge upcoming">
+                        <Calendar size={12} /> À venir
+                    </span>
+                )
             case "active":
-                return <span className="status-badge active"><Zap size={12} /> En cours</span>
+                return (
+                    <span className="status-badge active">
+                        <Zap size={12} /> En cours
+                    </span>
+                )
             case "completed":
-                return <span className="status-badge completed"><CheckCheck size={12} /> Terminé</span>
+                return (
+                    <span className="status-badge completed">
+                        <CheckCheck size={12} /> Terminé
+                    </span>
+                )
+            default:
+                return null
+        }
+    }
+
+    // Get status badge
+    const getDifficultyBadge = (difficulty) => {
+        switch (difficulty) {
+            case "easy":
+                return (
+                    <span className="status-badge easy">
+                        <Gift size={12} /> Facile
+                    </span>
+                )
+            case "medium":
+                return (
+                    <span className="status-badge medium">
+                        <Heart size={12} /> Normal
+                    </span>
+                )
+            case "hard":
+                return (
+                    <span className="status-badge hard">
+                        <Zap size={12} /> Difficile
+                    </span>
+                )
+            case "extreme":
+                return (
+                    <span className="status-badge extreme">
+                        <Skull size={12} /> Expert
+                    </span>
+                )
             default:
                 return null
         }
@@ -242,80 +358,82 @@ const Challenges = () => {
 
     // Handle challenge click - fetch details
     const handleChallengeClick = async (challenge) => {
-        setIsLoading(true);
+        setIsLoading(true)
         try {
-            const details = await fetchChallengeDetails(challenge._id);
-            setSelectedChallenge(details);
-            setShowChallengeModal(true);
+            const details = await fetchChallengeDetails(challenge._id)
+            setSelectedChallenge(details)
+            setShowChallengeModal(true)
         } catch (error) {
-            console.error("Error fetching challenge details:", error);
+            console.error("Error fetching challenge details:", error)
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
         }
-    };
+    }
 
     // Handle join challenge
     const handleJoinChallenge = async (challengeId) => {
-        setIsLoading(true);
+        setIsLoading(true)
         try {
-            await joinChallenge(null, challengeId);
+            await joinChallenge(null, challengeId)
         } catch (error) {
-            console.error("Error joining challenge:", error);
+            console.error("Error joining challenge:", error)
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
         }
-    };
+    }
 
     // Handle leave challenge
     const handleLeaveChallenge = async (challengeId) => {
         if (window.confirm("Êtes-vous sûr de vouloir quitter ce défi ?")) {
-            setIsLoading(true);
+            setIsLoading(true)
             try {
-                await leaveChallenge(challengeId);
+                await leaveChallenge(challengeId)
                 setShowChallengeModal(false)
                 setSelectedChallenge(null)
             } catch (error) {
-                console.error("Error leaving challenge:", error);
+                console.error("Error leaving challenge:", error)
             } finally {
-                setIsLoading(false);
+                setIsLoading(false)
             }
         }
-    };
+    }
 
     // Handle delete challenge
     const handleDeleteChallenge = async (challengeId) => {
-        if (window.confirm("Êtes-vous sûr de vouloir supprimer ce défi ? Tous les participants seront également supprimés.")) {
-            setIsLoading(true);
+        if (
+            window.confirm("Êtes-vous sûr de vouloir supprimer ce défi ? Tous les participants seront également supprimés.")
+        ) {
+            setIsLoading(true)
             try {
-                await deleteChallenge(challengeId);
+                await deleteChallenge(challengeId)
                 setShowChallengeModal(false)
                 setSelectedChallenge(null)
             } catch (error) {
-                console.error("Error deleting challenge:", error);
+                console.error("Error deleting challenge:", error)
             } finally {
-                setIsLoading(false);
+                setIsLoading(false)
             }
         }
-    };
+    }
 
     // Handle join private challenge
     const handleJoinPrivateChallenge = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
+        e.preventDefault()
+        setIsLoading(true)
         try {
-            await joinChallenge(accessCode, null);
-            setAccessCode("");
-            setShowJoinModal(false);
+            await joinChallenge(accessCode, null)
+            setAccessCode("")
+            setShowJoinModal(false)
         } catch (error) {
-            console.error("Error joining private challenge:", error);
+            console.error("Error joining private challenge:", error)
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
         }
-    };
+    }
 
     // Handle create challenge
     const handleCreateChallenge = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
         setIsLoading(true)
         try {
             const challengeData = {
@@ -329,10 +447,10 @@ const Challenges = () => {
                 time: selectedActivity.value.includes("-time") ? newChallenge.time : 1,
                 isPrivate: newChallenge.isPrivate,
                 difficulty: selectedDifficulty.value,
-                participants: newChallenge.participants
-            };
+                participants: newChallenge.participants,
+            }
 
-            await createChallenge(challengeData);
+            await createChallenge(challengeData)
 
             setNewChallenge({
                 name: "",
@@ -345,24 +463,24 @@ const Challenges = () => {
                 xpReward: 100,
                 isPrivate: false,
                 difficulty: "easy",
-                participants: []
-            });
+                participants: [],
+            })
 
-            setShowCreateModal(false);
+            setShowCreateModal(false)
         } catch (error) {
-            console.error("Error creating challenge:", error);
+            console.error("Error creating challenge:", error)
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
         }
-    };
+    }
 
     // Handle accept invitation
     const handleRespondToInvitation = async (invitationId, action) => {
         setIsLoading(true)
         try {
-            await respondToChallengeInvite(invitationId, action);
+            await respondToChallengeInvite(invitationId, action)
         } catch (error) {
-            console.error("Error accepting invitation:", error);
+            console.error("Error accepting invitation:", error)
         } finally {
             setIsLoading(false)
         }
@@ -386,6 +504,7 @@ const Challenges = () => {
                                             <h3>{challenge.name[user?.languagePreference]}</h3>
                                             <div className="challenge-badges">
                                                 {getStatusBadge(challenge.status)}
+                                                {getDifficultyBadge(challenge.difficulty)}
                                                 {challenge.isPrivate && (
                                                     <span className="privacy-badge">
                                                         <Lock size={12} /> Privé
@@ -413,7 +532,9 @@ const Challenges = () => {
                                             </div>
 
                                             <div className="challenge-participants-count">
-                                                <span className="meta-label">{challenge.participants.length <= 1 ? "Participant :" : "Participants:"}</span>
+                                                <span className="meta-label">
+                                                    {challenge.participants.length <= 1 ? "Participant :" : "Participants:"}
+                                                </span>
                                                 <span className="meta-value">
                                                     <Users size={16} />
                                                     {challenge.participants.length}
@@ -449,8 +570,8 @@ const Challenges = () => {
                                             <button
                                                 className="action-button primary"
                                                 onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleChallengeClick(challenge);
+                                                    e.stopPropagation()
+                                                    handleChallengeClick(challenge)
                                                 }}
                                                 disabled={isLoading}
                                             >
@@ -461,8 +582,8 @@ const Challenges = () => {
                                                 <button
                                                     className="action-button secondary"
                                                     onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleDeleteChallenge(challenge._id);
+                                                        e.stopPropagation()
+                                                        handleDeleteChallenge(challenge._id)
                                                     }}
                                                     disabled={challenge.status === "completed" || isLoading}
                                                 >
@@ -474,8 +595,8 @@ const Challenges = () => {
                                                 <button
                                                     className="action-button secondary"
                                                     onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleLeaveChallenge(challenge._id);
+                                                        e.stopPropagation()
+                                                        handleLeaveChallenge(challenge._id)
                                                     }}
                                                     disabled={challenge.status === "completed" || isLoading}
                                                 >
@@ -494,17 +615,11 @@ const Challenges = () => {
                                     <h3>Aucun défi trouvé</h3>
                                     <p>Vous n'avez pas encore rejoint de défis ou aucun défi ne correspond à vos filtres.</p>
                                     <div className="no-data-actions">
-                                        <button
-                                            className="action-button primary"
-                                            onClick={() => setActiveTab("public-challenges")}
-                                        >
+                                        <button className="action-button primary" onClick={() => setActiveTab("public-challenges")}>
                                             <Search size={16} />
                                             <span>Parcourir les défis publics</span>
                                         </button>
-                                        <button
-                                            className="action-button secondary"
-                                            onClick={() => setShowCreateModal(true)}
-                                        >
+                                        <button className="action-button secondary" onClick={() => setShowCreateModal(true)}>
                                             <Plus size={16} />
                                             <span>Créer un défi</span>
                                         </button>
@@ -529,6 +644,7 @@ const Challenges = () => {
                                             <h3>{challenge.name[user?.languagePreference]}</h3>
                                             <div className="challenge-badges">
                                                 {getStatusBadge(challenge.status)}
+                                                {getDifficultyBadge(challenge.difficulty)}
                                                 {new Date(challenge.createdAt) > new Date(Date.now() - 24 * 60 * 60 * 1000) && (
                                                     <span className="new-badge">
                                                         <Star size={12} /> Nouveau
@@ -556,7 +672,9 @@ const Challenges = () => {
                                             </div>
 
                                             <div className="challenge-participants-count">
-                                                <span className="meta-label">{challenge.participants.length <= 1 ? "Participant :" : "Participants :"}</span>
+                                                <span className="meta-label">
+                                                    {challenge.participants.length <= 1 ? "Participant :" : "Participants :"}
+                                                </span>
                                                 <span className="meta-value">
                                                     <Users size={16} />
                                                     {challenge.participants.length}
@@ -579,24 +697,24 @@ const Challenges = () => {
                                         </div>
 
                                         <div className="challenge-actions">
-                                            {challenge.participants.includes(p => p.user._id !== user?._id) &&
-                                                < button
+                                            {challenge.participants.includes((p) => p.user._id !== user?._id) && (
+                                                <button
                                                     className="action-button primary"
                                                     onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleJoinChallenge(challenge._id);
+                                                        e.stopPropagation()
+                                                        handleJoinChallenge(challenge._id)
                                                     }}
                                                 >
                                                     <Plus size={16} />
                                                     <span>Rejoindre</span>
                                                 </button>
-                                            }
+                                            )}
 
                                             <button
                                                 className="action-button secondary"
                                                 onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleChallengeClick(challenge);
+                                                    e.stopPropagation()
+                                                    handleChallengeClick(challenge)
                                                 }}
                                             >
                                                 <Info size={16} />
@@ -615,10 +733,10 @@ const Challenges = () => {
                                     <button
                                         className="action-button primary"
                                         onClick={() => {
-                                            setFilterType("all");
-                                            setFilterStatus("all");
-                                            setSortBy("recent");
-                                            setSearchQuery("");
+                                            setFilterType("all")
+                                            setFilterStatus("all")
+                                            setSortBy("recent")
+                                            setSearchQuery("")
                                         }}
                                     >
                                         <X size={16} />
@@ -626,9 +744,8 @@ const Challenges = () => {
                                     </button>
                                 </div>
                             </div>
-                        )
-                        }
-                    </div >
+                        )}
+                    </div>
                 )
 
             case "invitations":
@@ -689,7 +806,7 @@ const Challenges = () => {
                                         <div className="invitation-actions">
                                             <button
                                                 className="action-button primary"
-                                                onClick={() => handleRespondToInvitation(invitation._id, 'accept')}
+                                                onClick={() => handleRespondToInvitation(invitation._id, "accept")}
                                             >
                                                 <Check size={16} />
                                                 <span>Accepter</span>
@@ -697,7 +814,7 @@ const Challenges = () => {
 
                                             <button
                                                 className="action-button secondary"
-                                                onClick={() => handleRespondToInvitation(invitation._id, 'decline')}
+                                                onClick={() => handleRespondToInvitation(invitation._id, "decline")}
                                             >
                                                 <X size={16} />
                                                 <span>Refuser</span>
@@ -758,7 +875,7 @@ const Challenges = () => {
                                             <input
                                                 type="date"
                                                 id="start-date"
-                                                min={new Date().toISOString().split('T')[0]}
+                                                min={new Date().toISOString().split("T")[0]}
                                                 value={newChallenge.startDate}
                                                 onChange={(e) => setNewChallenge({ ...newChallenge, startDate: e.target.value })}
                                                 required
@@ -770,7 +887,7 @@ const Challenges = () => {
                                             <input
                                                 type="date"
                                                 id="end-date"
-                                                min={newChallenge.startDate || new Date().toISOString().split('T')[0]}
+                                                min={newChallenge.startDate || new Date().toISOString().split("T")[0]}
                                                 value={newChallenge.endDate}
                                                 onChange={(e) => setNewChallenge({ ...newChallenge, endDate: e.target.value })}
                                             />
@@ -783,10 +900,11 @@ const Challenges = () => {
                                             <Select
                                                 value={selectedActivity}
                                                 onChange={(selected) => {
-                                                    setSelectedActivity(selected);
+                                                    setSelectedActivity(selected)
                                                 }}
                                                 options={ActivityOptions}
                                                 components={{ SingleValue: customSingleValue, Option: customOption }}
+                                                styles={customSelectStyles}
                                                 classNamePrefix="activity-select"
                                                 required
                                             />
@@ -799,7 +917,7 @@ const Challenges = () => {
                                                 id="goal-value"
                                                 min={1}
                                                 value={newChallenge.goal}
-                                                onChange={(e) => setNewChallenge({ ...newChallenge, goal: parseInt(e.target.value) })}
+                                                onChange={(e) => setNewChallenge({ ...newChallenge, goal: Number.parseInt(e.target.value) })}
                                                 required
                                             />
                                         </div>
@@ -810,7 +928,7 @@ const Challenges = () => {
                                                     type="number"
                                                     id="time-duration"
                                                     value={newChallenge.time}
-                                                    onChange={(e) => setNewChallenge({ ...newChallenge, time: parseInt(e.target.value) })}
+                                                    onChange={(e) => setNewChallenge({ ...newChallenge, time: Number.parseInt(e.target.value) })}
                                                     min={2}
                                                     required
                                                 />
@@ -826,10 +944,11 @@ const Challenges = () => {
                                             <Select
                                                 value={selectedDifficulty}
                                                 onChange={(selected) => {
-                                                    setSelectedDifficulty(selected);
+                                                    setSelectedDifficulty(selected)
                                                 }}
                                                 options={DifficultyOptions}
                                                 components={{ SingleValue: customSingleValue, Option: customOption }}
+                                                styles={customSelectStyles}
                                                 classNamePrefix="activity-select"
                                                 required
                                             />
@@ -840,7 +959,9 @@ const Challenges = () => {
                                                 type="number"
                                                 id="xp"
                                                 value={newChallenge.xpReward}
-                                                onChange={(e) => setNewChallenge({ ...newChallenge, xpReward: parseInt(e.target.value) })}
+                                                onChange={(e) =>
+                                                    setNewChallenge({ ...newChallenge, xpReward: Number.parseInt(e.target.value) })
+                                                }
                                                 min={10}
                                                 step={5}
                                                 required
@@ -855,16 +976,15 @@ const Challenges = () => {
 
                                     <div className="form-group">
                                         <div className="toggle-group">
-                                            <label htmlFor="is-private">
-                                                {newChallenge.isPrivate
-                                                    ? "Défi privé"
-                                                    : "Défi public"}</label>
+                                            <label htmlFor="is-private">{newChallenge.isPrivate ? "Défi privé" : "Défi public"}</label>
                                             <div className="toggle-switch">
                                                 <input
                                                     type="checkbox"
                                                     id="is-private"
                                                     checked={newChallenge.isPrivate}
-                                                    onChange={() => { setNewChallenge({ ...newChallenge, isPrivate: !newChallenge.isPrivate }) }}
+                                                    onChange={() => {
+                                                        setNewChallenge({ ...newChallenge, isPrivate: !newChallenge.isPrivate })
+                                                    }}
                                                 />
                                             </div>
                                         </div>
@@ -880,7 +1000,10 @@ const Challenges = () => {
                                             <label>Inviter des amis</label>
                                             <div className="friends-selection">
                                                 {user?.friends.length === 0 ? (
-                                                    <p className="form-help-text">Vous navez pas d'ami. Vous pouvez créer le challenge. Si dans une semaine vous êtes le seul participant, il sera supprimé</p>
+                                                    <p className="form-help-text">
+                                                        Vous navez pas d'ami. Vous pouvez créer le challenge. Si dans une semaine vous êtes le seul
+                                                        participant, il sera supprimé
+                                                    </p>
                                                 ) : (
                                                     user?.friends.slice(0, 5).map((friend) => (
                                                         <div key={friend.userId._id} className="friend-option">
@@ -892,13 +1015,13 @@ const Challenges = () => {
                                                                     if (e.target.checked) {
                                                                         setNewChallenge({
                                                                             ...newChallenge,
-                                                                            participants: [...newChallenge.participants, friend.userId._id]
-                                                                        });
+                                                                            participants: [...newChallenge.participants, friend.userId._id],
+                                                                        })
                                                                     } else {
                                                                         setNewChallenge({
                                                                             ...newChallenge,
-                                                                            participants: newChallenge.participants.filter(id => id !== friend.userId._id)
-                                                                        });
+                                                                            participants: newChallenge.participants.filter((id) => id !== friend.userId._id),
+                                                                        })
                                                                     }
                                                                 }}
                                                             />
@@ -908,9 +1031,7 @@ const Challenges = () => {
                                                                     alt={friend.userId.username}
                                                                     className="friend-avatar"
                                                                 />
-                                                                <span className="friend-name">
-                                                                    {friend.userId.fullName}
-                                                                </span>
+                                                                <span className="friend-name">{friend.userId.fullName}</span>
                                                             </label>
                                                         </div>
                                                     ))
@@ -945,8 +1066,8 @@ const Challenges = () => {
                                                 time: 1,
                                                 isPrivate: false,
                                                 difficulty: "easy",
-                                                participants: []
-                                            });
+                                                participants: [],
+                                            })
                                         }}
                                     >
                                         <X size={16} />
@@ -971,26 +1092,17 @@ const Challenges = () => {
             </div>
 
             <div className="challenges-quick-actions">
-                <button
-                    className="quick-action-button"
-                    onClick={() => setShowCreateModal(true)}
-                >
+                <button className="quick-action-button" onClick={() => setShowCreateModal(true)}>
                     <Plus size={20} />
                     <span>Créer un défi</span>
                 </button>
 
-                <button
-                    className="quick-action-button"
-                    onClick={() => setShowJoinModal(true)}
-                >
+                <button className="quick-action-button" onClick={() => setShowJoinModal(true)}>
                     <Hash size={20} />
                     <span>Rejoindre avec un code</span>
                 </button>
 
-                <button
-                    className="quick-action-button"
-                    onClick={() => setShowFilters(!showFilters)}
-                >
+                <button className="quick-action-button" onClick={() => setShowFilters(!showFilters)}>
                     <Filter size={20} />
                     <span>Filtrer</span>
                     {showFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -1008,10 +1120,7 @@ const Challenges = () => {
                 setSearchQuery={setSearchQuery}
             />
             <div className="challenges-tabs">
-                <button
-                    className={activeTab === "my-challenges" ? "active" : ""}
-                    onClick={() => setActiveTab("my-challenges")}
-                >
+                <button className={activeTab === "my-challenges" ? "active" : ""} onClick={() => setActiveTab("my-challenges")}>
                     <Bookmark size={16} />
                     <span>Mes défis</span>
                 </button>
@@ -1022,28 +1131,18 @@ const Challenges = () => {
                     <Compass size={16} />
                     <span>Défis publics</span>
                 </button>
-                <button
-                    className={activeTab === "invitations" ? "active" : ""}
-                    onClick={() => setActiveTab("invitations")}
-                >
+                <button className={activeTab === "invitations" ? "active" : ""} onClick={() => setActiveTab("invitations")}>
                     <Mail size={16} />
                     <span>Invitations</span>
-                    {challengeNotifications.length > 0 && (
-                        <span className="badge">{challengeNotifications.length}</span>
-                    )}
+                    {challengeNotifications.length > 0 && <span className="badge">{challengeNotifications.length}</span>}
                 </button>
-                <button
-                    className={activeTab === "create" ? "active" : ""}
-                    onClick={() => setActiveTab("create")}
-                >
+                <button className={activeTab === "create" ? "active" : ""} onClick={() => setActiveTab("create")}>
                     <Plus size={16} />
                     <span>Créer un défi</span>
                 </button>
             </div>
 
-            <div className="challenges-content">
-                {getTabContent()}
-            </div>
+            <div className="challenges-content">{getTabContent()}</div>
 
             {/* Challenge Detail Modal */}
             {showChallengeModal && selectedChallenge && (
@@ -1074,9 +1173,7 @@ const Challenges = () => {
                         </div>
 
                         <div className="join-challenge-content">
-                            <p className="join-instructions">
-                                Entrez le code d'accès du défi privé que vous souhaitez rejoindre.
-                            </p>
+                            <p className="join-instructions">Entrez le code d'accès du défi privé que vous souhaitez rejoindre.</p>
 
                             <form className="join-form" onSubmit={handleJoinPrivateChallenge}>
                                 <div className="form-group">
@@ -1157,7 +1254,7 @@ const Challenges = () => {
                                             <input
                                                 type="date"
                                                 id="modal-start-date"
-                                                min={new Date().toISOString().split('T')[0]}
+                                                min={new Date().toISOString().split("T")[0]}
                                                 value={newChallenge.startDate}
                                                 onChange={(e) => setNewChallenge({ ...newChallenge, startDate: e.target.value })}
                                                 required
@@ -1169,7 +1266,7 @@ const Challenges = () => {
                                             <input
                                                 type="date"
                                                 id="modal-end-date"
-                                                min={newChallenge.startDate || new Date().toISOString().split('T')[0]}
+                                                min={newChallenge.startDate || new Date().toISOString().split("T")[0]}
                                                 value={newChallenge.endDate}
                                                 onChange={(e) => setNewChallenge({ ...newChallenge, endDate: e.target.value })}
                                             />
@@ -1182,10 +1279,11 @@ const Challenges = () => {
                                             <Select
                                                 value={selectedActivity}
                                                 onChange={(selected) => {
-                                                    setSelectedActivity(selected);
+                                                    setSelectedActivity(selected)
                                                 }}
                                                 options={ActivityOptions}
                                                 components={{ SingleValue: customSingleValue, Option: customOption }}
+                                                styles={customSelectStyles}
                                                 classNamePrefix="activity-select"
                                                 required
                                             />
@@ -1198,7 +1296,7 @@ const Challenges = () => {
                                                 id="modal-goal-value"
                                                 min={1}
                                                 value={newChallenge.goal}
-                                                onChange={(e) => setNewChallenge({ ...newChallenge, goal: parseInt(e.target.value) })}
+                                                onChange={(e) => setNewChallenge({ ...newChallenge, goal: Number.parseInt(e.target.value) })}
                                                 required
                                             />
                                         </div>
@@ -1209,7 +1307,7 @@ const Challenges = () => {
                                                     type="number"
                                                     id="time-duration"
                                                     value={newChallenge.time}
-                                                    onChange={(e) => setNewChallenge({ ...newChallenge, time: parseInt(e.target.value) })}
+                                                    onChange={(e) => setNewChallenge({ ...newChallenge, time: Number.parseInt(e.target.value) })}
                                                     min={2}
                                                     required
                                                 />
@@ -1225,10 +1323,11 @@ const Challenges = () => {
                                             <Select
                                                 value={selectedDifficulty}
                                                 onChange={(selected) => {
-                                                    setSelectedDifficulty(selected);
+                                                    setSelectedDifficulty(selected)
                                                 }}
                                                 options={DifficultyOptions}
                                                 components={{ SingleValue: customSingleValue, Option: customOption }}
+                                                styles={customSelectStyles}
                                                 classNamePrefix="activity-select"
                                                 required
                                             />
@@ -1239,7 +1338,9 @@ const Challenges = () => {
                                                 type="number"
                                                 id="xp"
                                                 value={newChallenge.xpReward}
-                                                onChange={(e) => setNewChallenge({ ...newChallenge, xpReward: parseInt(e.target.value) })}
+                                                onChange={(e) =>
+                                                    setNewChallenge({ ...newChallenge, xpReward: Number.parseInt(e.target.value) })
+                                                }
                                                 min={10}
                                                 step={5}
                                                 required
@@ -1254,16 +1355,15 @@ const Challenges = () => {
 
                                     <div className="form-group">
                                         <div className="toggle-group">
-                                            <label htmlFor="modal-is-private">
-                                                {newChallenge.isPrivate
-                                                    ? "Défi privé"
-                                                    : "Défi public"}</label>
+                                            <label htmlFor="modal-is-private">{newChallenge.isPrivate ? "Défi privé" : "Défi public"}</label>
                                             <div className="toggle-switch">
                                                 <input
                                                     type="checkbox"
                                                     id="modal-is-private"
                                                     checked={newChallenge.isPrivate}
-                                                    onChange={() => { setNewChallenge({ ...newChallenge, isPrivate: !newChallenge.isPrivate }) }}
+                                                    onChange={() => {
+                                                        setNewChallenge({ ...newChallenge, isPrivate: !newChallenge.isPrivate })
+                                                    }}
                                                 />
                                             </div>
                                         </div>
@@ -1278,7 +1378,10 @@ const Challenges = () => {
                                             <label>Inviter des amis</label>
                                             <div className="friends-selection">
                                                 {user?.friends.length === 0 ? (
-                                                    <p className="form-help-text">Vous navez pas d'ami. Vous pouvez créer le challenge. Si dans une semaine vous êtes le seul participant, il sera supprimé</p>
+                                                    <p className="form-help-text">
+                                                        Vous navez pas d'ami. Vous pouvez créer le challenge. Si dans une semaine vous êtes le seul
+                                                        participant, il sera supprimé
+                                                    </p>
                                                 ) : (
                                                     user?.friends.slice(0, 5).map((friend) => (
                                                         <div key={friend.userId._id} className="friend-option">
@@ -1290,13 +1393,13 @@ const Challenges = () => {
                                                                     if (e.target.checked) {
                                                                         setNewChallenge({
                                                                             ...newChallenge,
-                                                                            participants: [...newChallenge.participants, friend.userId._id]
-                                                                        });
+                                                                            participants: [...newChallenge.participants, friend.userId._id],
+                                                                        })
                                                                     } else {
                                                                         setNewChallenge({
                                                                             ...newChallenge,
-                                                                            participants: newChallenge.participants.filter(id => id !== friend.userId._id)
-                                                                        });
+                                                                            participants: newChallenge.participants.filter((id) => id !== friend.userId._id),
+                                                                        })
                                                                     }
                                                                 }}
                                                             />
@@ -1306,9 +1409,7 @@ const Challenges = () => {
                                                                     alt={friend.userId.username}
                                                                     className="friend-avatar"
                                                                 />
-                                                                <span className="friend-name">
-                                                                    {friend.userId.fullName}
-                                                                </span>
+                                                                <span className="friend-name">{friend.userId.fullName}</span>
                                                             </label>
                                                         </div>
                                                     ))
@@ -1343,8 +1444,8 @@ const Challenges = () => {
                                                 time: 1,
                                                 isPrivate: false,
                                                 difficulty: "easy",
-                                                participants: []
-                                            });
+                                                participants: [],
+                                            })
                                         }}
                                     >
                                         <X size={16} />

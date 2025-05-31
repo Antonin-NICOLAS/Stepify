@@ -260,7 +260,7 @@
 
   .status-badge.upcoming {
     background-color: var(--Couleur3);
-    color: var(--Noir);
+    color: black;
   }
 
   .status-badge.active {
@@ -270,6 +270,26 @@
 
   .status-badge.completed {
     background-color: var(--turquoise);
+    color: white;
+  }
+
+  .status-badge.easy {
+    background-color: rgb(34, 178, 58);
+    color: var(--blanc);
+  }
+
+  .status-badge.medium {
+    background-color: rgb(34, 137, 178);
+    color: var(--blanc);
+  }
+
+  .status-badge.hard {
+    background-color: firebrick;
+    color: var(--blanc);
+  }
+
+  .status-badge.extreme {
+    background-color: rgb(89, 34, 178);
     color: white;
   }
 

@@ -4,15 +4,43 @@ import { Link } from "react-router-dom"
 import { useRewards } from "../hooks/useRewards"
 import { useAuth } from "../context/AuthContext"
 import { useTheme } from "../context/ThemeContext"
-import GlobalLoader from "../utils/GlobalLoader";
+import GlobalLoader from "../utils/GlobalLoader"
 // Icons & charts
 import {
-  Icon, Footprints, Spline, Watch, Dumbbell, CircleGauge,
-  Trophy, Medal, Star, Filter, Search, ChevronDown, ChevronUp, Clock, Award, Target, Zap,
-  Users, Info, X, ArrowUp, BarChart2, Flame, Gift, Crown, Bookmark, BookmarkPlus, Share2,
-  Sparkles, BadgeInfo, LucideAward, ThumbsUp,
+  Icon,
+  Footprints,
+  Spline,
+  Watch,
+  Dumbbell,
+  CircleGauge,
+  Trophy,
+  Medal,
+  Star,
+  Filter,
+  Search,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Award,
+  Target,
+  Zap,
+  Users,
+  Info,
+  X,
+  ArrowUp,
+  BarChart2,
+  Flame,
+  Gift,
+  Crown,
+  Bookmark,
+  BookmarkPlus,
+  Share2,
+  Sparkles,
+  BadgeInfo,
+  LucideAward,
+  ThumbsUp,
 } from "lucide-react"
-import { sneaker, watchActivity } from '@lucide/lab';
+import { sneaker, watchActivity } from "@lucide/lab"
 import { Pie, Bar } from "react-chartjs-2"
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from "chart.js"
 // CSS
@@ -23,7 +51,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEle
 
 const Rewards = () => {
   const { user } = useAuth()
-  const { theme } = useTheme();
+  const { theme } = useTheme()
   const [activeTab, setActiveTab] = useState("dashboard")
   const [filters, setFilters] = useState({
     type: "all",
@@ -45,12 +73,15 @@ const Rewards = () => {
   const [noir, setNoir] = useState(null)
   const [selectedReward, setSelectedReward] = useState(null)
   const [showRewardModal, setShowRewardModal] = useState(false)
+  const [showAllUsers, setShowAllUsers] = useState(false)
   const [animateReward, setAnimateReward] = useState(null)
   const confettiRef = useRef(null)
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true)
 
   // Use the real rewards hook
-  const { rewards, myRewards, vitrine, fetchRewards, fetchMyRewards, fetchVitrineRewards, setInVitrine } = useRewards(user?._id)
+  const { rewards, myRewards, vitrine, fetchRewards, fetchMyRewards, fetchVitrineRewards, setInVitrine } = useRewards(
+    user?._id,
+  )
 
   // modal close handler
   const RewardModalRef = useRef(null)
@@ -62,44 +93,75 @@ const Rewards = () => {
     }
   }
 
+  const customSelectStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      background: theme === "dark" ? "#333" : "white",
+      color: theme === "dark" ? "white" : "black",
+      borderColor: state.isFocused ? "#80bdff" : theme === "dark" ? "#555" : "#ccc",
+      boxShadow: state.isFocused ? "0 0 0 0.2rem rgba(0,123,255,.25)" : null,
+      "&:hover": {
+        borderColor: state.isFocused ? "#80bdff" : "#aaa",
+      },
+    }),
+    singleValue: (provided, state) => ({
+      ...provided,
+      color: theme === "dark" ? "white" : "black",
+    }),
+    menu: (provided, state) => ({
+      ...provided,
+      background: theme === "dark" ? "#333" : "white",
+      color: theme === "dark" ? "white" : "black",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      background: state.isFocused ? "#007bff" : theme === "dark" ? "#333" : "white",
+      color: state.isFocused ? "white" : theme === "dark" ? "white" : "black",
+      "&:hover": {
+        background: "#007bff",
+        color: "white",
+      },
+    }),
+  }
+
   useEffect(() => {
     const fetchAll = async () => {
       if (user?._id) {
-        await fetchRewards();
-        await fetchMyRewards();
+        await fetchRewards()
+        await fetchMyRewards()
         await fetchVitrineRewards()
       }
-      setIsLoading(false);
-    };
-    fetchAll();
-  }, [user?._id, fetchRewards, fetchMyRewards, fetchVitrineRewards]);
+      setIsLoading(false)
+    }
+    fetchAll()
+  }, [user?._id, fetchRewards, fetchMyRewards, fetchVitrineRewards])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setNoir(getCssVar('--Noir'));
-    }, 0);
-    return () => clearTimeout(timeout);
-  }, [theme]);
+      setNoir(getCssVar("--Noir"))
+    }, 0)
+    return () => clearTimeout(timeout)
+  }, [theme])
 
   function getCssVar(name) {
-    return getComputedStyle(document.body).getPropertyValue(name).trim();
+    return getComputedStyle(document.body).getPropertyValue(name).trim()
   }
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        () => {
+      if (e.key === "Escape") {
+        ; () => {
           setShowRewardModal(false)
           setSelectedReward(null)
         }
       }
     }
 
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener("keydown", handleKeyDown)
     return () => {
-      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener("keydown", handleKeyDown)
     }
-  }, [setShowRewardModal, setSelectedReward]);
+  }, [setShowRewardModal, setSelectedReward])
 
   // Process rewards data when it changes
   useEffect(() => {
@@ -337,13 +399,13 @@ const Rewards = () => {
 
   // Handle adding/removing reward from vitrine
   const handleToggleShowcase = async (reward) => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       await setInVitrine(reward._id)
     } catch (error) {
-      console.error("Error seting vitrine:", error);
+      console.error("Error seting vitrine:", error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
@@ -393,9 +455,9 @@ const Rewards = () => {
   const getCriteriaIcon = (criteria) => {
     switch (criteria) {
       case "steps":
-        return <Footprints size={16} />;
+        return <Footprints size={16} />
       case "steps-time":
-        return <Icon iconNode={sneaker} size={16} />;
+        return <Icon iconNode={sneaker} size={16} />
       case "distance":
         return <Spline size={16} />
       case "distance-time":
@@ -564,7 +626,7 @@ const Rewards = () => {
           <div className="catalog-actions">
             <div className="catalog-sort">
               <label>Trier par:</label>
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} styles={customSelectStyles}>
                 <option value="progress">Progression</option>
                 <option value="name">Nom</option>
                 <option value="tier">Niveau</option>
@@ -585,7 +647,11 @@ const Rewards = () => {
           <div className="catalog-filters">
             <div className="filter-group">
               <label>Type</label>
-              <select value={filters.type} onChange={(e) => setFilters({ ...filters, type: e.target.value })}>
+              <select
+                value={filters.type}
+                onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+                styles={customSelectStyles}
+              >
                 <option value="all">Tous les types</option>
                 <option value="steps">Pas</option>
                 <option value="steps-time">Pas (Temps)</option>
@@ -605,7 +671,11 @@ const Rewards = () => {
 
             <div className="filter-group">
               <label>Niveau</label>
-              <select value={filters.tier} onChange={(e) => setFilters({ ...filters, tier: e.target.value })}>
+              <select
+                value={filters.tier}
+                onChange={(e) => setFilters({ ...filters, tier: e.target.value })}
+                styles={customSelectStyles}
+              >
                 <option value="all">Tous les niveaux</option>
                 <option value="bronze">Bronze</option>
                 <option value="silver">Argent</option>
@@ -619,7 +689,11 @@ const Rewards = () => {
 
             <div className="filter-group">
               <label>Statut</label>
-              <select value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })}>
+              <select
+                value={filters.status}
+                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                styles={customSelectStyles}
+              >
                 <option value="all">Tous</option>
                 <option value="unlocked">Débloqués</option>
                 <option value="locked">Non débloqués</option>
@@ -651,7 +725,9 @@ const Rewards = () => {
                       />
                     </div>
                     <div className="reward-preview-info">
-                      <h5>{reward.name[user?.languagePreference] || reward.name[user?.languagePreference] || "Récompense"}</h5>
+                      <h5>
+                        {reward.name[user?.languagePreference] || reward.name[user?.languagePreference] || "Récompense"}
+                      </h5>
                       <p>
                         {reward.description[user?.languagePreference] ||
                           reward.description?.en ||
@@ -865,7 +941,9 @@ const Rewards = () => {
                 </div>
                 <div className="highlight-info">
                   <h4 className="highlight-name">
-                    {rewardStats.recentlyUnlocked.name[user?.languagePreference] || rewardStats.recentlyUnlocked.name?.en || "Récompense"}
+                    {rewardStats.recentlyUnlocked.name[user?.languagePreference] ||
+                      rewardStats.recentlyUnlocked.name?.en ||
+                      "Récompense"}
                   </h4>
                   <p className="highlight-description">
                     {rewardStats.recentlyUnlocked.description[user?.languagePreference] ||
@@ -904,7 +982,9 @@ const Rewards = () => {
                 </div>
                 <div className="highlight-info">
                   <h4 className="highlight-name">
-                    {rewardStats.nextToUnlock.name[user?.languagePreference] || rewardStats.nextToUnlock.name?.en || "Récompense"}
+                    {rewardStats.nextToUnlock.name[user?.languagePreference] ||
+                      rewardStats.nextToUnlock.name?.en ||
+                      "Récompense"}
                   </h4>
                   <p className="highlight-description">
                     {rewardStats.nextToUnlock.description[user?.languagePreference] ||
@@ -1063,7 +1143,7 @@ const Rewards = () => {
           <div className="catalog-actions">
             <div className="catalog-sort">
               <label>Trier par:</label>
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} styles={customSelectStyles}>
                 <option value="progress">Progression</option>
                 <option value="name">Nom</option>
                 <option value="tier">Niveau</option>
@@ -1084,7 +1164,11 @@ const Rewards = () => {
           <div className="catalog-filters">
             <div className="filter-group">
               <label>Type</label>
-              <select value={filters.type} onChange={(e) => setFilters({ ...filters, type: e.target.value })}>
+              <select
+                value={filters.type}
+                onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+                styles={customSelectStyles}
+              >
                 <option value="all">Tous les types</option>
                 <option value="steps">Pas</option>
                 <option value="steps-time">Pas (Temps)</option>
@@ -1104,7 +1188,11 @@ const Rewards = () => {
 
             <div className="filter-group">
               <label>Niveau</label>
-              <select value={filters.tier} onChange={(e) => setFilters({ ...filters, tier: e.target.value })}>
+              <select
+                value={filters.tier}
+                onChange={(e) => setFilters({ ...filters, tier: e.target.value })}
+                styles={customSelectStyles}
+              >
                 <option value="all">Tous les niveaux</option>
                 <option value="bronze">Bronze</option>
                 <option value="silver">Argent</option>
@@ -1118,7 +1206,11 @@ const Rewards = () => {
 
             <div className="filter-group">
               <label>Statut</label>
-              <select value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })}>
+              <select
+                value={filters.status}
+                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                styles={customSelectStyles}
+              >
                 <option value="all">Tous</option>
                 <option value="unlocked">Débloqués</option>
                 <option value="locked">Non débloqués</option>
@@ -1146,9 +1238,13 @@ const Rewards = () => {
               </div>
 
               <div className="reward-info">
-                <h3 className="reward-name">{reward.name[user?.languagePreference] || reward.name?.en || "Récompense"}</h3>
+                <h3 className="reward-name">
+                  {reward.name[user?.languagePreference] || reward.name?.en || "Récompense"}
+                </h3>
                 <p className="reward-description">
-                  {reward.description[user?.languagePreference] || reward.description?.en || "Description de la récompense"}
+                  {reward.description[user?.languagePreference] ||
+                    reward.description?.en ||
+                    "Description de la récompense"}
                 </p>
 
                 <div className="reward-meta">
@@ -1180,7 +1276,7 @@ const Rewards = () => {
               {reward.unlocked && (
                 <div className="reward-actions">
                   <button
-                    className={`showcase-button ${vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id)) ? "active" : ""}`}
+                    className={`showcase-button ${vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id)) ? "active" : ""} ${vitrine.length >= 3 ? "no-vitrine" : ""}`}
                     onClick={(e) => {
                       e.stopPropagation()
                       handleToggleShowcase(reward)
@@ -1242,9 +1338,13 @@ const Rewards = () => {
                   <div className="featured-shine"></div>
                 </div>
                 <div className="featured-info">
-                  <h3 className="featured-name">{reward.rewardId.name[user?.languagePreference] || reward.rewardId.name?.en || "Récompense"}</h3>
+                  <h3 className="featured-name">
+                    {reward.rewardId.name[user?.languagePreference] || reward.rewardId.name?.en || "Récompense"}
+                  </h3>
                   <p className="featured-description">
-                    {reward.rewardId.description[user?.languagePreference] || reward.rewardId.description?.en || "Description de la récompense"}
+                    {reward.rewardId.description[user?.languagePreference] ||
+                      reward.rewardId.description?.en ||
+                      "Description de la récompense"}
                   </p>
                   <div className="featured-meta">
                     <span className="featured-tier">{getTierLabel(reward.rewardId.tier)}</span>
@@ -1299,7 +1399,11 @@ const Rewards = () => {
                   </div>
                   <div className="rarest-info">
                     <h4>{reward.name[user?.languagePreference] || reward.name?.en || "Récompense"}</h4>
-                    <p>{reward.description[user?.languagePreference] || reward.description?.en || "Description de la récompense"}</p>
+                    <p>
+                      {reward.description[user?.languagePreference] ||
+                        reward.description?.en ||
+                        "Description de la récompense"}
+                    </p>
                   </div>
                   {!vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id)) && (
                     <button
@@ -1329,11 +1433,13 @@ const Rewards = () => {
           <h3>Comparez avec vos amis</h3>
           <div className="compare-friends">
             <div className="friend-selector">
-              <select>
+              <select styles={customSelectStyles}>
                 <option value="">Sélectionnez un ami</option>
-                {user?.friends.map((friend) =>
-                  <option key={friend._id} value="friend1">{friend.userId.fullName}</option>
-                )}
+                {user?.friends.map((friend) => (
+                  <option key={friend._id} value="friend1">
+                    {friend.userId.fullName}
+                  </option>
+                ))}
               </select>
               <button className="compare-button">Comparer</button>
             </div>
@@ -1739,7 +1845,7 @@ const Rewards = () => {
 
       {/* Reward Detail Modal */}
       {showRewardModal && selectedReward && (
-        <div className="modal-overlay" ref={RewardModalRef} onClick={handleOverlayClick}>
+        <div className="modal-overlay" onClick={handleOverlayClick} ref={RewardModalRef}>
           <div className="modal reward-modal">
             <div className="modal-header">
               <h3>Détails de la récompense</h3>
@@ -1767,7 +1873,9 @@ const Rewards = () => {
                   {selectedReward.name[user?.languagePreference] || selectedReward.name?.en || "Récompense"}
                 </h2>
                 <p className="reward-modal-description">
-                  {selectedReward.description[user?.languagePreference] || selectedReward.description?.en || "Description de la récompense"}
+                  {selectedReward.description[user?.languagePreference] ||
+                    selectedReward.description?.en ||
+                    "Description de la récompense"}
                 </p>
 
                 <div className="reward-modal-meta">
@@ -1833,17 +1941,23 @@ const Rewards = () => {
                   {selectedReward.unlocked ? (
                     <>
                       <button
-                        className={`showcase-action ${vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id))
+                        className={`showcase-action ${vitrine.some(
+                          (r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id),
+                        )
                           ? "active"
                           : ""
                           }`}
                         onClick={() => handleToggleShowcase(selectedReward)}
                         disabled={
                           vitrine.length >= 3 &&
-                          !vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id))
+                          !vitrine.some(
+                            (r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id),
+                          )
                         }
                       >
-                        {vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id)) ? (
+                        {vitrine.some(
+                          (r) => (r.rewardId._id || r.rewardId.id) === (selectedReward._id || selectedReward.id),
+                        ) ? (
                           <>
                             <Bookmark size={16} />
                             <span>Retirer de la vitrine</span>
@@ -1861,7 +1975,7 @@ const Rewards = () => {
                       </button>
                     </>
                   ) : (
-                    <button className="focus-action">
+                    <button className="focus-action"> {/* TODO: fonction définir comme objectif un reward */}
                       <Target size={16} />
                       <span>Définir comme objectif</span>
                     </button>
@@ -1869,25 +1983,35 @@ const Rewards = () => {
                 </div>
               </div>
             </div>
-
             {selectedReward.unlocked && (
               <div className="reward-modal-social">
                 <h4>Qui d'autre a débloqué cette récompense ?</h4>
-                <div className="social-users">
-                  <div className="user-avatar">
-                    <img src="/placeholder.svg?height=40&width=40&text=TM" alt="User" />
-                    <span className="user-name">Thomas M.</span>
-                  </div>
-                  <div className="user-avatar">
-                    <img src="/placeholder.svg?height=40&width=40&text=EB" alt="User" />
-                    <span className="user-name">Emma B.</span>
-                  </div>
-                  <div className="user-avatar">
-                    <img src="/placeholder.svg?height=40&width=40&text=LD" alt="User" />
-                    <span className="user-name">Lucas D.</span>
-                  </div>
-                  <div className="more-users">+12</div>
-                </div>
+                {(() => {
+                  const otherOwners = selectedReward.earnedBy.filter(owner => owner.user._id !== user?._id);
+                  const displayedOwners = showAllUsers ? otherOwners : otherOwners.slice(0, 3);
+                  const hiddenCount = otherOwners.length - 3;
+
+                  return otherOwners.length > 0 ? (
+                    <div className="social-users">
+                      {displayedOwners.map((owner) => (
+                        <div key={owner.user._id} className="user-avatar">
+                          <img
+                            src={owner.user.avatarUrl || "/placeholder.svg?height=40&width=40&text=TM"}
+                            alt="User"
+                          />
+                          <span className="user-name">{owner.user.fullName}</span>
+                        </div>
+                      ))}
+                      {otherOwners.length > 3 && (
+                        <button onClick={() => setShowAllUsers(!showAllUsers)} className="more-users">
+                          {showAllUsers ? "Voir moins" : `+${hiddenCount}`}
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <p>Personne n'a jamais débloqué cette récompense à part vous</p>
+                  );
+                })()}
               </div>
             )}
           </div>

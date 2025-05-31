@@ -672,6 +672,14 @@
   color: white;
 }
 
+.showcase-button.no-vitrine {
+  display: none;
+}
+
+.showcase-button.active.no-vitrine{
+  display: flex;
+}
+
 .no-rewards {
   grid-column: 1 / -1;
   text-align: center;
@@ -1326,6 +1334,10 @@
 }
 
 .showcase-action.active {
+  background-color: var(--Gris);
+}
+
+.showcase-action:disabled {
   background-color: var(--Gris);
 }
 

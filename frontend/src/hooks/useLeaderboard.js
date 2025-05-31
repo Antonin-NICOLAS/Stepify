@@ -6,6 +6,9 @@ const API_LEADERBOARD = process.env.NODE_ENV === "production" ? "/api/leaderboar
 
 export const useLeaderboard = (userId) => {
     const [users, setUsers] = useState([])
+    const [friendsData, setFriendsData] = useState([])
+    const [challengesData, setChallengesData] = useState([])
+    const [rewardsData, setRewardsData] = useState([])
 
     // Fetch leaderboard data
     const fetchLeaderboardData = useCallback(
@@ -32,93 +35,6 @@ export const useLeaderboard = (userId) => {
         [userId],
     );
 
-    // Send message
-    const sendMessage = useCallback(
-        async (targetUserId, message) => {
-            try {
-                const { data } = await axios.post(
-                    `${API_LEADERBOARD}/${userId}/message`,
-                    {
-                        targetUserId,
-                        message,
-                    },
-                    {
-                        withCredentials: true,
-                    },
-                )
-
-                if (data.success) {
-                    toast.success(data.message || "Message envoyé")
-                    return true
-                } else {
-                    toast.error(data.error || "Erreur lors de l'envoi du message")
-                    return false
-                }
-            } catch (err) {
-                console.error("Send message error:", err)
-                toast.error(err.response?.data?.error || "Erreur lors de l'envoi du message")
-                return false
-            }
-        },
-        [userId],
-    )
-
-    // Add comment to user profile
-    const addComment = useCallback(
-        async (targetUserId, comment) => {
-            try {
-                const { data } = await axios.post(
-                    `${API_LEADERBOARD}/${userId}/comment`,
-                    {
-                        targetUserId,
-                        comment,
-                    },
-                    {
-                        withCredentials: true,
-                    },
-                )
-
-                if (data.success) {
-                    toast.success(data.message || "Commentaire ajouté")
-                    return true
-                } else {
-                    toast.error(data.error || "Erreur lors de l'ajout du commentaire")
-                    return false
-                }
-            } catch (err) {
-                console.error("Add comment error:", err)
-                toast.error(err.response?.data?.error || "Erreur lors de l'ajout du commentaire")
-                return false
-            }
-        },
-        [userId],
-    )
-
-    // Search users
-    const searchUsers = useCallback(
-        async (query, filters = {}) => {
-            if (!query.trim()) return []
-
-            try {
-                const { data } = await axios.get(`${API_LEADERBOARD}/${userId}/search`, {
-                    params: { query, ...filters },
-                    withCredentials: true,
-                })
-
-                if (data.success) {
-                    return data.users || []
-                } else {
-                    return []
-                }
-            } catch (err) {
-                console.error("Search users error:", err)
-                toast.error(err.response?.data?.error || "Erreur lors de la recherche")
-                return []
-            }
-        },
-        [userId],
-    )
-
     // Get friends leaderboard
     const fetchFriendsLeaderboard = useCallback(
         async (filters = {}) => {
@@ -131,7 +47,7 @@ export const useLeaderboard = (userId) => {
                 })
 
                 if (data.success) {
-                    return data.ranking || []
+                    setFriendsData(data.ranking || [])
                 } else {
                     toast.error(data.error || "Erreur lors du chargement du classement des amis")
                     return []
@@ -155,7 +71,7 @@ export const useLeaderboard = (userId) => {
             })
 
             if (data.success) {
-                return data.rankings || []
+                setChallengesData(data.rankings || [])
             } else {
                 toast.error(data.error || "Erreur lors du chargement des défis")
                 return []
@@ -177,7 +93,7 @@ export const useLeaderboard = (userId) => {
             })
 
             if (data.success) {
-                return data.achievements || []
+                setRewardsData(data.rewards || [])
             } else {
                 toast.error(data.error || "Erreur lors du chargement des récompenses")
                 return []
@@ -191,10 +107,10 @@ export const useLeaderboard = (userId) => {
 
     return {
         users,
+        friendsData,
+        challengesData,
+        rewardsData,
         fetchLeaderboardData,
-        sendMessage,
-        addComment,
-        searchUsers,
         fetchFriendsLeaderboard,
         fetchChallengesLeaderboard,
         fetchRewardsLeaderboard

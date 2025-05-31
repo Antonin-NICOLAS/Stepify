@@ -249,6 +249,68 @@ export const useNotifications = (userId) => {
         }
     };
 
+    // Send message
+    const sendMessage = useCallback(
+        async (targetUserId, message) => {
+            try {
+                const { data } = await axios.post(
+                    `${API_NOTIFICATION}/${userId}/message`,
+                    {
+                        targetUserId,
+                        message,
+                    },
+                    {
+                        withCredentials: true,
+                    },
+                )
+
+                if (data.success) {
+                    toast.success(data.message || "Message envoyé")
+                    return true
+                } else {
+                    toast.error(data.error || "Erreur lors de l'envoi du message")
+                    return false
+                }
+            } catch (err) {
+                console.error("Send message error:", err)
+                toast.error(err.response?.data?.error || "Erreur lors de l'envoi du message")
+                return false
+            }
+        },
+        [userId],
+    )
+
+    // Add comment to user profile
+    const addComment = useCallback(
+        async (targetUserId, comment) => {
+            try {
+                const { data } = await axios.post(
+                    `${API_NOTIFICATION}/${userId}/comment`,
+                    {
+                        targetUserId,
+                        comment,
+                    },
+                    {
+                        withCredentials: true,
+                    },
+                )
+
+                if (data.success) {
+                    toast.success(data.message || "Commentaire ajouté")
+                    return true
+                } else {
+                    toast.error(data.error || "Erreur lors de l'ajout du commentaire")
+                    return false
+                }
+            } catch (err) {
+                console.error("Add comment error:", err)
+                toast.error(err.response?.data?.error || "Erreur lors de l'ajout du commentaire")
+                return false
+            }
+        },
+        [userId],
+    )
+
     useEffect(() => {
         if (userId) {
             fetchNotifications();
@@ -272,6 +334,8 @@ export const useNotifications = (userId) => {
         removeFriend,
         respondToChallengeInvite,
         markNotificationAsRead,
-        searchUsers
+        searchUsers,
+        addComment,
+        sendMessage
     };
 };

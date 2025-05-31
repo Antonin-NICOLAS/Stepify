@@ -7,7 +7,7 @@ const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseH
 
 const getAllRewards = async (req, res) => {
   try {
-    const rewards = await Reward.find();
+    const rewards = await Reward.find().populate('earnedBy.user', 'avatarUrl firstName lastName username');
 
     if (!rewards) {
       return sendLocalizedError(res, 404, 'errors.rewards.none_found');

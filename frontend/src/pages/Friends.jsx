@@ -90,7 +90,6 @@ const Friends = () => {
         }
     }, [isAuthenticated, user?._id])
 
-    //TODO: Handle search for users
     const handleSearch = async (query) => {
         if (!query.trim()) {
             setSearchResults([]);

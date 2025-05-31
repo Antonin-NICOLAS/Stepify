@@ -26,17 +26,17 @@ const Leaderboard = () => {
   const { getUserProfile } = useUser()
   const {
     users,
+    friendsData,
+    challengesData,
+    rewardsData,
     fetchLeaderboardData,
-    sendMessage,
-    addComment,
-    searchUsers,
     fetchFriendsLeaderboard,
     fetchChallengesLeaderboard,
     fetchRewardsLeaderboard,
   } = useLeaderboard(user?._id)
 
   const { joinChallenge } = useChallenge(user?.id)
-  const { sendFriendRequest } = useNotifications(user?.id)
+  const { sendFriendRequest, searchUsers, addComment, sendMessage } = useNotifications(user?.id)
 
   // State for leaderboard type
   const [leaderboardType, setLeaderboardType] = useState("xp")
@@ -56,11 +56,7 @@ const Leaderboard = () => {
 
   // State for active tab
   const [activeTab, setActiveTab] = useState("general")
-
-  // State for tab-specific data
-  const [friendsData, setFriendsData] = useState([])
-  const [challengesData, setChallengesData] = useState([])
-  const [rewardsData, setRewardsData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   // Handle filter changes
   useEffect(() => {
@@ -78,20 +74,23 @@ const Leaderboard = () => {
 
   // Handle tab changes
   useEffect(() => {
-    if (user?._id) {
-      switch (activeTab) {
-        case "friends":
-          fetchFriendsLeaderboard({ type: leaderboardType, timeFrame }).then(setFriendsData)
-          break
-        case "challenges":
-          fetchChallengesLeaderboard().then(setChallengesData)
-          console.log(challengesData)
-          break
-        case "rewards":
-          fetchRewardsLeaderboard().then(setRewardsData)
-          break
+    const fetchAll = async () => {
+      if (user?._id) {
+        switch (activeTab) {
+          case "friends":
+            await fetchFriendsLeaderboard({ type: leaderboardType, timeFrame })
+            break
+          case "challenges":
+            await fetchChallengesLeaderboard()
+            break
+          case "rewards":
+            await fetchRewardsLeaderboard()
+            break
+        }
       }
+      setIsLoading(false)
     }
+    fetchAll();
   }, [
     activeTab,
     leaderboardType,
@@ -537,16 +536,18 @@ const Leaderboard = () => {
                   <div className="podium-actions">
                     {user && user3._id !== user._id && (
                       <>
-                        <button
-                          className="action-icon-button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleSendFriendRequest(user3._id)
-                          }}
-                          title="Ajouter en ami"
-                        >
-                          <UserPlus size={16} />
-                        </button>
+                        {user.friends.some(f => f.userId._id !== user3._id) && (
+                          <button
+                            className="action-icon-button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleSendFriendRequest(user3._id)
+                            }}
+                            title="Ajouter en ami"
+                          >
+                            <UserPlus size={16} />
+                          </button>
+                        )}
                         <button
                           className="action-icon-button"
                           onClick={(e) => {
@@ -596,16 +597,18 @@ const Leaderboard = () => {
                   <div className="card-actions">
                     {user && users._id !== user?._id && (
                       <>
-                        <button
-                          className="action-icon-button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleSendFriendRequest(users._id)
-                          }}
-                          title="Ajouter en ami"
-                        >
-                          <UserPlus size={16} />
-                        </button>
+                        {user.friends.some(f => f.userId._id !== users._id) && (
+                          <button
+                            className="action-icon-button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleSendFriendRequest(users._id)
+                            }}
+                            title="Ajouter en ami"
+                          >
+                            <UserPlus size={16} />
+                          </button>
+                        )}
                         <button
                           className="action-icon-button"
                           onClick={(e) => {
@@ -798,6 +801,7 @@ const Leaderboard = () => {
 
   return (
     <div className="leaderboard-container">
+      {isLoading && <GlobalLoader />}
       <div className="leaderboard-header">
         <h1>Classements</h1>
         <p>Découvrez où vous vous situez par rapport aux autres utilisateurs</p>
@@ -1081,10 +1085,12 @@ const Leaderboard = () => {
                 <div className="user-profile-actions">
                   {user && selectedUser._id !== user._id && (
                     <>
-                      <button className="action-button" onClick={() => handleSendFriendRequest(selectedUser._id)}>
-                        <UserPlus size={16} />
-                        <span>Ajouter en ami</span>
-                      </button>
+                      {user.friends.some(f => f.userId._id !== selectedUser._id) && (
+                        <button className="action-button" onClick={() => handleSendFriendRequest(selectedUser._id)}>
+                          <UserPlus size={16} />
+                          <span>Ajouter en ami</span>
+                        </button>
+                      )}
                       <button className="action-button" onClick={() => handleSendMessage(selectedUser._id)}>
                         <MessageSquare size={16} />
                         <span>Message</span>

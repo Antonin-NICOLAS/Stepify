@@ -48,7 +48,7 @@ Voici quelques idées pour rendre Stepify encore plus engageant :
 
 ### 🎯 Gamification Avancée
 - **Quêtes quotidiennes et hebdomadaires**
-[x] **Badges à collectionner**
+  - [x] **Badges à collectionner**
 - **Système de saisons ou événements à durée limitée**
 - **Classement hebdomadaire / mensuel réinitialisé régulièrement**
 
@@ -59,13 +59,13 @@ Voici quelques idées pour rendre Stepify encore plus engageant :
 
 ### 📱 Notifications & UI
 - Notifications push (via service worker ou Firebase)
-[x] Dark Mode / Thèmes personnalisés
+  - [x] Dark Mode / Thèmes personnalisés
 - Animations de progression avec confettis, effets de montée de niveau…
 
 ### 📉 Statistiques et Analyse
 - Heatmap des jours actifs
-[x] Graphiques de performance par activité
-[x] Historique des XP, récompenses et positions dans le classement
+  - [x] Graphiques de performance par activité
+  - [x] Historique des XP, récompenses et positions dans le classement
 
 ### 🛠 Tech Improvements
 - PWA (Progressive Web App) pour utilisation hors ligne
