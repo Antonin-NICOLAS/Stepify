@@ -242,11 +242,11 @@ const Rewards = () => {
       // Filter by search
       const nameMatch =
         reward.name &&
-        (reward.name.fr.toLowerCase().includes(filters.search.toLowerCase()) ||
+        (reward.name[user?.languagePreference].toLowerCase().includes(filters.search.toLowerCase()) ||
           reward.name.en.toLowerCase().includes(filters.search.toLowerCase()))
       const descMatch =
         reward.description &&
-        (reward.description.fr.toLowerCase().includes(filters.search.toLowerCase()) ||
+        (reward.description[user?.languagePreference].toLowerCase().includes(filters.search.toLowerCase()) ||
           reward.description.en.toLowerCase().includes(filters.search.toLowerCase()))
 
       if (filters.search && !nameMatch && !descMatch) {
@@ -282,8 +282,8 @@ const Rewards = () => {
     switch (sortBy) {
       case "name":
         return filtered.sort((a, b) => {
-          const nameA = a.name?.fr || a.name?.en || ""
-          const nameB = b.name?.fr || b.name?.en || ""
+          const nameA = a.name[user?.languagePreference] || a.name?.en || ""
+          const nameB = b.name[user?.languagePreference] || b.name?.en || ""
           return nameA.localeCompare(nameB)
         })
       case "progress":
@@ -636,13 +636,13 @@ const Rewards = () => {
                     <div className="reward-preview-icon">
                       <img
                         src={reward.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
-                        alt={reward.name?.fr || "Récompense"}
+                        alt={reward.name[user?.languagePreference] || "Récompense"}
                       />
                     </div>
                     <div className="reward-preview-info">
-                      <h5>{reward.name?.fr || reward.name?.en || "Récompense"}</h5>
+                      <h5>{reward.name[user?.languagePreference] || reward.name[user?.languagePreference] || "Récompense"}</h5>
                       <p>
-                        {reward.description?.fr ||
+                        {reward.description[user?.languagePreference] ||
                           reward.description?.en ||
                           "Complétez des objectifs pour débloquer cette récompense."}
                       </p>
@@ -849,15 +849,15 @@ const Rewards = () => {
                 <div className="highlight-icon">
                   <img
                     src={rewardStats.recentlyUnlocked.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
-                    alt={rewardStats.recentlyUnlocked.name?.fr || "Récompense"}
+                    alt={rewardStats.recentlyUnlocked.name[user?.languagePreference] || "Récompense"}
                   />
                 </div>
                 <div className="highlight-info">
                   <h4 className="highlight-name">
-                    {rewardStats.recentlyUnlocked.name?.fr || rewardStats.recentlyUnlocked.name?.en || "Récompense"}
+                    {rewardStats.recentlyUnlocked.name[user?.languagePreference] || rewardStats.recentlyUnlocked.name?.en || "Récompense"}
                   </h4>
                   <p className="highlight-description">
-                    {rewardStats.recentlyUnlocked.description?.fr ||
+                    {rewardStats.recentlyUnlocked.description[user?.languagePreference] ||
                       rewardStats.recentlyUnlocked.description?.en ||
                       "Description de la récompense"}
                   </p>
@@ -888,15 +888,15 @@ const Rewards = () => {
                 <div className="highlight-icon">
                   <img
                     src={rewardStats.nextToUnlock.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
-                    alt={rewardStats.nextToUnlock.name?.fr || "Récompense"}
+                    alt={rewardStats.nextToUnlock.name[user?.languagePreference] || "Récompense"}
                   />
                 </div>
                 <div className="highlight-info">
                   <h4 className="highlight-name">
-                    {rewardStats.nextToUnlock.name?.fr || rewardStats.nextToUnlock.name?.en || "Récompense"}
+                    {rewardStats.nextToUnlock.name[user?.languagePreference] || rewardStats.nextToUnlock.name?.en || "Récompense"}
                   </h4>
                   <p className="highlight-description">
-                    {rewardStats.nextToUnlock.description?.fr ||
+                    {rewardStats.nextToUnlock.description[user?.languagePreference] ||
                       rewardStats.nextToUnlock.description?.en ||
                       "Description de la récompense"}
                   </p>
@@ -1130,14 +1130,14 @@ const Rewards = () => {
               <div className="reward-icon">
                 <img
                   src={reward.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
-                  alt={reward.name?.fr || "Récompense"}
+                  alt={reward.name[user?.languagePreference] || "Récompense"}
                 />
               </div>
 
               <div className="reward-info">
-                <h3 className="reward-name">{reward.name?.fr || reward.name?.en || "Récompense"}</h3>
+                <h3 className="reward-name">{reward.name[user?.languagePreference] || reward.name?.en || "Récompense"}</h3>
                 <p className="reward-description">
-                  {reward.description?.fr || reward.description?.en || "Description de la récompense"}
+                  {reward.description[user?.languagePreference] || reward.description?.en || "Description de la récompense"}
                 </p>
 
                 <div className="reward-meta">
@@ -1226,14 +1226,14 @@ const Rewards = () => {
                 <div className="featured-icon">
                   <img
                     src={reward.rewardId.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
-                    alt={reward.rewardId.name?.fr || "Récompense"}
+                    alt={reward.rewardId.name[user?.languagePreference] || "Récompense"}
                   />
                   <div className="featured-shine"></div>
                 </div>
                 <div className="featured-info">
-                  <h3 className="featured-name">{reward.rewardId.name?.fr || reward.rewardId.name?.en || "Récompense"}</h3>
+                  <h3 className="featured-name">{reward.rewardId.name[user?.languagePreference] || reward.rewardId.name?.en || "Récompense"}</h3>
                   <p className="featured-description">
-                    {reward.rewardId.description?.fr || reward.rewardId.description?.en || "Description de la récompense"}
+                    {reward.rewardId.description[user?.languagePreference] || reward.rewardId.description?.en || "Description de la récompense"}
                   </p>
                   <div className="featured-meta">
                     <span className="featured-tier">{getTierLabel(reward.rewardId.tier)}</span>
@@ -1283,12 +1283,12 @@ const Rewards = () => {
                   <div className="rarest-icon">
                     <img
                       src={reward.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
-                      alt={reward.name?.fr || "Récompense"}
+                      alt={reward.name[user?.languagePreference] || "Récompense"}
                     />
                   </div>
                   <div className="rarest-info">
-                    <h4>{reward.name?.fr || reward.name?.en || "Récompense"}</h4>
-                    <p>{reward.description?.fr || reward.description?.en || "Description de la récompense"}</p>
+                    <h4>{reward.name[user?.languagePreference] || reward.name?.en || "Récompense"}</h4>
+                    <p>{reward.description[user?.languagePreference] || reward.description?.en || "Description de la récompense"}</p>
                   </div>
                   {!vitrine.some((r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id)) && (
                     <button
@@ -1592,10 +1592,10 @@ const Rewards = () => {
                         <div className="table-reward">
                           <img
                             src={reward.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
-                            alt={reward.name?.fr || "Récompense"}
+                            alt={reward.name[user?.languagePreference] || "Récompense"}
                             className="table-icon"
                           />
-                          <span>{reward.name?.fr || reward.name?.en || "Récompense"}</span>
+                          <span>{reward.name[user?.languagePreference] || reward.name?.en || "Récompense"}</span>
                         </div>
                       </td>
                       <td>{getCriteriaLabel(reward.criteria)}</td>
@@ -1747,16 +1747,16 @@ const Rewards = () => {
               <div className={`reward-modal-icon ${getTierColorClass(selectedReward.tier)}`}>
                 <img
                   src={selectedReward.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
-                  alt={selectedReward.name?.fr || "Récompense"}
+                  alt={selectedReward.name[user?.languagePreference] || "Récompense"}
                 />
               </div>
 
               <div className="reward-modal-info">
                 <h2 className="reward-modal-name">
-                  {selectedReward.name?.fr || selectedReward.name?.en || "Récompense"}
+                  {selectedReward.name[user?.languagePreference] || selectedReward.name?.en || "Récompense"}
                 </h2>
                 <p className="reward-modal-description">
-                  {selectedReward.description?.fr || selectedReward.description?.en || "Description de la récompense"}
+                  {selectedReward.description[user?.languagePreference] || selectedReward.description?.en || "Description de la récompense"}
                 </p>
 
                 <div className="reward-modal-meta">
@@ -1890,12 +1890,12 @@ const Rewards = () => {
             <div className="animation-icon">
               <img
                 src={animateReward.iconUrl || "/placeholder.svg?height=100&width=100&text=🏆"}
-                alt={animateReward.name?.fr || "Récompense"}
+                alt={animateReward.name[user?.languagePreference] || "Récompense"}
               />
             </div>
             <div className="animation-text">
               <h3>Nouvelle récompense débloquée !</h3>
-              <h2>{animateReward.name?.fr || animateReward.name?.en || "Récompense"}</h2>
+              <h2>{animateReward.name[user?.languagePreference] || animateReward.name?.en || "Récompense"}</h2>
             </div>
             <div className="animation-confetti" ref={confettiRef}></div>
           </div>

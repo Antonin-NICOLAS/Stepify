@@ -3,10 +3,7 @@ const StepEntry = require('./StepEntry');
 //.env
 require('dotenv').config()
 
-mongoose.connect(/*MONGODB*/ process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(() => {
+mongoose.connect(process.env.MONGO_URI).then(() => {
     console.log("mongoDB connected")
 });
 

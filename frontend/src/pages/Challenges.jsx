@@ -69,7 +69,7 @@ const Challenges = () => {
         setSearchQuery,
         filteredChallenges,
         filteredPublicChallenges
-    } = useChallengesFilters(challenges, publicChallenges);
+    } = useChallengesFilters(user, challenges, publicChallenges);
 
     //modal close handler
     const JoinModalRef = useRef(null)
@@ -625,7 +625,7 @@ const Challenges = () => {
                                                     </span>
                                                 )}
                                             </div>
-                                            <p className="invitation-description">{invitation?.content}</p>
+                                            <p className="invitation-description">{invitation?.content[user?.languagePreference]}</p>
                                         </div>
 
                                         <div className="invitation-details">

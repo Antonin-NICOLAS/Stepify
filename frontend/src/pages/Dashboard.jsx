@@ -664,13 +664,13 @@ const Dashboard = () => {
                             {mockChallenges.map(challenge => (
                                 <div key={challenge.id} className="challenge-card">
                                     <div className="challenge-header">
-                                        <div className="challenge-title">{challenge.name}</div>
+                                        <div className="challenge-title">{challenge.name[user?.languagePreference]}</div>
                                         <div className="challenge-dates">
                                             <Calendar size={14} />
                                             <span>{formatDate(challenge.startDate)} - {formatDate(challenge.endDate)}</span>
                                         </div>
                                     </div>
-                                    <div className="challenge-description">{challenge.description}</div>
+                                    <div className="challenge-description">{challenge.description[user?.languagePreference]}</div>
                                     <div className="challenge-progress">
                                         <div className="challenge-progress-bar">
                                             <div

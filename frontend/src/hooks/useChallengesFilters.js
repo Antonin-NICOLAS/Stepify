@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 
-export const useChallengesFilters = (challenges, publicChallenges) => {
+export const useChallengesFilters = (user, challenges, publicChallenges) => {
     const [sortBy, setSortBy] = useState("recent");
     const [filterType, setFilterType] = useState("all");
     const [filterStatus, setFilterStatus] = useState("all");
@@ -13,8 +13,8 @@ export const useChallengesFilters = (challenges, publicChallenges) => {
         if (searchQuery) {
             filtered = filtered.filter(
                 (challenge) =>
-                    challenge.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    (challenge.description && challenge.description.toLowerCase().includes(searchQuery.toLowerCase()))
+                    challenge.name[user?.languagePreference].toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    (challenge.description && challenge.description[user?.languagePreference].toLowerCase().includes(searchQuery.toLowerCase()))
             );
         }
 
@@ -56,8 +56,8 @@ export const useChallengesFilters = (challenges, publicChallenges) => {
         if (searchQuery) {
             filtered = filtered.filter(
                 (challenge) =>
-                    challenge.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    challenge.description.toLowerCase().includes(searchQuery.toLowerCase())
+                    challenge.name[user?.languagePreference].toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    challenge.description[user?.languagePreference].toLowerCase().includes(searchQuery.toLowerCase())
             )
         }
 

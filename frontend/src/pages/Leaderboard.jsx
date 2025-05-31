@@ -1062,7 +1062,7 @@ const Leaderboard = () => {
                     {selectedUser.fullName}
                   </h4>
                   <p className="user-username">@{selectedUser.username}</p>
-                  <p className="user-status">{selectedUser.status}</p>
+                  <p className="user-status">{selectedUser.status[user?.languagePreference]}</p>
                   <p className="user-meta">
                     <span>{selectedUser.age} ans</span>
                     <span>{selectedUser.region}</span>
@@ -1147,7 +1147,7 @@ const Leaderboard = () => {
                       {selectedUser.activeChallenges.map((challenge) => (
                         <div className="challenge-item" key={challenge.id}>
                           <div className="challenge-info">
-                            <span className="challenge-name">{challenge.name}</span>
+                            <span className="challenge-name">{challenge.name[user?.languagePreference]}</span>
                             <span className="challenge-deadline">
                               Expire le {new Date(challenge.deadline).toLocaleDateString("fr-FR")}
                             </span>

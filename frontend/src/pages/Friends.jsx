@@ -350,7 +350,7 @@ const Friends = () => {
                             <div className="friend-info">
                                 <h3 className="friend-name">{friend.userId.firstName} {friend.userId.lastName}</h3>
                                 <p className="friend-username">@{friend.userId.username}</p>
-                                <p className="friend-status">{friend.userId.status || "Aucun statut"}</p>
+                                <p className="friend-status">{friend.userId.status[user?.languagePreference] || "Aucun statut"}</p>
 
                                 <div className="friend-stats">
                                     <div className="stat">
@@ -797,7 +797,7 @@ const Friends = () => {
                                 <div className="friend-detail-info">
                                     <h2>{selectedFriend.userId.firstName} {selectedFriend.userId.lastName}</h2>
                                     <p className="username">@{selectedFriend.userId.username}</p>
-                                    <p className="status">{selectedFriend.userId.status || "Aucun statut"}</p>
+                                    <p className="status">{selectedFriend.userId.status[user?.languagePreference] || "Aucun statut"}</p>
                                     <span className={`activity-status`}>
                                         {/*TODO: status color indicator */}
                                     </span>

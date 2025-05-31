@@ -60,7 +60,7 @@ const AccountPage = () => {
         username: user.username || "",
         email: user.email || "",
         avatarUrl: user.avatarUrl || "",
-        status: user.status || "",
+        status: user.status[user?.languagePreference] || "",
         dailyGoal: user.dailyGoal || 10000,
       });
     }
@@ -186,7 +186,7 @@ const AccountPage = () => {
     }
     setIsCustomStatus(false)
     setIsStatusDropdownOpen(false)
-    if (status !== user.status) {
+    if (status !== user.status[user?.languagePreference]) {
       setIsCustomStatus(false)
       setIsStatusDropdownOpen(false)
       await updateStatus(user._id, status);

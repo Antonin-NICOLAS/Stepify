@@ -253,6 +253,7 @@ const getUserProfile = async (req, res) => {
         const todayProgress = await user.calculateTodayProgress();
 
         const userResponse = user.toJSON();
+        userResponse.todayProgress = todayProgress;
 
         if (!isOwner) {
             delete userResponse.email;
@@ -267,7 +268,7 @@ const getUserProfile = async (req, res) => {
             }
         }
 
-        return sendLocalizedSuccess(res, null, {}, { user });
+        return sendLocalizedSuccess(res, null, {}, { user: userResponse });
     } catch (error) {
         console.error("Error in getUserProfile:", error);
         return sendLocalizedError(res, 500, 'errors.profile.get_profile_error');
