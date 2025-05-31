@@ -40,8 +40,8 @@ const getLocalizedMessage = (locale, path, params = {}) => {
 const localization = async (req, res, next) => {
     try {
         // Récupérer la langue préférée de l'utilisateur s'il est connecté
-        if (req.user) {
-            const user = await UserModel.findById(req.user.id).select('languagePreference');
+        if (req.userId) {
+            const user = await UserModel.findById(req.userId).select('languagePreference');
             if (user?.languagePreference) {
                 req.locale = user.languagePreference;
             }

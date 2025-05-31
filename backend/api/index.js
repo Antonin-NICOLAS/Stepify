@@ -11,9 +11,8 @@ const StepRoutes = require('../routes/StepRoutes')
 const ChallengeRoutes = require('../routes/ChallengeRoutes')
 const NotificationRoutes = require('../routes/NotificationRoutes')
 const RewardRoutes = require('../routes/RewardRoutes')
-const StatsRoutes = require('../routes/StatsRoutes')
+const LeaderboardRoutes = require('../routes/RankingRoutes')
 //middleware
-const { localization } = require('../middlewares/Localization')
 const accessLogger = require('../middlewares/AccessLogger')
 //logs
 const Logger = require('../logs/Logger')
@@ -30,7 +29,6 @@ app.use(cookieParser())
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }))
 app.use(accessLogger)
-app.use(localization)
 
 //cors
 const corsOptions = {
@@ -58,7 +56,7 @@ app.use('/step', StepRoutes)
 app.use('/challenge', ChallengeRoutes)
 app.use('/notification', NotificationRoutes)
 app.use('/reward', RewardRoutes)
-app.use('/stats', StatsRoutes)
+app.use('/leaderboard', LeaderboardRoutes)
 
 // Gestion des erreurs globale
 app.use((err, req, res, next) => {

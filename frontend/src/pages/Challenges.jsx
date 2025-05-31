@@ -364,7 +364,7 @@ const Challenges = () => {
                                         onClick={() => handleChallengeClick(challenge)}
                                     >
                                         <div className="challenge-header">
-                                            <h3>{challenge.name}</h3>
+                                            <h3>{challenge.name[user?.languagePreference]}</h3>
                                             <div className="challenge-badges">
                                                 {getStatusBadge(challenge.status)}
                                                 {challenge.isPrivate && (
@@ -375,7 +375,7 @@ const Challenges = () => {
                                             </div>
                                         </div>
 
-                                        <p className="challenge-description">{challenge.description}</p>
+                                        <p className="challenge-description">{challenge.description[user?.languagePreference]}</p>
 
                                         <div className="challenge-meta">
                                             <div className="challenge-goal">
@@ -507,7 +507,7 @@ const Challenges = () => {
                                         onClick={() => handleChallengeClick(challenge)}
                                     >
                                         <div className="challenge-header">
-                                            <h3>{challenge.name}</h3>
+                                            <h3>{challenge.name[user?.languagePreference]}</h3>
                                             <div className="challenge-badges">
                                                 {getStatusBadge(challenge.status)}
                                                 {new Date(challenge.createdAt) > new Date(Date.now() - 24 * 60 * 60 * 1000) && (
@@ -518,7 +518,7 @@ const Challenges = () => {
                                             </div>
                                         </div>
 
-                                        <p className="challenge-description">{challenge.description}</p>
+                                        <p className="challenge-description">{challenge.description[user?.languagePreference]}</p>
 
                                         <div className="challenge-meta">
                                             <div className="challenge-goal">
@@ -618,7 +618,7 @@ const Challenges = () => {
                                     <div key={invitation?._id} className="invitation-card">
                                         <div className="invitation-header">
                                             <div className="invitation-title">
-                                                <h3>{invitation?.challenge.name}</h3>
+                                                <h3>{invitation?.challenge.name[user?.languagePreference]}</h3>
                                                 {new Date(invitation?.DeleteAt) < new Date(Date.now() + 24 * 60 * 60 * 1000) && (
                                                     <span className="expiring-badge">
                                                         <AlertTriangle size={12} /> Expire bientôt
@@ -709,7 +709,7 @@ const Challenges = () => {
                                             type="text"
                                             id="challenge-name"
                                             placeholder="Ex: Défi 10K Pas"
-                                            value={newChallenge.name}
+                                            value={newChallenge.name[user?.languagePreference]}
                                             onChange={(e) => setNewChallenge({ ...newChallenge, name: e.target.value })}
                                             required
                                         />
@@ -720,7 +720,7 @@ const Challenges = () => {
                                         <textarea
                                             id="challenge-description"
                                             placeholder="Décrivez votre défi en quelques mots..."
-                                            value={newChallenge.description}
+                                            value={newChallenge.description[user?.languagePreference]}
                                             onChange={(e) => setNewChallenge({ ...newChallenge, description: e.target.value })}
                                             rows={3}
                                         ></textarea>
@@ -1092,7 +1092,7 @@ const Challenges = () => {
                                             type="text"
                                             id="modal-challenge-name"
                                             placeholder="Ex: Défi 10K Pas"
-                                            value={newChallenge.name}
+                                            value={newChallenge.name[user?.languagePreference]}
                                             onChange={(e) => setNewChallenge({ ...newChallenge, name: e.target.value })}
                                             required
                                         />
@@ -1103,7 +1103,7 @@ const Challenges = () => {
                                         <textarea
                                             id="modal-challenge-description"
                                             placeholder="Décrivez votre défi en quelques mots..."
-                                            value={newChallenge.description}
+                                            value={newChallenge.description[user?.languagePreference]}
                                             onChange={(e) => setNewChallenge({ ...newChallenge, description: e.target.value })}
                                             rows={3}
                                         ></textarea>

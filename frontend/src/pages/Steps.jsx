@@ -54,6 +54,7 @@ const Steps = () => {
     const [importSource, setImportSource] = useState(null);
     const [importFile, setImportFile] = useState(null);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [isLoading, setIsLoading] = useState(false)
 
     // State for chart
     const [chartMetric, setChartMetric] = useState("totalSteps");
@@ -61,7 +62,7 @@ const Steps = () => {
     // Custom hooks
     const {
         stepEntries,
-        isLoading,
+        fetchStepEntries,
         addStepEntry,
         updateStepEntry,
         FavoriteEntry,
@@ -89,6 +90,14 @@ const Steps = () => {
     }
 
     // UseEffect
+
+    useEffect(() => {
+        setIsLoading(true)
+        if (user?._id) {
+            fetchStepEntries();
+        }
+        setIsLoading(false)
+    }, [user?._id, fetchStepEntries]);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -416,6 +425,7 @@ const Steps = () => {
             }]
         };
 
+        setIsLoading(true)
         try {
             let success;
             if (currentEntry) {
@@ -436,6 +446,8 @@ const Steps = () => {
             }
         } catch (error) {
             console.error("Submission error:", error);
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -452,24 +464,45 @@ const Steps = () => {
 
     // handle favorite
     const handleFavoriteChange = async (entryId) => {
-        await FavoriteEntry(entryId)
+        setIsLoading(true)
+        try {
+            await FavoriteEntry(entryId)
+        } catch (error) {
+            console.log('error:', error)
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     // Handle entry deletion
     const handleDelete = async (entryId) => {
         if (confirm("Êtes-vous sûr de vouloir supprimer cette entrée ?")) {
-            await deleteStepEntry(entryId);
+            setIsLoading(true)
+            try {
+                await deleteStepEntry(entryId);
+            } catch (error) {
+                console.log('error:', error)
+            } finally {
+                setIsLoading(false)
+            }
         }
     };
 
     // Handle import data
     const handleFileImport = async () => {
         if (!importFile) return;
+        setIsLoading(true)
         setUploadProgress(0);
-        await importSteps(importFile, setUploadProgress);
-        setShowImportModal(false);
-        setImportFile(null);
-        setImportSource(null);
+        try {
+            await importSteps(importFile, setUploadProgress);
+            setShowImportModal(false);
+            setImportFile(null);
+            setImportSource(null);
+        } catch (error) {
+            console.log('error:', error)
+        } finally {
+            setIsLoading(false)
+        }
     };
 
 

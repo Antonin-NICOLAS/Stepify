@@ -341,7 +341,7 @@ const AccountPage = () => {
                   onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
                   aria-expanded={isStatusDropdownOpen}
                 >
-                  <span>{user?.status}</span>
+                  <span>{user?.status[user?.languagePreference]}</span>
                   <ChevronDown size={16} className={isStatusDropdownOpen ? "rotated" : ""} />
                 </div>
                 {isStatusDropdownOpen && (
@@ -349,12 +349,12 @@ const AccountPage = () => {
                     {statusOptions.map((status) => (
                       <div
                         key={status}
-                        className={`status-option ${user?.status === status ? "selected" : ""}`}
+                        className={`status-option ${user?.status[user?.languagePreference] === status ? "selected" : ""}`}
                         onClick={() => handleStatusChange(status)}
                       >
                         <span className={`status-indicator ${status.toLowerCase().replace(/\s+/g, "-")}`}></span>
                         <span>{status}</span>
-                        {user?.status === status && <Check size={16} className="check-icon" />}
+                        {user?.status[user?.languagePreference] === status && <Check size={16} className="check-icon" />}
                       </div>
                     ))}
                   </div>

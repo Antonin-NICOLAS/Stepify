@@ -1,14 +1,38 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, MessageSquare, UserPlus, Clock, Award, BarChart2, Target, X, Info, Zap, Smile, Star, ArrowUp, ArrowDown, Medal, Crown, Heart, Share2, Settings, User, MapPin, Sliders, Footprints, Spline } from 'lucide-react'
+import {
+  Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, MessageSquare, UserPlus, Award, BarChart2, Target,
+  X, Info, Zap, Smile, Star, Medal, Crown, Share2, Settings, Footprints, Spline
+} from "lucide-react"
 import { Line, Pie } from "react-chartjs-2"
 import { Chart, registerables } from "chart.js"
+import { useChallenge } from "../hooks/useChallenges"
+import { useNotifications } from "../hooks/useNotifications"
+import { useLeaderboard } from "../hooks/useLeaderboard"
+import { useAuth } from "../context/AuthContext"
+import { useUser } from "../context/UserContext"
 import "./Leaderboard.css"
 
 // Register Chart.js components
 Chart.register(...registerables)
 
 const Leaderboard = () => {
+  const { user } = useAuth()
+  const { getUserProfile } = useUser()
+  const {
+    users,
+    fetchLeaderboardData,
+    sendMessage,
+    addComment,
+    searchUsers,
+    fetchFriendsLeaderboard,
+    fetchChallengesLeaderboard,
+    fetchRewardsLeaderboard,
+  } = useLeaderboard(user?._id)
+
+  const { joinChallenge } = useChallenge(user?.id)
+  const { sendFriendRequest } = useNotifications(user?.id)
+
   // State for leaderboard type
   const [leaderboardType, setLeaderboardType] = useState("xp")
   const [timeFrame, setTimeFrame] = useState("all-time")
@@ -28,19 +52,50 @@ const Leaderboard = () => {
   // State for active tab
   const [activeTab, setActiveTab] = useState("general")
 
-  // Mock data for users
-  const [users, setUsers] = useState([])
-  const [currentUser, setCurrentUser] = useState(null)
+  // State for tab-specific data
+  const [friendsData, setFriendsData] = useState([])
+  const [challengesData, setChallengesData] = useState([])
+  const [rewardsData, setRewardsData] = useState([])
 
-  // Load mock data
+  // Handle filter changes
   useEffect(() => {
-    // Simulate API call to get users
-    const mockUsers = generateMockUsers(50)
-    setUsers(mockUsers)
+    if (user?._id) {
+      const filters = {
+        type: leaderboardType,
+        timeFrame,
+        activityMode,
+        filterFriends,
+        searchQuery,
+      }
+      fetchLeaderboardData(filters)
+    }
+  }, [leaderboardType, timeFrame, activityMode, filterFriends, searchQuery, user?._id, fetchLeaderboardData])
 
-    // Set current user (for highlighting in the leaderboard)
-    setCurrentUser(mockUsers[Math.floor(Math.random() * 5) + 3]) // Random position in top 10
-  }, [])
+  // Handle tab changes
+  useEffect(() => {
+    if (user?._id) {
+      switch (activeTab) {
+        case "friends":
+          fetchFriendsLeaderboard({ type: leaderboardType, timeFrame }).then(setFriendsData)
+          break
+        case "challenges":
+          fetchChallengesLeaderboard().then(setChallengesData)
+          console.log(challengesData)
+          break
+        case "rewards":
+          fetchRewardsLeaderboard().then(setRewardsData)
+          break
+      }
+    }
+  }, [
+    activeTab,
+    leaderboardType,
+    timeFrame,
+    user?._id,
+    fetchFriendsLeaderboard,
+    fetchChallengesLeaderboard,
+    fetchRewardsLeaderboard,
+  ])
 
   // Filter users based on current filters and search
   const filteredUsers = () => {
@@ -57,9 +112,9 @@ const Leaderboard = () => {
     }
 
     // Apply friends filter
-    if (filterFriends && currentUser) {
+    if (filterFriends && user) {
       filtered = filtered.filter(
-        (user) => currentUser.friends.some((friend) => friend.userId === user._id) || user._id === currentUser._id,
+        (user) => user?.friends.some((friend) => friend.userId === user._id) || user._id === user?._id,
       )
     }
 
@@ -293,27 +348,32 @@ const Leaderboard = () => {
     }
   }
 
-  const handleUserClick = (user) => {
-    setSelectedUser(user)
-    setShowUserModal(true)
+  const handleUserClick = async (user) => {
+    const userProfile = await getUserProfile(user._id)
+    if (userProfile) {
+      setSelectedUser(userProfile)
+      setShowUserModal(true)
+    }
   }
 
-  const handleSendFriendRequest = (userId) => {
-    alert(`Demande d'ami envoyée à l'utilisateur ${userId}`)
-    // In a real app, this would send an API request
+  const handleSendFriendRequest = async (userId) => {
+    await sendFriendRequest(userId)
   }
 
-  const handleSendMessage = (userId) => {
-    alert(`Message envoyé à l'utilisateur ${userId}`)
-    // In a real app, this would open a message modal or redirect to messages
+  const handleSendMessage = async (userId) => {
+    // In a real app, this would open a message modal
+    await sendMessage(userId, "Hello!")
   }
 
-  const handleAddComment = (e) => {
+  const handleAddComment = async (e) => {
     e.preventDefault()
     const comment = e.target.comment.value
-    alert(`Commentaire ajouté: ${comment}`)
-    e.target.reset()
-    // In a real app, this would send an API request to add the comment
+    if (selectedUser && comment.trim()) {
+      const success = await addComment(selectedUser._id, comment)
+      if (success) {
+        e.target.reset()
+      }
+    }
   }
 
   // Generate activity chart data for user profile
@@ -410,178 +470,6 @@ const Leaderboard = () => {
     },
   }
 
-  // Generate mock users data
-  const generateMockUsers = (count) => {
-    const users = []
-    const firstNames = [
-      "Thomas",
-      "Emma",
-      "Lucas",
-      "Léa",
-      "Hugo",
-      "Chloé",
-      "Raphaël",
-      "Manon",
-      "Louis",
-      "Camille",
-      "Jules",
-      "Sarah",
-      "Gabriel",
-      "Jade",
-      "Arthur",
-      "Louise",
-      "Adam",
-      "Zoé",
-      "Ethan",
-      "Inès",
-    ]
-    const lastNames = [
-      "Martin",
-      "Bernard",
-      "Dubois",
-      "Thomas",
-      "Robert",
-      "Richard",
-      "Petit",
-      "Durand",
-      "Leroy",
-      "Moreau",
-      "Simon",
-      "Laurent",
-      "Lefebvre",
-      "Michel",
-      "Garcia",
-      "David",
-      "Bertrand",
-      "Roux",
-      "Vincent",
-      "Fournier",
-    ]
-    const regions = [
-      "Île-de-France",
-      "Auvergne-Rhône-Alpes",
-      "Nouvelle-Aquitaine",
-      "Occitanie",
-      "Hauts-de-France",
-      "Grand Est",
-      "Provence-Alpes-Côte d'Azur",
-      "Bretagne",
-      "Normandie",
-      "Pays de la Loire",
-    ]
-    const modes = ["walk", "run", "bike"]
-
-    for (let i = 0; i < count; i++) {
-      const firstName = firstNames[Math.floor(Math.random() * firstNames.length)]
-      const lastName = lastNames[Math.floor(Math.random() * lastNames.length)]
-      const username = `${firstName.toLowerCase()}${lastName.toLowerCase()}${Math.floor(Math.random() * 100)}`
-      const preferredMode = modes[Math.floor(Math.random() * modes.length)]
-      const age = 18 + Math.floor(Math.random() * 50)
-      const region = regions[Math.floor(Math.random() * regions.length)]
-
-      // Base stats with some randomization to create a realistic distribution
-      const baseXP = 1000 + Math.floor(Math.random() * 50000)
-      const baseSteps = 100000 + Math.floor(Math.random() * 5000000)
-      const baseDistance = baseSteps * 0.0007 // Approximate km
-      const baseChallenges = 5 + Math.floor(Math.random() * 50)
-
-      // Create friends list (random subset of users already created)
-      const friends = []
-      const friendCount = Math.floor(Math.random() * 10)
-      for (let j = 0; j < friendCount && j < i; j++) {
-        if (Math.random() > 0.5) {
-          // 50% chance to add each potential friend
-          friends.push({
-            userId: users[j]._id,
-            addedAt: new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)),
-          })
-        }
-      }
-
-      // Create user object
-      users.push({
-        _id: `user-${i + 1}`,
-        firstName,
-        lastName,
-        username,
-        email: `${username}@example.com`,
-        avatarUrl: `/placeholder.svg?height=100&width=100&text=${firstName[0]}${lastName[0]}`,
-        status: [
-          "En pleine forme !",
-          "Prêt pour un nouveau défi !",
-          "J'adore marcher !",
-          "Courir c'est ma passion !",
-          "Vélo tous les jours !",
-        ][Math.floor(Math.random() * 5)],
-        preferredMode,
-        age,
-        region,
-
-        // Stats
-        totalXP: baseXP,
-        dailyXP: Math.floor(baseXP * 0.01),
-        weeklyXP: Math.floor(baseXP * 0.1),
-        monthlyXP: Math.floor(baseXP * 0.3),
-
-        totalSteps: baseSteps,
-        dailySteps: Math.floor(baseSteps * 0.001),
-        weeklySteps: Math.floor(baseSteps * 0.01),
-        monthlySteps: Math.floor(baseSteps * 0.05),
-
-        totalDistance: baseDistance,
-        dailyDistance: baseDistance * 0.001,
-        weeklyDistance: baseDistance * 0.01,
-        monthlyDistance: baseDistance * 0.05,
-
-        totalChallengesCompleted: baseChallenges,
-
-        streak: {
-          current: Math.floor(Math.random() * 30),
-          max: 10 + Math.floor(Math.random() * 100),
-          lastAchieved: new Date(),
-        },
-
-        goalCompletionRate: Math.floor(60 + Math.random() * 40), // Percentage
-
-        dailyGoal: 10000,
-        dailyProgress: Math.floor(Math.random() * 120), // Percentage of daily goal
-
-        friends,
-
-        // Rewards
-        rewards: Array.from({ length: Math.floor(Math.random() * 10) }, (_, i) => ({
-          id: `reward-${i + 1}`,
-          name: [
-            "Marcheur Débutant",
-            "Coureur Bronze",
-            "Cycliste d'Argent",
-            "Marathonien",
-            "Explorateur Urbain",
-            "Randonneur Pro",
-            "Maître du Défi",
-            "Roi de la Régularité",
-            "Champion de Pas",
-            "Légende de la Distance",
-          ][i],
-          icon: ["🥉", "🥈", "🥇", "🏆", "🏅", "🎖️", "⭐", "🌟", "💫", "👑"][i],
-          unlockedAt: new Date(Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000)),
-        })),
-
-        // Challenges
-        activeChallenges: Array.from({ length: Math.floor(Math.random() * 3) }, (_, i) => ({
-          id: `challenge-${i + 1}`,
-          name: ["Défi 10K", "Marathon Hebdo", "Tour de Ville", "Défi Matinal", "Régularité 30 Jours"][i],
-          progress: Math.floor(Math.random() * 100), // Percentage
-          deadline: new Date(Date.now() + Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)),
-        })),
-
-        createdAt: new Date(Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000)),
-      })
-    }
-
-    return users
-  }
-
   // Get top 3 users
   const getTopUsers = () => {
     return filteredUsers().slice(0, 3)
@@ -605,13 +493,12 @@ const Leaderboard = () => {
           <div className="leaderboard-general-tab">
             {/* Top 3 Podium */}
             <div className="leaderboard-podium">
-              {getTopUsers().map((user, index) => (
+              {getTopUsers().map((user3, index) => (
                 <div
-                  key={user._id}
-                  className={`podium-position podium-${index + 1} ${
-                    user._id === currentUser?._id ? "current-user" : ""
-                  }`}
-                  onClick={() => handleUserClick(user)}
+                  key={user3._id}
+                  className={`podium-position podium-${index + 1} ${user3._id === user?._id ? "current-user" : ""
+                    }`}
+                  onClick={() => handleUserClick(user3)}
                 >
                   <div className="podium-medal">
                     {index === 0 ? (
@@ -623,33 +510,33 @@ const Leaderboard = () => {
                     )}
                   </div>
                   <div className="podium-avatar">
-                    <img src={user.avatarUrl || "/placeholder.svg"} alt={user.username} />
-                    <span className="user-preferred-mode">{getModeIcon(user.preferredMode)}</span>
+                    <img src={user3.avatarUrl || "/placeholder.svg"} alt={user3.username} />
+                    <span className="user-preferred-mode">{getModeIcon(user3.preferredMode)}</span>
                   </div>
                   <div className="podium-info">
                     <h3 className="podium-name">
-                      {user.firstName} {user.lastName}
+                      {user3.firstName} {user3.lastName}
                     </h3>
-                    <p className="podium-username">@{user.username}</p>
+                    <p className="podium-username">@{user3.username}</p>
                     <div className="podium-score">
                       {getMetricIcon(leaderboardType)}
-                      <span>{formatMetricValue(getMetricValue(user), leaderboardType)}</span>
+                      <span>{formatMetricValue(getMetricValue(user3), leaderboardType)}</span>
                     </div>
                     <div className="podium-progress">
                       <div className="progress-container">
-                        <div className="progress-bar" style={{ width: `${user.dailyProgress}%` }}></div>
-                        <span className="progress-text">{user.dailyProgress}%</span>
+                        <div className="progress-bar" style={{ width: `${user3.dailyProgress}%` }}></div>
+                        <span className="progress-text">{user3.dailyProgress}%</span>
                       </div>
                     </div>
                   </div>
                   <div className="podium-actions">
-                    {currentUser && user._id !== currentUser._id && (
+                    {user && user3._id !== user._id && (
                       <>
                         <button
                           className="action-icon-button"
                           onClick={(e) => {
                             e.stopPropagation()
-                            handleSendFriendRequest(user._id)
+                            handleSendFriendRequest(user3._id)
                           }}
                           title="Ajouter en ami"
                         >
@@ -659,7 +546,7 @@ const Leaderboard = () => {
                           className="action-icon-button"
                           onClick={(e) => {
                             e.stopPropagation()
-                            handleSendMessage(user._id)
+                            handleSendMessage(user3._id)
                           }}
                           title="Envoyer un message"
                         >
@@ -674,41 +561,41 @@ const Leaderboard = () => {
 
             {/* Remaining Users */}
             <div className="leaderboard-cards">
-              {getRemainingUsers().map((user, index) => (
+              {getRemainingUsers().map((users, index) => (
                 <div
-                  key={user._id}
-                  className={`leaderboard-card ${user._id === currentUser?._id ? "current-user" : ""}`}
-                  onClick={() => handleUserClick(user)}
+                  key={users._id}
+                  className={`leaderboard-card ${users._id === user?._id ? "current-user" : ""}`}
+                  onClick={() => handleUserClick(users)}
                 >
                   <div className="card-rank">{index + 4}</div>
                   <div className="card-avatar">
-                    <img src={user.avatarUrl || "/placeholder.svg"} alt={user.username} />
-                    <span className="user-preferred-mode">{getModeIcon(user.preferredMode)}</span>
+                    <img src={users.avatarUrl || "/placeholder.svg"} alt={users.username} />
+                    <span className="user-preferred-mode">{getModeIcon(users.preferredMode)}</span>
                   </div>
                   <div className="card-info">
                     <h3 className="card-name">
-                      {user.firstName} {user.lastName}
+                      {users.fullName}
                     </h3>
-                    <p className="card-username">@{user.username}</p>
+                    <p className="card-username">@{users.username}</p>
                     <div className="card-score">
                       {getMetricIcon(leaderboardType)}
-                      <span>{formatMetricValue(getMetricValue(user), leaderboardType)}</span>
+                      <span>{formatMetricValue(getMetricValue(users), leaderboardType)}</span>
                     </div>
                     <div className="card-progress">
                       <div className="progress-container">
-                        <div className="progress-bar" style={{ width: `${user.dailyProgress}%` }}></div>
-                        <span className="progress-text">{user.dailyProgress}%</span>
+                        <div className="progress-bar" style={{ width: `${users.dailyProgress}%` }}></div>
+                        <span className="progress-text">{users.dailyProgress}%</span>
                       </div>
                     </div>
                   </div>
                   <div className="card-actions">
-                    {currentUser && user._id !== currentUser._id && (
+                    {user && users._id !== user?._id && (
                       <>
                         <button
                           className="action-icon-button"
                           onClick={(e) => {
                             e.stopPropagation()
-                            handleSendFriendRequest(user._id)
+                            handleSendFriendRequest(users._id)
                           }}
                           title="Ajouter en ami"
                         >
@@ -718,7 +605,7 @@ const Leaderboard = () => {
                           className="action-icon-button"
                           onClick={(e) => {
                             e.stopPropagation()
-                            handleSendMessage(user._id)
+                            handleSendMessage(users._id)
                           }}
                           title="Envoyer un message"
                         >
@@ -735,61 +622,56 @@ const Leaderboard = () => {
       case "friends":
         return (
           <div className="leaderboard-friends-tab">
-            {currentUser && currentUser.friends.length > 0 ? (
+            {friendsData && friendsData.length > 0 ? (
               <div className="friends-leaderboard">
                 <div className="friends-header">
                   <h3>Classement entre amis</h3>
                   <p>Comparez vos performances avec vos amis</p>
                 </div>
                 <div className="friends-list">
-                  {filteredUsers()
-                    .filter(
-                      (user) =>
-                        user._id === currentUser._id ||
-                        currentUser.friends.some((friend) => friend.userId === user._id),
-                    )
-                    .map((user, index) => (
-                      <div
-                        key={user._id}
-                        className={`friend-card ${user._id === currentUser?._id ? "current-user" : ""}`}
-                        onClick={() => handleUserClick(user)}
-                      >
-                        <div className="friend-rank">{index + 1}</div>
-                        <div className="friend-avatar">
-                          <img src={user.avatarUrl || "/placeholder.svg"} alt={user.username} />
-                          <span className="user-preferred-mode">{getModeIcon(user.preferredMode)}</span>
-                        </div>
-                        <div className="friend-info">
-                          <h3 className="friend-name">
-                            {user.firstName} {user.lastName}
-                          </h3>
-                          <p className="friend-username">@{user.username}</p>
-                          <div className="friend-score">
-                            {getMetricIcon(leaderboardType)}
-                            <span>{formatMetricValue(getMetricValue(user), leaderboardType)}</span>
-                          </div>
-                        </div>
-                        <div className="friend-progress">
-                          <div className="progress-container">
-                            <div className="progress-bar" style={{ width: `${user.dailyProgress}%` }}></div>
-                            <span className="progress-text">{user.dailyProgress}%</span>
-                          </div>
-                        </div>
-                        <div className="friend-actions">
-                          {user._id !== currentUser._id && (
-                            <button
-                              className="action-icon-button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleSendMessage(user._id)
-                              }}
-                              title="Envoyer un message">
-                              <MessageSquare size={16} />
-                            </button>
-                          )}
+                  {friendsData.map((users, index) => (
+                    <div
+                      key={users._id}
+                      className={`friend-card ${users._id === user?._id ? "current-user" : ""}`}
+                      onClick={() => handleUserClick(users)}
+                    >
+                      <div className="friend-rank">{index + 1}</div>
+                      <div className="friend-avatar">
+                        <img src={users.avatarUrl || "/placeholder.svg"} alt={users.username} />
+                        <span className="user-preferred-mode">{getModeIcon(users.preferredMode)}</span>
+                      </div>
+                      <div className="friend-info">
+                        <h3 className="friend-name">
+                          {users.fullName}
+                        </h3>
+                        <p className="friend-username">@{users.username}</p>
+                        <div className="friend-score">
+                          {getMetricIcon(leaderboardType)}
+                          <span>{formatMetricValue(getMetricValue(users), leaderboardType)}</span>
                         </div>
                       </div>
-                    ))}
+                      <div className="friend-progress">
+                        <div className="progress-container">
+                          <div className="progress-bar" style={{ width: `${users.dailyProgress}%` }}></div>
+                          <span className="progress-text">{users.dailyProgress}%</span>
+                        </div>
+                      </div>
+                      <div className="friend-actions">
+                        {users._id !== user?._id && (
+                          <button
+                            className="action-icon-button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleSendMessage(users._id)
+                            }}
+                            title="Envoyer un message"
+                          >
+                            <MessageSquare size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
@@ -812,59 +694,89 @@ const Leaderboard = () => {
                 <div key={i} className="challenge-card">
                   <div className="challenge-header">
                     <h4>
-                      {["Défi 10K", "Marathon Hebdo", "Tour de Ville"][i]} {i === 0 && <span className="hot-badge">🔥 Populaire</span>}
+                      {["Défi 10K", "Marathon Hebdo", "Tour de Ville"][i]}{" "}
+                      {i === 0 && <span className="hot-badge">🔥 Populaire</span>}
                     </h4>
-                    <p>{["Atteignez 10 000 pas par jour pendant 7 jours", "Parcourez 42km en une semaine", "Explorez 5 nouveaux lieux"][i]}</p>
+                    <p>
+                      {
+                        [
+                          "Atteignez 10 000 pas par jour pendant 7 jours",
+                          "Parcourez 42km en une semaine",
+                          "Explorez 5 nouveaux lieux",
+                        ][i]
+                      }
+                    </p>
                   </div>
                   <div className="challenge-participants">
                     {filteredUsers()
                       .slice(0, 5)
-                      .map((user, index) => (
-                        <div key={user._id} className="challenge-participant" onClick={() => handleUserClick(user)}>
+                      .map((users, index) => (
+                        <div key={users._id} className="challenge-participant" onClick={() => handleUserClick(users)}>
                           <div className="participant-rank">{index + 1}</div>
                           <div className="participant-avatar">
-                            <img src={user.avatarUrl || "/placeholder.svg"} alt={user.username} />
+                            <img src={users.avatarUrl || "/placeholder.svg"} alt={users.username} />
                           </div>
                           <div className="participant-info">
-                            <span className="participant-name">{user.firstName} {user.lastName}</span>
+                            <span className="participant-name">
+                              {users.fullName}
+                            </span>
                             <div className="participant-progress">
                               <div className="progress-container">
-                                <div className="progress-bar" style={{ width: `${Math.floor(Math.random() * 100)}%` }}></div>
+                                <div
+                                  className="progress-bar"
+                                  style={{ width: `${Math.floor(Math.random() * 100)}%` }}
+                                ></div>
                               </div>
                             </div>
                           </div>
                         </div>
                       ))}
                   </div>
-                  <button className="join-challenge-button">Rejoindre ce défi</button>
+                  <button className="join-challenge-button" onClick={() => joinChallenge(challenge.id)}>
+                    Rejoindre ce défi
+                  </button>
                 </div>
               ))}
             </div>
           </div>
         )
-      case "achievements":
+      case "rewards":
         return (
-          <div className="leaderboard-achievements-tab">
-            <div className="achievements-header">
+          <div className="leaderboard-rewards-tab">
+            <div className="rewards-header">
               <h3>Tableau des récompenses</h3>
               <p>Découvrez qui a débloqué les récompenses les plus prestigieuses</p>
             </div>
-            <div className="achievements-grid">
-              {["Marcheur d'Or", "Marathonien", "Explorateur Urbain", "Roi de la Régularité", "Champion de Pas", "Légende de la Distance"].map((achievement, i) => (
-                <div key={i} className="achievement-card">
-                  <div className="achievement-icon">{["🥇", "🏆", "🌍", "👑", "👣", "🌟"][i]}</div>
-                  <h4>{achievement}</h4>
-                  <div className="achievement-holders">
+            <div className="rewards-grid">
+              {[
+                "Marcheur d'Or",
+                "Marathonien",
+                "Explorateur Urbain",
+                "Roi de la Régularité",
+                "Champion de Pas",
+                "Légende de la Distance",
+              ].map((reward, i) => (
+                <div key={i} className="reward-card">
+                  <div className="reward-icon">{["🥇", "🏆", "🌍", "👑", "👣", "🌟"][i]}</div>
+                  <h4>{reward}</h4>
+                  <div className="reward-holders">
                     {filteredUsers()
                       .slice(0, 3)
-                      .map((user, index) => (
-                        <div key={user._id} className="achievement-holder" onClick={() => handleUserClick(user)}>
+                      .map((users, index) => (
+                        <div key={users._id} className="reward-holder" onClick={() => handleUserClick(users)}>
                           <div className="holder-avatar">
-                            <img src={user.avatarUrl || "/placeholder.svg"} alt={user.username} />
+                            <img src={users.avatarUrl || "/placeholder.svg"} alt={users.username} />
                           </div>
                           <div className="holder-info">
-                            <span className="holder-name">{user.firstName} {user.lastName}</span>
-                            <span className="holder-date">Obtenu le {new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)).toLocaleDateString("fr-FR")}</span>
+                            <span className="holder-name">
+                              {users.fullName}
+                            </span>
+                            <span className="holder-date">
+                              Obtenu le{" "}
+                              {new Date(
+                                Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000),
+                              ).toLocaleDateString("fr-FR")}
+                            </span>
                           </div>
                         </div>
                       ))}
@@ -887,7 +799,7 @@ const Leaderboard = () => {
       </div>
 
       {/* Your Position Card */}
-      {currentUser && (
+      {user && (
         <div className="your-position-card">
           <div className="position-header">
             <div className="position-title">
@@ -895,29 +807,35 @@ const Leaderboard = () => {
               <h2>Votre position</h2>
             </div>
             <div className="position-rank">
-              <span className="rank-number">{getUserRank(currentUser._id)}</span>
+              <span className="rank-number">{getUserRank(user._id)}</span>
               <span className="rank-label">sur {filteredUsers().length}</span>
             </div>
           </div>
           <div className="position-stats">
             <div className="position-stat">
-              <div className="stat-icon"><Trophy size={24}/></div>
+              <div className="stat-icon">
+                <Trophy size={24} />
+              </div>
               <div className="stat-content">
-                <span className="stat-value">{currentUser.totalXP.toLocaleString("fr-FR")}</span>
+                <span className="stat-value">{user.totalXP.toLocaleString("fr-FR")}</span>
                 <span className="stat-label">XP total</span>
               </div>
             </div>
             <div className="position-stat">
-              <div className="stat-icon"><Footprints size={24}/></div>
+              <div className="stat-icon">
+                <Footprints size={24} />
+              </div>
               <div className="stat-content">
-                <span className="stat-value">{currentUser.totalSteps.toLocaleString("fr-FR")}</span>
+                <span className="stat-value">{user.totalSteps.toLocaleString("fr-FR")}</span>
                 <span className="stat-label">Pas totaux</span>
               </div>
             </div>
             <div className="position-stat">
-              <div className="stat-icon"><Zap size={24}/></div>
+              <div className="stat-icon">
+                <Zap size={24} />
+              </div>
               <div className="stat-content">
-                <span className="stat-value">{currentUser.streak.current}</span>
+                <span className="stat-value">{user.streak.current}</span>
                 <span className="stat-label">Streak actuelle</span>
               </div>
             </div>
@@ -925,10 +843,10 @@ const Leaderboard = () => {
           <div className="position-progress">
             <div className="progress-label">
               <span>Objectif du jour</span>
-              <span>{currentUser.dailyProgress}%</span>
+              <span>{user.dailyProgress}%</span>
             </div>
             <div className="progress-container">
-              <div className="progress-bar" style={{ width: `${currentUser.dailyProgress}%` }}></div>
+              <div className="progress-bar" style={{ width: `${user.dailyProgress}%` }}></div>
             </div>
           </div>
         </div>
@@ -937,31 +855,19 @@ const Leaderboard = () => {
       {/* Leaderboard Controls */}
       <div className="leaderboard-controls-container">
         <div className="leaderboard-tabs">
-          <button
-            className={activeTab === "general" ? "active" : ""}
-            onClick={() => setActiveTab("general")}
-          >
+          <button className={activeTab === "general" ? "active" : ""} onClick={() => setActiveTab("general")}>
             <Trophy size={16} />
             <span>Général</span>
           </button>
-          <button
-            className={activeTab === "friends" ? "active" : ""}
-            onClick={() => setActiveTab("friends")}
-          >
+          <button className={activeTab === "friends" ? "active" : ""} onClick={() => setActiveTab("friends")}>
             <Users size={16} />
             <span>Amis</span>
           </button>
-          <button
-            className={activeTab === "challenges" ? "active" : ""}
-            onClick={() => setActiveTab("challenges")}
-          >
+          <button className={activeTab === "challenges" ? "active" : ""} onClick={() => setActiveTab("challenges")}>
             <Target size={16} />
             <span>Défis</span>
           </button>
-          <button
-            className={activeTab === "achievements" ? "active" : ""}
-            onClick={() => setActiveTab("achievements")}
-          >
+          <button className={activeTab === "rewards" ? "active" : ""} onClick={() => setActiveTab("rewards")}>
             <Award size={16} />
             <span>Récompenses</span>
           </button>
@@ -990,10 +896,7 @@ const Leaderboard = () => {
             <div className="filter-section">
               <h3>Type de classement</h3>
               <div className="filter-options">
-                <button
-                  className={leaderboardType === "xp" ? "active" : ""}
-                  onClick={() => setLeaderboardType("xp")}
-                >
+                <button className={leaderboardType === "xp" ? "active" : ""} onClick={() => setLeaderboardType("xp")}>
                   <Trophy size={16} />
                   <span>XP</span>
                 </button>
@@ -1062,10 +965,7 @@ const Leaderboard = () => {
                   <Calendar size={16} />
                   <span>Mois</span>
                 </button>
-                <button
-                  className={timeFrame === "all-time" ? "active" : ""}
-                  onClick={() => setTimeFrame("all-time")}
-                >
+                <button className={timeFrame === "all-time" ? "active" : ""} onClick={() => setTimeFrame("all-time")}>
                   <Calendar size={16} />
                   <span>Tous les temps</span>
                 </button>
@@ -1075,28 +975,22 @@ const Leaderboard = () => {
             <div className="filter-section">
               <h3>Mode d'activité</h3>
               <div className="filter-options">
-                <button
-                  className={activityMode === "all" ? "active" : ""}
-                  onClick={() => setActivityMode("all")}
-                >
+                <button className={activityMode === "all" ? "active" : ""} onClick={() => setActivityMode("all")}>
                   <span>Tous</span>
                 </button>
-                <button
-                  className={activityMode === "walk" ? "active" : ""}
-                  onClick={() => setActivityMode("walk")}
-                >
+                <button className={activityMode === "walk" ? "active" : ""} onClick={() => setActivityMode("walk")}>
                   <span>🚶 Marche</span>
                 </button>
-                <button
-                  className={activityMode === "run" ? "active" : ""}
-                  onClick={() => setActivityMode("run")}
-                >
+                <button>
+                  <span>Tous</span>
+                </button>
+                <button className={activityMode === "walk" ? "active" : ""} onClick={() => setActivityMode("walk")}>
+                  <span>🚶 Marche</span>
+                </button>
+                <button className={activityMode === "run" ? "active" : ""} onClick={() => setActivityMode("run")}>
                   <span>🏃 Course</span>
                 </button>
-                <button
-                  className={activityMode === "bike" ? "active" : ""}
-                  onClick={() => setActivityMode("bike")}
-                >
+                <button className={activityMode === "bike" ? "active" : ""} onClick={() => setActivityMode("bike")}>
                   <span>🚴 Vélo</span>
                 </button>
               </div>
@@ -1108,7 +1002,7 @@ const Leaderboard = () => {
                 <button
                   className={`filter-button ${filterFriends ? "active" : ""}`}
                   onClick={() => setFilterFriends(!filterFriends)}
-                  disabled={!["challenges", "achievements"].includes(activeTab)}
+                  disabled={!["challenges", "rewards"].includes(activeTab)}
                 >
                   <Users size={16} />
                   <span>Amis uniquement</span>
@@ -1135,9 +1029,7 @@ const Leaderboard = () => {
       </div>
 
       {/* Tab Content */}
-      <div className="leaderboard-content">
-        {getTabContent()}
-      </div>
+      <div className="leaderboard-content">{getTabContent()}</div>
 
       {/* User Profile Modal */}
       {showUserModal && selectedUser && (
@@ -1167,7 +1059,7 @@ const Leaderboard = () => {
 
                 <div className="user-profile-info">
                   <h4>
-                    {selectedUser.firstName} {selectedUser.lastName}
+                    {selectedUser.fullName}
                   </h4>
                   <p className="user-username">@{selectedUser.username}</p>
                   <p className="user-status">{selectedUser.status}</p>
@@ -1182,7 +1074,7 @@ const Leaderboard = () => {
                 </div>
 
                 <div className="user-profile-actions">
-                  {currentUser && selectedUser._id !== currentUser._id && (
+                  {user && selectedUser._id !== user._id && (
                     <>
                       <button className="action-button" onClick={() => handleSendFriendRequest(selectedUser._id)}>
                         <UserPlus size={16} />

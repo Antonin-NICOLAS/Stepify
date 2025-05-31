@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 //middleware
 const { verifyToken } = require('../middlewares/VerifyToken')
+const { localization } = require('../middlewares/Localization')
 const upload = require('../middlewares/multer')
 //controllers
 const { getMySteps,
@@ -24,12 +25,14 @@ router.use(
     })
 );
 
+router.use(verifyToken, localization)
+
 //routes
-router.get('/:userId/mysteps', verifyToken, getMySteps)
-router.post('/:userId/new', verifyToken, createStepEntry)
-router.put('/:userId/:entryId/modify', verifyToken, updateStepEntry)
-router.put('/:userId/:entryId/favorite', verifyToken, FavoriteStepEntry)
-router.delete('/:userId/:entryId/delete', verifyToken, deleteStepEntry)
-router.post('/:userId/import', verifyToken, upload.single('exported-data'), importHealthData)
+router.get('/:userId/mysteps', getMySteps)
+router.post('/:userId/new', createStepEntry)
+router.put('/:userId/:entryId/modify', updateStepEntry)
+router.put('/:userId/:entryId/favorite', FavoriteStepEntry)
+router.delete('/:userId/:entryId/delete', deleteStepEntry)
+router.post('/:userId/import', upload.single('exported-data'), importHealthData)
 
 module.exports = router

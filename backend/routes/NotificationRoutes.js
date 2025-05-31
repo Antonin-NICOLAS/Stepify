@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 //middleware
 const { verifyToken } = require('../middlewares/VerifyToken')
+const { localization } = require('../middlewares/Localization')
 //controllers
 const {
     searchUsers,
@@ -32,24 +33,26 @@ router.use(
     })
 );
 
+router.use(verifyToken, localization)
+
 //routes
-router.get('/:userId/all', verifyToken, getNotifications);
-router.get('/:userId/challenge', verifyToken, getChallengeNotifications);
-router.get('/:userId/friends', verifyToken, getFriendsList);
-router.get('/:userId/pending-friend-requests', verifyToken, getPendingFriendRequests);
+router.get('/:userId/all', getNotifications);
+router.get('/:userId/challenge', getChallengeNotifications);
+router.get('/:userId/friends', getFriendsList);
+router.get('/:userId/pending-friend-requests', getPendingFriendRequests);
 
-router.patch('/:userId/:notificationId/read', verifyToken, markNotificationAsRead);
-router.patch('/:userId/mark-all-read', verifyToken, markAllNotificationsAsRead);
+router.patch('/:userId/:notificationId/read', markNotificationAsRead);
+router.patch('/:userId/mark-all-read', markAllNotificationsAsRead);
 
-router.post('/:userId/friend-request', verifyToken, sendFriendRequest);
-router.post('/:userId/:notificationId/accept-friend', verifyToken, acceptFriendRequest);
-router.post('/:userId/:notificationId/cancel-friend', verifyToken, cancelFriendRequest);
-router.post('/:userId/:notificationId/decline-friend', verifyToken, declineFriendRequest);
-router.post('/:userId/:friendId/remove-friend', verifyToken, removeFriend);
-router.post('/:userId/:notificationId/respond', verifyToken, respondToChallengeInvite);
+router.post('/:userId/friend-request', sendFriendRequest);
+router.post('/:userId/:notificationId/accept-friend', acceptFriendRequest);
+router.post('/:userId/:notificationId/cancel-friend', cancelFriendRequest);
+router.post('/:userId/:notificationId/decline-friend', declineFriendRequest);
+router.post('/:userId/:friendId/remove-friend', removeFriend);
+router.post('/:userId/:notificationId/respond', respondToChallengeInvite);
 
-router.get('/:userId/search', verifyToken, searchUsers);
+router.get('/:userId/search', searchUsers);
 
-router.delete('/:userId/:notificationId', verifyToken, deleteNotification);
+router.delete('/:userId/:notificationId', deleteNotification);
 
 module.exports = router

@@ -5,7 +5,10 @@ require('dotenv').config();
 const { verifyToken } = require('../middlewares/VerifyToken')
 const { localization } = require('../middlewares/Localization')
 //controllers
-const { getAllRewards, getMyRewards, getVitrineRewards, setInVitrine } = require('../controllers/RewardController')
+const { getGlobalRanking,
+    getFriendsRanking,
+    getChallengesRanking
+} = require('../controllers/RankingController');
 
 //router
 const router = express.Router()
@@ -17,12 +20,12 @@ router.use(
         origin: process.env.FRONTEND_SERVER,
     })
 );
+
 router.use(verifyToken, localization)
 
 //routes
-router.get('/:userId/all', getAllRewards);
-router.get('/:userId/myrewards', getMyRewards);
-router.get('/:userId/vitrine', getVitrineRewards);
-router.post('/:userId/:rewardId/setinvitrine', setInVitrine);
+router.get('/:userId', getGlobalRanking)
+router.get('/:userId/friends', getFriendsRanking)
+router.get('/:userId/challenges', getChallengesRanking)
 
 module.exports = router

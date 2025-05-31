@@ -13,8 +13,11 @@ const sendLocalizedResponse = (res, statusCode, success, messagePath, params = {
         ...additionalData
     };
 
-    if (messagePath) {
+    if (success === true && messagePath) {
         response.message = res.locals.t(messagePath, params);
+    }
+    if (success === false && messagePath) {
+        response.error = res.locals.t(messagePath, params);
     }
 
     res.status(statusCode).json(response);

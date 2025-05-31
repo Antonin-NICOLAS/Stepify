@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const ms = require('ms');
 const CryptoJS = require('crypto-js');
 const cloudinary = require('../config/cloudinary');
+const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 const { GenerateAuthCookie, generateVerificationCode, validateEmail, validateUsername, generateSessionFingerprint } = require('../helpers/AuthHelpers');
 const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 const {
@@ -95,7 +96,7 @@ const createUser = async (req, res) => {
         await newUser.save();
 
         // Ne pas renvoyer les informations sensibles
-        const userResponse = newUser.toJSON();
+        const userResponse = newUser.toMinimal();
 
         return sendLocalizedSuccess(res, 'success.auth.account_created', {}, { user: userResponse });
     } catch (error) {
@@ -141,7 +142,7 @@ const verifyEmail = async (req, res) => {
 
         await sendWelcomeEmail(user.email, user.firstName);
 
-        const userResponse = user.toJSON();
+        const userResponse = user.toMinimal();
 
         return sendLocalizedSuccess(res, 'success.auth.email_verified', {}, { user: userResponse });
     } catch (error) {
@@ -241,6 +242,8 @@ const ChangeVerificationEmail = async (req, res) => {
 const deleteUser = async (req, res) => {
     const { userId } = req.params;
     const { password } = req.body;
+
+    if (checkAuthorization(req, res, userId)) return;
 
     try {
         if (!password) {
@@ -378,15 +381,7 @@ const loginUser = async (req, res) => {
 
         GenerateAuthCookie(res, user, stayLoggedIn);
 
-        const userResponse = user.toJSON();
-        delete userResponse.lockUntil
-        delete userResponse.lastLoginAt
-        delete userResponse.customGoals
-        delete userResponse.challenges
-        delete userResponse.rewardsUnlocked
-        delete userResponse.friendRequests
-        delete userResponse.privacySettings
-        delete userResponse.notificationPreferences
+        const userResponse = user.toMinimal();
 
         return sendLocalizedSuccess(res, 'success.auth.successful_login', {}, { user: userResponse });
     } catch (error) {
@@ -520,15 +515,7 @@ const checkAuth = async (req, res) => {
             return sendLocalizedError(res, 401, 'errors.auth.session_expired');
         }
 
-        const userResponse = user.toJSON();
-        delete userResponse.lockUntil
-        delete userResponse.lastLoginAt
-        delete userResponse.customGoals
-        delete userResponse.challenges
-        delete userResponse.rewardsUnlocked
-        delete userResponse.friendRequests
-        delete userResponse.privacySettings
-        delete userResponse.notificationPreferences
+        const userResponse = user.toMinimal();
         return sendLocalizedSuccess(res, null, {}, { user: userResponse });
     } catch (error) {
         console.error("Erreur lors de la vérification de l'authentification:", error);

@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 //middleware
 const { verifyToken } = require('../middlewares/VerifyToken')
+const { localization } = require('../middlewares/Localization')
 const upload = require('../middlewares/multer');
 //controllers
 const { updateAvatar,
@@ -33,25 +34,26 @@ router.use(
         origin: process.env.FRONTEND_SERVER,
     })
 );
+router.use(verifyToken, localization)
 
 // account
-router.get('/:userId/profile', verifyToken, getUserProfile)
-router.patch('/:userId/avatar', verifyToken, upload.single('avatar'), updateAvatar);
-router.patch('/:userId/profile', verifyToken, updateProfile);
-router.patch('/:userId/email', verifyToken, updateEmail);
-router.patch('/:userId/daily-goal', verifyToken, updateDailyGoal);
-router.patch('/:userId/password', verifyToken, updatePassword);
-router.patch('/:userId/status', verifyToken, updateStatus);
+router.get('/:userId/profile', getUserProfile)
+router.patch('/:userId/avatar', upload.single('avatar'), updateAvatar);
+router.patch('/:userId/updateprofile', updateProfile);
+router.patch('/:userId/email', updateEmail);
+router.patch('/:userId/daily-goal', updateDailyGoal);
+router.patch('/:userId/password', updatePassword);
+router.patch('/:userId/status', updateStatus);
 
 // preferences
-router.patch('/:userId/theme', verifyToken, updateThemePreference);
-router.patch('/:userId/language', verifyToken, updateLanguagePreference);
-router.patch('/:userId/privacy', verifyToken, updatePrivacySettings);
-router.patch('/:userId/notifications', verifyToken, updateNotificationPreferences);
+router.patch('/:userId/theme', updateThemePreference);
+router.patch('/:userId/language', updateLanguagePreference);
+router.patch('/:userId/privacy', updatePrivacySettings);
+router.patch('/:userId/notifications', updateNotificationPreferences);
 
 // sessions
-router.get('/:userId/sessions', verifyToken, getActiveSessions);
-router.delete('/:userId/sessions/:sessionId', verifyToken, revokeSession);
-router.delete('/:userId/sessions', verifyToken, revokeAllSessions);
+router.get('/:userId/sessions', getActiveSessions);
+router.delete('/:userId/sessions/:sessionId', revokeSession);
+router.delete('/:userId/sessions', revokeAllSessions);
 
 module.exports = router

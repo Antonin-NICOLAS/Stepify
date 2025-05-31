@@ -46,7 +46,7 @@ export const UserProvider = ({ children }) => {
       const { data } = await axios.patch(`${API_USER}/${userId}/updateprofile`, changes);
 
       if (data.success) {
-        toast.success("Profil mis à jour");
+        toast.success(data.message || "Profil mis à jour");
         setUser(data.user);
         getUserProfile(userId);
       }
@@ -60,7 +60,7 @@ export const UserProvider = ({ children }) => {
 
   // --- Avatar ---
   const updateAvatar = useCallback(async (userId, file) => {
-    if (!file) throw new Error("Aucune image détectée");
+    if (!file) return toast.error("Aucune image détectée");
 
     setIsLoading(true)
     try {
@@ -71,7 +71,7 @@ export const UserProvider = ({ children }) => {
       });
 
       if (data.success) {
-        toast.success("Avatar mis à jour");
+        toast.success(data.message || "Avatar mis à jour");
         updateUserField('avatarUrl', data.avatarUrl);
         getUserProfile(userId);
       }
@@ -85,9 +85,9 @@ export const UserProvider = ({ children }) => {
 
   // --- Password ---
   const changePassword = useCallback(async (userId, { currentPassword, newPassword, confirmPassword }, onSuccess) => {
-    if (!currentPassword) throw new Error("Mot de passe actuel requis");
-    if (newPassword.length < 8) throw new Error("8 caractères minimum");
-    if (newPassword !== confirmPassword) throw new Error("Mots de passe différents");
+    if (!currentPassword) return toast.error("Mot de passe actuel requis");
+    if (newPassword.length < 8) return toast.error("8 caractères minimum");
+    if (newPassword !== confirmPassword) return toast.error("Mots de passe différents");
 
     setIsLoading(true)
     try {
@@ -97,7 +97,7 @@ export const UserProvider = ({ children }) => {
       });
 
       if (data.success) {
-        toast.success("Mot de passe mis à jour");
+        toast.success(data.message || "Mot de passe mis à jour");
         onSuccess?.();
         return true;
       }
@@ -112,14 +112,14 @@ export const UserProvider = ({ children }) => {
   // --- Email ---
   const updateEmail = useCallback(async (userId, newEmail) => {
     if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
-      throw new Error("Email invalide");
+      toast.error("Email invalide");
     }
     setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/email`, { newEmail });
 
       if (data.success) {
-        toast.success("Email mis à jour - Vérification requise");
+        toast.success(data.message || "Email mis à jour - Vérification requise");
         updateUserField('email', data.email);
         updateUserField('isVerified', data.isVerified);
         getUserProfile(userId);
@@ -135,7 +135,7 @@ export const UserProvider = ({ children }) => {
   // --- Status ---
   const updateStatus = useCallback(async (userId, status) => {
     if (!status || status.length > 150) {
-      throw new Error("150 caractères maximum");
+      return toast.error("150 caractères maximum");
     }
     setIsLoading(true)
     try {
@@ -156,15 +156,15 @@ export const UserProvider = ({ children }) => {
 
   // --- Daily Goal ---
   const updateDailyGoal = useCallback(async (userId, dailyGoal) => {
-    if (isNaN(dailyGoal)) throw new Error("Doit être un nombre");
-    if (dailyGoal < 1000 || dailyGoal > 50000) throw new Error("Entre 1000 et 50000");
+    if (isNaN(dailyGoal)) return toast.error("L'objectif quotidien doit être un nombre");
+    if (dailyGoal < 1000 || dailyGoal > 50000) return toast.error("Compris entre 1000 et 50000 pas");
 
     setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/daily-goal`, { dailyGoal });
 
       if (data.success) {
-        toast.success("Objectif mis à jour");
+        toast.success(data.message || "Objectif mis à jour");
         updateUserField('dailyGoal', data.dailyGoal);
         getUserProfile(userId);
       }
@@ -179,14 +179,14 @@ export const UserProvider = ({ children }) => {
   // --- Theme ---
   const updateThemePreference = useCallback(async (userId, themePreference) => {
     if (!['light', 'dark', 'auto'].includes(themePreference)) {
-      throw new Error("Préférence invalide");
+      return toast.error("Préference invalide");
     }
     setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/theme`, { themePreference });
 
       if (data.success) {
-        toast.success("Thème mis à jour");
+        toast.success(data.message || "Thème mis à jour");
         updateUserField('themePreference', data.themePreference);
         getUserProfile(userId);
       }
@@ -201,14 +201,14 @@ export const UserProvider = ({ children }) => {
   // --- Language ---
   const updateLanguagePreference = useCallback(async (userId, languagePreference) => {
     if (!['fr', 'en', 'es', 'de'].includes(languagePreference)) {
-      throw new Error("Langue non supportée");
+      return toast.error("Langue non supportée");
     }
     setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/language`, { languagePreference });
 
       if (data.success) {
-        toast.success("Langue mise à jour");
+        toast.success(data.message || "Langue mise à jour");
         updateUserField('languagePreference', data.languagePreference);
         getUserProfile(userId);
       }
@@ -227,7 +227,7 @@ export const UserProvider = ({ children }) => {
       const { data } = await axios.patch(`${API_USER}/${userId}/privacy`, { privacySettings });
 
       if (data.success) {
-        toast.success("Confidentialité mise à jour");
+        toast.success(data.message || "Confidentialité mise à jour");
         updateUserField('privacySettings', data.privacySettings);
         getUserProfile(userId);
       }

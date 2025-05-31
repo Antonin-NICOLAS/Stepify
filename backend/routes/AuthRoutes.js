@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 //middleware
 const { verifyToken } = require('../middlewares/VerifyToken')
+const { localization } = require('../middlewares/Localization')
 const authLimiter = require('../middlewares/AuthLimiter');
 //controllers
 const { createUser,
@@ -25,22 +26,24 @@ router.use(
     cors({
         credentials: true,
         origin: process.env.FRONTEND_SERVER,
-    })
+    }),
+    localization
 );
 
 //routes
 router.post('/register', createUser)
 router.post('/verify-email', verifyEmail)
 router.post('/resend-verification-code', resendVerificationEmail)
-router.post("/change-verification-email", verifyToken, ChangeVerificationEmail);
-
-router.delete('/:userId/delete', deleteUser)
 
 router.post('/login', authLimiter, loginUser)
 router.post('/forgot-password', authLimiter, forgotPassword)
 router.post('/reset-password/:token', resetPassword)
-router.post('/logout', logoutUser)
 
-router.get('/check-auth', verifyToken, checkAuth)
+router.use(verifyToken, localization)
+
+router.post("/change-verification-email", ChangeVerificationEmail);
+router.get('/check-auth', checkAuth)
+router.post('/logout', logoutUser)
+router.delete('/:userId/delete', deleteUser)
 
 module.exports = router

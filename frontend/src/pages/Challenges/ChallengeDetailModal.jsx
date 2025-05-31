@@ -252,7 +252,7 @@ const ChallengeDetailModal = ({ challenge, onClose, onDelete, onLeave, user }) =
                 <div className="challenge-detail-content">
                     <div className="challenge-detail-header">
                         <div className="challenge-detail-title">
-                            <h2>{challenge.name}</h2>
+                            <h2>{challenge.name[user?.languagePreference]}</h2>
                             <div className="challenge-detail-badges">
                                 {getStatusBadge(challenge.status)}
                                 {challenge.isPrivate ? (
@@ -267,7 +267,7 @@ const ChallengeDetailModal = ({ challenge, onClose, onDelete, onLeave, user }) =
                             </div>
                         </div>
 
-                        <p className="challenge-detail-description">{challenge.description}</p>
+                        <p className="challenge-detail-description">{challenge.description[user?.languagePreference]}</p>
                     </div>
 
                     <div className="challenge-detail-info">

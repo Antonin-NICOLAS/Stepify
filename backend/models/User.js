@@ -124,7 +124,7 @@ const userSchema = new Schema({
       min: 1
     },
     progress: {
-      type:Number,
+      type: Number,
       min: 0,
       max: 100
     },
@@ -321,13 +321,31 @@ const userSchema = new Schema({
   },
   toObject: {
     virtuals: true
-  }
+  },
 });
 
 // Virtual pour le nom complet
 userSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
+
+// fonction pour envoyer l'utilisateur avec le minimum de données
+userSchema.methods.toMinimal = function () {
+  const userObj = this.toObject({ virtuals: true });
+  delete userObj.password;
+  delete userObj.verificationToken;
+  delete userObj.resetPasswordToken;
+  delete userObj.activeSessions;
+  delete userObj.loginAttempts;
+  delete userObj.lockUntil;
+  delete userObj.rewardsUnlocked;
+  delete userObj.friendRequests;
+  delete userObj.privacySettings;
+  delete userObj.customGoals;
+  delete userObj.challenges;
+  delete userObj.notificationPreferences;
+  return userObj;
+};
 
 // Méthode pour le progrès de l'objectif quotidien
 userSchema.methods.calculateTodayProgress = async function () {
