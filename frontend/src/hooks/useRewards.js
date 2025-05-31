@@ -79,20 +79,13 @@ export const useRewards = (userId) => {
         }
     }, []);
 
-    useEffect(() => {
-        if (userId) {
-            fetchRewards();
-            fetchMyRewards();
-            fetchVitrineRewards()
-        }
-    }, [userId, fetchRewards]);
-
     return {
         rewards,
         myRewards,
         vitrine,
         fetchRewards,
         fetchMyRewards,
+        fetchVitrineRewards,
         setInVitrine,
     };
 };

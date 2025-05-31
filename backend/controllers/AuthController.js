@@ -493,7 +493,7 @@ const logoutUser = async (req, res) => {
 // check auth
 const checkAuth = async (req, res) => {
     try {
-        const user = await UserModel.findById(req.userId)
+        const user = await UserModel.findById(req.userId).populate('friends.userId', 'avatarUrl firstName lastName username')
 
         if (!user) {
             return sendLocalizedError(res, 404, 'errors.generic.user_not_found');

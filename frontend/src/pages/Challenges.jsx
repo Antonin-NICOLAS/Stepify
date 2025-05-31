@@ -11,7 +11,7 @@ import ChallengeDetailModal from "./Challenges/ChallengeDetailModal";
 // Loader
 import GlobalLoader from "../utils/GlobalLoader";
 // Icons
-import { Icon, Activity, Footprints, Watch, Spline, Flame, Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, Clock, Award, BarChart2, Target, X, Info, Zap, Star, MapPin, Plus, Lock, Check, AlertTriangle, Flag, Hash, Compass, Bookmark, Mail, CheckCheck } from 'lucide-react'
+import { Icon, Activity, Footprints, Watch, Spline, Flame, Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, Clock, Award, Target, X, Info, Zap, Star, Plus, Lock, Check, AlertTriangle, Flag, Hash, Compass, Bookmark, Mail, CheckCheck, Gift, Heart, Skull } from 'lucide-react'
 import { sneaker, watchActivity } from '@lucide/lab';
 // Charts
 import { Chart, registerables } from "chart.js"
@@ -30,7 +30,7 @@ const Challenges = () => {
     const [showJoinModal, setShowJoinModal] = useState(false);
     const [accessCode, setAccessCode] = useState("");
     const [showCreateModal, setShowCreateModal] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const [newChallenge, setNewChallenge] = useState({
         name: "",
@@ -42,18 +42,13 @@ const Challenges = () => {
         time: 1,
         xpReward: 100,
         isPrivate: false,
+        difficulty: "easy",
         participants: []
     });
 
-    const {
-        challenges,
-        publicChallenges,
-        createChallenge,
-        fetchChallengeDetails,
-        updateChallenge,
-        joinChallenge,
-        leaveChallenge,
-        deleteChallenge,
+    const { challenges, publicChallenges, fetchChallenges, fetchMyChallenges,
+        createChallenge, fetchChallengeDetails, updateChallenge,
+        joinChallenge, leaveChallenge, deleteChallenge,
     } = useChallenge(user?._id);
 
     const { challengeNotifications, respondToChallengeInvite } = useNotifications(user?._id);
@@ -82,6 +77,17 @@ const Challenges = () => {
             setAccessCode("")
         }
     }
+
+    useEffect(() => {
+        const fetchAll = async () => {
+            if (user?._id) {
+                await fetchChallenges();
+                await fetchMyChallenges();
+            }
+            setIsLoading(false);
+        };
+        fetchAll();
+    }, [user?._id, fetchChallenges, fetchMyChallenges]);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -120,8 +126,19 @@ const Challenges = () => {
         { value: 'any', label: ' Tout type d\'activité', icon: <Activity size={16} /> },
     ];
 
+    const DifficultyOptions = [
+        { value: 'easy', label: ' Facile', icon: <Gift size={16} /> },
+        { value: 'medium', label: ' Normal', icon: <Heart size={16} /> },
+        { value: 'hard', label: ' Difficile', icon: <Zap size={16} /> },
+        { value: 'extreme', label: ' Expert', icon: <Skull size={16} /> }
+    ];
+
     const [selectedActivity, setSelectedActivity] = useState(
         ActivityOptions.find(opt => opt.value === (newChallenge?.activityType || 'walk'))
+    );
+
+    const [selectedDifficulty, setSelectedDifficulty] = useState(
+        DifficultyOptions.find(opt => opt.value === (newChallenge?.difficulty || 'easy'))
     );
 
     const customSingleValue = ({ data }) => (
@@ -311,6 +328,7 @@ const Challenges = () => {
                 xpReward: newChallenge.xpReward,
                 time: selectedActivity.value.includes("-time") ? newChallenge.time : 1,
                 isPrivate: newChallenge.isPrivate,
+                difficulty: selectedDifficulty.value,
                 participants: newChallenge.participants
             };
 
@@ -326,6 +344,7 @@ const Challenges = () => {
                 time: 1,
                 xpReward: 100,
                 isPrivate: false,
+                difficulty: "easy",
                 participants: []
             });
 
@@ -560,16 +579,18 @@ const Challenges = () => {
                                         </div>
 
                                         <div className="challenge-actions">
-                                            <button
-                                                className="action-button primary"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleJoinChallenge(challenge._id);
-                                                }}
-                                            >
-                                                <Plus size={16} />
-                                                <span>Rejoindre</span>
-                                            </button>
+                                            {challenge.participants.includes(p => p.user._id !== user?._id) &&
+                                                < button
+                                                    className="action-button primary"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleJoinChallenge(challenge._id);
+                                                    }}
+                                                >
+                                                    <Plus size={16} />
+                                                    <span>Rejoindre</span>
+                                                </button>
+                                            }
 
                                             <button
                                                 className="action-button secondary"
@@ -605,8 +626,9 @@ const Challenges = () => {
                                     </button>
                                 </div>
                             </div>
-                        )}
-                    </div>
+                        )
+                        }
+                    </div >
                 )
 
             case "invitations":
@@ -798,17 +820,32 @@ const Challenges = () => {
                                 </div>
                                 <div className="form-section">
                                     <h3> Récompenses </h3>
-                                    <div className="form-group">
-                                        <label>Récompense XP *</label>
-                                        <input
-                                            type="number"
-                                            id="xp"
-                                            value={newChallenge.xpReward}
-                                            onChange={(e) => setNewChallenge({ ...newChallenge, xpReward: parseInt(e.target.value) })}
-                                            min={10}
-                                            step={5}
-                                            required
-                                        />
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label htmlFor="goal-type">Difficulté *</label>
+                                            <Select
+                                                value={selectedDifficulty}
+                                                onChange={(selected) => {
+                                                    setSelectedDifficulty(selected);
+                                                }}
+                                                options={DifficultyOptions}
+                                                components={{ SingleValue: customSingleValue, Option: customOption }}
+                                                classNamePrefix="activity-select"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Récompense XP *</label>
+                                            <input
+                                                type="number"
+                                                id="xp"
+                                                value={newChallenge.xpReward}
+                                                onChange={(e) => setNewChallenge({ ...newChallenge, xpReward: parseInt(e.target.value) })}
+                                                min={10}
+                                                step={5}
+                                                required
+                                            />
+                                        </div>
                                     </div>
                                     {/*TODO: ajouter un reward associé si nécessaire */}
                                 </div>
@@ -907,6 +944,7 @@ const Challenges = () => {
                                                 goal: 10000,
                                                 time: 1,
                                                 isPrivate: false,
+                                                difficulty: "easy",
                                                 participants: []
                                             });
                                         }}
@@ -1180,18 +1218,33 @@ const Challenges = () => {
                                     </div>
                                 </div>
                                 <div className="form-section">
-                                    <h3> Récompenses </h3>
-                                    <div className="form-group">
-                                        <label>Récompense XP *</label>
-                                        <input
-                                            type="number"
-                                            id="xp"
-                                            value={newChallenge.xpReward}
-                                            onChange={(e) => setNewChallenge({ ...newChallenge, xpReward: parseInt(e.target.value) })}
-                                            min={10}
-                                            step={5}
-                                            required
-                                        />
+                                    <h4> Récompenses </h4>
+                                    <div className="form-row">
+                                        <div className="form-group">
+                                            <label htmlFor="goal-type">Difficulté *</label>
+                                            <Select
+                                                value={selectedDifficulty}
+                                                onChange={(selected) => {
+                                                    setSelectedDifficulty(selected);
+                                                }}
+                                                options={DifficultyOptions}
+                                                components={{ SingleValue: customSingleValue, Option: customOption }}
+                                                classNamePrefix="activity-select"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Récompense XP *</label>
+                                            <input
+                                                type="number"
+                                                id="xp"
+                                                value={newChallenge.xpReward}
+                                                onChange={(e) => setNewChallenge({ ...newChallenge, xpReward: parseInt(e.target.value) })}
+                                                min={10}
+                                                step={5}
+                                                required
+                                            />
+                                        </div>
                                     </div>
                                     {/*TODO: ajouter un reward associé si nécessaire */}
                                 </div>
@@ -1289,6 +1342,7 @@ const Challenges = () => {
                                                 goal: 10000,
                                                 time: 1,
                                                 isPrivate: false,
+                                                difficulty: "easy",
                                                 participants: []
                                             });
                                         }}

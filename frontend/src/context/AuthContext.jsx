@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import GlobalLoader from '../utils/GlobalLoader';
 
 const API_AUTH = process.env.NODE_ENV === 'production' ? '/api/auth' : '/auth';
 
@@ -9,6 +10,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
 
   // Mise à jour partielle de l'utilisateur
   const updateUserField = useCallback((field, value) => {
@@ -301,7 +303,11 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   useEffect(() => {
-    checkAuth();
+    const verifyAuth = async () => {
+      await checkAuth();
+      setIsCheckingAuth(false);
+    };
+    verifyAuth();
   }, [checkAuth]);
 
   return (
@@ -321,6 +327,7 @@ export const AuthProvider = ({ children }) => {
       resendVerificationCode,
       logout
     }}>
+      {isCheckingAuth && <GlobalLoader />}
       {children}
     </AuthContext.Provider>
   );

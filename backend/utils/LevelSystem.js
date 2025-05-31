@@ -64,19 +64,30 @@ const calculateLevel = (totalXP) => {
     return currentLevel;
 };
 
-const calculateProgress = (totalXP) => {
+const calculateProgress = (totalXP, reward = null) => {
     const currentLevel = calculateLevel(totalXP);
     const currentThreshold = levelThresholds.find(t => t.level === currentLevel);
-    const nextThreshold = levelThresholds.find(t => t.level === currentLevel + 1);
-    
-    if (!nextThreshold) return 100; // Max level atteint
-    
-    const xpForCurrentLevel = currentThreshold ? currentThreshold.xp : 0;
-    const xpForNextLevel = nextThreshold.xp;
-    const xpProgress = totalXP - xpForCurrentLevel;
-    const xpNeeded = xpForNextLevel - xpForCurrentLevel;
-    
-    return Math.min(Math.round((xpProgress / xpNeeded) * 100), 100);
+    if (reward) {
+        const nextThreshold = levelThresholds.find(t => t.level === reward.target);
+        if (!nextThreshold) return 100;
+
+        const xpForCurrentLevel = currentThreshold ? currentThreshold.xp : 0;
+        const xpForNextLevel = nextThreshold.xp;
+        const xpProgress = totalXP - xpForCurrentLevel;
+        const xpNeeded = xpForNextLevel - xpForCurrentLevel;
+
+        return Math.min(Math.round((xpProgress / xpNeeded) * 100), 100);
+    } else {
+        const nextThreshold = levelThresholds.find(t => t.level === currentLevel + 1);
+        if (!nextThreshold) return 100;
+
+        const xpForCurrentLevel = currentThreshold ? currentThreshold.xp : 0;
+        const xpForNextLevel = nextThreshold.xp;
+        const xpProgress = totalXP - xpForCurrentLevel;
+        const xpNeeded = xpForNextLevel - xpForCurrentLevel;
+
+        return Math.min(Math.round((xpProgress / xpNeeded) * 100), 100);
+    }
 };
 
 const getXPForNextLevel = (currentLevel) => {

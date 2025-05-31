@@ -240,8 +240,8 @@ const updateChallenge = async (req, res) => {
 
 /** Join a challenge (private or public) */
 const joinChallenge = async (req, res) => {
-  const { userId, challengeId } = req.params;
-  const { accessCode } = req.body;
+  const { userId } = req.params;
+  const { accessCode, challengeId } = req.body;
 
   if (checkAuthorization(req, res, userId)) return;
 

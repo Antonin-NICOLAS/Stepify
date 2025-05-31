@@ -390,7 +390,7 @@ function Auth() {
 
       <div className="auth-footer">
         <div className="footer-links">
-          <Link to="/help">Help</Link>
+          <Link to="#">Help</Link>
           <Link to="#">Privacy</Link> {/*TODO: privacy and help pages */}
           <Link to="/terms-of-service">Terms</Link>
         </div>

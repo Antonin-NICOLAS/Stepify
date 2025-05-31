@@ -283,7 +283,7 @@ const updateUserLevel = async (userId) => {
     if (!user) return;
 
     const currentLevel = user.level;
-    const newLevel = calculateLevel(user.xp);
+    const newLevel = calculateLevel(user.totalXP);
 
     if (newLevel > currentLevel) {
       user.level = newLevel;

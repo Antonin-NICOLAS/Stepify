@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react"
 import { useAuth } from '../context/AuthContext';
 import { useUser } from "../context/UserContext"
 import { toast } from "react-hot-toast";
+import GlobalLoader from "../utils/GlobalLoader"
 //icons
 import { Camera, Edit, Upload, Globe, Moon, Sun, ChevronDown, Check, SunMoon } from "lucide-react"
 import AccountImage from "../assets/account.png"
@@ -35,6 +36,7 @@ const AccountPage = () => {
   const [isCustomStatus, setIsCustomStatus] = useState(false)
   const [Image, setImage] = useState("")
   const fileInputRef = useRef(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   // Form states
   const [profileData, setProfileData] = useState({
@@ -47,9 +49,11 @@ const AccountPage = () => {
     dailyGoal: 10000,
   })
   useEffect(() => {
+    setIsLoading(true)
     if (user) {
       getUserProfile(user._id)
     }
+    setIsLoading(false)
   }, [getUserProfile])
 
   useEffect(() => {
@@ -102,17 +106,21 @@ const AccountPage = () => {
     if (!file) return
     previewFile(file)
   }
+
   const handleFileSubmit = async (e) => {
     e.preventDefault();
     const file = fileInputRef.current.files[0];
     if (!file) return toast.error("Aucun fichier sélectionné");
 
+    setIsLoading(true)
     try {
       await updateAvatar(user._id, file);
       setIsEditingAvatar(false);
       setImage("");
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error('erreur lors de la mise à jour de l\'avatar', error);
+    } finally {
+      setIsLoading(false)
     }
   };
   const previewFile = (file) => {
@@ -124,8 +132,15 @@ const AccountPage = () => {
   }
   const handleAvatarUrlSubmit = async (e) => {
     e.preventDefault()
-    await updateAvatar(user._id, profileData.avatarUrl);
-    setIsEditingUrlAvatar(false);
+    setIsLoading(true)
+    try {
+      await updateAvatar(user._id, profileData.avatarUrl);
+      setIsEditingUrlAvatar(false);
+    } catch (error) {
+      console.error('erreur lors de la mise à jour de l\'avatar par url :', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
   //handle drag & drop
   const handleDragOver = (e) => {
@@ -149,6 +164,7 @@ const AccountPage = () => {
     const { name, value } = e.target
     setProfileData(prev => ({ ...prev, [name]: value }))
   }
+
   const saveProfile = async (e) => {
     e.preventDefault();
     const changes = {};
@@ -163,6 +179,7 @@ const AccountPage = () => {
       changes.lastName = profileData.lastName;
     }
 
+    setIsLoading(true)
     try {
       if (Object.keys(changes).length > 0) {
         await updateProfile(user._id, changes);
@@ -173,7 +190,9 @@ const AccountPage = () => {
       }
 
     } catch (error) {
-      toast.error("Erreur lors de la mise à jour du profil");
+      console.error("Erreur lors de la mise à jour du profil :", error);
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -187,11 +206,16 @@ const AccountPage = () => {
     setIsCustomStatus(false)
     setIsStatusDropdownOpen(false)
     if (status !== user.status[user?.languagePreference]) {
-      setIsCustomStatus(false)
-      setIsStatusDropdownOpen(false)
-      await updateStatus(user._id, status);
-      setIsCustomStatus(false);
-      setIsStatusDropdownOpen(false);
+      setIsLoading(true)
+      try {
+        setIsCustomStatus(false)
+        setIsStatusDropdownOpen(false)
+        await updateStatus(user._id, status);
+      } catch (error) {
+        console.error('erreur lors de la mise à jour du statut :', error)
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -202,47 +226,64 @@ const AccountPage = () => {
   }
   const savePassword = async (e) => {
     e.preventDefault()
-    await changePassword(user._id, passwordData, () => {
-      setIsEditingPassword(false);
-      setPasswordData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: ""
-      });
-    })
+    setIsLoading(true)
+    try {
+      await changePassword(user._id, passwordData, () => {
+        setIsEditingPassword(false);
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: ""
+        });
+      })
+    } catch (error) {
+      console.error('erreur lors du changement de mot de passe', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   // 5. Daily Goal Handlers
   const saveDailyGoal = async (e) => {
     e.preventDefault()
-    await updateDailyGoal(
-      user._id,
-      profileData.dailyGoal,
-      () => setIsEditingGoal(false)
-    );
-    setIsEditingGoal(false);
+    setIsLoading(true)
+    try {
+      await updateDailyGoal(
+        user._id,
+        profileData.dailyGoal,
+        () => setIsEditingGoal(false)
+      );
+    } catch (error) {
+      console.error('erreur lors de la mise à jour de l\'objectif quotidien')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   // 6. Theme Preference Handler
   const handleThemeChange = async (theme) => {
     if (theme === user.themePreference) return;
-
+    setIsLoading(true)
     try {
       await updateThemePreference(user._id, theme);
     } catch (error) {
-      toast.error("Erreur lors de la mise à jour du thème");
+      console.error("Erreur lors de la mise à jour du thème");
+    } finally {
+      setIsLoading(false)
     }
   };
 
   // 7. Language Preference Handler
   const handleLanguageChange = async (code) => {
     if (code === user.languagePreference) return;
-
+    setIsLoading(true)
     try {
-      await updateLanguagePreference(user._id, code);
       setIsLanguageDropdownOpen(false);
+      await updateLanguagePreference(user._id, code);
     } catch (error) {
-      toast.error("Erreur lors de la mise à jour de la langue");
+      console.error("Erreur lors de la mise à jour de la langue");
+    } finally {
+      setIsLoading(false)
     }
   };
 
@@ -256,6 +297,7 @@ const AccountPage = () => {
 
   return (
     <div className="account-container">
+      {isLoading && <GlobalLoader />}
       <div className="account-header">
         <h1>Mon Compte</h1>
       </div>
@@ -525,12 +567,12 @@ const AccountPage = () => {
                   max="50000"
                   step="500"
                 />
-                  <button type="button" className="cancel-btn" onClick={() => setIsEditingGoal(false)}>
-                    Annuler
-                  </button>
-                  <button type="submit" className="save-btn">
-                    Enregistrer
-                  </button>
+                <button type="button" className="cancel-btn" onClick={() => setIsEditingGoal(false)}>
+                  Annuler
+                </button>
+                <button type="submit" className="save-btn">
+                  Enregistrer
+                </button>
               </form>
             )}
           </div>

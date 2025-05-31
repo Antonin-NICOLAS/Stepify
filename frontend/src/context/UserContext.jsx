@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useCallback, useState } from 'react';
+import { createContext, useContext, useCallback, useState } from 'react';
 import axios from 'axios';
-import GlobalLoader from '../utils/GlobalLoader';
 import { toast } from 'react-hot-toast';
 import { useAuth } from './AuthContext';
 
@@ -10,10 +9,8 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const { user, setUser, updateUserField } = useAuth();
-    const [isLoading, setIsLoading] = useState(false)
 
   const updateProfile = useCallback(async (userId, updates) => {
-    setIsLoading(true)
     try {
       const changes = {};
       if (updates.username && updates.username !== user.username) {
@@ -53,16 +50,12 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || error.message || "Erreur lors de la mise à jour");
       throw error;
-    } finally {
-      setIsLoading(false)
     }
   }, [user, setUser]);
 
   // --- Avatar ---
   const updateAvatar = useCallback(async (userId, file) => {
     if (!file) return toast.error("Aucune image détectée");
-
-    setIsLoading(true)
     try {
       const formData = new FormData();
       formData.append('avatar', file);
@@ -78,8 +71,6 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");
       throw error;
-    } finally {
-      setIsLoading(false)
     }
   }, [updateUserField]);
 
@@ -89,7 +80,6 @@ export const UserProvider = ({ children }) => {
     if (newPassword.length < 8) return toast.error("8 caractères minimum");
     if (newPassword !== confirmPassword) return toast.error("Mots de passe différents");
 
-    setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/password`, {
         currentPassword,
@@ -104,8 +94,6 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");
       throw error;
-    } finally {
-      setIsLoading(false)
     }
   }, []);
 
@@ -114,7 +102,6 @@ export const UserProvider = ({ children }) => {
     if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
       toast.error("Email invalide");
     }
-    setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/email`, { newEmail });
 
@@ -127,8 +114,6 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");
       throw error;
-    } finally {
-      setIsLoading(false)
     }
   }, [setUser]);
 
@@ -137,7 +122,6 @@ export const UserProvider = ({ children }) => {
     if (!status || status.length > 150) {
       return toast.error("150 caractères maximum");
     }
-    setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/status`, { status });
 
@@ -149,21 +133,19 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");
       throw error;
-    } finally {
-      setIsLoading(false)
     }
   }, [updateUserField]);
 
   // --- Daily Goal ---
-  const updateDailyGoal = useCallback(async (userId, dailyGoal) => {
+  const updateDailyGoal = useCallback(async (userId, dailyGoal, OnSuccess) => {
     if (isNaN(dailyGoal)) return toast.error("L'objectif quotidien doit être un nombre");
     if (dailyGoal < 1000 || dailyGoal > 50000) return toast.error("Compris entre 1000 et 50000 pas");
 
-    setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/daily-goal`, { dailyGoal });
 
       if (data.success) {
+        OnSuccess();
         toast.success(data.message || "Objectif mis à jour");
         updateUserField('dailyGoal', data.dailyGoal);
         getUserProfile(userId);
@@ -171,8 +153,6 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");
       throw error;
-    } finally {
-      setIsLoading(false)
     }
   }, [updateUserField]);
 
@@ -181,7 +161,6 @@ export const UserProvider = ({ children }) => {
     if (!['light', 'dark', 'auto'].includes(themePreference)) {
       return toast.error("Préference invalide");
     }
-    setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/theme`, { themePreference });
 
@@ -193,8 +172,6 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");
       throw error;
-    } finally {
-      setIsLoading(false)
     }
   }, [updateUserField]);
 
@@ -203,7 +180,6 @@ export const UserProvider = ({ children }) => {
     if (!['fr', 'en', 'es', 'de'].includes(languagePreference)) {
       return toast.error("Langue non supportée");
     }
-    setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/language`, { languagePreference });
 
@@ -215,14 +191,11 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");
       throw error;
-    } finally {
-      setIsLoading(false)
     }
   }, [updateUserField]);
 
   // --- Privacy Settings ---
   const updatePrivacySettings = useCallback(async (userId, privacySettings) => {
-    setIsLoading(true)
     try {
       const { data } = await axios.patch(`${API_USER}/${userId}/privacy`, { privacySettings });
 
@@ -234,14 +207,11 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");
       throw error;
-    } finally {
-      setIsLoading(false)
     }
   }, [updateUserField]);
 
   // --- Get User Profile ---
   const getUserProfile = useCallback(async (userId) => {
-    setIsLoading(true)
     try {
       const { data } = await axios.get(`${API_USER}/${userId}/profile`);
 
@@ -252,14 +222,11 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la récupération");
       throw error;
-    } finally {
-      setIsLoading(false)
     }
   }, []);
 
   return (
-    <UserContext.Provider value={{ 
-      isLoading,
+    <UserContext.Provider value={{
       updateProfile,
       updateAvatar,
       changePassword,
@@ -271,8 +238,7 @@ export const UserProvider = ({ children }) => {
       updatePrivacySettings,
       getUserProfile
       //TODO: sessions & notif pref
-     }}>
-            {isLoading && <GlobalLoader />}
+    }}>
       {children}
     </UserContext.Provider>
   );

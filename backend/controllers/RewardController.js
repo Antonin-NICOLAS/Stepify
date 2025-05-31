@@ -2,6 +2,7 @@ const Reward = require('../models/Reward');
 const User = require('../models/User');
 const StepEntry = require('../models/StepEntry');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization');
+const { calculateProgress } = require('../utils/LevelSystem')
 const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 
 const getAllRewards = async (req, res) => {
@@ -447,11 +448,11 @@ const calculateChallengesTimeProgress = async (user, reward) => {
 
 // Level-based rewards
 const checkLevelReward = async (user, reward) => {
-  return user.level <= reward.target;
+  return user.level >= reward.target;
 };
 
 const calculateLevelProgress = (user, reward) => {
-  return Math.min(Math.round((reward.target / user.level) * 100), 100);
+  return calculateProgress(user, reward);
 };
 
 //TODO: Rank-based rewards

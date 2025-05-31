@@ -175,13 +175,6 @@ export const useChallenge = (userId) => {
         }
     };
 
-    useEffect(() => {
-        if (userId) {
-            fetchChallenges();
-            fetchMyChallenges();
-        }
-    }, [userId, fetchChallenges, fetchMyChallenges]);
-
     return {
         challenges,
         publicChallenges,

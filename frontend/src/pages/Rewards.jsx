@@ -4,7 +4,6 @@ import { Link } from "react-router-dom"
 import { useRewards } from "../hooks/useRewards"
 import { useAuth } from "../context/AuthContext"
 import { useTheme } from "../context/ThemeContext"
-// Loader
 import GlobalLoader from "../utils/GlobalLoader";
 // Icons & charts
 import {
@@ -48,10 +47,10 @@ const Rewards = () => {
   const [showRewardModal, setShowRewardModal] = useState(false)
   const [animateReward, setAnimateReward] = useState(null)
   const confettiRef = useRef(null)
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Use the real rewards hook
-  const { rewards, myRewards, vitrine, setInVitrine } = useRewards(user?._id)
+  const { rewards, myRewards, vitrine, fetchRewards, fetchMyRewards, fetchVitrineRewards, setInVitrine } = useRewards(user?._id)
 
   // modal close handler
   const RewardModalRef = useRef(null)
@@ -62,6 +61,18 @@ const Rewards = () => {
       setSelectedReward(null)
     }
   }
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      if (user?._id) {
+        await fetchRewards();
+        await fetchMyRewards();
+        await fetchVitrineRewards()
+      }
+      setIsLoading(false);
+    };
+    fetchAll();
+  }, [user?._id, fetchRewards, fetchMyRewards, fetchVitrineRewards]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -203,9 +214,9 @@ const Rewards = () => {
       .filter((r) => r.unlocked)
       .sort((a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt))[0]
 
-    // Find next reward to unlock (closest to completion)
+    // Find next reward to unlock (closest to completion (progress > 20%))
     const nextToUnlock = userRewards
-      .filter((r) => !r.unlocked && r.progress > 0)
+      .filter((r) => !r.unlocked && r.progress > 20)
       .sort((a, b) => b.progress - a.progress)[0]
 
     setRewardStats({
@@ -1320,9 +1331,9 @@ const Rewards = () => {
             <div className="friend-selector">
               <select>
                 <option value="">Sélectionnez un ami</option>
-                <option value="friend1">Thomas Martin</option>
-                <option value="friend2">Emma Bernard</option>
-                <option value="friend3">Lucas Dubois</option>
+                {user?.friends.map((friend) =>
+                  <option key={friend._id} value="friend1">{friend.userId.fullName}</option>
+                )}
               </select>
               <button className="compare-button">Comparer</button>
             </div>

@@ -1,16 +1,21 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import {
-  Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, MessageSquare, UserPlus, Award, BarChart2, Target,
-  X, Info, Zap, Smile, Star, Medal, Crown, Share2, Settings, Footprints, Spline
-} from "lucide-react"
-import { Line, Pie } from "react-chartjs-2"
-import { Chart, registerables } from "chart.js"
+// Context
 import { useChallenge } from "../hooks/useChallenges"
 import { useNotifications } from "../hooks/useNotifications"
 import { useLeaderboard } from "../hooks/useLeaderboard"
 import { useAuth } from "../context/AuthContext"
 import { useUser } from "../context/UserContext"
+import GlobalLoader from "../utils/GlobalLoader"
+// Icons
+import {
+  Trophy, Users, Filter, ChevronDown, ChevronUp, Calendar, Search, MessageSquare, UserPlus, Award, BarChart2, Target,
+  X, Info, Zap, Smile, Star, Medal, Crown, Share2, Settings, Footprints, Spline
+} from "lucide-react"
+//Charts
+import { Line, Pie } from "react-chartjs-2"
+import { Chart, registerables } from "chart.js"
+// CSS
 import "./Leaderboard.css"
 
 // Register Chart.js components

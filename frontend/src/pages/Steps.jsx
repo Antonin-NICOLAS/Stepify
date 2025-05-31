@@ -3,10 +3,10 @@ import { Link } from "react-router-dom"
 import Select from 'react-select';
 //Hooks & context
 import { useAuth } from "../context/AuthContext"
-import GlobalLoader from "../utils/GlobalLoader"
 import { useSteps } from "../hooks/useSteps"
 import { useStepsFilters } from "../hooks/useStepsFilters"
 import { useStepsStats } from "../hooks/useStepsStats"
+import GlobalLoader from "../utils/GlobalLoader"
 //CHARTS
 import { Line } from "react-chartjs-2"
 import { Chart, registerables } from "chart.js"
