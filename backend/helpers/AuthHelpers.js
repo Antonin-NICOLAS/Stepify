@@ -11,7 +11,7 @@ const GenerateAuthCookie = (res, user, stayLoggedIn) => {
     email: user.email,
     username: user.username,
     role: user.role,
-  }, process.env.JWT_SECRET, { 
+  }, process.env.JWT_SECRET, {
     expiresIn: expiration,
     algorithm: 'HS256'
   });
@@ -30,26 +30,41 @@ const GenerateAuthCookie = (res, user, stayLoggedIn) => {
 };
 
 const generateVerificationCode = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 // Validation helpers
 const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
 const validateUsername = (username) => {
-    return /^[a-zA-Z0-9_]{3,30}$/.test(username);
+  return /^[a-zA-Z0-9_]{3,30}$/.test(username);
 };
 
 const generateSessionFingerprint = (req) => {
-    const components = [
-        req.ip,
-        req.headers['user-agent'],
-        req.headers['accept-language'],
-        req.headers['sec-ch-ua']
-    ];
-    return CryptoJS.SHA256(components.join('|')).toString();
+  const components = [
+    req.ip,
+    req.headers['user-agent'],
+    req.headers['accept-language'],
+    req.headers['sec-ch-ua']
+  ];
+  return CryptoJS.SHA256(components.join('|')).toString();
 };
 
-module.exports = { GenerateAuthCookie, generateVerificationCode, validateEmail, validateUsername, generateSessionFingerprint };
+const findLocation = async (user, ipAddress) => {
+  let location = 'Localisation inconnue';
+  try {
+    const geoRes = await fetch(`http://ip-api.com/json/${ipAddress}?fields=status,country,regionName,city,zip,lat,lon&lang=${user.languagePreference}`);
+    const geoData = await geoRes.json();
+    if (geoData.status === 'success') {
+      location = `${geoData.city} (${geoData.zip}), ${geoData.regionName}, ${geoData.country}, longitude: ${geoData.lon} , latitude: ${geoData.lat}`;
+    }
+    return location;
+  } catch (error) {
+    console.warn('Erreur lors de la géolocalisation IP:', error);
+    return location;
+  }
+}
+
+module.exports = { GenerateAuthCookie, generateVerificationCode, validateEmail, validateUsername, generateSessionFingerprint, findLocation };

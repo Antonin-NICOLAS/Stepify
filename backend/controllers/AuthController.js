@@ -12,7 +12,7 @@ const cloudinary = require('../config/cloudinary');
 // utils
 const ms = require('ms');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
-const { GenerateAuthCookie, generateVerificationCode, validateEmail, validateUsername, generateSessionFingerprint } = require('../helpers/AuthHelpers');
+const { GenerateAuthCookie, generateVerificationCode, validateEmail, validateUsername, generateSessionFingerprint, findLocation } = require('../helpers/AuthHelpers');
 const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 // emails
 const {
@@ -387,21 +387,7 @@ const loginUser = async (req, res) => {
         await user.save();
 
         GenerateAuthCookie(res, user, stayLoggedIn);
-
-        let location = 'Localisation inconnue';
-        try {
-            if (process.env.NODE_ENV === "production") {
-                const geoRes = await fetch(`http://ip-api.com/json/${ipAddress}?fields=country,regionName,city`);
-                const geoData = await geoRes.json();
-                if (geoData.status === 'success') {
-                    location = `${geoData.city} (${geoData.zip}), ${geoData.regionName}, ${geoData.country}`;
-                }
-            } else {
-                location = 'Connexion locale (développement ou réseau interne)';
-            }
-        } catch (error) {
-            console.warn('Erreur lors de la géolocalisation IP:', error);
-        }
+        const location = await findLocation(user, ipAddress)
 
         const parser = new UAParser(userAgent);
         const device = parser.getDevice();
