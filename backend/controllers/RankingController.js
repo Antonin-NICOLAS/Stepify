@@ -275,12 +275,16 @@ const getRewardsRanking = async (req, res) => {
 // Fonction pour enregistrer l'historique des classements
 const recordRankingHistory = async () => {
   try {
-    const users = await User.find({}).sort({ totalSteps: -1 });
+    // 1. Enregistrement du classement global XP
+    const users = await User.find({}).sort({ totalXP: -1 });
+    const userRankUpdates = [];
+
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
+      const globalRank = i + 1;
 
       const existingEntryIndex = user.rankingHistory.findIndex(
-        entry => entry.globalRank === i + 1
+        entry => entry.globalRank === globalRank && !entry.challengeRank
       );
 
       if (existingEntryIndex >= 0) {
@@ -288,14 +292,56 @@ const recordRankingHistory = async () => {
       } else {
         user.rankingHistory.push({
           time: 0.25,
-          globalRank: i + 1
+          globalRank: globalRank
         });
       }
-
-      await user.save();
+      userRankUpdates.push(user);
     }
+
+    // 2. Enregistrement du classement des défis actifs
+    const activeChallenges = await Challenge.find({ 
+      status: 'active',
+      'participants.1': { $exists: true } // Au moins 2 participants
+    }).populate('participants.user');
+
+    for (const challenge of activeChallenges) {
+      // Trie les participants par progression
+      const sortedParticipants = [...challenge.participants].sort((a, b) => b.progress - a.progress);
+
+      for (let i = 0; i < sortedParticipants.length; i++) {
+        const participant = sortedParticipants[i];
+        const challengeRank = i + 1;
+
+        const user = userRankUpdates.find(u => u._id.equals(participant.user._id)) || 
+                    await User.findById(participant.user._id);
+
+        if (!user) continue;
+
+        const existingEntryIndex = user.rankingHistory.findIndex(
+          entry => entry.challengeRank?.equals(challenge._id) && entry.globalRank === challengeRank
+        );
+
+        if (existingEntryIndex >= 0) {
+          user.rankingHistory[existingEntryIndex].time += 0.25;
+        } else {
+          user.rankingHistory.push({
+            time: 0.25,
+            globalRank: challengeRank,
+            challengeRank: challenge._id
+          });
+        }
+
+        if (!userRankUpdates.some(u => u._id.equals(user._id))) {
+          userRankUpdates.push(user);
+        }
+      }
+    }
+
+    // 3. Sauvegarde en masse des mises à jour
+    await Promise.all(userRankUpdates.map(user => user.save()));
+
   } catch (error) {
-    console.error('Error recording ranking history:', error);
+    console.error('Erreur lors de l\'enregistrement de l\'historique des classements:', error);
   }
 };
 

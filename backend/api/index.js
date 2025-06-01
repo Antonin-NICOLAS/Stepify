@@ -2,8 +2,6 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
-//cron
-const { scheduleStatusUpdates, deleteExpiredNotifications, scheduleDailyRewardUpdates, deleteLonelyChallenges, saveRank } = require('./cron/ScheduledTasks');
 //routes
 const AuthRoutes = require('../routes/AuthRoutes')
 const UserRoutes = require('../routes/AccountRoutes')
@@ -13,9 +11,6 @@ const FriendRoutes = require('../routes/FriendRoutes')
 const NotificationRoutes = require('../routes/NotificationRoutes.js')
 const RewardRoutes = require('../routes/RewardRoutes')
 const LeaderboardRoutes = require('../routes/RankingRoutes')
-// vercel cron
-const { cron } = require('./cron/all-tasks')
-const { saveRankByVercel } = require('./cron/save-rank')
 //middleware
 const accessLogger = require('../middlewares/AccessLogger')
 //logs
@@ -62,8 +57,31 @@ app.use('/friend', FriendRoutes)
 app.use('/notification', NotificationRoutes)
 app.use('/reward', RewardRoutes)
 app.use('/leaderboard', LeaderboardRoutes)
-app.use('/cron/all', cron)
-app.use('/cron/save-rank', saveRankByVercel)
+
+// Routes CRON uniquement en production
+if (process.env.NODE_ENV === 'production') {
+    const { cron } = require('./cron/all-tasks')
+    const { saveRankByVercel } = require('./cron/save-rank')
+    app.use('/cron/all', cron)
+    app.use('/cron/save-rank', saveRankByVercel)
+}
+
+// Cron locaux uniquement en développement
+if (process.env.NODE_ENV !== 'production') {
+    const {
+        scheduleStatusUpdates,
+        deleteExpiredNotifications,
+        scheduleDailyRewardUpdates,
+        deleteLonelyChallenges,
+        saveRank
+    } = require('./cron/ScheduledTasks')
+
+    scheduleStatusUpdates()
+    deleteExpiredNotifications()
+    scheduleDailyRewardUpdates()
+    deleteLonelyChallenges()
+    saveRank()
+}
 
 // Gestion des erreurs globale
 app.use((err, req, res, next) => {
@@ -99,9 +117,4 @@ app.listen(port, function () {
     console.log("Server Has Started!");
     console.log(`Server is running at http://${host}:${port}`);
     Logger.info(`Serveur démarré sur le port ${port}`);
-    scheduleStatusUpdates();
-    deleteExpiredNotifications();
-    scheduleDailyRewardUpdates();
-    deleteLonelyChallenges();
-    saveRank();
 });
