@@ -9,7 +9,7 @@
     "crons": [
         {
             "path": "/api/cron/update-challenge-status",
-            "schedule": "*/30 * * * *"
+            "schedule": "* 22 * * *"
         }
     ]
 }
