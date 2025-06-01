@@ -3,7 +3,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const cookieParser = require('cookie-parser')
 //cron
-const { scheduleStatusUpdates, deleteExpiredNotifications, scheduleDailyRewardUpdates, deleteLonelyChallenges, saveRank } = require('./ScheduledTasks');
+const { scheduleStatusUpdates, deleteExpiredNotifications, scheduleDailyRewardUpdates, deleteLonelyChallenges, saveRank } = require('./cron/ScheduledTasks');
 //routes
 const AuthRoutes = require('../routes/AuthRoutes')
 const UserRoutes = require('../routes/AccountRoutes')
@@ -13,6 +13,8 @@ const FriendRoutes = require('../routes/FriendRoutes')
 const NotificationRoutes = require('../routes/NotificationRoutes')
 const RewardRoutes = require('../routes/RewardRoutes')
 const LeaderboardRoutes = require('../routes/RankingRoutes')
+// vercel cron
+const { cron } = require('./cron/all-tasks')
 //middleware
 const accessLogger = require('../middlewares/AccessLogger')
 //logs
@@ -59,6 +61,7 @@ app.use('/friend', FriendRoutes)
 app.use('/notification', NotificationRoutes)
 app.use('/reward', RewardRoutes)
 app.use('/leaderboard', LeaderboardRoutes)
+app.use('/cron', cron)
 
 // Gestion des erreurs globale
 app.use((err, req, res, next) => {

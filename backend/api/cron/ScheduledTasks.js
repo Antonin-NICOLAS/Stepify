@@ -1,11 +1,11 @@
 const cron = require('node-cron');
-const Challenge = require('../models/Challenge');
-const Notification = require('../models/Notification');
-const User = require('../models/User');
-const { updateUserRewards } = require('../controllers/RewardController');
-const { recordRankingHistory } = require('../controllers/RankingController');
-const Cache = require('../logs/Cache')
-const Logger = require('../logs/Logger')
+const Challenge = require('../../models/Challenge');
+const Notification = require('../../models/Notification');
+const User = require('../../models/User');
+const { updateUserRewards } = require('../../controllers/RewardController');
+const { recordRankingHistory } = require('../../controllers/RankingController');
+const Cache = require('../../logs/Cache')
+const Logger = require('../../logs/Logger')
 
 const CleanCache = () => {
   cron.schedule('0 * * * *', async () => {

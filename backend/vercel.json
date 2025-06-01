@@ -8,8 +8,8 @@
     ],
     "crons": [
         {
-            "path": "/api/cron/update-challenge-status",
-            "schedule": "27 11 * * *"
+            "path": "/api/cron",
+            "schedule": "47 11 * * *"
         }
     ]
 }

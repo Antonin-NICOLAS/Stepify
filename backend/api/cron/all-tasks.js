@@ -1,10 +1,10 @@
-import Challenge from '../../models/Challenge';
-import Notification from '../../models/Notification';
-import User from '../../models/User';
-import { updateUserRewards } from '../../controllers/RewardController';
-import { recordRankingHistory } from '../../controllers/RankingController';
+const Challenge = require('../../models/Challenge');
+const Notification = require('../../models/Notification');
+const User = require('../../models/User');
+const { updateUserRewards } = require('../../controllers/RewardController');
+const { recordRankingHistory } = require('../../controllers/RankingController');
 
-export default async function handler(req, res) {
+const cron = async (req, res) => {
   try {
     const now = new Date();
 
@@ -97,3 +97,7 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Erreur globale dans les tâches planifiées' });
   }
 }
+
+module.exports = {
+  cron
+};
