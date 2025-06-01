@@ -261,10 +261,7 @@ const getUserProfile = async (req, res) => {
             delete userResponse.customGoals;
 
             if (!isFriend && !userResponse.privacySettings.showStatsPublicly) {
-                delete userResponse.dailyStats;
-                delete userResponse.totalSteps;
-                delete userResponse.totalDistance;
-                delete userResponse.totalCalories;
+                // A voir
             }
         }
 

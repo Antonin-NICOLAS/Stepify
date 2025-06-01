@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Challenge = require('../models/Challenge');
+const Reward = require('../models/Reward');
 const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 
 // Récupérer le classement global
@@ -138,6 +139,7 @@ const getChallengesRanking = async (req, res) => {
       return {
         challengeId: challenge._id,
         name: challenge.name,
+        description: challenge.description,
         status: challenge.status,
         startDate: challenge.startDate,
         endDate: challenge.endDate,
@@ -148,6 +150,124 @@ const getChallengesRanking = async (req, res) => {
     return sendLocalizedSuccess(res, null, {}, { rankings: challengeRankings });
   } catch (error) {
     console.error("Error fetching challenges ranking:", error);
+    return sendLocalizedError(res, 500, 'errors.ranking.fetch_error');
+  }
+};
+
+// Récupérer le classement des participants pour les rewards
+const getRewardsRanking = async (req, res) => {
+  const { userId } = req.params;
+  const { sortBy = 'times' } = req.query; // 'times' ou 'date' ou 'progress'
+
+  try {
+    // Récupère toutes les récompenses qui ont été gagnées par au moins un utilisateur
+    const rewards = await Reward.find({
+      'earnedBy.0': { $exists: true }
+    }).populate('earnedBy.user', 'firstName lastName fullName username avatarUrl dailyGoal');
+
+    // Récupère tous les utilisateurs qui ont des récompenses (débloquées ou en cours)
+    const usersWithRewards = await User.find({
+      'rewardsUnlocked.rewardId': { $exists: true }
+    }).select('_id firstName lastName fullName username avatarUrl rewardsUnlocked');
+
+    if (!rewards || rewards.length === 0) {
+      return sendLocalizedSuccess(res, null, {}, { rankings: [] });
+    }
+
+    // Prépare les classements pour chaque récompense
+    const rewardRankings = rewards.map(reward => {
+      // Récupère tous les utilisateurs qui ont cette récompense en cours (unlockedAt est null)
+      const usersInProgress = usersWithRewards
+        .filter(u => u.rewardsUnlocked.some(r => 
+          r.rewardId.toString() === reward._id.toString() && !r.unlockedAt
+        ))
+        .map(u => {
+          const rewardProgress = u.rewardsUnlocked.find(r => 
+            r.rewardId.toString() === reward._id.toString()
+          );
+          return {
+            user: {
+              _id: u._id,
+              firstName: u.firstName,
+              lastName: u.lastName,
+              fullName: u.fullName,
+              username: u.username,
+              avatarUrl: u.avatarUrl
+            },
+            progress: rewardProgress.progress || 0,
+            isInProgress: true
+          };
+        });
+
+      // Récupère tous les utilisateurs qui ont déjà gagné cette récompense
+      const completedUsers = (reward.earnedBy || []).map(earner => ({
+        user: {
+          _id: earner.user._id,
+          firstName: earner.user.firstName,
+          lastName: earner.user.lastName,
+          fullName: earner.user.fullName,
+          username: earner.user.username,
+          avatarUrl: earner.user.avatarUrl
+        },
+        times: earner.times,
+        date: earner.date,
+        progress: 100,
+        isCompleted: true
+      }));
+
+      // Combine et trie tous les utilisateurs selon le critère choisi
+      let allUsers = [...completedUsers, ...usersInProgress];
+      allUsers.sort((a, b) => {
+        if (sortBy === 'date' && a.date && b.date) {
+          return new Date(b.date) - new Date(a.date);
+        } else if (sortBy === 'times') {
+          const bTimes = b.times || 0;
+          const aTimes = a.times || 0;
+          if (bTimes === aTimes) {
+            return b.progress - a.progress;
+          }
+          return bTimes - aTimes;
+        } else { // 'progress'
+          return b.progress - a.progress;
+        }
+      });
+
+      // Ajoute le rang à chaque utilisateur
+      const rankedUsers = allUsers.map((user, index) => ({
+        ...user,
+        rank: index + 1
+      }));
+
+      return {
+        rewardId: reward._id,
+        name: reward.name,
+        description: reward.description,
+        iconUrl: reward.iconUrl,
+        criteria: reward.criteria,
+        tier: reward.tier,
+        target: reward.target,
+        minLevel: reward.minLevel,
+        isRepeatable: reward.isRepeatable,
+        earners: rankedUsers
+      };
+    });
+
+    // Trie les récompenses par tier (du plus prestigieux au moins prestigieux)
+    const tierOrder = {
+      'diamond': 0,
+      'sapphire': 1,
+      'ruby': 2,
+      'platinum': 3,
+      'gold': 4,
+      'silver': 5,
+      'bronze': 6
+    };
+
+    rewardRankings.sort((a, b) => tierOrder[a.tier] - tierOrder[b.tier]);
+
+    return sendLocalizedSuccess(res, null, {}, { rankings: rewardRankings });
+  } catch (error) {
+    console.error("Error fetching rewards ranking:", error);
     return sendLocalizedError(res, 500, 'errors.ranking.fetch_error');
   }
 };
@@ -185,5 +305,6 @@ module.exports = {
   getGlobalRanking,
   getFriendsRanking,
   getChallengesRanking,
+  getRewardsRanking,
   recordRankingHistory
 };

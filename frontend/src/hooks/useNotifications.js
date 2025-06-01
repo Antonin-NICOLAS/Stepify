@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useFriends } from './useFriends'
 
 const API_NOTIFICATION = process.env.NODE_ENV === 'production' ? '/api/notification' : '/notification';
 
 export const useNotifications = (userId) => {
     const [notifications, setNotifications] = useState([])
-    const [friends, setFriends] = useState([])
-    const [pendingRequests, setPendingRequests] = useState([])
     const [challengeNotifications, setChallengeNotifications] = useState([])
+    const { fetchFriends, fetchFriendRequests } = useFriends(userId)
 
     const fetchNotifications = useCallback(async () => {
         try {
@@ -44,40 +44,6 @@ export const useNotifications = (userId) => {
         }
     }, [userId]);
 
-    const fetchFriendsList = useCallback(async () => {
-        try {
-            const { data } = await axios.get(`${API_NOTIFICATION}/${userId}/friends`,
-                { withCredentials: true }
-            );
-
-            if (data.success) {
-                setFriends(data.friends);
-            } else {
-                toast.error(data.error || "Erreur lors du chargement des données");
-            }
-        } catch (err) {
-            console.error("Fetch error:", err);
-            toast.error(err.response?.data?.error || "Erreur de connexion au serveur");
-        }
-    }, [userId]);
-
-    const fetchPendingFriendRequests = useCallback(async () => {
-        try {
-            const { data } = await axios.get(`${API_NOTIFICATION}/${userId}/pending-friend-requests`,
-                { withCredentials: true }
-            );
-
-            if (data.success) {
-                setPendingRequests(data.requests);
-            } else {
-                toast.error(data.error || "Erreur lors du chargement des données");
-            }
-        } catch (err) {
-            console.error("Fetch error:", err);
-            toast.error(err.response?.data?.error || "Erreur de connexion au serveur");
-        }
-    }, [userId]);
-
     const sendFriendRequest = async (toId) => {
         if (userId === toId) {
             toast.error("Vous ne pouvez pas vous envoyer une demande d'ami");
@@ -91,6 +57,7 @@ export const useNotifications = (userId) => {
 
             if (data.success) {
                 await fetchNotifications();
+                await fetchFriendRequests();
                 toast.success(data.message || "Notification envoyée");
             } else {
                 toast.error(data.error || "Erreur lors de l'envoi de la notification");
@@ -112,8 +79,7 @@ export const useNotifications = (userId) => {
 
             if (data.success) {
                 toast.success(data.message || "Demande d'ami acceptée");
-                await fetchFriendsList();
-                await fetchPendingFriendRequests();
+                await fetchFriends();
                 return true
             } else {
                 toast.error(data.error || "Erreur lors de l'acceptation de la demande");
@@ -134,6 +100,7 @@ export const useNotifications = (userId) => {
 
             if (data.success) {
                 toast.success(data.message || "Demande d'ami refusée");
+                await fetchFriendRequests();
                 return true
             } else {
                 toast.error(data.error || "Erreur lors du refus de la demande");
@@ -154,6 +121,7 @@ export const useNotifications = (userId) => {
 
             if (data.success) {
                 toast.success(data.message || "Demande d'ami annulée");
+                await fetchFriendRequests();
                 return true
             } else {
                 toast.error(data.error || "Erreur lors de l'annulation de la demande");
@@ -165,26 +133,6 @@ export const useNotifications = (userId) => {
             return false;
         }
     };
-
-    const removeFriend = async (friendId) => {
-        try {
-            const { data } = await axios.post(`${API_NOTIFICATION}/${userId}/${friendId}/remove-friend`,
-                { withCredentials: true }
-            );
-
-            if (data.success) {
-                toast.success(data.message || "Demande d'ami annulée");
-                return true
-            } else {
-                toast.error(data.error || "Erreur lors de l'annulation de la demande");
-                return false;
-            }
-        } catch (error) {
-            console.error("Error cancelling friend request:", error);
-            toast.error(error.response?.data?.error || "Erreur lors de l'annulation de la demande");
-            return false;
-        }
-    }
 
     const respondToChallengeInvite = async (inviteId) => {
         try {
@@ -224,28 +172,6 @@ export const useNotifications = (userId) => {
         } catch (error) {
             console.error("Mark as read error:", error);
             toast.error(error.response?.data?.error || "Erreur lors du marquage comme lu");
-        }
-    };
-
-    // In your useNotifications hook
-    const searchUsers = async (query) => {
-        if (!userId) return [];
-
-        try {
-            const { data } = await axios.get(`${API_NOTIFICATION}/${userId}/search`, {
-                params: { query },
-                withCredentials: true
-            });
-
-            if (data.success) {
-                return data.results;
-            } else {
-                return [];
-            }
-        } catch (err) {
-            console.error("Search error:", err);
-            toast.error(err.response?.data?.error || "Erreur de recherche");
-            return [];
         }
     };
 
@@ -321,20 +247,14 @@ export const useNotifications = (userId) => {
     return {
         notifications,
         challengeNotifications,
-        friends,
-        pendingRequests,
         fetchNotifications,
         fetchChallengeNotifications,
-        fetchFriendsList,
-        fetchPendingFriendRequests,
         sendFriendRequest,
         acceptFriendRequest,
         declineFriendRequest,
         cancelFriendRequest,
-        removeFriend,
         respondToChallengeInvite,
         markNotificationAsRead,
-        searchUsers,
         addComment,
         sendMessage
     };

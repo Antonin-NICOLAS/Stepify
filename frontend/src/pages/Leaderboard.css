@@ -1,11 +1,10 @@
 /* Leaderboard Container */
 .leaderboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 2rem;
     background-color: var(--body-color);
     transition: var(--transition);
-}
-
-.leaderboard-container {
 
     /* Header Styles */
     .leaderboard-header {
@@ -280,6 +279,28 @@
         cursor: not-allowed;
     }
 
+    .filter-select {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .filter-select label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--Couleur);
+    }
+
+    .filter-select select {
+        padding: 0.5rem;
+        border: 1px solid var(--Couleur2);
+        border-radius: var(--radius);
+        background-color: var(--body-color);
+        color: var(--Noir);
+    }
+
     /* Leaderboard Title Bar */
     .leaderboard-title-bar {
         display: flex;
@@ -358,6 +379,7 @@
 
     .podium-2 {
         order: 1;
+        transform: translateY(-10px);
     }
 
     .podium-3 {
@@ -765,7 +787,7 @@
         background-color: var(--bleu);
     }
 
-    /* Rewards Tab */
+    /* rewards Tab */
     .leaderboard-rewards-tab {
         padding: 1rem;
     }
@@ -1171,23 +1193,25 @@
 }
 
 @media (max-width: 768px) {
-    .leaderboard-header h1 {
-        font-size: 2rem;
-    }
+    .leaderboard-container {
+        .leaderboard-header h1 {
+            font-size: 2rem;
+        }
 
-    .filters-panel {
-        grid-template-columns: 1fr;
-    }
+        .filters-panel {
+            grid-template-columns: 1fr;
+        }
 
-    .leaderboard-title-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
+        .leaderboard-title-bar {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
 
-    .user-profile-charts,
-    .user-profile-sections {
-        grid-template-columns: 1fr;
+        .user-profile-charts,
+        .user-profile-sections {
+            grid-template-columns: 1fr;
+        }
     }
 }
 
@@ -1247,18 +1271,73 @@
     }
 }
 
-.leaderboard-container {
-    .rank-up {
-        color: #4caf50;
-        animation: rankUp 1s ease;
-    }
 
-    .rank-down {
-        color: #f44336;
-        animation: rankDown 1s ease;
-    }
+.rank-up {
+    color: #4caf50;
+    animation: rankUp 1s ease;
+}
 
-    .rank-change-indicator {
-        margin-left: 0.25rem;
-    }
+.rank-down {
+    color: #f44336;
+    animation: rankDown 1s ease;
+}
+
+.rank-change-indicator {
+    margin-left: 0.25rem;
+}
+
+/* Custom styles for react-select */
+.leaderboard-container .metric-selector .metric-select__control,
+.leaderboard-container .mode-filter .mode-select__control,
+.leaderboard-container .form-group .mode-select__control {
+    padding: 0.25rem;
+    border: 1px solid var(--Couleur2);
+    border-radius: var(--radius);
+    background-color: var(--body-color);
+    color: var(--Noir);
+    font-size: 1rem;
+    min-height: 40px;
+    min-width: 150px;
+    display: flex;
+    align-items: center;
+}
+
+.leaderboard-container .metric-selector .metric-select__single-value,
+.leaderboard-container .mode-filter .mode-select__single-value,
+.leaderboard-container .form-group .mode-select__single-value {
+    color: var(--Noir);
+    display: flex;
+    align-items: center;
+}
+
+.leaderboard-container .metric-selector .metric-select__menu,
+.leaderboard-container .mode-filter .mode-select__menu,
+.leaderboard-container .form-group .mode-select__menu {
+    background-color: var(--body-color);
+    color: var(--Noir);
+}
+
+.leaderboard-container .metric-selector .metric-select__input-container,
+.leaderboard-container .mode-filter .mode-select__input-container,
+.leaderboard-container .form-group .mode-select__input-container {
+    display: none;
+}
+
+.leaderboard-container .metric-selector .metric-select__menu-list,
+.leaderboard-container .mode-filter .mode-select__menu-list,
+.leaderboard-container .form-group .mode-select__menu-list {
+    padding: 0;
+}
+
+.leaderboard-container .metric-selector .custom-select__option--is-selected,
+.leaderboard-container .mode-filter .custom-select__option--is-selected,
+.leaderboard-container .form-group .custom-select__option--is-selected {
+    background-color: var(--turquoise) !important;
+    color: var(--Noir) !important;
+}
+
+.leaderboard-container .metric-selector .custom-select__option--is-focused,
+.leaderboard-container .mode-filter .custom-select__option--is-focused,
+.leaderboard-container .form-group .custom-select__option--is-focused {
+    background-color: var(--Couleur1) !important;
 }

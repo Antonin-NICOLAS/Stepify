@@ -4,51 +4,6 @@ const Challenge = require('../models/Challenge');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization');
 const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 
-/** Search for users */
-const searchUsers = async (req, res) => {
-  const { userId } = req.params;
-  const { query } = req.query;
-
-  if (checkAuthorization(req, res, userId)) return;
-
-  if (!query || query.trim() === '') {
-    return sendLocalizedError(res, 400, 'errors.notifications.search_query_required');
-  }
-
-  try {
-    const users = await UserModel.find({
-      $or: [
-        { firstName: { $regex: query, $options: 'i' } },
-        { lastName: { $regex: query, $options: 'i' } },
-        { username: { $regex: query, $options: 'i' } }
-      ],
-      _id: { $ne: userId } // Exclude the current user
-    })
-      .select('firstName lastName username avatarUrl totalSteps totalXP level')
-      .limit(10);
-
-    // Check friend status for each user
-    const currentUser = await UserModel.findById(userId);
-    const results = users.map(user => {
-      const isFriend = currentUser.friends.some(f => f.userId.toString() === user._id.toString());
-      const hasPendingRequest = currentUser.friendRequests.some(
-        r => r.userId.toString() === user._id.toString()
-      );
-
-      return {
-        ...user.toObject(),
-        requestStatus: isFriend ? 'friends' :
-          hasPendingRequest ? 'sent' : 'none'
-      };
-    });
-
-    return sendLocalizedSuccess(res, null, {}, { results });
-  } catch (error) {
-    console.error('Error searching users:', error);
-    return sendLocalizedError(res, 500, 'errors.notifications.search_error');
-  }
-};
-
 /** Send a friend request */
 const sendFriendRequest = async (req, res) => {
   const { userId } = req.params;
@@ -221,35 +176,6 @@ const declineFriendRequest = async (req, res) => {
   }
 };
 
-/** Remove a friend */
-const removeFriend = async (req, res) => {
-  const { userId, friendId } = req.params;
-
-  if (checkAuthorization(req, res, userId)) return;
-
-  try {
-    const user = await UserModel.findById(userId);
-    const friend = await UserModel.findById(friendId);
-
-    if (!user || !friend) {
-      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
-    }
-
-    user.friends = user.friends.filter(f => f.userId.toString() !== friendId);
-    friend.friends = friend.friends.filter(f => f.userId.toString() !== userId);
-    user.friendRequests = user.friendRequests.filter(r => r.userId.toString() !== friendId);
-    friend.friendRequests = friend.friendRequests.filter(r => r.userId.toString() !== userId);
-
-    await user.save();
-    await friend.save();
-
-    return sendLocalizedSuccess(res, 'success.notifications.friend_removed');
-  } catch (error) {
-    console.error('Error removing friend:', error);
-    return sendLocalizedError(res, 500, 'errors.notifications.friend_remove_error');
-  }
-};
-
 /** Delete a notification */
 const deleteNotification = async (req, res) => {
   const { userId, notificationId } = req.params;
@@ -281,51 +207,6 @@ const markAllNotificationsAsRead = async (req, res) => {
     return sendLocalizedSuccess(res, 'success.notifications.all_marked_read');
   } catch (error) {
     return sendLocalizedError(res, 500, 'errors.notifications.mark_read_error');
-  }
-};
-
-/** Get all friends of a user */
-const getFriendsList = async (req, res) => {
-  const { userId } = req.params;
-
-  if (checkAuthorization(req, res, userId)) return;
-
-  try {
-    const user = await UserModel.findById(userId).populate('friends.userId', 'username avatarUrl firstName lastName status totalSteps totalXP level lastLoginAt');
-    if (!user) {
-      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
-    }
-    const friends = user.friends
-    return sendLocalizedSuccess(res, null, {}, { friends });
-  } catch (error) {
-    console.error('Error fetching friends:', error);
-    return sendLocalizedError(res, 500, 'errors.friends.fetch_error');
-  }
-};
-
-/** Get pending friend requests */
-const getPendingFriendRequests = async (req, res) => {
-  const { userId } = req.params;
-
-  if (checkAuthorization(req, res, userId)) return;
-
-  try {
-    const user = await UserModel.findById(userId)
-      .populate({
-        path: 'friendRequests.notificationId',
-        populate: {
-          path: 'sender',
-          select: 'username avatarUrl firstName lastName'
-        }
-      });
-    if (!user) {
-      return sendLocalizedError(res, 404, 'errors.generic.user_not_found');
-    }
-
-    return sendLocalizedSuccess(res, null, {}, { requests: user.friendRequests });
-  } catch (error) {
-    console.error('Error fetching pending friend requests:', error);
-    return sendLocalizedError(res, 500, 'errors.notifications.pending_requests_error');
   }
 };
 
@@ -499,18 +380,14 @@ const getChallengeNotifications = async (req, res) => {
 };
 
 module.exports = {
-  searchUsers,
   sendFriendRequest,
   acceptFriendRequest,
   cancelFriendRequest,
   declineFriendRequest,
-  removeFriend,
   deleteNotification,
   markAllNotificationsAsRead,
   respondToChallengeInvite,
   markNotificationAsRead,
   getNotifications,
   getChallengeNotifications,
-  getFriendsList,
-  getPendingFriendRequests,
 };

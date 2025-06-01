@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import { toast } from "react-hot-toast";
+import { useState, useCallback } from "react"
+import axios from "axios"
+import { toast } from "react-hot-toast"
 
-const API_CHALLENGE = process.env.NODE_ENV === 'production' ? '/api/challenge' : '/challenge';
+const API_CHALLENGE = process.env.NODE_ENV === "production" ? "/api/challenge" : "/challenge"
 
 export const useChallenge = (userId) => {
     const [challenges, setChallenges] = useState([])
@@ -11,9 +11,7 @@ export const useChallenge = (userId) => {
 
     const fetchChallenges = useCallback(async () => {
         try {
-            const { data } = await axios.get(`${API_CHALLENGE}/challenges`,
-                { withCredentials: true }
-            );
+            const { data } = await axios.get(`${API_CHALLENGE}/challenges`, { withCredentials: true })
 
             if (data.success) {
                 setPublicChallenges(data.challenges);
@@ -24,13 +22,11 @@ export const useChallenge = (userId) => {
             console.error("Fetch error:", err);
             toast.error(err.response?.data?.error || "Erreur de connexion au serveur");
         }
-    }, []);
+    }, [])
 
     const fetchMyChallenges = useCallback(async () => {
         try {
-            const { data } = await axios.get(`${API_CHALLENGE}/${userId}/mychallenges`,
-                { withCredentials: true }
-            );
+            const { data } = await axios.get(`${API_CHALLENGE}/${userId}/mychallenges`, { withCredentials: true })
 
             if (data.success) {
                 setChallenges(data.challenges);
@@ -42,14 +38,11 @@ export const useChallenge = (userId) => {
             console.error("Fetch error:", err);
             toast.error(err.response?.data?.error || "Erreur de connexion au serveur");
         }
-    }, [userId]);
+    }, [userId])
 
     const createChallenge = async (challengeData) => {
         try {
-            const { data } = await axios.post(`${API_CHALLENGE}/${userId}/new`,
-                challengeData,
-                { withCredentials: true }
-            );
+            const { data } = await axios.post(`${API_CHALLENGE}/${userId}/new`, challengeData, { withCredentials: true })
 
             if (data.success) {
                 await fetchChallenges();
@@ -64,13 +57,11 @@ export const useChallenge = (userId) => {
             toast.error(error.response?.data?.error || "Erreur lors de la création du challenge");
             return false;
         }
-    };
+    }
 
     const fetchChallengeDetails = async (challengeId) => {
         try {
-            const { data } = await axios.get(`${API_CHALLENGE}/${challengeId}`,
-                { withCredentials: true }
-            );
+            const { data } = await axios.get(`${API_CHALLENGE}/${challengeId}`, { withCredentials: true })
 
             if (data.success) {
                 return data.challenge;
@@ -83,14 +74,13 @@ export const useChallenge = (userId) => {
             toast.error(error.response?.data?.error || "Erreur lors de la récupération des détails");
             return false;
         }
-    };
+    }
 
     const updateChallenge = async (challengeId, updates) => {
         try {
-            const { data } = await axios.put(`${API_CHALLENGE}/${userId}/${challengeId}/modify`,
-                updates,
-                { withCredentials: true }
-            );
+            const { data } = await axios.put(`${API_CHALLENGE}/${userId}/${challengeId}/modify`, updates, {
+                withCredentials: true,
+            })
 
             if (data.success) {
                 toast.success(data.message || "Challenge modifié avec succès");
@@ -110,10 +100,11 @@ export const useChallenge = (userId) => {
 
     const joinChallenge = async (accessCode, challengeId) => {
         try {
-            const { data } = await axios.put(`${API_CHALLENGE}/${userId}/join`,
+            const { data } = await axios.put(
+                `${API_CHALLENGE}/${userId}/join`,
                 { accessCode, challengeId },
-                { withCredentials: true }
-            );
+                { withCredentials: true },
+            )
 
             if (data.success) {
                 toast.success(data.message || "Challenge rejoint avec succès");
@@ -133,9 +124,7 @@ export const useChallenge = (userId) => {
 
     const leaveChallenge = async (challengeId) => {
         try {
-            const { data } = await axios.put(`${API_CHALLENGE}/${userId}/${challengeId}/leave`,
-                { withCredentials: true }
-            );
+            const { data } = await axios.put(`${API_CHALLENGE}/${userId}/${challengeId}/leave`, { withCredentials: true })
 
             if (data.success) {
                 toast.success(data.message || "Challenge quitté avec succès");
@@ -151,13 +140,11 @@ export const useChallenge = (userId) => {
             toast.error(error.response?.data?.error || "Erreur lors de la suppression de l'utilisateur");
             return false;
         }
-    };
+    }
 
     const deleteChallenge = async (challengeId) => {
         try {
-            const { data } = await axios.delete(`${API_CHALLENGE}/${userId}/${challengeId}/delete`,
-                { withCredentials: true }
-            );
+            const { data } = await axios.delete(`${API_CHALLENGE}/${userId}/${challengeId}/delete`, { withCredentials: true })
 
             if (data.success) {
                 toast.success(data.message || "Challenge supprimée avec succès");
@@ -173,7 +160,7 @@ export const useChallenge = (userId) => {
             toast.error(error.response?.data?.error || "Erreur lors de la suppression");
             return false;
         }
-    };
+    }
 
     return {
         challenges,
@@ -187,5 +174,5 @@ export const useChallenge = (userId) => {
         joinChallenge,
         leaveChallenge,
         deleteChallenge,
-    };
-};
+    }
+}

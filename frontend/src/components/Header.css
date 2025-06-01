@@ -130,7 +130,7 @@
 }
 
 .sidebar__info span {
-  font-size: var(--smaller-font-size);
+  font-size: calc(7px + 0.3vh + 0.2vw);
 }
 
 .sidebar__close{

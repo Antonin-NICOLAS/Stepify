@@ -32,6 +32,7 @@ function Header() {
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
+  const closeMenuRef = useRef(null);
   const sidebarRef = useRef(null);
 
   const toggleSidebar = () => {
@@ -43,6 +44,12 @@ function Header() {
       navigate("/login");
       setSidebarOpen(false);
     });
+  };
+
+  const handleNavClick = () => {
+    if (isMobileView) {
+      setSidebarOpen(false);
+    }
   };
 
   // Vérifie si la vue est mobile (< 1150px)
@@ -66,7 +73,8 @@ function Header() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       // Si on est en vue mobile ET la sidebar est ouverte ET le clic n'est pas dans la sidebar
-      if (isMobileView && sidebarOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      if (isMobileView && sidebarOpen && sidebarRef.current && closeMenuRef.current && !sidebarRef.current.contains(event.target) && !closeMenuRef.current.contains(event.target)) {
+        console.log('sidebar fermée')
         setSidebarOpen(false);
       }
     };
@@ -85,12 +93,12 @@ function Header() {
     <>
       <header className={`header ${sidebarOpen ? "left-pd" : ""}`} id="header">
         <div className="header__container">
-          <NavLink to="/" className="header__logo">
+          <NavLink to="/" onClick={handleNavClick} className="header__logo">
             <img src={Logo} alt="Logo" className="logo" />
             <span>Stepify</span>
           </NavLink>
 
-          <div className="header__actions">
+          <div className="header__actions" ref={closeMenuRef}>
             <button className="header__toggle" onClick={toggleSidebar}>
               <Menu />
             </button>
@@ -98,8 +106,8 @@ function Header() {
         </div>
       </header>
 
-      <nav 
-        className={`sidebar ${sidebarOpen ? "hide-sidebar" : ""}`} 
+      <nav
+        className={`sidebar ${sidebarOpen ? "hide-sidebar" : ""}`}
         id="sidebar"
         ref={sidebarRef}
       >
@@ -128,12 +136,12 @@ function Header() {
             <div>
               <h3 className="sidebar__title nav">NAVIGATION</h3>
               <div className="sidebar__list">
-                <NavLink to="/dashboard" className="sidebar__link"><LayoutDashboard /><span>Dashboard</span></NavLink>
-                <NavLink to="/steps" className="sidebar__link"><Footprints /><span>Mes pas</span></NavLink>
-                <NavLink to="/challenges" className="sidebar__link"><Dumbbell /><span>Défis</span></NavLink>
-                <NavLink to="/rewards" className="sidebar__link"><Award /><span>Récompenses</span></NavLink>
-                <NavLink to="/leaderboard" className="sidebar__link"><AlignStartVertical /><span>Classement</span></NavLink>
-                <NavLink to="/friends" className="sidebar__link"><Users /><span>Amis</span></NavLink>
+                <NavLink to="/dashboard" onClick={handleNavClick} className="sidebar__link"><LayoutDashboard /><span>Dashboard</span></NavLink>
+                <NavLink to="/steps" onClick={handleNavClick} className="sidebar__link"><Footprints /><span>Mes pas</span></NavLink>
+                <NavLink to="/challenges" onClick={handleNavClick} className="sidebar__link"><Dumbbell /><span>Défis</span></NavLink>
+                <NavLink to="/rewards" onClick={handleNavClick} className="sidebar__link"><Award /><span>Récompenses</span></NavLink>
+                <NavLink to="/leaderboard" onClick={handleNavClick} className="sidebar__link"><AlignStartVertical /><span>Classement</span></NavLink>
+                <NavLink to="/friends" onClick={handleNavClick} className="sidebar__link"><Users /><span>Amis</span></NavLink>
               </div>
             </div>
 
@@ -141,9 +149,9 @@ function Header() {
               <h3 className="sidebar__title">GENERAL</h3>
               <div className="sidebar__list">
                 {user && (
-                  <NavLink to="/settings" className="sidebar__link"><Settings /><span>Settings</span></NavLink>
+                  <NavLink to="/settings" onClick={handleNavClick} className="sidebar__link"><Settings /><span>Settings</span></NavLink>
                 )}
-                <NavLink to="/about" className="sidebar__link"><Info /><span>About</span></NavLink>
+                <NavLink to="/about" onClick={handleNavClick} className="sidebar__link"><Info /><span>About</span></NavLink>
               </div>
             </div>
           </div>
@@ -156,7 +164,7 @@ function Header() {
             {isAuthenticated ? (
               <button className="sidebar__link" onClick={handleLogout}><LogOut /><span>Log Out</span></button>
             ) : (
-              <NavLink to="/login" className="sidebar__link"><LogIn /><span>Log In</span></NavLink>
+              <NavLink to="/login" onClick={handleNavClick} className="sidebar__link"><LogIn /><span>Log In</span></NavLink>
             )}
           </div>
         </div>

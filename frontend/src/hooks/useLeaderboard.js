@@ -67,7 +67,7 @@ export const useLeaderboard = (userId) => {
 
         try {
             const { data } = await axios.get(`${API_LEADERBOARD}/${userId}/challenges`, {
-                withCredentials: true,
+                withCredentials: true, //TODO: by query
             })
 
             if (data.success) {
@@ -88,12 +88,12 @@ export const useLeaderboard = (userId) => {
         if (!userId) return
 
         try {
-            const { data } = await axios.get(`${API_LEADERBOARD}/${userId}/achievements`, {
+            const { data } = await axios.get(`${API_LEADERBOARD}/${userId}/rewards`, {
                 withCredentials: true,
             })
 
             if (data.success) {
-                setRewardsData(data.rewards || [])
+                setRewardsData(data.rankings || [])
             } else {
                 toast.error(data.error || "Erreur lors du chargement des récompenses")
                 return []
