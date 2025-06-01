@@ -305,7 +305,7 @@ const revokeSession = async (req, res) => {
         user.activeSessions = user.activeSessions.filter(session => session._id.toString() !== sessionId);
         await user.save();
 
-        return sendLocalizedSuccess(res, 'success.profile.session_revoked');
+        return sendLocalizedSuccess(res, 'success.profile.session_revoked', {}, { sessions: user.activeSessions });
     } catch (error) {
         console.error("Error in revokeSession:", error);
         return sendLocalizedError(res, 500, 'errors.profile.revoke_session_error');

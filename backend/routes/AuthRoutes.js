@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
 //middleware
-const { verifyToken } = require('../middlewares/VerifyToken')
+const { verifyToken, requireAuth } = require('../middlewares/VerifyToken')
 const { localization } = require('../middlewares/Localization')
 const authLimiter = require('../middlewares/AuthLimiter');
 //controllers
@@ -39,7 +39,7 @@ router.post('/login', authLimiter, loginUser)
 router.post('/forgot-password', authLimiter, forgotPassword)
 router.post('/reset-password/:token', resetPassword)
 
-router.use(verifyToken, localization)
+router.use(verifyToken, localization, requireAuth)
 
 router.post("/change-verification-email", ChangeVerificationEmail);
 router.get('/check-auth', checkAuth)

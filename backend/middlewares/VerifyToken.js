@@ -1,37 +1,46 @@
 const jwt = require('jsonwebtoken')
-const { sendLocalizedError } = require('../utils/ResponseHelper')
 const Logger = require('../logs/Logger')
+const { sendLocalizedError } = require('../utils/ResponseHelper')
 
 const verifyToken = (req, res, next) => {
   const jwtauth = req.cookies.jwtauth;
   if (!jwtauth) {
-    Logger.warn('Tentative d\'accès sans token', {
-      path: req.path,
-      ip: req.ip,
-      userAgent: req.headers['user-agent']
-    });
-    return sendLocalizedError(res, 401, 'errors.generic.authentication_required');
+    req.authError = 'errors.generic.authentication_required';
+    return next();
   }
-  
+
   try {
     const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET, {
       algorithms: ['HS256']
     });
 
     if (!decoded) {
-      return sendLocalizedError(res, 401, 'errors.auth.invalid_token');
+      req.authError = 'errors.auth.invalid_token';
+      return next();
     }
+
     req.userId = decoded.id;
     req.token = jwtauth;
     Logger.debug('Token vérifié avec succès', {
       userId: decoded.id,
       path: req.path
     });
+
     next();
   } catch (error) {
     Logger.error('Token verification error:', error);
-    return sendLocalizedError(res, 401, error.name === 'TokenExpiredError' ? 'errors.generic.invalid_session' : 'errors.auth.invalid_token');
+    req.authError = error.name === 'TokenExpiredError'
+      ? 'errors.generic.invalid_session'
+      : 'errors.auth.invalid_token';
+    return next();
   }
 };
 
-module.exports = { verifyToken };
+const requireAuth = (req, res, next) => {
+  if (req.authError) {
+    return sendLocalizedError(res, 401, req.authError);
+  }
+  next();
+};
+
+module.exports = {verifyToken, requireAuth };

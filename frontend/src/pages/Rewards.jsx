@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
+import Select from "react-select"
 // Context
 import { useRewards } from "../hooks/useRewards"
 import { useAuth } from "../context/AuthContext"

@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
 //middleware
-const { verifyToken } = require('../middlewares/VerifyToken')
+const { verifyToken, requireAuth } = require('../middlewares/VerifyToken')
 const { localization } = require('../middlewares/Localization')
 //controllers
 const { getAllRewards, getMyRewards, getVitrineRewards, setInVitrine } = require('../controllers/RewardController')
@@ -17,7 +17,7 @@ router.use(
         origin: process.env.FRONTEND_SERVER,
     })
 );
-router.use(verifyToken, localization)
+router.use(verifyToken, localization, requireAuth)
 
 //routes
 router.get('/:userId/all', getAllRewards);

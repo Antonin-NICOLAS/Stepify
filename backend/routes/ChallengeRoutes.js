@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
 //middleware
-const { verifyToken } = require('../middlewares/VerifyToken')
+const { verifyToken, requireAuth } = require('../middlewares/VerifyToken')
 const { localization } = require('../middlewares/Localization')
 const upload = require('../middlewares/multer')
 //controllers
@@ -33,7 +33,7 @@ router.get('/challenges', getPublicChallenges)
 router.get('/:challengeId', getChallengeDetails)
 router.get('/:challengeId/leaderboard', getChallengeLeaderboard)
 
-router.use(verifyToken, localization)
+router.use(verifyToken, localization, requireAuth)
 
 //routes
 router.get('/:userId/mychallenges', getMyChallenges)

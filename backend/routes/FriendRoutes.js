@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
 //middleware
-const { verifyToken } = require('../middlewares/VerifyToken')
+const { verifyToken, requireAuth } = require('../middlewares/VerifyToken')
 const { localization } = require('../middlewares/Localization')
 //controllers
 const {
@@ -23,11 +23,11 @@ router.use(
     })
 );
 
-router.use(verifyToken, localization)
+router.use(verifyToken, localization, requireAuth)
 
 //routes
 router.get('/:userId/friends', getFriends);
-router.get('/:userId/search', searchUsers);
+router.get('/:userId/search',  searchUsers);
 router.get('/:userId/requests', getFriendRequests);
 router.post('/:userId/:friendId/remove-friend', removeFriend);
 

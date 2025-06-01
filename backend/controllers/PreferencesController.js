@@ -91,25 +91,29 @@ const updatePrivacySettings = async (req, res) => {
 
 const updateNotificationPreferences = async (req, res) => {
     const { userId } = req.params;
-    const preferences = req.body;
+    const { notificationPreferences } = req.body;
 
     if (checkAuthorization(req, res, userId)) return;
 
     try {
-        const validPreferences = {
-            activitySummary: typeof preferences.activitySummary === 'boolean' ? preferences.activitySummary : true,
-            newChallenges: typeof preferences.newChallenges === 'boolean' ? preferences.newChallenges : true,
-            friendRequests: typeof preferences.friendRequests === 'boolean' ? preferences.friendRequests : true,
-            goalAchieved: typeof preferences.goalAchieved === 'boolean' ? preferences.goalAchieved : true,
-            friendActivity: typeof preferences.friendActivity === 'boolean' ? preferences.friendActivity : true
+        const updates = {
+            notificationPreferences: {
+                activitySummary: notificationPreferences.activitySummary,
+                newChallenges: notificationPreferences.newChallenges,
+                friendRequests: notificationPreferences.friendRequests,
+                goalAchieved: notificationPreferences.goalAchieved,
+                friendActivity: notificationPreferences.friendActivity
+            }
         };
 
-        await UserModel.findByIdAndUpdate(userId, {
-            notificationPreferences: validPreferences
-        });
+        const user = await UserModel.findByIdAndUpdate(
+            userId,
+            updates,
+            { new: true }
+        ).select('-password -verificationToken');
 
         return sendLocalizedSuccess(res, 'success.preferences.notifications_updated', {}, {
-            preferences: validPreferences
+            notificationPreferences: user.notificationPreferences
         });
     } catch (error) {
         console.error('Error updating notification preferences:', error);

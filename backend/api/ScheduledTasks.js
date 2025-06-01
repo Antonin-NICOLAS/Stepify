@@ -38,7 +38,6 @@ const scheduleStatusUpdates = () => {
 
 const updateChallengeStatuses = async () => {
   try {
-    const challenges = await Challenge.find();
     const now = new Date();
 
       // Mettre à jour les défis qui doivent démarrer
@@ -86,9 +85,9 @@ const deleteExpiredNotifications = () => {
   });
 };
 
-// Update rewards for all users - Every day at 1:02 AM
+// Update rewards for all users - Every day at 00:00 AM
 const scheduleDailyRewardUpdates = () => {
-  cron.schedule('0 0 * * *', async () => { // Tous les jours à minuit
+  cron.schedule('0 0 * * *', async () => {
     try {
       console.log('Starting daily reward updates for all users...');
       Logger.info('Starting daily reward updates for all users...');
@@ -130,9 +129,9 @@ const scheduleDailyRewardUpdates = () => {
   });
 };
 
-// Delete Challenges with only creators - Every day at 2 AM
+// Delete Challenges with only creators - Every day at 1 AM
 const deleteLonelyChallenges = () => {
-  cron.schedule('0 3 * * *', async () => { // Tous les jours à 3h du matin
+  cron.schedule('0 1 * * *', async () => {
     try {
       console.log('Checking for lonely challenges to delete...');
       Logger.info('Checking for lonely challenges to delete...');
