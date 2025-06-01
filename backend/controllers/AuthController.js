@@ -5,7 +5,6 @@ const NotificationModel = require('../models/Notification');
 // sécurité
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fetch = require('node-fetch');
 const UAParser = require('ua-parser-js');
 const CryptoJS = require('crypto-js');
 // images

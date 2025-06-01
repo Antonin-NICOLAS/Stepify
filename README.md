@@ -24,7 +24,7 @@ Stepify est une application web de suivi d'activité physique ludique. Marchez, 
 ## 🔧 À faire (Roadmap / Summer Contest)
 
 - [ ] 🔒 **Mail lien de réinitialisation de mot de passe** : afficher qu’il expire dans 1 heure
-- [ ] 🔒 **Mail de connection**
+- [x] 🔒 **Mail de connection**
 - [ ] 📊 **Remplacer les graphiques Highcharts** par Chart.js
 - [x] 🧩 **Universaliser tous les icônes** (Design System)
 - [ ] 💡 **Ajouter un layout modals** pour sortir en cliquant à l’extérieur :
@@ -39,7 +39,7 @@ Stepify est une application web de suivi d'activité physique ludique. Marchez, 
 - [ ] ⏳ **Date réelle d’obtention des récompenses** (pas la date de vérification)
 - [x] ⏰ **Support des cron jobs Vercel** (actuellement fonctionne seulement en dev)
 - [ ] 🎨 **Mettre en rose les liens de footer de confidentialité**
-- [ ] 🎖️ **Gestion des récompenses de classement (1er, 2e, 3e...)**
+- [x] 🎖️ **Gestion des récompenses de classement (1er, 2e, 3e...)**
 - [ ] 📊 **Fonction “Comparer” dans la page Récompenses**
 
 ---
