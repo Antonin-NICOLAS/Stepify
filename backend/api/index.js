@@ -103,18 +103,19 @@ app.use((err, req, res, next) => {
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         Logger.info("MongoDB connecté avec succès");
-        console.log("mongoDB connected")
+        console.log("mongoDB connected");
+
+        const port = process.env.PORT || 8000;
+        const host = process.env.NODE_ENV === "production" ? 'step-ify.vercel.app' : 'localhost';
+
+        app.listen(port, function () {
+            console.log("Server Has Started!");
+            console.log(`Server is running at http://${host}:${port}`);
+            Logger.info(`Serveur démarré sur le port ${port}`);
+        });
     })
     .catch((err) => {
         Logger.error("Échec de la connexion MongoDB", { error: err });
-        console.log("failed to connect", err)
-    })
-
-const port = process.env.PORT || 8000;
-const host = process.env.NODE_ENV === "production" ? 'step-ify.vercel.app' : 'localhost';
-
-app.listen(port, function () {
-    console.log("Server Has Started!");
-    console.log(`Server is running at http://${host}:${port}`);
-    Logger.info(`Serveur démarré sur le port ${port}`);
-});
+        console.log("failed to connect", err);
+        process.exit(1);
+    });
