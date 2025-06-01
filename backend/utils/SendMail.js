@@ -1,7 +1,47 @@
 const nodemailer = require('nodemailer');
-const { WelcomeEmailTemplate, EmailVerificationTokenTemplate, EmailPasswordResetTemplate, ResetPasswordSuccessfulTemplate } = require('./EmailTemplates');
+const { NewLoginEmailTemplate, WelcomeEmailTemplate, EmailVerificationTokenTemplate, EmailPasswordResetTemplate, ResetPasswordSuccessfulTemplate } = require('./EmailTemplates');
 
-//TODO : add a connection email
+const sendNewLoginEmail = async (user, ipAdress, deviceInfo, location) => {
+    const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric"
+    };
+
+    const loginDate = new Date().toLocaleDateString(user.languagePreference, options)
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            type: "login",
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: 'Nouvelle connection détectée - Stepify',
+        html: NewLoginEmailTemplate.replace("{{user.firstName}}", user.firstName)
+            .replace("{{loginDate}}", loginDate)
+            .replace("{{ipAddress}}", ipAdress)
+            .replace("{{deviceInfo}}", deviceInfo)
+            .replace("{{location}}", location)
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error("Erreur lors de l'envoi de l'email :", error);
+        throw new Error("Échec de l'envoi de l'email de nouvelle connection");
+    }
+};
 
 const sendVerificationEmail = async (email, verificationCode) => {
     const transporter = nodemailer.createTransport({
@@ -111,4 +151,4 @@ const sendResetPasswordSuccessfulEmail = async (email, prenom) => {
     }
 };
 
-module.exports = { sendVerificationEmail, sendWelcomeEmail, sendResetPasswordEmail, sendResetPasswordSuccessfulEmail };
+module.exports = { sendNewLoginEmail, sendVerificationEmail, sendWelcomeEmail, sendResetPasswordEmail, sendResetPasswordSuccessfulEmail };

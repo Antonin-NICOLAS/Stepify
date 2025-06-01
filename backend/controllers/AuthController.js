@@ -2,20 +2,28 @@ const UserModel = require('../models/User');
 const ChallengeModel = require('../models/Challenge');
 const StepEntryModel = require('../models/StepEntry');
 const NotificationModel = require('../models/Notification');
+// sécurité
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const ms = require('ms');
+const fetch = require('node-fetch');
+const UAParser = require('ua-parser-js');
 const CryptoJS = require('crypto-js');
+// images
 const cloudinary = require('../config/cloudinary');
+// utils
+const ms = require('ms');
 const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 const { GenerateAuthCookie, generateVerificationCode, validateEmail, validateUsername, generateSessionFingerprint } = require('../helpers/AuthHelpers');
 const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
+// emails
 const {
+    sendNewLoginEmail,
     sendVerificationEmail,
     sendWelcomeEmail,
     sendResetPasswordEmail,
     sendResetPasswordSuccessfulEmail
 } = require('../utils/SendMail');
+// .env
 require('dotenv').config();
 
 //// ACCOUNT MANAGEMENT ////
@@ -380,6 +388,31 @@ const loginUser = async (req, res) => {
         await user.save();
 
         GenerateAuthCookie(res, user, stayLoggedIn);
+
+        let location = 'Localisation inconnue';
+        try {
+            if (process.env.NODE_ENV === "production") {
+                const geoRes = await fetch(`http://ip-api.com/json/${ipAddress}?fields=country,regionName,city`);
+                const geoData = await geoRes.json();
+                if (geoData.status === 'success') {
+                    location = `${geoData.city} (${geoData.zip}), ${geoData.regionName}, ${geoData.country}`;
+                }
+            } else {
+                location = 'Connexion locale (développement ou réseau interne)';
+            }
+        } catch (error) {
+            console.warn('Erreur lors de la géolocalisation IP:', error);
+        }
+
+        const parser = new UAParser(userAgent);
+        const device = parser.getDevice();
+        const os = parser.getOS();
+        const browser = parser.getBrowser();
+
+        const deviceInfo = `${browser.name} ${browser.version} sur ${os.name} ${os.version}` +
+            (device.model ? ` (${device.vendor || ''} ${device.model})` : '');
+
+        await sendNewLoginEmail(user, ipAddress, deviceInfo, location);
 
         const userResponse = user.toMinimal();
 
