@@ -299,7 +299,7 @@ const recordRankingHistory = async () => {
     }
 
     // 2. Enregistrement du classement des défis actifs
-    const activeChallenges = await Challenge.find({ 
+    const activeChallenges = await Challenge.find({
       status: 'active',
       'participants.1': { $exists: true } // Au moins 2 participants
     }).populate('participants.user');
@@ -312,8 +312,8 @@ const recordRankingHistory = async () => {
         const participant = sortedParticipants[i];
         const challengeRank = i + 1;
 
-        const user = userRankUpdates.find(u => u._id.equals(participant.user._id)) || 
-                    await User.findById(participant.user._id);
+        const user = userRankUpdates.find(u => u._id.equals(participant.user._id)) ||
+          await User.findById(participant.user._id);
 
         if (!user) continue;
 
@@ -339,9 +339,9 @@ const recordRankingHistory = async () => {
 
     // 3. Sauvegarde en masse des mises à jour
     await Promise.all(userRankUpdates.map(user => user.save()));
-
+    console.log('[CRON] Historique du classement enregistré');
   } catch (error) {
-    console.error('Erreur lors de l\'enregistrement de l\'historique des classements:', error);
+    console.error('[CRON] Erreur enregistrement du classement', error);
   }
 };
 

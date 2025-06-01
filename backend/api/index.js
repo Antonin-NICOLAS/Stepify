@@ -11,6 +11,7 @@ const FriendRoutes = require('../routes/FriendRoutes')
 const NotificationRoutes = require('../routes/NotificationRoutes.js')
 const RewardRoutes = require('../routes/RewardRoutes')
 const LeaderboardRoutes = require('../routes/RankingRoutes')
+const CronJobsRoutes = require('../routes/CronJobsRoutes.js')
 //middleware
 const accessLogger = require('../middlewares/AccessLogger')
 //logs
@@ -60,14 +61,11 @@ app.use('/leaderboard', LeaderboardRoutes)
 
 // Routes CRON uniquement en production
 if (process.env.NODE_ENV === 'production') {
-    const { cron } = require('./cron/all-tasks')
-    const { saveRankByVercel } = require('./cron/save-rank')
-    app.use('/cron/all', cron)
-    app.use('/cron/save-rank', saveRankByVercel)
+    app.use('/cron', CronJobsRoutes)
 }
 
 // Cron locaux uniquement en développement
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'development') {
     const {
         scheduleStatusUpdates,
         deleteExpiredNotifications,
@@ -113,6 +111,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 const port = process.env.PORT || 8000;
 const host = process.env.NODE_ENV === "production" ? 'step-ify.vercel.app' : 'localhost';
+
 app.listen(port, function () {
     console.log("Server Has Started!");
     console.log(`Server is running at http://${host}:${port}`);
