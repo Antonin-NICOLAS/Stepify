@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 require('dotenv').config();
 //middleware
-const { verifyToken, requireAuth } = require('../middlewares/VerifyToken')
+const { verifyToken, requireAuth } = require('../middlewares/VerifyToken.js')
 const { localization } = require('../middlewares/Localization')
 //controllers
 const { getGlobalRanking,

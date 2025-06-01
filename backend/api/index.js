@@ -10,7 +10,7 @@ const UserRoutes = require('../routes/AccountRoutes')
 const StepRoutes = require('../routes/StepRoutes')
 const ChallengeRoutes = require('../routes/ChallengeRoutes')
 const FriendRoutes = require('../routes/FriendRoutes')
-const NotificationRoutes = require('../routes/NotificationRoutes')
+const NotificationRoutes = require('../routes/NotificationRoutes.js')
 const RewardRoutes = require('../routes/RewardRoutes')
 const LeaderboardRoutes = require('../routes/RankingRoutes')
 // vercel cron
