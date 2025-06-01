@@ -2,9 +2,20 @@ const Challenge = require('../models/Challenge');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
 const { updateUserRewards } = require('./RewardController');
-const { recordRankingHistory } = require('./RankingController');
+const { saveRankInternal } = require('./RankingController');
+const { ChallengeStatusUpdatesInternal } = require('./ChallengeController')
 
-// Update challenge statuses every hour
+// enregistrer le classement de l'utilisateur chaque 15 minutes
+const saveRank = async (req, res) => {
+    try {
+        await saveRankInternal();
+        res.status(200).json({ message: '[CRON] Historique du classement enregistré' });
+    } catch (error) {
+        res.status(500).json({ error: '[CRON] Erreur enregistrement du classement' });
+    }
+}
+
+// Statut des challenges vérifiés tous les jours à 00:00
 const ChallengeStatusUpdates = async (req, res) => {
     try {
         await ChallengeStatusUpdatesInternal();
@@ -14,35 +25,7 @@ const ChallengeStatusUpdates = async (req, res) => {
     }
 };
 
-const ChallengeStatusUpdatesInternal = async () => {
-    console.log('[CRON] Running challenge status updates...');
-    try {
-        const now = new Date();
-
-        // Mettre à jour les défis qui doivent démarrer
-        await Challenge.updateMany(
-            {
-                status: 'upcoming',
-                startDate: { $lte: now }
-            },
-            { $set: { status: 'active' } }
-        );
-
-        // Mettre à jour les défis qui doivent se terminer
-        await Challenge.updateMany(
-            {
-                status: 'active',
-                endDate: { $lte: now }
-            },
-            { $set: { status: 'completed' } }
-        );
-        console.log('[CRON] Status updates completed');
-    } catch (error) {
-        console.error('[CRON] Erreur lors de la mise à jour des statuts des défis', error);
-    }
-}
-
-// Delete Notification 1 week after the response - Every day at 1 AM
+// Supprimer les notifications expirées tous les jours à 00:02
 const DeleteExpiredNotifications = async (req, res) => {
     try {
         await DeleteExpiredNotificationsInternal();
@@ -64,17 +47,17 @@ const DeleteExpiredNotificationsInternal = async () => {
     }
 }
 
-// Update rewards for all users - Every day at 00:00 AM
-const DailyRewardUpdates = async (req, res) => {
+// Mettre à jour les rewards de tout le monde tous les jours à 00:04
+const RewardUpdates = async (req, res) => {
     try {
-        await DailyRewardUpdatesInternal();
+        await RewardUpdatesInternal();
         return res.status(200).json({ message: '[CRON] Mise à jour des récompenses quotidiennes terminée' });
     } catch (error) {
         return res.status(500).json({ error: '[CRON] Erreur lors de la mise à jour des récompenses quotidiennes' });
     }
 };
 
-const DailyRewardUpdatesInternal = async () => {
+const RewardUpdatesInternal = async () => {
     try {
         console.log('[CRON] Starting daily reward updates for all users...');
 
@@ -113,7 +96,7 @@ const DailyRewardUpdatesInternal = async () => {
     }
 }
 
-// Delete Challenges with only creators - Every day at 1 AM
+// Supprimer les challenges orphelins et créés depuis une semaine tous les jours à 00:06
 const DeleteLonelyChallenges = async (req, res) => {
     try {
         await DeleteLonelyChallengesInternal();
@@ -156,12 +139,46 @@ const DeleteLonelyChallengesInternal = async () => {
     }
 }
 
-const saveRank = async (req, res) => {
+// Supprimer les sessions expirées tous les jours à 00:08
+const DeleteExpiredSessions = async (req, res) => {
     try {
-        await recordRankingHistory();
-        res.status(200).json({ message: '[CRON] Historique du classement enregistré' });
+        await DeleteExpiredSessionsInternal();
+        res.status(200).json({ message: '[CRON] Sessions expirées supprimées' });
     } catch (error) {
-        res.status(500).json({ error: '[CRON] Erreur enregistrement du classement' });
+        res.status(500).json({ error: '[CRON] Erreur suppression des sessions' });
+    }
+}
+
+const DeleteExpiredSessionsInternal = async() => {
+    try {
+        console.log('[CRON] Début de la suppression des sessions expirées');
+
+        const currentDate = new Date();
+        const users = await User.find({
+            'activeSessions.expiresAt': { $lt: currentDate }
+        });
+
+        let totalSessionsDeleted = 0;
+
+        // Pour chaque utilisateur ayant des sessions expirées
+        for (const user of users) {
+            const originalSessionCount = user.activeSessions.length;
+            
+            // Filtrer pour ne garder que les sessions non expirées
+            user.activeSessions = user.activeSessions.filter(session => 
+                session.expiresAt > currentDate
+            );
+
+            // Si des sessions ont été supprimées
+            if (user.activeSessions.length < originalSessionCount) {
+                await user.save();
+                totalSessionsDeleted += (originalSessionCount - user.activeSessions.length);
+            }
+        }
+
+        console.log(`[CRON] ${totalSessionsDeleted} sessions expirées supprimées pour ${users.length} utilisateurs`);
+    } catch (error) {
+        console.error('[CRON] Erreur lors de la suppression des sessions expirées:', error);
     }
 }
 
@@ -169,7 +186,7 @@ const All = async (req, res) => {
     const results = [];
 
     try {
-        await recordRankingHistory();
+        await saveRankInternal();
         results.push('✅ Classement enregistré');
     } catch (err) {
         results.push('❌ Erreur enregistrement classement');
@@ -193,7 +210,7 @@ const All = async (req, res) => {
     }
 
     try {
-        await DailyRewardUpdatesInternal();
+        await RewardUpdatesInternal();
         results.push('✅ Récompenses mises à jour');
     } catch (err) {
         results.push('❌ Erreur mise à jour récompenses');
@@ -208,6 +225,14 @@ const All = async (req, res) => {
         console.error(err);
     }
 
+    try {
+        await DeleteExpiredSessionsInternal();
+        results.push('✅ Sessions expirées supprimées');
+    } catch (err) {
+        results.push('❌ Erreur suppression sessions expirées');
+        console.error(err);
+    }
+
     res.status(200).json({
         message: '[CRON] Tâches exécutées',
         results
@@ -219,6 +244,7 @@ module.exports = {
     saveRank,
     ChallengeStatusUpdates,
     DeleteLonelyChallenges,
-    DailyRewardUpdates,
-    DeleteExpiredNotifications
+    RewardUpdates,
+    DeleteExpiredNotifications,
+    DeleteExpiredSessions
 };

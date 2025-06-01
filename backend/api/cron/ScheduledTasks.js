@@ -3,7 +3,8 @@ const Challenge = require('../../models/Challenge');
 const Notification = require('../../models/Notification');
 const User = require('../../models/User');
 const { updateUserRewards } = require('../../controllers/RewardController');
-const { recordRankingHistory } = require('../../controllers/RankingController');
+const { saveRankInternal } = require('../../controllers/RankingController');
+const { ChallengeStatusUpdatesInternal } = require('../../controllers/ChallengeController')
 const Cache = require('../../logs/Cache')
 const Logger = require('../../logs/Logger')
 
@@ -20,56 +21,23 @@ const CleanCache = () => {
   })
 }
 
-// Update challenge statuses every hour
+// Statut des challenges vérifiés tous les jours à minuit 0
 const scheduleStatusUpdates = () => {
-  cron.schedule('*/30 * * * *', async () => { // Toutes les 30 minutes
+  cron.schedule('0 0 * * *', async () => {
     try {
-      console.log('Running challenge status updates...');
       Logger.info('Running challenge status updates...')
-      await updateChallengeStatuses();
-      console.log('[CRON] Status updates completed');
+      await ChallengeStatusUpdatesInternal();
       Logger.info('[CRON] Status updates completed');
     } catch (error) {
       console.error('[CRON] Error updating challenges status:', error);
-      Logger.error('[CRON] Error updating challenges status:', {error});
+      Logger.error('[CRON] Error updating challenges status:', { error });
     }
   });
 };
 
-const updateChallengeStatuses = async () => {
-  try {
-    const now = new Date();
-
-      // Mettre à jour les défis qui doivent démarrer
-      const startingChallenges = await Challenge.updateMany(
-        {
-          status: 'upcoming',
-          startDate: { $lte: now }
-        },
-        { $set: { status: 'active' } }
-      );
-
-      // Mettre à jour les défis qui doivent se terminer
-      const endingChallenges = await Challenge.updateMany(
-        {
-          status: 'active',
-          endDate: { $lte: now }
-        },
-        { $set: { status: 'completed' } }
-      );
-
-      Logger.info('Mise à jour des statuts des défis terminée', {
-        startingChallenges: startingChallenges.modifiedCount,
-        endingChallenges: endingChallenges.modifiedCount
-      });
-    } catch (error) {
-      Logger.error('Erreur lors de la mise à jour des statuts des défis', { error });
-    }
-  }
-
-// Delete Notification 1 week after the response - Every day at 1 AM
+// Supprimer les notifications expirées tous les jours à minuit 1
 const deleteExpiredNotifications = () => {
-  cron.schedule('0 */2 * * *', async () => { // Toutes les 2 heures
+  cron.schedule('0 */2 * * *', async () => {
     try {
       Logger.info('Début de la suppression des notifications expirées');
       const result = await Notification.deleteMany({
@@ -85,7 +53,7 @@ const deleteExpiredNotifications = () => {
   });
 };
 
-// Update rewards for all users - Every day at 00:00 AM
+// Mettre à jour les rewards de tout le monde tous les jours à minuit 2
 const scheduleDailyRewardUpdates = () => {
   cron.schedule('0 0 * * *', async () => {
     try {
@@ -163,23 +131,23 @@ const deleteLonelyChallenges = () => {
 
     } catch (error) {
       console.error('[CRON] Error deleting lonely challenges:', error);
-      Logger.error('[CRON] Error deleting lonely challenges:', {error});
+      Logger.error('[CRON] Error deleting lonely challenges:', { error });
     }
   });
 };
 
-// Enregistre l'historique du classement toutes les heures
+// Enregistre l'historique du classement toutes les 15 minutes
 const saveRank = () => {
-  cron.schedule('0 * * * *', () => {
+  cron.schedule('*/15 * * * *', () => {
     try {
       console.log('Running ranking history recording...');
       Logger.info('Running ranking history recording...');
-      recordRankingHistory();
+      saveRankInternal();
       console.log('Ranking history recorded');
       Logger.info('Ranking history recorded');
     } catch (error) {
       console.error('[CRON] Error in daily reward updates:', error);
-      Logger.error('[CRON] Error in daily reward updates:', {error});
+      Logger.error('[CRON] Error in daily reward updates:', { error });
     }
   });
 }

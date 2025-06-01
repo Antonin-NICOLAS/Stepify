@@ -1,14 +1,11 @@
 const mongoose = require('mongoose');
-const Reward = require('./Reward');
+const Reward = require('../Reward');
 //.env
 require('dotenv').config()
 
-mongoose.connect(/*MONGODB*/ process.env.MONGO_VERCEL_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(() => {
-    console.log("mongoDB connected")
-});
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("[REWARDS] MongoDB connecté"))
+  .catch(err => console.error("[REWARDS] Erreur de connexion MongoDB:", err));
 
 const rewards = [
     // Bronze Tier
@@ -1045,12 +1042,13 @@ const rewards = [
             de: 'Top 10'
         },
         description: {
-            fr: 'Atteins le top 10 du classement.',
-            en: 'Reach the top 10 of the ranking.',
-            es: 'Alcanza el top 10 del ranking.',
-            de: 'Erreiche die Top 10 der Rangliste.'
+            fr: 'Dans le top 10 pendant une journée',
+            en: 'In the top 10 for a day',
+            es: 'En el top 10 por un día',
+            de: 'Einen Tag lang in den Top 10 der Rangliste'
         },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821492/rank-bronze_agrpwh.png',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821975/xp-bronze_uonhtp.png',
+        time: 1,
         criteria: 'rank',
         tier: 'bronze',
         target: 10,
@@ -1063,12 +1061,13 @@ const rewards = [
             de: 'Top 5'
         },
         description: {
-            fr: 'Atteins le top 5 du classement.',
-            en: 'Reach the top 5 of the ranking.',
-            es: 'Alcanza el top 5 del ranking.',
-            de: 'Erreiche die Top 5 der Rangliste.'
+            fr: 'Dans le top 5 depuis 36 heures',
+            en: 'In the top 5 for 36 hours',
+            es: 'En el top 5 durante 36 horas',
+            de: 'In den letzten 36 Stunden in den Top 5'
         },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821748/rank-silver_xjw5lk.png',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747822310/xp-silver_v1tzko.png',
+        time: 1.5,
         criteria: 'rank',
         tier: 'silver',
         target: 5,
@@ -1081,12 +1080,13 @@ const rewards = [
             de: 'Top 3'
         },
         description: {
-            fr: 'Atteins le top 3 du classement.',
-            en: 'Reach the top 3 of the ranking.',
-            es: 'Alcanza el top 3 del ranking.',
-            de: 'Erreiche die Top 3 der Rangliste.'
+            fr: 'Sur le podium depuis 2 jours',
+            en: 'On the podium for 2 days',
+            es: 'En el podio durante 2 días',
+            de: 'Seit 2 Tagen auf dem Podium'
         },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821664/rank-gold_e3klt9.png',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747822257/xp-gold_vfqxty.png',
+        time: 2,
         criteria: 'rank',
         tier: 'gold',
         target: 3,
@@ -1099,12 +1099,13 @@ const rewards = [
             de: 'Top 2'
         },
         description: {
-            fr: 'Atteins le top 2 du classement.',
-            en: 'Reach the top 2 of the ranking.',
-            es: 'Alcanza el top 2 del ranking.',
-            de: 'Erreiche die Top 2 der Rangliste.'
+            fr: 'À la deuxième place depuis 3 jours',
+            en: 'In second place for 3 days',
+            es: 'En segundo lugar durante 3 días',
+            de: 'Seit drei Tagen auf dem zweiten Platz'
         },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821761/rank-platinum_bmw66u.png',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747822315/xp-platinum_z14ud5.png',
+        time: 3,
         criteria: 'rank',
         tier: 'platinum',
         target: 2,
@@ -1117,17 +1118,17 @@ const rewards = [
             de: 'Nummer 1'
         },
         description: {
-            fr: 'Devient numéro 1 du classement.',
-            en: 'Become number 1 in the ranking.',
-            es: 'Conviértete en el número 1 del ranking.',
-            de: 'Werde Nummer 1 in der Rangliste.'
+            fr: 'Champion depuis 5 jours',
+            en: 'Champion for 5 days',
+            es: 'Campeón durante 5 días',
+            de: 'Champion seit 5 Tagen'
         },
-        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821608/rank-diamond_fyljfb.png',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747822274/xp-diamond_b4knuz.png',
+        time: 5,
         criteria: 'rank',
         tier: 'diamond',
         target: 1,
     },
-        //TODO: friends rewards
     {
         name: {
             fr: 'Timide',
@@ -1141,7 +1142,7 @@ const rewards = [
             es: '¡Tu primer amigo!',
             de: 'Dein erster Freund!'
         },
-        iconUrl: '',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821492/rank-bronze_agrpwh.png',
         criteria: 'friend',
         tier: 'bronze',
         target: 1,
@@ -1159,7 +1160,7 @@ const rewards = [
             es: '¡Ahora tienes 3 amigos!',
             de: 'Du hast jetzt 3 Freunde!'
         },
-        iconUrl: '',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821748/rank-silver_xjw5lk.png',
         criteria: 'friend',
         tier: 'silver',
         target: 3,
@@ -1177,7 +1178,7 @@ const rewards = [
             es: 'Tienes 5 amigos ahora! Gran entorno!',
             de: 'Du hast jetzt 5 Freunde! Großartige Umgebung!'
         },
-        iconUrl: '',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821664/rank-gold_e3klt9.png',
         criteria: 'friend',
         tier: 'gold',
         target: 5,
@@ -1195,7 +1196,7 @@ const rewards = [
             es: '¡Ahora tienes 10 amigos! Suficiente para estar motivado todos los días.',
             de: 'Du hast jetzt 10 Freunde! Genug, um jeden Tag motiviert zu sein.'
         },
-        iconUrl: '',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821761/rank-platinum_bmw66u.png',
         criteria: 'friend',
         tier: 'platinum',
         target: 10,
@@ -1213,7 +1214,7 @@ const rewards = [
             es: '¡20 amigos! Eres el rey de la red!',
             de: '20 Freunde! Du bist der König des Netzwerks!'
         },
-        iconUrl: '',
+        iconUrl: 'https://res.cloudinary.com/dpqhhckyj/image/upload/v1747821608/rank-diamond_fyljfb.png',
         criteria: 'friend',
         tier: 'diamond',
         target: 20,

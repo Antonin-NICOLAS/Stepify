@@ -7,8 +7,9 @@ const {
     saveRank,
     ChallengeStatusUpdates,
     DeleteLonelyChallenges,
-    DailyRewardUpdates,
-    DeleteExpiredNotifications
+    RewardUpdates,
+    DeleteExpiredNotifications,
+    DeleteExpiredSessions
 } = require('../controllers/CronJobs')
 
 //router
@@ -23,6 +24,11 @@ router.use(
 );
 
 router.get('/save-rank', saveRank)
+router.get('/challenge-status-updates', ChallengeStatusUpdates)
+router.get('/reward-updates', RewardUpdates)
+router.get('/delete-lonely-challenges', DeleteLonelyChallenges)
+router.get('/delete-expired-notifications', DeleteExpiredNotifications)
+router.get('/delete-expired-sessions', DeleteExpiredSessions)
 router.get('/all', All)
 
 module.exports = router

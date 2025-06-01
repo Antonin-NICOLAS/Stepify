@@ -273,18 +273,32 @@ const getRewardsRanking = async (req, res) => {
 };
 
 // Fonction pour enregistrer l'historique des classements
-const recordRankingHistory = async () => {
+const saveRankInternal = async () => {
   try {
     // 1. Enregistrement du classement global XP
     const users = await User.find({}).sort({ totalXP: -1 });
     const userRankUpdates = [];
 
+    // Gestion des égalités pour le classement global
+    let currentRank = 1;
+    let currentXP = null;
+    let sameRankCount = 0;
+
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
-      const globalRank = i + 1;
+      
+      // Si c'est un nouveau score XP, on met à jour le rang
+      if (user.totalXP !== currentXP) {
+        currentRank = i + 1 - sameRankCount;
+        currentXP = user.totalXP;
+        sameRankCount = 0;
+      } else {
+        // Même score XP que le précédent, on garde le même rang
+        sameRankCount++;
+      }
 
       const existingEntryIndex = user.rankingHistory.findIndex(
-        entry => entry.globalRank === globalRank && !entry.challengeRank
+        entry => entry.globalRank === currentRank && !entry.challengeRank
       );
 
       if (existingEntryIndex >= 0) {
@@ -292,7 +306,7 @@ const recordRankingHistory = async () => {
       } else {
         user.rankingHistory.push({
           time: 0.25,
-          globalRank: globalRank
+          globalRank: currentRank
         });
       }
       userRankUpdates.push(user);
@@ -308,9 +322,23 @@ const recordRankingHistory = async () => {
       // Trie les participants par progression
       const sortedParticipants = [...challenge.participants].sort((a, b) => b.progress - a.progress);
 
+      // Gestion des égalités pour chaque défi
+      let currentRank = 1;
+      let currentProgress = null;
+      let sameRankCount = 0;
+
       for (let i = 0; i < sortedParticipants.length; i++) {
         const participant = sortedParticipants[i];
-        const challengeRank = i + 1;
+
+        // Si c'est une nouvelle progression, on met à jour le rang
+        if (participant.progress !== currentProgress) {
+          currentRank = i + 1 - sameRankCount;
+          currentProgress = participant.progress;
+          sameRankCount = 0;
+        } else {
+          // Même progression que le précédent, on garde le même rang
+          sameRankCount++;
+        }
 
         const user = userRankUpdates.find(u => u._id.equals(participant.user._id)) ||
           await User.findById(participant.user._id);
@@ -318,7 +346,7 @@ const recordRankingHistory = async () => {
         if (!user) continue;
 
         const existingEntryIndex = user.rankingHistory.findIndex(
-          entry => entry.challengeRank?.equals(challenge._id) && entry.globalRank === challengeRank
+          entry => entry.challengeRank?.equals(challenge._id) && entry.globalRank === currentRank
         );
 
         if (existingEntryIndex >= 0) {
@@ -326,7 +354,7 @@ const recordRankingHistory = async () => {
         } else {
           user.rankingHistory.push({
             time: 0.25,
-            globalRank: challengeRank,
+            globalRank: currentRank,
             challengeRank: challenge._id
           });
         }
@@ -350,5 +378,5 @@ module.exports = {
   getFriendsRanking,
   getChallengesRanking,
   getRewardsRanking,
-  recordRankingHistory
+  saveRankInternal
 };

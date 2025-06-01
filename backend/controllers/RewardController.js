@@ -456,13 +456,13 @@ const calculateLevelProgress = (user, reward) => {
 };
 
 //TODO: Rank-based rewards
-const checkRankReward = async (user, reward) => {
-  return user.level <= reward.target;
-};
+//const checkRankReward = async (user, reward) => {
+//  return user.level <= reward.target;
+//};
 
-const calculateRankProgress = (user, reward) => {
-  return Math.min(Math.round((reward.target / user.level) * 100), 100);
-};
+//const calculateRankProgress = (user, reward) => {
+//  return Math.min(Math.round((reward.target / user.level) * 100), 100);
+//};
 
 // Friend-based rewards
 const checkFriendReward = async (user, reward) => {

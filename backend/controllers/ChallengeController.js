@@ -519,6 +519,34 @@ const getChallengeLeaderboard = async (req, res) => {
   }
 };
 
+const ChallengeStatusUpdatesInternal = async () => {
+    console.log('[CRON] Running challenge status updates...');
+    try {
+        const now = new Date();
+
+        // Mettre à jour les défis qui doivent démarrer
+        await Challenge.updateMany(
+            {
+                status: 'upcoming',
+                startDate: { $lte: now }
+            },
+            { $set: { status: 'active' } }
+        );
+
+        // Mettre à jour les défis qui doivent se terminer
+        await Challenge.updateMany(
+            {
+                status: 'active',
+                endDate: { $lte: now }
+            },
+            { $set: { status: 'completed' } }
+        );
+        console.log('[CRON] Status updates completed');
+    } catch (error) {
+        console.error('[CRON] Erreur lors de la mise à jour des statuts des défis', error);
+    }
+}
+
 module.exports = {
   getPublicChallenges,
   getMyChallenges,
@@ -530,5 +558,6 @@ module.exports = {
   deleteChallenge,
   regenerateAccessCode,
   getChallengeDetails,
-  getChallengeLeaderboard
+  getChallengeLeaderboard,
+  ChallengeStatusUpdatesInternal
 };
