@@ -284,10 +284,10 @@ const recordRankingHistory = async () => {
       );
 
       if (existingEntryIndex >= 0) {
-        user.rankingHistory[existingEntryIndex].time += 1;
+        user.rankingHistory[existingEntryIndex].time += 0.25;
       } else {
         user.rankingHistory.push({
-          time: 1,
+          time: 0.25,
           globalRank: i + 1
         });
       }

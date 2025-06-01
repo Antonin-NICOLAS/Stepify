@@ -28,7 +28,7 @@ const app = express()
 
 //middleware
 app.set('trust proxy', 1);
-app.use(express.json({limit: '50mb'}))
+app.use(express.json({ limit: '50mb' }))
 app.use(cookieParser())
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }))
@@ -62,7 +62,7 @@ app.use('/friend', FriendRoutes)
 app.use('/notification', NotificationRoutes)
 app.use('/reward', RewardRoutes)
 app.use('/leaderboard', LeaderboardRoutes)
-app.use('/cron', cron)
+app.use('/cron/all', cron)
 app.use('/cron/save-rank', saveRankByVercel)
 
 // Gestion des erreurs globale
@@ -76,8 +76,8 @@ app.use((err, req, res, next) => {
     });
 
     res.status(500).json({
-        error: process.env.NODE_ENV === 'production' 
-            ? 'Une erreur interne est survenue' 
+        error: process.env.NODE_ENV === 'production'
+            ? 'Une erreur interne est survenue'
             : err.message
     });
 });
