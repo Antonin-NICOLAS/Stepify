@@ -178,11 +178,11 @@ const getRewardsRanking = async (req, res) => {
     const rewardRankings = rewards.map(reward => {
       // Récupère tous les utilisateurs qui ont cette récompense en cours (unlockedAt est null)
       const usersInProgress = usersWithRewards
-        .filter(u => u.rewardsUnlocked.some(r => 
+        .filter(u => u.rewardsUnlocked.some(r =>
           r.rewardId.toString() === reward._id.toString() && !r.unlockedAt
         ))
         .map(u => {
-          const rewardProgress = u.rewardsUnlocked.find(r => 
+          const rewardProgress = u.rewardsUnlocked.find(r =>
             r.rewardId.toString() === reward._id.toString()
           );
           return {
@@ -294,8 +294,6 @@ const recordRankingHistory = async () => {
 
       await user.save();
     }
-
-    console.log('Ranking history recorded successfully');
   } catch (error) {
     console.error('Error recording ranking history:', error);
   }

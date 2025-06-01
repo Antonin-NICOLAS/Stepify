@@ -15,6 +15,7 @@ const RewardRoutes = require('../routes/RewardRoutes')
 const LeaderboardRoutes = require('../routes/RankingRoutes')
 // vercel cron
 const { cron } = require('./cron/all-tasks')
+const { saveRankByVercel } = require('./cron/save-rank')
 //middleware
 const accessLogger = require('../middlewares/AccessLogger')
 //logs
@@ -62,6 +63,7 @@ app.use('/notification', NotificationRoutes)
 app.use('/reward', RewardRoutes)
 app.use('/leaderboard', LeaderboardRoutes)
 app.use('/cron', cron)
+app.use('/cron/save-rank', saveRankByVercel)
 
 // Gestion des erreurs globale
 app.use((err, req, res, next) => {

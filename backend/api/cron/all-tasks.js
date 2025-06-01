@@ -61,31 +61,21 @@ const cron = async (req, res) => {
       console.error('[CRON] Erreur suppression défis solitaires', error);
     }
 
-    // 4. Enregistrement de l'historique du classement
+    // 4. Mise à jour des récompenses quotidiennes
     try {
-      await recordRankingHistory();
-      console.log('Historique du classement enregistré');
-    } catch (error) {
-      console.error('[CRON] Erreur enregistrement du classement', error);
-    }
-
-    // 5. Mise à jour des récompenses quotidiennes
-    try {
-      if (now.getHours() === 0) {
-        const users = await User.find({}, '_id');
-        const batchSize = 100;
-        for (let i = 0; i < users.length; i += batchSize) {
-          const batch = users.slice(i, i + batchSize);
-          await Promise.all(batch.map(async (user) => {
-            try {
-              await updateUserRewards(user._id);
-            } catch (err) {
-              console.error(`Erreur récompense user ${user._id}`, err);
-            }
-          }));
-        }
-        console.log('Récompenses mises à jour pour tous les utilisateurs');
+      const users = await User.find({}, '_id');
+      const batchSize = 100;
+      for (let i = 0; i < users.length; i += batchSize) {
+        const batch = users.slice(i, i + batchSize);
+        await Promise.all(batch.map(async (user) => {
+          try {
+            await updateUserRewards(user._id);
+          } catch (err) {
+            console.error(`Erreur récompense user ${user._id}`, err);
+          }
+        }));
       }
+      console.log('Récompenses mises à jour pour tous les utilisateurs');
     } catch (error) {
       console.error('[CRON] Erreur mise à jour des récompenses', error);
     }

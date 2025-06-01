@@ -35,7 +35,7 @@ Stepify est une application web de suivi d'activité physique ludique. Marchez, 
 - [ ] ✅ **Ajout de vérification de mot de passe côté frontend**: — — — — —
 - [ ] 📈 **Nouveau record** : informer l'utilisateur quand il bat son record personnel
 - [ ] ⏳ **Date réelle d’obtention des récompenses** (pas la date de vérification)
-- [ ] ⏰ **Support des cron jobs Vercel** (actuellement fonctionne seulement en dev)
+- [x] ⏰ **Support des cron jobs Vercel** (actuellement fonctionne seulement en dev)
 - [ ] 🎨 **Mettre en rose les liens de footer de confidentialité**
 - [ ] 🎖️ **Gestion des récompenses de classement (1er, 2e, 3e...)**
 - [ ] 📊 **Fonction “Comparer” dans la page Récompenses**
