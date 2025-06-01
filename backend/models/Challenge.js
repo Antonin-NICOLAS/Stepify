@@ -1,11 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const { isDateInFuture, convertLocalToUTC } = require('../helpers/DateTimeHelper');
 require('./User.js')
 
 // Validateurs personnalisés
 const validateDates = function(value) {
   if (!this.startDate) return true;
-  return !value || value > this.startDate;
+  const endDateUTC = convertLocalToUTC(value, this.timezone);
+  const startDateUTC = convertLocalToUTC(this.startDate, this.timezone);
+  return !value || endDateUTC > startDateUTC;
 };
 
 const validateXPReward = function(value) {
@@ -47,7 +50,7 @@ const challengeSchema = new Schema({
     required: true,
     validate: {
       validator: function(value) {
-        return value > new Date();
+        return isDateInFuture(value, this.timezone);
       },
       message: 'La date de début doit être dans le futur'
     }
@@ -107,7 +110,13 @@ const challengeSchema = new Schema({
   isPrivate: { type: Boolean, default: false },
   isVerified: { type: Boolean, default: false },
   accessCode: { type: String },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+
+  timezone: {
+    type: String,
+    required: true,
+    default: 'UTC'
+  },
 });
 
 // Middleware pre-save pour copier le texte original dans la langue source

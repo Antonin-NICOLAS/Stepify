@@ -4,6 +4,8 @@ const { checkAuthorization } = require('../middlewares/VerifyAuthorization');
 const { generateAccessCode, validateChallengeDates, determineChallengeStatus, calculateUserProgress, updateSingleChallengeProgress } = require('../helpers/ChallengeHelpers');
 const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
 const { translateToAllLanguages } =require('../languages/translate')
+const { convertLocalToUTC } = require('../helpers/DateTimeHelper');
+const moment = require('moment-timezone');
 
 /** Get public challenges */
 const getPublicChallenges = async (req, res) => {
@@ -90,16 +92,21 @@ const createChallenge = async (req, res) => {
       xpReward,
       participants,
       isPrivate,
-      difficulty = "hard"
+      difficulty = "hard",
+      timezone = "UTC"
     } = req.body;
 
     // Validate required fields
-    if (!name || !startDate || !activityType || !goal || !xpReward || isPrivate === undefined || !difficulty) {
+    if (!name || !startDate || !activityType || !goal || !xpReward || isPrivate === undefined || !difficulty || !timezone) {
       return sendLocalizedError(res, 400, 'errors.challenges.fields_missing');
     }
 
+    // Convertir les dates en UTC
+    const startDateUTC = convertLocalToUTC(startDate, timezone);
+    const endDateUTC = endDate ? convertLocalToUTC(endDate, timezone) : null;
+
     // Validate dates
-    const dateValidation = validateChallengeDates(startDate, endDate);
+    const dateValidation = validateChallengeDates(startDateUTC, endDateUTC);
     if (!dateValidation.valid) {
       return sendLocalizedError(res, 400, dateValidation.error);
     }
@@ -119,13 +126,13 @@ const createChallenge = async (req, res) => {
     const accessCode = isPrivate ? generateAccessCode() : null;
 
     // Determine initial status
-    const status = determineChallengeStatus(startDate, endDate);
+    const status = determineChallengeStatus(startDateUTC, endDateUTC);
 
     const newChallenge = new Challenge({
       name: nameTranslations,
       description: descriptionTranslations,
-      startDate,
-      endDate,
+      startDate: startDateUTC,
+      endDate: endDateUTC,
       creator: userId,
       activityType,
       goal,
@@ -134,6 +141,7 @@ const createChallenge = async (req, res) => {
       difficulty,
       isPrivate,
       accessCode,
+      timezone,
       participants: [{
         user: userId,
         goal: 0,
@@ -197,8 +205,18 @@ const updateChallenge = async (req, res) => {
       return sendLocalizedError(res, 403, 'errors.challenges.creator_modify_only');
     }
 
-    // Validate dates if they're being updated
+    // Validate and convert dates if they're being updated
     if (updates.startDate || updates.endDate) {
+      const timezone = updates.timezone || challenge.timezone;
+      
+      // Convertir les dates en UTC
+      if (updates.startDate) {
+        updates.startDate = convertLocalToUTC(updates.startDate, timezone);
+      }
+      if (updates.endDate) {
+        updates.endDate = convertLocalToUTC(updates.endDate, timezone);
+      }
+
       const startDate = updates.startDate || challenge.startDate;
       const endDate = updates.endDate || challenge.endDate;
 
@@ -206,6 +224,9 @@ const updateChallenge = async (req, res) => {
       if (!dateValidation.valid) {
         return sendLocalizedError(res, 400, dateValidation.error);
       }
+
+      // Mettre à jour le statut en fonction des nouvelles dates
+      updates.status = determineChallengeStatus(startDate, endDate);
     }
 
     if (updates.isPrivate !== undefined) {
@@ -221,14 +242,6 @@ const updateChallenge = async (req, res) => {
     Object.keys(updates).forEach(key => {
       challenge[key] = updates[key];
     });
-
-    // Update status based on dates
-    if (updates.startDate || updates.endDate) {
-      challenge.status = determineChallengeStatus(
-        challenge.startDate,
-        challenge.endDate
-      );
-    }
 
     const updatedChallenge = await challenge.save();
     return sendLocalizedSuccess(res, 'success.challenges.updated', {}, { challenge: updatedChallenge });
@@ -406,64 +419,101 @@ const getChallengeDetails = async (req, res) => {
   }
 };
 
-// update challenge progress
+/** Update challenge status internal function */
+const ChallengeStatusUpdatesInternal = async () => {
+    console.log('[CRON] Running challenge status updates...');
+    try {
+        const now = moment.utc();
+
+        // Mettre à jour les défis qui doivent démarrer
+        const upcomingChallenges = await Challenge.find({
+            status: 'upcoming',
+            startDate: { $lte: now.toDate() }
+        });
+
+        for (const challenge of upcomingChallenges) {
+            await Challenge.updateOne(
+                { _id: challenge._id },
+                { $set: { status: 'active' } },
+                { validateBeforeSave: false }
+            );
+            console.log(`[CRON] Challenge ${challenge._id} status updated to active`);
+        }
+
+        // Mettre à jour les défis qui doivent se terminer
+        const activeChallenges = await Challenge.find({
+            status: 'active',
+            endDate: { $lte: now.toDate() }
+        });
+
+        for (const challenge of activeChallenges) {
+            await Challenge.updateOne(
+                { _id: challenge._id },
+                { $set: { status: 'completed' } },
+                { validateBeforeSave: false }
+            );
+            console.log(`[CRON] Challenge ${challenge._id} status updated to completed`);
+        }
+
+        console.log('[CRON] Status updates completed');
+    } catch (error) {
+        console.error('[CRON] Erreur lors de la mise à jour des statuts des défis', error);
+    }
+};
+
+/** Update challenge progress */
 const updateChallengeProgress = async (userId) => {
   try {
-    const now = new Date();
+    const now = moment.utc();
     
     const userChallenges = await Challenge.find({
       'participants.user': userId,
       status: 'active',
-      startDate: { $lte: now },
+      startDate: { $lte: now.toDate() },
       $or: [
         { endDate: null },
-        { endDate: { $gte: now } }
+        { endDate: { $gte: now.toDate() } }
       ]
     }).populate('participants.user');
     
-    try {
-      for (const challenge of userChallenges) {
-        const participant = challenge.participants.find(p => p.user._id.toString() === userId);
-        if (!participant) continue;
+    for (const challenge of userChallenges) {
+      const participant = challenge.participants.find(p => p.user._id.toString() === userId);
+      if (!participant) continue;
 
-        const progressData = await calculateUserProgress(userId, challenge);
-        
-        // Maj seulement si nécessaire
-        if (participant.progress !== progressData.progress || 
-            participant.completed !== progressData.completed) {
-            
-          participant.progress = progressData.progress;
-          participant.completed = progressData.completed;
-          participant.lastUpdated = now;
+      // Convertir les dates en tenant compte du fuseau horaire du challenge
+      const progressData = await calculateUserProgress(userId, challenge);
+      
+      if (participant.progress !== progressData.progress || 
+          participant.completed !== progressData.completed) {
+          
+        participant.progress = progressData.progress;
+        participant.completed = progressData.completed;
+        participant.lastUpdated = now.toDate();
 
-          if (progressData.completed && !participant.xpEarned) {
-            participant.xpEarned = challenge.xpReward;
-            await User.findByIdAndUpdate(
-              userId, 
-              { $inc: { totalXP: challenge.xpReward } }
-            );
-            
-            await Notification.create({
-              recipient: userId,
-              type: 'challenge_complete',
-              challenge: challenge._id,
-              content: {
-                en: `You completed "${challenge.name}"! +${challenge.xpReward}XP`,
-                fr: `Défi "${challenge.name}" réussi ! +${challenge.xpReward}XP`,
-                es: `¡Has completado "${challenge.name}"! +${challenge.xpReward}XP`,
-                de: `Du hast "${challenge.name}" abgeschlossen! +${challenge.xpReward}XP`
-              },
-              status: 'unread',
-              DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-            });
-          }
-
-          await challenge.save();
+        if (progressData.completed && !participant.xpEarned) {
+          participant.xpEarned = challenge.xpReward;
+          await User.findByIdAndUpdate(
+            userId, 
+            { $inc: { totalXP: challenge.xpReward } }
+          );
+          
+          await Notification.create({
+            recipient: userId,
+            type: 'challenge_complete',
+            challenge: challenge._id,
+            content: {
+              en: `You completed "${challenge.name.en}"! +${challenge.xpReward}XP`,
+              fr: `Défi "${challenge.name.fr}" réussi ! +${challenge.xpReward}XP`,
+              es: `¡Has completado "${challenge.name.es}"! +${challenge.xpReward}XP`,
+              de: `Du hast "${challenge.name.de}" abgeschlossen! +${challenge.xpReward}XP`
+            },
+            status: 'unread',
+            DeleteAt: moment().add(7, 'days').toDate()
+          });
         }
+
+        await challenge.save();
       }
-    
-    } catch (error) {
-      throw error;
     }
   } catch (error) {
     console.error('Error updating challenge progress:', error);
@@ -518,34 +568,6 @@ const getChallengeLeaderboard = async (req, res) => {
     return sendLocalizedError(res, 500, 'errors.challenges.get_leaderboard_error');
   }
 };
-
-const ChallengeStatusUpdatesInternal = async () => {
-    console.log('[CRON] Running challenge status updates...');
-    try {
-        const now = new Date();
-
-        // Mettre à jour les défis qui doivent démarrer
-        await Challenge.updateMany(
-            {
-                status: 'upcoming',
-                startDate: { $lte: now }
-            },
-            { $set: { status: 'active' } }
-        );
-
-        // Mettre à jour les défis qui doivent se terminer
-        await Challenge.updateMany(
-            {
-                status: 'active',
-                endDate: { $lte: now }
-            },
-            { $set: { status: 'completed' } }
-        );
-        console.log('[CRON] Status updates completed');
-    } catch (error) {
-        console.error('[CRON] Erreur lors de la mise à jour des statuts des défis', error);
-    }
-}
 
 module.exports = {
   getPublicChallenges,
