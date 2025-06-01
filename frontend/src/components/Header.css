@@ -80,7 +80,7 @@
 .sidebar__content {
   display: flex;
   flex-direction: column;
-  row-gap: 3rem;
+  row-gap: 2rem;
 }
 
 .sidebar__container {

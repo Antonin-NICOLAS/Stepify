@@ -375,7 +375,7 @@ const getChallengeNotifications = async (req, res) => {
     return sendLocalizedSuccess(res, null, {}, { notifications });
   } catch (error) {
     console.error('Error fetching challenge notifications:', error);
-    return sendLocalizedError(res, 500, 'errors.notifications.challenge_fetch_error');
+    return sendLocalizedError(res, 500, 'errors.notifications.fetch_error');
   }
 };
 

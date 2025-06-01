@@ -58,6 +58,7 @@ app.use('/friend', FriendRoutes)
 app.use('/notification', NotificationRoutes)
 app.use('/reward', RewardRoutes)
 app.use('/leaderboard', LeaderboardRoutes)
+app.use('/cron', CronJobsRoutes)
 
 // Routes CRON uniquement en production
 if (process.env.NODE_ENV === 'production') {

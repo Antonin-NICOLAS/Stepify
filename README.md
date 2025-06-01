@@ -33,7 +33,7 @@ Stepify est une application web de suivi d'activité physique ludique. Marchez, 
   - [x] Rewards
   - [x] Steps
   - [x] Friends
-- [ ] 🏅 **Calcul du rang et durée passée à ce rang** (ex: "Tu es resté 1er pendant 24h !")
+- [x] 🏅 **Calcul du rang et durée passée à ce rang** (ex: "Tu es resté 1er pendant 24h !")
 - [ ] ✅ **Ajout de vérification de mot de passe côté frontend**: — — — — —
 - [ ] 📈 **Nouveau record** : informer l'utilisateur quand il bat son record personnel
 - [ ] ⏳ **Date réelle d’obtention des récompenses** (pas la date de vérification)

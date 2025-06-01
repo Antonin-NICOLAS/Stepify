@@ -455,14 +455,41 @@ const calculateLevelProgress = (user, reward) => {
   return calculateProgress(user, reward);
 };
 
-//TODO: Rank-based rewards
-//const checkRankReward = async (user, reward) => {
-//  return user.level <= reward.target;
-//};
+// Rank-based rewards
+const checkRankReward = async (user, reward) => {
+  // Filtre les entrées de classement pour ce rang spécifique (sans challengeRank)
+  const relevantEntries = user.rankingHistory.filter(entry => 
+    entry.globalRank <= reward.target && !entry.challengeRank
+  );
 
-//const calculateRankProgress = (user, reward) => {
-//  return Math.min(Math.round((reward.target / user.level) * 100), 100);
-//};
+  if (relevantEntries.length === 0) return false;
+
+  // Calcule le temps total passé au rang requis ou meilleur
+  const totalTime = relevantEntries.reduce((sum, entry) => sum + entry.time, 0);
+
+  // Convertit le temps requis de jours en heures
+  const requiredHours = reward.time * 24;
+
+  return totalTime >= requiredHours;
+};
+
+const calculateRankProgress = (user, reward) => {
+  // Filtre les entrées de classement pour ce rang spécifique (sans challengeRank)
+  const relevantEntries = user.rankingHistory.filter(entry => 
+    entry.globalRank <= reward.target && !entry.challengeRank
+  );
+
+  if (relevantEntries.length === 0) return 0;
+
+  // Calcule le temps total passé au rang requis ou meilleur
+  const totalTime = relevantEntries.reduce((sum, entry) => sum + entry.time, 0);
+
+  // Convertit le temps requis de jours en heures
+  const requiredHours = reward.time * 24;
+
+  // Calcule le pourcentage de progression
+  return Math.min(Math.round((totalTime / requiredHours) * 100), 100);
+};
 
 // Friend-based rewards
 const checkFriendReward = async (user, reward) => {
