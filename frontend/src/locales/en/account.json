@@ -1,0 +1,77 @@
+{
+  "account": {
+    "user": {
+      "email": "Address email",
+      "status": {
+        "dnd": "Do not disturb",
+        "gym": "At the gym",
+        "busy": "Occupied",
+        "custom": "Personalized",
+        "default": "Salut, j'utilise Stepify !",
+        "running": "Racing",
+        "available": "Available"
+      },
+      "details": "Account details",
+      "lastName": "Nom",
+      "username": "User name",
+      "firstName": "First name",
+      "preferences": "Preferences",
+      "custom_status_placeholder": "Write your personalised status"
+    },
+    "theme": {
+      "dark": "Shade",
+      "light": "Clair",
+      "title": "Theme",
+      "system": "System"
+    },
+    "title": "My Account",
+    "avatar": {
+      "edit": "Change avatar",
+      "update": "Update avatar",
+      "dropHere": "Upload image here"
+    },
+    "errors": {
+      "themeUpdate": "Error updating the theme",
+      "avatarUpload": "Error updating avatar",
+      "profileUpdate": "Error updating profile",
+      "languageUpdate": "Language update error",
+      "nofileselected": "No file selected",
+      "passwordUpdate": "Error changing password",
+      "dailyGoalUpdate": "Error updating daily target"
+    },
+    "upload": "Image URL",
+    "buttons": {
+      "edit": "Modify",
+      "save": "Register",
+      "cancel": "Cancel",
+      "change": "Changer",
+      "saveProfile": "Save changes"
+    },
+    "activity": {
+      "steps": "Total steps",
+      "title": "Your business",
+      "streak": "Record (days)",
+      "distance": "Distance (km)",
+      "challenges": "Challenges completed"
+    },
+    "language": {
+      "de": "German",
+      "en": "English",
+      "es": "Spanish",
+      "fr": "French",
+      "title": "Language"
+    },
+    "password": {
+      "new": "New password",
+      "save": "Save password",
+      "title": "Password",
+      "confirm": "Confirm password",
+      "current": "Current password"
+    },
+    "dailyGoal": {
+      "edit": "Change your daily objective",
+      "save": "Register lens",
+      "title": "Daily objective"
+    }
+  }
+}

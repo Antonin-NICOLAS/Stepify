@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
 import AppRoutes from './routes/AppRoutes.jsx';
 import './App.css';
+import './i18n';
 import './index.css';
 
 axios.defaults.baseURL = process.env.NODE_ENV === "production" ? '' : process.env.BACKEND_SERVER;

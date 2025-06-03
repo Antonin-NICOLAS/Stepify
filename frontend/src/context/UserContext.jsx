@@ -1,5 +1,6 @@
 import { createContext, useContext, useCallback, useState } from 'react';
 import axios from 'axios';
+import i18n from '../i18n';
 import { toast } from 'react-hot-toast';
 import { useAuth } from './AuthContext';
 
@@ -187,6 +188,13 @@ export const UserProvider = ({ children }) => {
         toast.success(data.message || "Langue mise à jour");
         updateUserField('languagePreference', data.languagePreference);
         getUserProfile(userId);
+        i18n.changeLanguage(languagePreference, (err) => {
+          if (!err) {
+            i18n.loadNamespaces(['account', 'settings'], () => {
+            });
+          }
+        })
+        document.documentElement.lang = languagePreference;
       }
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");

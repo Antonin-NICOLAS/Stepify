@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import i18n from '../i18n';
 import GlobalLoader from '../utils/GlobalLoader';
 
 const API_AUTH = process.env.NODE_ENV === 'production' ? '/api/auth' : '/auth';
@@ -306,6 +307,10 @@ export const AuthProvider = ({ children }) => {
     const verifyAuth = async () => {
       await checkAuth();
       setIsCheckingAuth(false);
+      if (user) {
+        document.documentElement.lang = user.languagePreference;
+        i18n.changeLanguage(user.languagePreference);
+      }
     };
     verifyAuth();
   }, [checkAuth]);

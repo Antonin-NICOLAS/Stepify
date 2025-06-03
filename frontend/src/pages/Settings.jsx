@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react"
 import { useAuth } from '../context/AuthContext';
 import { useUser } from "../context/UserContext"
 import { toast } from "react-hot-toast";
+import { useTranslation } from 'react-i18next';
 import GlobalLoader from "../utils/GlobalLoader"
 //icons
 import { Camera, Edit, Upload, Globe, Moon, Sun, ChevronDown, Check, SunMoon } from "lucide-react"
@@ -12,6 +13,7 @@ import "./Settings.css"
 
 const AccountPage = () => {
   // Contexts
+  const { t, i18n } = useTranslation(['account', 'common']);
   const { user } = useAuth()
   const {
     updateAvatar,
@@ -83,21 +85,13 @@ const AccountPage = () => {
   })
 
   // Options
-  const statusOptions = [
-    "Salut, j'utilise Stepify !",
-    "Disponible",
-    "À la salle de sport",
-    "En course",
-    "Occupé",
-    "Ne pas déranger",
-    "Personnalisé"
-  ]
+  const statusOptions = Object.values(t('account:account.user.status', { returnObjects: true }));
 
   const languages = [
-    { code: "en", name: "English" },
-    { code: "fr", name: "Français" },
-    { code: "es", name: "Español" },
-    { code: "de", name: "Deutsch" }
+    { code: "en", name: t('account:account.language.en') },
+    { code: "fr", name: t('account:account.language.fr') },
+    { code: "es", name: t('account:account.language.es') },
+    { code: "de", name: t('account:account.language.de') }
   ]
 
   // 1. Avatar Handlers
@@ -110,7 +104,7 @@ const AccountPage = () => {
   const handleFileSubmit = async (e) => {
     e.preventDefault();
     const file = fileInputRef.current.files[0];
-    if (!file) return toast.error("Aucun fichier sélectionné");
+    if (!file) return toast.error(t('account:account.errors.nofileselected'));
 
     setIsLoading(true)
     try {
@@ -288,18 +282,21 @@ const AccountPage = () => {
   };
 
   // Helpers
-  const formatNumber = (num) => num?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") || "0"
+
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat(i18n.language).format(num || 0);
+  };
   const formatDate = (dateString) => {
     if (!dateString) return ""
     const options = { year: 'numeric', month: 'long', day: 'numeric' }
-    return new Date(dateString).toLocaleDateString(user?.languagePreference || 'fr-FR', options)
+    return new Date(dateString).toLocaleDateString(i18n.language || 'fr-FR', options)
   }
 
   return (
     <div className="account-container">
       {isLoading && <GlobalLoader />}
       <div className="account-header">
-        <h1>Mon Compte</h1>
+        <h1>{t('account:account.title')}</h1>
       </div>
       {errors.general && <div className="error-message">{errors.general}</div>}
 
@@ -332,13 +329,13 @@ const AccountPage = () => {
                         fileInputRef.current.click()
                       }, 200);
                     }}
-                    aria-label="Changer d'avatar"
+                    aria-label={t('account:account.avatar.edit')}
                   >
                     <Camera size={20} />
                   </button>
                 </div>
               }
-              {isDragging && <div className="drop-indicator">Déposer l'image ici</div>}
+              {isDragging && <div className="drop-indicator">{t('account:account.avatar.dropHere')}</div>}
             </div>
             {isEditingAvatar &&
               <form className="avatar-file-form" onSubmit={handleFileSubmit}>
@@ -349,24 +346,24 @@ const AccountPage = () => {
                   accept="image/*"
                   style={{ display: "none" }}
                 />
-                <button type="button" className="cancel-btn cancel-avatar-btn" onClick={() => setIsEditingAvatar(false)}>Annuler</button>
-                <button className="save-btn save-avatar-btn" type="submit">Enregistrer</button>
+                <button type="button" className="cancel-btn cancel-avatar-btn" onClick={() => setIsEditingAvatar(false)}>{t('account:account.buttons.cancel')}</button>
+                <button className="save-btn save-avatar-btn" type="submit">{t('account:account.buttons.save')}</button>
               </form>
             }
           </div>
           {!isEditingAvatar &&
-            <button onClick={() => setIsEditingUrlAvatar(!isEditingUrlAvatar)}>{isEditingUrlAvatar ? "Annuler" : "Changer d'Avatar"}</button>
+            <button onClick={() => setIsEditingUrlAvatar(!isEditingUrlAvatar)}>{isEditingUrlAvatar ? t('account:account.buttons.cancel') : t('account:account.avatar.edit')}</button>
           }
           {isEditingUrlAvatar &&
             <form className="avatar-url-form" onSubmit={handleAvatarUrlSubmit}>
               <input
                 type="text"
                 name="avatarUrl"
-                placeholder="URL de l'image"
+                placeholder={t('account:account.upload')}
                 value={profileData.avatarUrl}
                 onChange={handleProfileChange}
               />
-              <button type="submit" aria-label="Mettre à jour l'avatar">
+              <button type="submit" aria-label={t('account:account.avatar.update')}>
                 <Upload size={16} />
               </button>
             </form>
@@ -412,12 +409,12 @@ const AccountPage = () => {
                     <input
                       type="text"
                       name="status"
-                      placeholder="Ecrivez votre statut personnalisé"
+                      placeholder={t('account:account.user.custom_status_placeholder')}
                       value={profileData.status}
                       onChange={handleProfileChange}
                     />
-                    <button type="button" className="cancel-btn cancel-status-btn" onClick={() => setIsCustomStatus(false)}>Annuler</button>
-                    <button className="save-btn save-status-btn" type="submit">Enregister</button>
+                    <button type="button" className="cancel-btn cancel-status-btn" onClick={() => setIsCustomStatus(false)}>{t('account:account.buttons.cancel')}</button>
+                    <button className="save-btn save-status-btn" type="submit">{t('account:account.buttons.save')}</button>
                   </form>
                 )}
               </div>
@@ -430,11 +427,11 @@ const AccountPage = () => {
 
         {/* Account Details Section */}
         <div className="account-section details-section">
-          <h3>Détails du compte</h3>
+          <h3>{t('account:account.user.details')}</h3>
           {errors.profile && <div className="error-message">{errors.profile}</div>}
           <form>
             <div className="form-group">
-              <label htmlFor="firstName">Prénom</label>
+              <label htmlFor="firstName">{t('account:account.user.firstName')}</label>
               <input
                 id="firstName"
                 type="text"
@@ -443,7 +440,7 @@ const AccountPage = () => {
                 onChange={handleProfileChange} />
             </div>
             <div className="form-group">
-              <label htmlFor="lastName">Nom</label>
+              <label htmlFor="lastName">{t('account:account.user.lastName')}</label>
               <input
                 id="lastName"
                 type="text"
@@ -452,7 +449,7 @@ const AccountPage = () => {
                 onChange={handleProfileChange} />
             </div>
             <div className="form-group">
-              <label htmlFor="username">Nom d'utilisateur</label>
+              <label htmlFor="username">{t('account:account.user.username')}</label>
               <input
                 id="username"
                 type="text"
@@ -461,7 +458,7 @@ const AccountPage = () => {
                 onChange={handleProfileChange} />
             </div>
             <div className="form-group">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">{t('account:account.user.email')}</label>
               <input
                 id="email"
                 type="email"
@@ -470,11 +467,11 @@ const AccountPage = () => {
                 onChange={handleProfileChange} />
             </div>
             <button type="submit" className="save-btn save-profile-btn" onClick={saveProfile}>
-              Enregistrer les modifications
+              {t('account:account.buttons.saveProfile')}
             </button>
           </form>
           <div className="form-group">
-            <label>Mot de passe</label>
+            <label>{t('account:account.password.title')}</label>
             {!isEditingPassword ? (
               <div className="password-field">
                 <input type="text" value="••••••••" disabled />
@@ -489,25 +486,25 @@ const AccountPage = () => {
                   <input
                     type="password"
                     name="currentPassword"
-                    placeholder="Mot de passe actuel"
+                    placeholder={t('account:account.password.current')}
                     value={passwordData.currentPassword}
                     onChange={handlePasswordChange} required />
                   <input
                     type="password"
                     name="newPassword"
-                    placeholder="Nouveau mot de passe"
+                    placeholder={t('account:account.password.new')}
                     value={passwordData.newPassword}
                     onChange={handlePasswordChange} required />
                   <input
                     type="password"
                     name="confirmPassword"
-                    placeholder="Confirmer le nouveau mot de passe"
+                    placeholder={t('account:account.password.confirm')}
                     value={passwordData.confirmPassword}
                     onChange={handlePasswordChange} required />
                 </div>
                 <div className="password-actions">
-                  <button type="button" className="cancel-btn" onClick={() => { setIsEditingPassword(false); setErrors({ ...errors, password: "" }) }}>Annuler</button>
-                  <button type="submit" className="save-btn">Enregistrer</button>
+                  <button type="button" className="cancel-btn" onClick={() => { setIsEditingPassword(false); setErrors({ ...errors, password: "" }) }}>{t('account:account.buttons.cancel')}</button>
+                  <button type="submit" className="save-btn">{t('account:account.buttons.save')}</button>
                 </div>
               </form>
             )}
@@ -516,27 +513,27 @@ const AccountPage = () => {
 
         {/* Stats Section */}
         <div className="account-section stats-section">
-          <h3>Votre Activité</h3>
+          <h3>{t('account:account.activity.title')}</h3>
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-value">{formatNumber(user?.totalSteps)}</div>
-              <div className="stat-label">Pas totaux</div>
+              <div className="stat-label">{t('account:account.activity.steps')}</div>
             </div>
             <div className="stat-card">
               <div className="stat-value">{user?.totalDistance?.toFixed(1)}</div>
-              <div className="stat-label">Distance (km)</div>
+              <div className="stat-label">{t('account:account.activity.challenges')}</div>
             </div>
             <div className="stat-card">
               <div className="stat-value">{user?.totalChallengesCompleted}</div>
-              <div className="stat-label">Défis complétés</div>
+              <div className="stat-label">{t('account:account.activity.distance')}</div>
             </div>
             <div className="stat-card">
               <div className="stat-value">{user?.streak?.max || 0}</div>
-              <div className="stat-label">Record (jours)</div>
+              <div className="stat-label">{t('account:account.activity.streak')}</div>
             </div>
           </div>
           <div className="daily-goal">
-            <h4>Objectif quotidien</h4>
+            <h4>{t('account:account.dailyGoal.title')}</h4>
             {!isEditingGoal ? (
               <>
                 <span className="progress-text">
@@ -551,7 +548,7 @@ const AccountPage = () => {
                       }}
                     ></div>
                   </div>
-                  <button className="edit-btn" onClick={() => setIsEditingGoal(true)} aria-label="Modifier l'objectif quotidien">
+                  <button className="edit-btn" onClick={() => setIsEditingGoal(true)} aria-label={t('account:account.dailyGoal.edit')}>
                     <Edit size={16} />
                   </button>
                 </div>
@@ -568,10 +565,10 @@ const AccountPage = () => {
                   step="500"
                 />
                 <button type="button" className="cancel-btn" onClick={() => setIsEditingGoal(false)}>
-                  Annuler
+                  {t('account:account.buttons.cancel')}
                 </button>
                 <button type="submit" className="save-btn">
-                  Enregistrer
+                  {t('account:account.buttons.save')}
                 </button>
               </form>
             )}
@@ -580,11 +577,11 @@ const AccountPage = () => {
 
         {/* Preferences Section */}
         <div className="account-section preferences-section">
-          <h3>Préférences</h3>
+          <h3>{t('account:account.user.preferences')}</h3>
           <div className="preference-item">
             <div className="preference-label">
               <Globe size={20} />
-              <span>Langue</span>
+              <span>{t('account:account.language.title')}</span>
             </div>
             <div className="language-selector">
               <div
@@ -592,7 +589,7 @@ const AccountPage = () => {
                 onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
                 aria-expanded={isLanguageDropdownOpen}
               >
-                <span>{languages.find(l => l.code === user?.languagePreference)?.name || 'Français'}</span>
+                <span>{languages.find(l => l.code === i18n.language)?.name || 'Français'}</span>
                 <ChevronDown size={16} className={isLanguageDropdownOpen ? "rotated" : ""} />
               </div>
               {isLanguageDropdownOpen && (
@@ -614,7 +611,7 @@ const AccountPage = () => {
           <div className="preference-item">
             <div className="preference-label">
               {user?.themePreference === 'light' ? <Sun size={20} /> : <Moon size={20} />}
-              <span>Thème</span>
+              <span>{t('account:account.theme.title')}</span>
             </div>
             <div className="theme-selector">
               <div
@@ -622,21 +619,21 @@ const AccountPage = () => {
                 onClick={() => handleThemeChange('light')}
               >
                 <Sun size={16} />
-                <span>Clair</span>
+                <span>{t('account:account.theme.light')}</span>
               </div>
               <div
                 className={`theme-option ${user?.themePreference === 'dark' ? "selected" : ""}`}
                 onClick={() => handleThemeChange('dark')}
               >
                 <Moon size={16} />
-                <span>Sombre</span>
+                <span>{t('account:account.theme.dark')}</span>
               </div>
               <div
                 className={`theme-option ${user?.themePreference === 'auto' ? "selected" : ""}`}
                 onClick={() => handleThemeChange('auto')}
               >
                 <SunMoon size={20} />
-                <span>Automatique</span>
+                <span>{t('account:account.theme.system')}</span>
               </div>
             </div>
           </div>

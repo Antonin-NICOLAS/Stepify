@@ -1,0 +1,77 @@
+{
+  "account": {
+    "user": {
+      "email": "Dirección de correo electrónico",
+      "status": {
+        "dnd": "No molestar",
+        "gym": "En el gimnasio",
+        "busy": "Ocupado",
+        "custom": "Personalizado",
+        "default": "¡Salut, j'utilise Stepify !",
+        "running": "Carreras",
+        "available": "Disponible"
+      },
+      "details": "Datos de la cuenta",
+      "lastName": "Nom",
+      "username": "Nombre de usuario",
+      "firstName": "Nombre",
+      "preferences": "Preferencias",
+      "custom_status_placeholder": "Escribe tu estado personalizado"
+    },
+    "theme": {
+      "dark": "Sombre",
+      "light": "Clair",
+      "title": "Tema",
+      "system": "Sistema"
+    },
+    "title": "Mi cuenta",
+    "avatar": {
+      "edit": "Cambiar avatar",
+      "update": "Actualizar avatar",
+      "dropHere": "Cargar imagen aquí"
+    },
+    "errors": {
+      "themeUpdate": "Error al actualizar el tema",
+      "avatarUpload": "Error al actualizar el avatar",
+      "profileUpdate": "Error al actualizar el perfil",
+      "languageUpdate": "Error de actualización de idioma",
+      "nofileselected": "Ningún fichero seleccionado",
+      "passwordUpdate": "Error al cambiar la contraseña",
+      "dailyGoalUpdate": "Error al actualizar el objetivo diario"
+    },
+    "upload": "URL de la imagen",
+    "buttons": {
+      "edit": "Modifique",
+      "save": "Regístrese en",
+      "cancel": "Cancelar",
+      "change": "Cambiador",
+      "saveProfile": "Guardar cambios"
+    },
+    "activity": {
+      "steps": "Pasos totales",
+      "title": "Su empresa",
+      "streak": "Registro (días)",
+      "distance": "Distancia (km)",
+      "challenges": "Retos superados"
+    },
+    "language": {
+      "de": "Alemán",
+      "en": "Inglés",
+      "es": "Español",
+      "fr": "Francés",
+      "title": "Idioma"
+    },
+    "password": {
+      "new": "Nueva contraseña",
+      "save": "Guardar contraseña",
+      "title": "Contraseña",
+      "confirm": "Confirmar contraseña",
+      "current": "Contraseña actual"
+    },
+    "dailyGoal": {
+      "edit": "Cambia tu objetivo diario",
+      "save": "Lente de registro",
+      "title": "Objetivo diario"
+    }
+  }
+}
