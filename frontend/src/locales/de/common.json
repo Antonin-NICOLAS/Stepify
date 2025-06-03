@@ -1,5 +1,7 @@
 {
   "common": {
-    "title": "Common"
+    "usercontext": {
+      "languageupdated": "jsp comment on dit en allemand"
+    }
   }
 }

@@ -1,5 +1,7 @@
 {
   "common": {
-    "title": "Common"
+    "usercontext": {
+      "languageupdated": "Idioma cambiada"
+    }
   }
 }

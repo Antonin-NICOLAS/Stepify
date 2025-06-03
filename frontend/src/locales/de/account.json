@@ -1,6 +1,7 @@
 {
   "account": {
     "user": {
+      "membersince": "Mitglied seit",
       "email": "Adres e-mail",
       "status": {
         "dnd": "Niet storen",
@@ -19,8 +20,8 @@
       "custom_status_placeholder": "Schrijf je persoonlijke status"
     },
     "theme": {
-      "dark": "Schaduw",
-      "light": "Clair",
+      "dark": "dunkles",
+      "light": "klares",
       "title": "Thema",
       "system": "Systeem"
     },

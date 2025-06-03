@@ -1,6 +1,7 @@
 import { createContext, useContext, useCallback, useState } from 'react';
 import axios from 'axios';
 import i18n from '../i18n';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { useAuth } from './AuthContext';
 
@@ -10,6 +11,7 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const { user, setUser, updateUserField } = useAuth();
+  const { t } = useTranslation(['common']);
 
   const updateProfile = useCallback(async (userId, updates) => {
     try {
@@ -185,9 +187,6 @@ export const UserProvider = ({ children }) => {
       const { data } = await axios.patch(`${API_USER}/${userId}/language`, { languagePreference });
 
       if (data.success) {
-        toast.success(data.message || "Langue mise à jour");
-        updateUserField('languagePreference', data.languagePreference);
-        getUserProfile(userId);
         i18n.changeLanguage(languagePreference, (err) => {
           if (!err) {
             i18n.loadNamespaces(['account', 'settings'], () => {
@@ -195,6 +194,9 @@ export const UserProvider = ({ children }) => {
           }
         })
         document.documentElement.lang = languagePreference;
+        toast.success(t('common:common.usercontext.languageupdated'));
+        updateUserField('languagePreference', data.languagePreference);
+        getUserProfile(userId);
       }
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de la mise à jour");

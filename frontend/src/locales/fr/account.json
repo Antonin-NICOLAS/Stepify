@@ -8,6 +8,7 @@
       "update": "Mettre à jour l'avatar"
     },
     "user": {
+      "membersince": "Membre depuis le",
       "custom_status_placeholder": "Écrivez votre statut personnalisé",
       "status": {
         "default": "Salut, j'utilise Stepify !",

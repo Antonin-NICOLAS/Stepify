@@ -1,26 +1,27 @@
 {
   "account": {
     "user": {
+      "membersince": "Member since",
       "email": "Address email",
       "status": {
         "dnd": "Do not disturb",
         "gym": "At the gym",
         "busy": "Occupied",
         "custom": "Personalized",
-        "default": "Salut, j'utilise Stepify !",
+        "default": "Hello, I am using Stepify !",
         "running": "Racing",
         "available": "Available"
       },
       "details": "Account details",
-      "lastName": "Nom",
-      "username": "User name",
+      "lastName": "Last name",
+      "username": "Username",
       "firstName": "First name",
       "preferences": "Preferences",
       "custom_status_placeholder": "Write your personalised status"
     },
     "theme": {
-      "dark": "Shade",
-      "light": "Clair",
+      "dark": "Dark",
+      "light": "Light",
       "title": "Theme",
       "system": "System"
     },
@@ -70,7 +71,7 @@
     },
     "dailyGoal": {
       "edit": "Change your daily objective",
-      "save": "Register lens",
+      "save": "Register your goal",
       "title": "Daily objective"
     }
   }

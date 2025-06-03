@@ -1,26 +1,27 @@
 {
   "account": {
     "user": {
+      "membersince": "Miembro desde el",
       "email": "Dirección de correo electrónico",
       "status": {
         "dnd": "No molestar",
         "gym": "En el gimnasio",
         "busy": "Ocupado",
         "custom": "Personalizado",
-        "default": "¡Salut, j'utilise Stepify !",
+        "default": "Hola, ¡yo uso Stepify!",
         "running": "Carreras",
         "available": "Disponible"
       },
       "details": "Datos de la cuenta",
-      "lastName": "Nom",
+      "lastName": "Appellido",
       "username": "Nombre de usuario",
       "firstName": "Nombre",
       "preferences": "Preferencias",
       "custom_status_placeholder": "Escribe tu estado personalizado"
     },
     "theme": {
-      "dark": "Sombre",
-      "light": "Clair",
+      "dark": "Oscuro",
+      "light": "Claro",
       "title": "Tema",
       "system": "Sistema"
     },

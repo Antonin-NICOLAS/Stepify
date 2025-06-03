@@ -420,7 +420,7 @@ const AccountPage = () => {
               </div>
             </div>
             <div className="account-creation">
-              <span>Membre depuis le {formatDate(user?.createdAt)}</span>
+              <span>{t('account:account.user.membersince')} {formatDate(user?.createdAt)}</span>
             </div>
           </div>
         </div>
