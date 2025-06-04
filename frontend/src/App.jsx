@@ -6,7 +6,7 @@ import axios from "axios";
 import { Toaster } from "react-hot-toast";
 import AppRoutes from "./routes/AppRoutes.jsx";
 import "./App.css";
-import "./i18n";
+import "./context/i18n.js";
 import "./index.css";
 
 axios.defaults.baseURL =

@@ -7,7 +7,7 @@ import {
 } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import i18n from "../i18n";
+import i18n from "./i18n";
 import GlobalLoader from "../utils/GlobalLoader";
 
 const API_AUTH = process.env.NODE_ENV === "production" ? "/api/auth" : "/auth";

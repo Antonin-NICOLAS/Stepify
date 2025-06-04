@@ -885,7 +885,7 @@ const Rewards = () => {
   // Get dashboard content
   const getDashboardContent = () => {
     // If there are no unlocked rewards, show empty dashboard
-    if (!myRewards || myRewards.length === 0) {
+    if (!myRewards || rewardStats.unlocked === 0) {
       return getEmptyDashboardContent();
     }
 

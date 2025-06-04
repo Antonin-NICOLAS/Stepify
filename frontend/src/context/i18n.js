@@ -2,18 +2,18 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
-import CommonEN from "./locales/en/common.json";
-import CommonFR from "./locales/fr/common.json";
-import CommonES from "./locales/es/common.json";
-import CommonDE from "./locales/de/common.json";
-import AccountEN from "./locales/en/account.json";
-import AccountFR from "./locales/fr/account.json";
-import AccountES from "./locales/es/account.json";
-import AccountDE from "./locales/de/account.json";
-import AuthEN from "./locales/en/auth.json";
-import AuthFR from "./locales/fr/auth.json";
-import AuthES from "./locales/es/auth.json";
-import AuthDE from "./locales/de/auth.json";
+import CommonEN from "../languages/en/common.json";
+import CommonFR from "../languages/fr/common.json";
+import CommonES from "../languages/es/common.json";
+import CommonDE from "../languages/de/common.json";
+import AccountEN from "../languages/en/account.json";
+import AccountFR from "../languages/fr/account.json";
+import AccountES from "../languages/es/account.json";
+import AccountDE from "../languages/de/account.json";
+import AuthEN from "../languages/en/auth.json";
+import AuthFR from "../languages/fr/auth.json";
+import AuthES from "../languages/es/auth.json";
+import AuthDE from "../languages/de/auth.json";
 
 i18n
   .use(LanguageDetector)

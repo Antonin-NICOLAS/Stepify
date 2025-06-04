@@ -1,6 +1,6 @@
 import { createContext, useContext, useCallback, useState } from "react";
 import axios from "axios";
-import i18n from "../i18n";
+import i18n from "./i18n";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { useAuth } from "./AuthContext";
