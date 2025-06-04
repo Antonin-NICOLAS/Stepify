@@ -7,20 +7,27 @@
  * @param {Object} params - Les paramètres à remplacer dans le message
  * @param {Object} additionalData - Données supplémentaires à inclure dans la réponse
  */
-const sendLocalizedResponse = (res, statusCode, success, messagePath, params = {}, additionalData = {}) => {
-    const response = {
-        success,
-        ...additionalData
-    };
+const sendLocalizedResponse = (
+  res,
+  statusCode,
+  success,
+  messagePath,
+  params = {},
+  additionalData = {}
+) => {
+  const response = {
+    success,
+    ...additionalData,
+  };
 
-    if (success === true && messagePath) {
-        response.message = res.locals.t(messagePath, params);
-    }
-    if (success === false && messagePath) {
-        response.error = res.locals.t(messagePath, params);
-    }
+  if (success === true && messagePath) {
+    response.message = res.locals.t(messagePath, params);
+  }
+  if (success === false && messagePath) {
+    response.error = res.locals.t(messagePath, params);
+  }
 
-    res.status(statusCode).json(response);
+  res.status(statusCode).json(response);
 };
 
 /**
@@ -31,8 +38,21 @@ const sendLocalizedResponse = (res, statusCode, success, messagePath, params = {
  * @param {Object} params - Les paramètres à remplacer dans le message
  * @param {Object} additionalData - Données supplémentaires à inclure dans la réponse
  */
-const sendLocalizedError = (res, statusCode, errorPath, params = {}, additionalData = {}) => {
-    sendLocalizedResponse(res, statusCode, false, errorPath, params, additionalData);
+const sendLocalizedError = (
+  res,
+  statusCode,
+  errorPath,
+  params = {},
+  additionalData = {}
+) => {
+  sendLocalizedResponse(
+    res,
+    statusCode,
+    false,
+    errorPath,
+    params,
+    additionalData
+  );
 };
 
 /**
@@ -42,12 +62,17 @@ const sendLocalizedError = (res, statusCode, errorPath, params = {}, additionalD
  * @param {Object} params - Les paramètres à remplacer dans le message
  * @param {Object} additionalData - Données supplémentaires à inclure dans la réponse
  */
-const sendLocalizedSuccess = (res, successPath, params = {}, additionalData = {}) => {
-    sendLocalizedResponse(res, 200, true, successPath, params, additionalData);
+const sendLocalizedSuccess = (
+  res,
+  successPath,
+  params = {},
+  additionalData = {}
+) => {
+  sendLocalizedResponse(res, 200, true, successPath, params, additionalData);
 };
 
 module.exports = {
-    sendLocalizedResponse,
-    sendLocalizedError,
-    sendLocalizedSuccess
-}; 
+  sendLocalizedResponse,
+  sendLocalizedError,
+  sendLocalizedSuccess,
+};

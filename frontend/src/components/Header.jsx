@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 //context
-import { useTheme } from '../context/ThemeContext';
-import { useAuth } from '../context/AuthContext';
+import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 //images
 import Account from "../assets/account.png";
 import Logo from "../assets/icon.png";
@@ -21,8 +21,8 @@ import {
   Info,
   LogIn,
   LogOut,
-  Users
-} from 'lucide-react';
+  Users,
+} from "lucide-react";
 //CSS
 import "./Header.css";
 
@@ -36,7 +36,7 @@ function Header() {
   const sidebarRef = useRef(null);
 
   const toggleSidebar = () => {
-    setSidebarOpen(prev => !prev);
+    setSidebarOpen((prev) => !prev);
   };
 
   const handleLogout = () => {
@@ -62,10 +62,10 @@ function Header() {
     checkScreenSize();
 
     // Écoute les changements de taille
-    window.addEventListener('resize', checkScreenSize);
+    window.addEventListener("resize", checkScreenSize);
 
     return () => {
-      window.removeEventListener('resize', checkScreenSize);
+      window.removeEventListener("resize", checkScreenSize);
     };
   }, []);
 
@@ -73,19 +73,26 @@ function Header() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       // Si on est en vue mobile ET la sidebar est ouverte ET le clic n'est pas dans la sidebar
-      if (isMobileView && sidebarOpen && sidebarRef.current && closeMenuRef.current && !sidebarRef.current.contains(event.target) && !closeMenuRef.current.contains(event.target)) {
-        console.log('sidebar fermée')
+      if (
+        isMobileView &&
+        sidebarOpen &&
+        sidebarRef.current &&
+        closeMenuRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        !closeMenuRef.current.contains(event.target)
+      ) {
+        console.log("sidebar fermée");
         setSidebarOpen(false);
       }
     };
 
     // Ajoute l'écouteur seulement en vue mobile
     if (isMobileView) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isMobileView, sidebarOpen]);
 
@@ -121,12 +128,15 @@ function Header() {
               )}
             </div>
             <div className="sidebar__info">
-              <h3>{user ? (`${user.fullName}`) : ("Guest")}</h3>
+              <h3>{user ? `${user.fullName}` : "Guest"}</h3>
               <span>{user && user.email}</span>
             </div>
           </div>
           <div className="sidebar__close">
-            <button className="hide__sidebar sidebar__link" onClick={toggleSidebar}>
+            <button
+              className="hide__sidebar sidebar__link"
+              onClick={toggleSidebar}
+            >
               <ChevronsLeft />
               <span>Fermer le menu</span>
             </button>
@@ -136,12 +146,54 @@ function Header() {
             <div>
               <h3 className="sidebar__title nav">NAVIGATION</h3>
               <div className="sidebar__list">
-                <NavLink to="/dashboard" onClick={handleNavClick} className="sidebar__link"><LayoutDashboard /><span>Dashboard</span></NavLink>
-                <NavLink to="/steps" onClick={handleNavClick} className="sidebar__link"><Footprints /><span>Mes pas</span></NavLink>
-                <NavLink to="/challenges" onClick={handleNavClick} className="sidebar__link"><Dumbbell /><span>Défis</span></NavLink>
-                <NavLink to="/rewards" onClick={handleNavClick} className="sidebar__link"><Award /><span>Récompenses</span></NavLink>
-                <NavLink to="/leaderboard" onClick={handleNavClick} className="sidebar__link"><AlignStartVertical /><span>Classement</span></NavLink>
-                <NavLink to="/friends" onClick={handleNavClick} className="sidebar__link"><Users /><span>Amis</span></NavLink>
+                <NavLink
+                  to="/dashboard"
+                  onClick={handleNavClick}
+                  className="sidebar__link"
+                >
+                  <LayoutDashboard />
+                  <span>Dashboard</span>
+                </NavLink>
+                <NavLink
+                  to="/steps"
+                  onClick={handleNavClick}
+                  className="sidebar__link"
+                >
+                  <Footprints />
+                  <span>Mes pas</span>
+                </NavLink>
+                <NavLink
+                  to="/challenges"
+                  onClick={handleNavClick}
+                  className="sidebar__link"
+                >
+                  <Dumbbell />
+                  <span>Défis</span>
+                </NavLink>
+                <NavLink
+                  to="/rewards"
+                  onClick={handleNavClick}
+                  className="sidebar__link"
+                >
+                  <Award />
+                  <span>Récompenses</span>
+                </NavLink>
+                <NavLink
+                  to="/leaderboard"
+                  onClick={handleNavClick}
+                  className="sidebar__link"
+                >
+                  <AlignStartVertical />
+                  <span>Classement</span>
+                </NavLink>
+                <NavLink
+                  to="/friends"
+                  onClick={handleNavClick}
+                  className="sidebar__link"
+                >
+                  <Users />
+                  <span>Amis</span>
+                </NavLink>
               </div>
             </div>
 
@@ -149,22 +201,49 @@ function Header() {
               <h3 className="sidebar__title">GENERAL</h3>
               <div className="sidebar__list">
                 {user && (
-                  <NavLink to="/settings" onClick={handleNavClick} className="sidebar__link"><Settings /><span>Settings</span></NavLink>
+                  <NavLink
+                    to="/settings"
+                    onClick={handleNavClick}
+                    className="sidebar__link"
+                  >
+                    <Settings />
+                    <span>Settings</span>
+                  </NavLink>
                 )}
-                <NavLink to="/about" onClick={handleNavClick} className="sidebar__link"><Info /><span>About</span></NavLink>
+                <NavLink
+                  to="/about"
+                  onClick={handleNavClick}
+                  className="sidebar__link"
+                >
+                  <Info />
+                  <span>About</span>
+                </NavLink>
               </div>
             </div>
           </div>
 
           <div className="sidebar__actions">
-            <button className="sidebar__link sidebar__theme" onClick={toggleTheme}>
+            <button
+              className="sidebar__link sidebar__theme"
+              onClick={toggleTheme}
+            >
               {theme === "dark" ? <Sun /> : <Moon />}
               <span>Theme</span>
             </button>
             {isAuthenticated ? (
-              <button className="sidebar__link" onClick={handleLogout}><LogOut /><span>Log Out</span></button>
+              <button className="sidebar__link" onClick={handleLogout}>
+                <LogOut />
+                <span>Log Out</span>
+              </button>
             ) : (
-              <NavLink to="/login" onClick={handleNavClick} className="sidebar__link"><LogIn /><span>Log In</span></NavLink>
+              <NavLink
+                to="/login"
+                onClick={handleNavClick}
+                className="sidebar__link"
+              >
+                <LogIn />
+                <span>Log In</span>
+              </NavLink>
             )}
           </div>
         </div>

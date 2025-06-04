@@ -1,15 +1,24 @@
-const StepEntry = require('../models/StepEntry');
-const User = require('../models/User');
-const Notification = require('../models/Notification');
-const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
-const { parseAppleHealthData, parseSamsungHealthData } = require('../utils/ParseHealthData')
-const { updateUserStatsAfterImport, updateUserStats } = require('../helpers/StepHelpers');
-const { updateChallengeProgress } = require('./ChallengeController');
-const { computeXpForEntry } = require('../utils/CalculateXP');
-const { updateUserRewards } = require('../controllers/RewardController');
-const { calculateLevel } = require('../utils/LevelSystem');
-const { sendLocalizedError, sendLocalizedSuccess } = require('../utils/ResponseHelper');
-const csv = require('csv-parser');
+const StepEntry = require("../models/StepEntry");
+const User = require("../models/User");
+const Notification = require("../models/Notification");
+const { checkAuthorization } = require("../middlewares/VerifyAuthorization");
+const {
+  parseAppleHealthData,
+  parseSamsungHealthData,
+} = require("../utils/ParseHealthData");
+const {
+  updateUserStatsAfterImport,
+  updateUserStats,
+} = require("../helpers/StepHelpers");
+const { updateChallengeProgress } = require("./ChallengeController");
+const { computeXpForEntry } = require("../utils/CalculateXP");
+const { updateUserRewards } = require("../controllers/RewardController");
+const { calculateLevel } = require("../utils/LevelSystem");
+const {
+  sendLocalizedError,
+  sendLocalizedSuccess,
+} = require("../utils/ResponseHelper");
+const csv = require("csv-parser");
 
 // Récupérer toutes les entrées de l'utilisateur
 const getMySteps = async (req, res) => {
@@ -24,8 +33,8 @@ const getMySteps = async (req, res) => {
 
     return sendLocalizedSuccess(res, null, {}, { steps: entries });
   } catch (error) {
-    console.error('Error retrieving steps:', error);
-    return sendLocalizedError(res, 500, 'errors.steps.retrieve_error');
+    console.error("Error retrieving steps:", error);
+    return sendLocalizedError(res, 500, "errors.steps.retrieve_error");
   }
 };
 
@@ -41,7 +50,7 @@ const createStepEntry = async (req, res) => {
 
     // Validate hourlyData exists and has at least one entry
     if (!hourlyData || hourlyData.length === 0) {
-      return sendLocalizedError(res, 400, 'errors.steps.no_hourly_data');
+      return sendLocalizedError(res, 400, "errors.steps.no_hourly_data");
     }
 
     // Extract the first hourly entry (assuming one entry per request)
@@ -50,7 +59,7 @@ const createStepEntry = async (req, res) => {
 
     // Validate required fields in the hourly entry
     if (hour === undefined) {
-      return sendLocalizedError(res, 400, 'errors.steps.hour_required');
+      return sendLocalizedError(res, 400, "errors.steps.hour_required");
     }
 
     const parsedHour = parseInt(hour, 10);
@@ -60,35 +69,39 @@ const createStepEntry = async (req, res) => {
     const parsedActiveTime = parseFloat(activeTime);
 
     if (isNaN(parsedHour) || parsedHour < 0 || parsedHour > 23) {
-      return sendLocalizedError(res, 400, 'errors.steps.invalid_hour');
+      return sendLocalizedError(res, 400, "errors.steps.invalid_hour");
     }
 
     if (isNaN(parsedSteps) || parsedSteps < 0) {
-      return sendLocalizedError(res, 400, 'errors.steps.invalid_steps');
+      return sendLocalizedError(res, 400, "errors.steps.invalid_steps");
     }
 
     if (isNaN(parsedDistance) || parsedDistance < 0) {
-      return sendLocalizedError(res, 400, 'errors.steps.invalid_distance');
+      return sendLocalizedError(res, 400, "errors.steps.invalid_distance");
     }
 
     if (isNaN(parsedCalories) || parsedCalories < 0) {
-      return sendLocalizedError(res, 400, 'errors.steps.invalid_calories');
+      return sendLocalizedError(res, 400, "errors.steps.invalid_calories");
     }
 
     if (isNaN(parsedActiveTime) || parsedActiveTime < 0) {
-      return sendLocalizedError(res, 400, 'errors.steps.invalid_active_time');
+      return sendLocalizedError(res, 400, "errors.steps.invalid_active_time");
     }
 
     if (!mode || !date || !day) {
-      return sendLocalizedError(res, 400, 'errors.steps.invalid_mode');
+      return sendLocalizedError(res, 400, "errors.steps.invalid_mode");
     }
 
     const existingEntry = await StepEntry.findOne({ user: userId, day });
 
     if (existingEntry) {
-      const hourExists = existingEntry.hourlyData.some(data => data.hour === hour);
+      const hourExists = existingEntry.hourlyData.some(
+        (data) => data.hour === hour
+      );
       if (hourExists) {
-        return sendLocalizedError(res, 409, 'errors.steps.existing_entry', { hour });
+        return sendLocalizedError(res, 409, "errors.steps.existing_entry", {
+          hour,
+        });
       }
 
       existingEntry.hourlyData.push(hourlyEntry);
@@ -106,7 +119,12 @@ const createStepEntry = async (req, res) => {
       await updateUserLevel(userId);
       await updateUserRewards(userId);
 
-      return sendLocalizedSuccess(res, 'success.steps.updated', {}, { entry: existingEntry });
+      return sendLocalizedSuccess(
+        res,
+        "success.steps.updated",
+        {},
+        { entry: existingEntry }
+      );
     } else {
       const newEntry = await StepEntry.create({
         user: userId,
@@ -118,7 +136,7 @@ const createStepEntry = async (req, res) => {
         totalCalories: parsedCalories || 0,
         totalActiveTime: parsedActiveTime || 0,
         xp: computeXpForEntry(hourlyEntry),
-        isVerified: false
+        isVerified: false,
       });
 
       await updateUserStats(userId);
@@ -126,11 +144,16 @@ const createStepEntry = async (req, res) => {
       await updateUserLevel(userId);
       await updateUserRewards(userId);
 
-      return sendLocalizedSuccess(res, 'success.steps.created', {}, { entry: newEntry });
+      return sendLocalizedSuccess(
+        res,
+        "success.steps.created",
+        {},
+        { entry: newEntry }
+      );
     }
   } catch (error) {
-    console.error('Error creating step entry:', error);
-    return sendLocalizedError(res, 500, 'errors.steps.creation_error');
+    console.error("Error creating step entry:", error);
+    return sendLocalizedError(res, 500, "errors.steps.creation_error");
   }
 };
 
@@ -145,11 +168,17 @@ const updateStepEntry = async (req, res) => {
     const entry = await StepEntry.findOne({ _id: entryId, user: userId });
 
     if (!entry) {
-      return sendLocalizedError(res, 404, 'errors.steps.not_found');
+      return sendLocalizedError(res, 404, "errors.steps.not_found");
     }
 
-    const allowedUpdates = ['totalSteps', 'totalDistance', 'totalCalories', 'totalActiveTime', 'dominantMode'];
-    allowedUpdates.forEach(field => {
+    const allowedUpdates = [
+      "totalSteps",
+      "totalDistance",
+      "totalCalories",
+      "totalActiveTime",
+      "dominantMode",
+    ];
+    allowedUpdates.forEach((field) => {
       if (updateData[field] !== undefined) {
         entry[field] = updateData[field];
       }
@@ -163,10 +192,10 @@ const updateStepEntry = async (req, res) => {
     await updateUserLevel(userId);
     await updateUserRewards(userId);
 
-    return sendLocalizedSuccess(res, 'success.steps.updated', {}, { entry });
+    return sendLocalizedSuccess(res, "success.steps.updated", {}, { entry });
   } catch (error) {
-    console.error('Error updating step entry:', error);
-    return sendLocalizedError(res, 500, 'errors.steps.update_error');
+    console.error("Error updating step entry:", error);
+    return sendLocalizedError(res, 500, "errors.steps.update_error");
   }
 };
 
@@ -180,7 +209,7 @@ const FavoriteStepEntry = async (req, res) => {
     const entry = await StepEntry.findOne({ _id: entryId, user: userId });
 
     if (!entry) {
-      return sendLocalizedError(res, 404, 'errors.steps.not_found');
+      return sendLocalizedError(res, 404, "errors.steps.not_found");
     }
 
     entry.isFavorite = !entry.isFavorite;
@@ -188,8 +217,8 @@ const FavoriteStepEntry = async (req, res) => {
 
     return sendLocalizedSuccess(res, null, {}, { entry });
   } catch (error) {
-    console.error('Error favoriting step entry:', error);
-    return sendLocalizedError(res, 500, 'errors.steps.favorite_error');
+    console.error("Error favoriting step entry:", error);
+    return sendLocalizedError(res, 500, "errors.steps.favorite_error");
   }
 };
 
@@ -203,7 +232,7 @@ const deleteStepEntry = async (req, res) => {
     const entry = await StepEntry.findOne({ _id: entryId, user: userId });
 
     if (!entry) {
-      return sendLocalizedError(res, 404, 'errors.steps.not_found');
+      return sendLocalizedError(res, 404, "errors.steps.not_found");
     }
 
     await entry.remove();
@@ -211,10 +240,10 @@ const deleteStepEntry = async (req, res) => {
     await updateUserRewards(userId);
     await updateChallengeProgress(userId);
 
-    return sendLocalizedSuccess(res, 'success.steps.deleted');
+    return sendLocalizedSuccess(res, "success.steps.deleted");
   } catch (error) {
-    console.error('Error deleting step entry:', error);
-    return sendLocalizedError(res, 500, 'errors.steps.delete_error');
+    console.error("Error deleting step entry:", error);
+    return sendLocalizedError(res, 500, "errors.steps.delete_error");
   }
 };
 
@@ -224,43 +253,49 @@ const importHealthData = async (req, res) => {
   const file = req.file; // image envoyée via multer
 
   if (!file) {
-    return sendLocalizedError(res, 400, 'errors.profile.no_file_provided');
+    return sendLocalizedError(res, 400, "errors.profile.no_file_provided");
   }
 
-  if (file.size > 100 * 1024 * 1024) { // 100MB
-    return sendLocalizedError(res, 400, 'errors.steps.file_too_big');
+  if (file.size > 100 * 1024 * 1024) {
+    // 100MB
+    return sendLocalizedError(res, 400, "errors.steps.file_too_big");
   }
 
   if (checkAuthorization(req, res, userId)) return;
 
   try {
-
     let entries = [];
 
-    if (req.file.mimetype === 'text/xml' || req.file.originalname.endsWith('.xml')) {
+    if (
+      req.file.mimetype === "text/xml" ||
+      req.file.originalname.endsWith(".xml")
+    ) {
       // Utilisez directement le buffer
-      const xmlData = req.file.buffer.toString('utf8');
+      const xmlData = req.file.buffer.toString("utf8");
       entries = await parseAppleHealthData(xmlData, userId);
-    } else if (req.file.mimetype === 'text/csv' || req.file.originalname.endsWith('.csv')) {
+    } else if (
+      req.file.mimetype === "text/csv" ||
+      req.file.originalname.endsWith(".csv")
+    ) {
       // Pour CSV, utilisez le buffer avec csv-parser
       const csvData = [];
-      const stream = require('stream');
+      const stream = require("stream");
       const bufferStream = new stream.PassThrough();
       bufferStream.end(req.file.buffer);
 
       await new Promise((resolve, reject) => {
         bufferStream
           .pipe(csv())
-          .on('data', (row) => csvData.push(row))
-          .on('end', resolve)
-          .on('error', reject);
+          .on("data", (row) => csvData.push(row))
+          .on("end", resolve)
+          .on("error", reject);
       });
 
       entries = parseSamsungHealthData(csvData, userId);
     }
 
-    const filteredEntries = entries.filter(entry =>
-      new Date(entry.date) >= new Date('2025-05-01T00:00:00Z')
+    const filteredEntries = entries.filter(
+      (entry) => new Date(entry.date) >= new Date("2025-05-01T00:00:00Z")
     );
 
     // Sauvegarder en base
@@ -270,10 +305,15 @@ const importHealthData = async (req, res) => {
     await updateUserLevel(userId);
     await updateUserRewards(userId);
 
-    return sendLocalizedSuccess(res, 'success.steps.created', {}, { entries: filteredEntries });
+    return sendLocalizedSuccess(
+      res,
+      "success.steps.created",
+      {},
+      { entries: filteredEntries }
+    );
   } catch (error) {
-    console.error('Error importing health data:', error);
-    return sendLocalizedError(res, 500, 'errors.steps.creation_error');
+    console.error("Error importing health data:", error);
+    return sendLocalizedError(res, 500, "errors.steps.creation_error");
   }
 };
 
@@ -291,7 +331,7 @@ const updateUserLevel = async (userId) => {
       await createLevelUpNotification(userId, newLevel);
     }
   } catch (error) {
-    console.error('Error updating user level:', error);
+    console.error("Error updating user level:", error);
   }
 };
 
@@ -300,18 +340,18 @@ const createLevelUpNotification = async (userId, newLevel) => {
     await Notification.create({
       recipient: userId,
       sender: null,
-      type: 'level_up',
+      type: "level_up",
       content: {
         en: `Congratulations! You've reached level ${newLevel}!`,
         fr: `Félicitations ! Vous avez atteint le niveau ${newLevel} !`,
         es: `¡Felicitaciones! ¡Has alcanzado el nivel ${newLevel}!`,
-        de: `Herzlichen Glückwunsch! Du hast Level ${newLevel} erreicht!`
+        de: `Herzlichen Glückwunsch! Du hast Level ${newLevel} erreicht!`,
       },
-      status: 'unread',
-      DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      status: "unread",
+      DeleteAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
   } catch (error) {
-    console.error('Error creating level up notification:', error);
+    console.error("Error creating level up notification:", error);
   }
 };
 
@@ -321,5 +361,5 @@ module.exports = {
   updateStepEntry,
   FavoriteStepEntry,
   deleteStepEntry,
-  importHealthData
+  importHealthData,
 };

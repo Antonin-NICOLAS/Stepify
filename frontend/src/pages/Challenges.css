@@ -6,7 +6,6 @@
 }
 
 .challenges-container {
-
   /* Header Styles */
   .challenges-header {
     margin-bottom: 2rem;
@@ -770,7 +769,6 @@
     border-radius: 50%;
     transform: translateY(-50%);
   }
-
 
   input:checked[type="checkbox"]::before {
     background-color: var(--Couleur1);

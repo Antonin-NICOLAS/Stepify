@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,200..1000&display=swap");
 
 /*=============== VARIABLES CSS ===============*/
-#root{
+#root {
   width: 100%;
   overflow-x: hidden;
 }
@@ -11,25 +11,26 @@
 
   /*========== Colors ==========*/
   /*Color mode HSL(hue, saturation, lightness)*/
-  --background: #F5F9FA;
-  --Couleur: #212E53;
-  --Couleur1: #4A919E;
-  --Couleur2: #BED3C3;
-  --Couleur3: #EBACA2;
-  --Couleur4: #CE6A6B;
-  --Noir: #1E1E2F;
-  --Gris: #4B4B6A;
-  --turquoise: #4AC9BE;
-  --bleu: #2B5A73;
-  --blanc: #E2E8F0;
+  --background: #f5f9fa;
+  --Couleur: #212e53;
+  --Couleur1: #4a919e;
+  --Couleur2: #bed3c3;
+  --Couleur3: #ebaca2;
+  --Couleur4: #ce6a6b;
+  --Noir: #1e1e2f;
+  --Gris: #4b4b6a;
+  --turquoise: #4ac9be;
+  --bleu: #2b5a73;
+  --blanc: #e2e8f0;
   --first-color: hsl(228, 85%, 63%);
   --title-color: hsl(228, 18%, 16%);
   --text-color: hsl(228, 8%, 56%);
   --body-color: hsl(228, 100%, 99%);
-  --shadow-color: hsla(228, 80%, 4%, .1);
+  --shadow-color: hsla(228, 80%, 4%, 0.1);
 
   --shadow: 0 4px 6px var(--shadow-color), 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px var(--shadow-color),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --transition: all 0.3s ease;
   --radius: 8px;
   --radius-lg: 12px;
@@ -37,9 +38,9 @@
   /*========== Font and typography ==========*/
   /*.5rem = 8px | 1rem = 16px ...*/
   --body-font: "Nunito Sans", system-ui;
-  --normal-font-size: .938rem;
-  --smaller-font-size: .75rem;
-  --tiny-font-size: .75rem;
+  --normal-font-size: 0.938rem;
+  --smaller-font-size: 0.75rem;
+  --tiny-font-size: 0.75rem;
 
   /*========== Font weight ==========*/
   --font-regular: 400;
@@ -52,29 +53,29 @@
 
 /*=============== VARIABLES DARK THEME ===============*/
 body.dark-theme {
-  --background: #0F1B21;
+  --background: #0f1b21;
   --Couleur: #dae9f7;
-  --Couleur1: #212E53;
-  --Couleur2: #89B4A1;
-  --Couleur3: #E29B94;
-  --Couleur4: #A65051;
-  --Noir: #E2E8F0;
-  --Gris: #AAB8C2;
-  --turquoise: #4AC9BE;
-  --bleu: #39728B;
-  --blanc: #1C2C34;
+  --Couleur1: #212e53;
+  --Couleur2: #89b4a1;
+  --Couleur3: #e29b94;
+  --Couleur4: #a65051;
+  --Noir: #e2e8f0;
+  --Gris: #aab8c2;
+  --turquoise: #4ac9be;
+  --bleu: #39728b;
+  --blanc: #1c2c34;
   --first-color: hsl(228, 70%, 63%);
   --title-color: hsl(228, 18%, 96%);
   --text-color: hsl(228, 12%, 61%);
   --body-color: hsl(228, 24%, 16%);
-  --shadow-color: hsla(228, 80%, 4%, .3);
+  --shadow-color: hsla(228, 80%, 4%, 0.3);
 }
 
 /*========== Responsive typography ==========*/
 @media screen and (min-width: 1150px) {
   :root {
     --normal-font-size: 1rem;
-    --smaller-font-size: .813rem;
+    --smaller-font-size: 0.813rem;
   }
 }
 
@@ -95,7 +96,7 @@ body {
   font-size: var(--normal-font-size);
   background-color: var(--body-color);
   color: var(--text-color);
-  transition: background-color .4s;
+  transition: background-color 0.4s;
 }
 
 a {
@@ -108,6 +109,6 @@ img {
   height: auto;
 }
 
-button{
+button {
   all: unset;
 }

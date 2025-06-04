@@ -314,11 +314,11 @@
     border-radius: 3px;
   }
 
-  .checkbox-container:hover input~.checkmark {
+  .checkbox-container:hover input ~ .checkmark {
     background-color: var(--Couleur2);
   }
 
-  .checkbox-container input:checked~.checkmark {
+  .checkbox-container input:checked ~ .checkmark {
     background-color: var(--Couleur1);
     border-color: var(--Couleur1);
   }
@@ -329,7 +329,7 @@
     display: none;
   }
 
-  .checkbox-container input:checked~.checkmark:after {
+  .checkbox-container input:checked ~ .checkmark:after {
     display: block;
   }
 
@@ -371,8 +371,8 @@
   }
 
   .submit-button {
-    width: -moz-available;          /* WebKit-based browsers will ignore this. */
-    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+    width: -moz-available; /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available; /* Mozilla-based browsers will ignore this. */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -464,7 +464,7 @@
       max-height: 375px;
     }
 
-    .auth-info{
+    .auth-info {
       padding: 1rem;
     }
 

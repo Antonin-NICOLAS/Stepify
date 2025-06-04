@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
-const Notification = require('../models/Notification');
-const StepEntry = require('../models/StepEntry');
-const User = require('../models/User');
-const Challenge = require('../models/Challenge');
+const mongoose = require("mongoose");
+const Notification = require("../models/Notification");
+const StepEntry = require("../models/StepEntry");
+const User = require("../models/User");
+const Challenge = require("../models/Challenge");
 
 // Helper function to generate a random 6-character access code (A-Z, 0-9)
 const generateAccessCode = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
   for (let i = 0; i < 6; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
@@ -21,10 +21,10 @@ const validateChallengeDates = (startDate, endDate) => {
   const end = endDate ? new Date(endDate) : null;
 
   if (start < now) {
-    return { valid: false, error: 'errors.challenges.past_start_date' };
+    return { valid: false, error: "errors.challenges.past_start_date" };
   }
   if (end && end <= start) {
-    return { valid: false, error: 'errors.challenges.invalid_end_date' };
+    return { valid: false, error: "errors.challenges.invalid_end_date" };
   }
   return { valid: true };
 };
@@ -35,15 +35,15 @@ const determineChallengeStatus = (startDate, endDate) => {
   const start = new Date(startDate);
   const end = endDate ? new Date(endDate) : null;
 
-  if (start > now) return 'upcoming';
-  if (end && end < now) return 'completed';
-  return 'active';
+  if (start > now) return "upcoming";
+  if (end && end < now) return "completed";
+  return "active";
 };
 
 const calculateUserProgress = async (userId, challenge) => {
   try {
     const user = await User.findById(userId);
-    if (!user) throw new Error('User not found');
+    if (!user) throw new Error("User not found");
 
     const now = new Date();
     const challengeStart = new Date(challenge.startDate);
@@ -54,7 +54,7 @@ const calculateUserProgress = async (userId, challenge) => {
       return {
         progress: 0,
         completed: false,
-        details: { reason: 'Challenge not active' }
+        details: { reason: "Challenge not active" },
       };
     }
 
@@ -72,99 +72,101 @@ const calculateUserProgress = async (userId, challenge) => {
     const details = { activityType: challenge.activityType };
 
     switch (challenge.activityType) {
-      case 'steps':
-      case 'steps-time':
+      case "steps":
+      case "steps-time":
         const stepsData = await StepEntry.aggregate([
           {
             $match: {
               user: mongoose.Types.ObjectId(userId),
-              date: { $gte: challengeStart, $lte: challengeEnd || now }
-            }
+              date: { $gte: challengeStart, $lte: challengeEnd || now },
+            },
           },
-          { $group: { _id: null, total: { $sum: "$totalSteps" } } }
+          { $group: { _id: null, total: { $sum: "$totalSteps" } } },
         ]);
         userValue = stepsData[0]?.total || 0;
         details.steps = userValue;
         break;
 
-      case 'distance':
-      case 'distance-time':
+      case "distance":
+      case "distance-time":
         const distanceData = await StepEntry.aggregate([
           {
             $match: {
               user: mongoose.Types.ObjectId(userId),
-              date: { $gte: challengeStart, $lte: challengeEnd || now }
-            }
+              date: { $gte: challengeStart, $lte: challengeEnd || now },
+            },
           },
-          { $group: { _id: null, total: { $sum: "$totalDistance" } } }
+          { $group: { _id: null, total: { $sum: "$totalDistance" } } },
         ]);
         userValue = distanceData[0]?.total || 0;
         details.distance = userValue;
         break;
 
-      case 'calories':
-      case 'calories-time':
+      case "calories":
+      case "calories-time":
         const caloriesData = await StepEntry.aggregate([
           {
             $match: {
               user: mongoose.Types.ObjectId(userId),
-              date: { $gte: challengeStart, $lte: challengeEnd || now }
-            }
+              date: { $gte: challengeStart, $lte: challengeEnd || now },
+            },
           },
-          { $group: { _id: null, total: { $sum: "$totalCalories" } } }
+          { $group: { _id: null, total: { $sum: "$totalCalories" } } },
         ]);
         userValue = caloriesData[0]?.total || 0;
         details.calories = userValue;
         break;
 
-      case 'xp':
-      case 'xp-time':
+      case "xp":
+      case "xp-time":
         userValue = user.totalXP || 0;
         // Pour les challenges XP, on soustrait la valeur initiale
-        const participant = challenge.participants.find(p => p.user.toString() === userId);
+        const participant = challenge.participants.find(
+          (p) => p.user.toString() === userId
+        );
         const initialXP = participant?.initialXP || userValue;
         userValue -= initialXP;
         details.xp = userValue;
         details.initialXP = initialXP;
         break;
 
-      case 'any':
+      case "any":
         // Prend la meilleure progression parmi toutes les métriques
         const [steps, distance, calories] = await Promise.all([
           StepEntry.aggregate([
             {
               $match: {
                 user: mongoose.Types.ObjectId(userId),
-                date: { $gte: challengeStart, $lte: challengeEnd || now }
-              }
+                date: { $gte: challengeStart, $lte: challengeEnd || now },
+              },
             },
-            { $group: { _id: null, total: { $sum: "$totalSteps" } } }
+            { $group: { _id: null, total: { $sum: "$totalSteps" } } },
           ]),
           StepEntry.aggregate([
             {
               $match: {
                 user: mongoose.Types.ObjectId(userId),
-                date: { $gte: challengeStart, $lte: challengeEnd || now }
-              }
+                date: { $gte: challengeStart, $lte: challengeEnd || now },
+              },
             },
-            { $group: { _id: null, total: { $sum: "$totalDistance" } } }
+            { $group: { _id: null, total: { $sum: "$totalDistance" } } },
           ]),
           StepEntry.aggregate([
             {
               $match: {
                 user: mongoose.Types.ObjectId(userId),
-                date: { $gte: challengeStart, $lte: challengeEnd || now }
-              }
+                date: { $gte: challengeStart, $lte: challengeEnd || now },
+              },
             },
-            { $group: { _id: null, total: { $sum: "$totalCalories" } } }
-          ])
+            { $group: { _id: null, total: { $sum: "$totalCalories" } } },
+          ]),
         ]);
 
         const values = [
           steps[0]?.total || 0,
           distance[0]?.total || 0,
           calories[0]?.total || 0,
-          user.totalXP || 0
+          user.totalXP || 0,
         ];
 
         userValue = Math.max(...values);
@@ -172,24 +174,32 @@ const calculateUserProgress = async (userId, challenge) => {
         break;
 
       default:
-        throw new Error('Unsupported activity type');
+        throw new Error("Unsupported activity type");
     }
 
     // Calculer la progression en fonction du type de challenge
     let progress = 0;
     let completed = false;
 
-    if (challenge.activityType.endsWith('-time')) {
+    if (challenge.activityType.endsWith("-time")) {
       const dailyGoal = challenge.goal;
       const startDate = new Date(challenge.startDate);
-      const endDate = challenge.endDate ? new Date(challenge.endDate) : new Date();
+      const endDate = challenge.endDate
+        ? new Date(challenge.endDate)
+        : new Date();
 
       // Pour les nouveaux participants, on ne compte que les jours depuis leur arrivée
       if (participant && participant.joinedAt > startDate) {
         startDate = new Date(participant.joinedAt);
       }
 
-      const achievedDays = await calculateAchievedDays(userId, challenge, dailyGoal, startDate, endDate);
+      const achievedDays = await calculateAchievedDays(
+        userId,
+        challenge,
+        dailyGoal,
+        startDate,
+        endDate
+      );
       progress = Math.min(100, (achievedDays / challenge.time) * 100);
       completed = achievedDays >= challenge.time;
       details.achievedDays = achievedDays;
@@ -203,15 +213,14 @@ const calculateUserProgress = async (userId, challenge) => {
     return {
       progress: Math.round(progress * 100) / 100, // Arrondi à 2 décimales
       completed,
-      details
+      details,
     };
-
   } catch (error) {
-    console.error('Error calculating user progress:', error);
+    console.error("Error calculating user progress:", error);
     return {
       progress: 0,
       completed: false,
-      details: { error: error.message }
+      details: { error: error.message },
     };
   }
 };
@@ -221,18 +230,17 @@ const updateSingleChallengeProgress = async (userId, challengeId) => {
     const now = new Date();
     const challenge = await Challenge.findOne({
       _id: challengeId,
-      'participants.user': userId,
-      status: 'active',
+      "participants.user": userId,
+      status: "active",
       startDate: { $lte: now },
-      $or: [
-        { endDate: null },
-        { endDate: { $gte: now } }
-      ]
-    }).populate('participants.user');
+      $or: [{ endDate: null }, { endDate: { $gte: now } }],
+    }).populate("participants.user");
 
     if (!challenge) return;
 
-    const participant = challenge.participants.find(p => p.user._id.toString() === userId);
+    const participant = challenge.participants.find(
+      (p) => p.user._id.toString() === userId
+    );
     if (!participant) return;
 
     const progressData = await calculateUserProgress(userId, challenge);
@@ -243,33 +251,41 @@ const updateSingleChallengeProgress = async (userId, challengeId) => {
 
     if (progressData.completed && !participant.xpEarned) {
       participant.xpEarned = challenge.xpReward;
-      await User.findByIdAndUpdate(userId, { $inc: { totalXP: challenge.xpReward } });
+      await User.findByIdAndUpdate(userId, {
+        $inc: { totalXP: challenge.xpReward },
+      });
 
       await Notification.create({
         recipient: userId,
-        type: 'challenge_complete',
+        type: "challenge_complete",
         challenge: challenge._id,
         content: {
           en: `You completed "${challenge.name.en}"! +${challenge.xpReward}XP`,
-          fr: `Défi "${challenge.name.fr}" réussi ! +${challenge.xpReward}XP`
+          fr: `Défi "${challenge.name.fr}" réussi ! +${challenge.xpReward}XP`,
         },
-        status: 'unread'
+        status: "unread",
       });
     }
 
     await challenge.save();
   } catch (error) {
-    console.error('Single challenge progress update error:', error);
+    console.error("Single challenge progress update error:", error);
   }
 };
 
 /** Calcule le nombre de jours où l'objectif quotidien a été atteint */
-const calculateAchievedDays = async (userId, challenge, dailyGoal, startDate, endDate) => {
+const calculateAchievedDays = async (
+  userId,
+  challenge,
+  dailyGoal,
+  startDate,
+  endDate
+) => {
   // Pour les challenges de type 'xp-time', on utilise les données utilisateur
-  if (challenge.activityType === 'xp-time') {
+  if (challenge.activityType === "xp-time") {
     const xpEntries = await StepEntry.find({
       user: userId,
-      date: { $gte: startDate, $lte: endDate }
+      date: { $gte: startDate, $lte: endDate },
     }).sort({ date: 1 });
 
     let currentXP = (await User.findById(userId)).totalXP;
@@ -280,7 +296,7 @@ const calculateAchievedDays = async (userId, challenge, dailyGoal, startDate, en
       const entry = xpEntries[i];
       const prevXP = currentXP - entry.xp;
       const dailyXP = currentXP - prevXP;
-      
+
       if (dailyXP >= dailyGoal) {
         achievedDays++;
       }
@@ -292,26 +308,26 @@ const calculateAchievedDays = async (userId, challenge, dailyGoal, startDate, en
 
   // Pour les autres types time-based
   const aggregation = await StepEntry.aggregate([
-    { 
-      $match: { 
+    {
+      $match: {
         user: mongoose.Types.ObjectId(userId),
-        date: { $gte: startDate, $lte: endDate }
-      }
+        date: { $gte: startDate, $lte: endDate },
+      },
     },
     {
       $group: {
         _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-        total: { 
-          $sum: getFieldForActivityType(challenge.activityType)
-        }
-      }
+        total: {
+          $sum: getFieldForActivityType(challenge.activityType),
+        },
+      },
     },
     {
-      $match: { total: { $gte: dailyGoal } }
+      $match: { total: { $gte: dailyGoal } },
     },
     {
-      $count: "achievedDays"
-    }
+      $count: "achievedDays",
+    },
   ]);
 
   return aggregation[0]?.achievedDays || 0;
@@ -322,10 +338,14 @@ const calculateAchievedDays = async (userId, challenge, dailyGoal, startDate, en
  */
 const getFieldForActivityType = (activityType) => {
   switch (activityType) {
-    case 'steps-time': return '$totalSteps';
-    case 'distance-time': return '$totalDistance';
-    case 'calories-time': return '$totalCalories';
-    default: return '$totalSteps';
+    case "steps-time":
+      return "$totalSteps";
+    case "distance-time":
+      return "$totalDistance";
+    case "calories-time":
+      return "$totalCalories";
+    default:
+      return "$totalSteps";
   }
 };
 
@@ -334,5 +354,5 @@ module.exports = {
   validateChallengeDates,
   determineChallengeStatus,
   calculateUserProgress,
-  updateSingleChallengeProgress
+  updateSingleChallengeProgress,
 };

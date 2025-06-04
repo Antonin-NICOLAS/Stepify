@@ -1,17 +1,17 @@
-import { useNavigate, useLocation, Link } from "react-router-dom"
-import "./NotFound.css"
-import { Home, ArrowLeft, Search } from "lucide-react"
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import "./NotFound.css";
+import { Home, ArrowLeft, Search } from "lucide-react";
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
 
   const goBack = () => {
-      navigate(-1);
-  }
+    navigate(-1);
+  };
 
   const goHome = () => {
     navigate("/");
-  }
+  };
 
   return (
     <div className="not-found-container">
@@ -29,7 +29,8 @@ const NotFoundPage = () => {
 
           <h1 className="error-title">Page Not Found</h1>
           <p className="error-message">
-            Oops! The page you're looking for seems to have wandered off on its own adventure.
+            Oops! The page you're looking for seems to have wandered off on its
+            own adventure.
           </p>
 
           <div className="illustration">
@@ -51,9 +52,12 @@ const NotFoundPage = () => {
           </div>
 
           <div className="search-container">
-            <div className="search-label">Or try searching for something else:</div>
+            <div className="search-label">
+              Or try searching for something else:
+            </div>
             <div className="search-box">
-              <input type="text" placeholder="Search..." /> {/* TODO: search function + french version */}
+              <input type="text" placeholder="Search..." />{" "}
+              {/* TODO: search function + french version */}
               <button className="search-btn">
                 <Search size={18} />
               </button>
@@ -80,7 +84,7 @@ const NotFoundPage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NotFoundPage
+export default NotFoundPage;

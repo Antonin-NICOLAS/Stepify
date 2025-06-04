@@ -676,7 +676,7 @@
   display: none;
 }
 
-.showcase-button.active.no-vitrine{
+.showcase-button.active.no-vitrine {
   display: flex;
 }
 
@@ -755,7 +755,11 @@
   right: -10px;
   width: 30px;
   height: 30px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
   animation: shine 3s infinite;
 }
 

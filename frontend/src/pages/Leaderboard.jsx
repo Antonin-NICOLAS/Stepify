@@ -1,14 +1,14 @@
-import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
-import Select from "react-select"
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import Select from "react-select";
 // Context
-import { useChallenge } from "../hooks/useChallenges"
-import { useNotifications } from "../hooks/useNotifications"
-import { useLeaderboard } from "../hooks/useLeaderboard"
-import { useFriends } from "../hooks/useFriends"
-import { useAuth } from "../context/AuthContext"
-import { useUser } from "../context/UserContext"
-import GlobalLoader from "../utils/GlobalLoader"
+import { useChallenge } from "../hooks/useChallenges";
+import { useNotifications } from "../hooks/useNotifications";
+import { useLeaderboard } from "../hooks/useLeaderboard";
+import { useFriends } from "../hooks/useFriends";
+import { useAuth } from "../context/AuthContext";
+import { useUser } from "../context/UserContext";
+import GlobalLoader from "../utils/GlobalLoader";
 // Icons
 import {
   Trophy,
@@ -35,19 +35,19 @@ import {
   Footprints,
   Spline,
   Bike,
-} from "lucide-react"
+} from "lucide-react";
 //Charts
-import { Line, Pie } from "react-chartjs-2"
-import { Chart, registerables } from "chart.js"
+import { Line, Pie } from "react-chartjs-2";
+import { Chart, registerables } from "chart.js";
 // CSS
-import "./Leaderboard.css"
+import "./Leaderboard.css";
 
 // Register Chart.js components
-Chart.register(...registerables)
+Chart.register(...registerables);
 
 const Leaderboard = () => {
-  const { user } = useAuth()
-  const { getUserProfile } = useUser()
+  const { user } = useAuth();
+  const { getUserProfile } = useUser();
   const {
     users,
     friendsData,
@@ -57,30 +57,32 @@ const Leaderboard = () => {
     fetchFriendsLeaderboard,
     fetchChallengesLeaderboard,
     fetchRewardsLeaderboard,
-  } = useLeaderboard(user?._id)
+  } = useLeaderboard(user?._id);
 
-  const { joinChallenge } = useChallenge(user?._id)
-  const { sendFriendRequest, addComment, sendMessage } = useNotifications(user?._id)
-  const { searchUsers } = useFriends(user?._id)
+  const { joinChallenge } = useChallenge(user?._id);
+  const { sendFriendRequest, addComment, sendMessage } = useNotifications(
+    user?._id
+  );
+  const { searchUsers } = useFriends(user?._id);
 
   // State for leaderboard type
-  const [leaderboardType, setLeaderboardType] = useState("xp")
-  const [timeFrame, setTimeFrame] = useState("all-time")
-  const [activityMode, setActivityMode] = useState("all")
+  const [leaderboardType, setLeaderboardType] = useState("xp");
+  const [timeFrame, setTimeFrame] = useState("all-time");
+  const [activityMode, setActivityMode] = useState("all");
 
   // State for filters
-  const [filterFriends, setFilterFriends] = useState(false)
-  const [showFilters, setShowFilters] = useState(false)
+  const [filterFriends, setFilterFriends] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   // State for search
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState("");
 
   // State for user profile modal
-  const [selectedUser, setSelectedUser] = useState(null)
-  const [showUserModal, setShowUserModal] = useState(false)
-  const [activeTab, setActiveTab] = useState("general")
-  const [isLoading, setIsLoading] = useState(false)
-  const [friends, setFriends] = useState([])
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("general");
+  const [isLoading, setIsLoading] = useState(false);
+  const [friends, setFriends] = useState([]);
 
   // Handle filter changes
   useEffect(() => {
@@ -91,34 +93,48 @@ const Leaderboard = () => {
         activityMode,
         filterFriends,
         searchQuery,
-      }
-      fetchLeaderboardData(filters)
+      };
+      fetchLeaderboardData(filters);
     }
-  }, [leaderboardType, timeFrame, activityMode, filterFriends, searchQuery, user?._id, fetchLeaderboardData])
+  }, [
+    leaderboardType,
+    timeFrame,
+    activityMode,
+    filterFriends,
+    searchQuery,
+    user?._id,
+    fetchLeaderboardData,
+  ]);
 
   // Handle tab changes
   useEffect(() => {
     const fetchAll = async () => {
       if (user?._id) {
-        setIsLoading(true)
+        setIsLoading(true);
         switch (activeTab) {
           case "friends":
-            await fetchFriendsLeaderboard({ type: leaderboardType, timeFrame })
-            break
+            await fetchFriendsLeaderboard({ type: leaderboardType, timeFrame });
+            break;
           case "challenges":
-            await fetchChallengesLeaderboard()
-            break
+            await fetchChallengesLeaderboard();
+            break;
           case "rewards":
-            await fetchRewardsLeaderboard()
-            break
+            await fetchRewardsLeaderboard();
+            break;
           default:
-            await fetchLeaderboardData({ type: leaderboardType, timeFrame, activityMode, filterFriends, searchQuery })
-            break
+            await fetchLeaderboardData({
+              type: leaderboardType,
+              timeFrame,
+              activityMode,
+              filterFriends,
+              searchQuery,
+            });
+            break;
         }
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
-    fetchAll()
+    };
+    fetchAll();
   }, [
     activeTab,
     leaderboardType,
@@ -128,17 +144,17 @@ const Leaderboard = () => {
     fetchChallengesLeaderboard,
     fetchRewardsLeaderboard,
     fetchLeaderboardData,
-  ])
+  ]);
 
   useEffect(() => {
     if (user && user.friends) {
-      setFriends(user.friends)
+      setFriends(user.friends);
     }
-  }, [user])
+  }, [user]);
 
   // Filter users based on current filters and search
   const filteredUsers = () => {
-    let filtered = [...users]
+    let filtered = [...users];
 
     // Apply search filter
     if (searchQuery) {
@@ -146,25 +162,27 @@ const Leaderboard = () => {
         (user) =>
           user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.lastName.toLowerCase().includes(searchQuery.toLowerCase()),
-      )
+          user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
     }
 
     // Apply friends filter
     if (filterFriends && user) {
       filtered = filtered.filter(
-        (user) => user?.friends.some((friend) => friend.userId === user._id) || user._id === user?._id,
-      )
+        (user) =>
+          user?.friends.some((friend) => friend.userId === user._id) ||
+          user._id === user?._id
+      );
     }
 
     // Apply activity mode filter
     if (activityMode !== "all") {
-      filtered = filtered.filter((user) => user.preferredMode === activityMode)
+      filtered = filtered.filter((user) => user.preferredMode === activityMode);
     }
 
     // Sort based on leaderboard type and time frame
     filtered.sort((a, b) => {
-      let aValue, bValue
+      let aValue, bValue;
 
       switch (leaderboardType) {
         case "xp":
@@ -172,120 +190,120 @@ const Leaderboard = () => {
             timeFrame === "today"
               ? a.dailyXP
               : timeFrame === "week"
-                ? a.weeklyXP
-                : timeFrame === "month"
-                  ? a.monthlyXP
-                  : a.totalXP
+              ? a.weeklyXP
+              : timeFrame === "month"
+              ? a.monthlyXP
+              : a.totalXP;
           bValue =
             timeFrame === "today"
               ? b.dailyXP
               : timeFrame === "week"
-                ? b.weeklyXP
-                : timeFrame === "month"
-                  ? b.monthlyXP
-                  : b.totalXP
-          break
+              ? b.weeklyXP
+              : timeFrame === "month"
+              ? b.monthlyXP
+              : b.totalXP;
+          break;
         case "steps":
           aValue =
             timeFrame === "today"
               ? a.dailySteps
               : timeFrame === "week"
-                ? a.weeklySteps
-                : timeFrame === "month"
-                  ? a.monthlySteps
-                  : a.totalSteps
+              ? a.weeklySteps
+              : timeFrame === "month"
+              ? a.monthlySteps
+              : a.totalSteps;
           bValue =
             timeFrame === "today"
               ? b.dailySteps
               : timeFrame === "week"
-                ? b.weeklySteps
-                : timeFrame === "month"
-                  ? b.monthlySteps
-                  : b.totalSteps
-          break
+              ? b.weeklySteps
+              : timeFrame === "month"
+              ? b.monthlySteps
+              : b.totalSteps;
+          break;
         case "distance":
           aValue =
             timeFrame === "today"
               ? a.dailyDistance
               : timeFrame === "week"
-                ? a.weeklyDistance
-                : timeFrame === "month"
-                  ? a.monthlyDistance
-                  : a.totalDistance
+              ? a.weeklyDistance
+              : timeFrame === "month"
+              ? a.monthlyDistance
+              : a.totalDistance;
           bValue =
             timeFrame === "today"
               ? b.dailyDistance
               : timeFrame === "week"
-                ? b.weeklyDistance
-                : timeFrame === "month"
-                  ? b.monthlyDistance
-                  : b.totalDistance
-          break
+              ? b.weeklyDistance
+              : timeFrame === "month"
+              ? b.monthlyDistance
+              : b.totalDistance;
+          break;
         case "challenges":
-          aValue = a.totalChallengesCompleted
-          bValue = b.totalChallengesCompleted
-          break
+          aValue = a.totalChallengesCompleted;
+          bValue = b.totalChallengesCompleted;
+          break;
         case "streak":
-          aValue = a.streak.max
-          bValue = b.streak.max
-          break
+          aValue = a.streak.max;
+          bValue = b.streak.max;
+          break;
         case "goal-completion":
-          aValue = a.goalCompletionRate
-          bValue = b.goalCompletionRate
-          break
+          aValue = a.goalCompletionRate;
+          bValue = b.goalCompletionRate;
+          break;
         default:
-          aValue = a.totalXP
-          bValue = b.totalXP
+          aValue = a.totalXP;
+          bValue = b.totalXP;
       }
 
-      return bValue - aValue // Descending order
-    })
+      return bValue - aValue; // Descending order
+    });
 
-    return filtered
-  }
+    return filtered;
+  };
 
   const getLeaderboardTitle = () => {
-    let title = ""
+    let title = "";
 
     // Type
     switch (leaderboardType) {
       case "xp":
-        title = "Classement XP"
-        break
+        title = "Classement XP";
+        break;
       case "steps":
-        title = "Classement Pas"
-        break
+        title = "Classement Pas";
+        break;
       case "distance":
-        title = "Classement Distance"
-        break
+        title = "Classement Distance";
+        break;
       case "challenges":
-        title = "Défis Complétés"
-        break
+        title = "Défis Complétés";
+        break;
       case "streak":
-        title = "Meilleures Streaks"
-        break
+        title = "Meilleures Streaks";
+        break;
       case "goal-completion":
-        title = "Complétion d'Objectifs"
-        break
+        title = "Complétion d'Objectifs";
+        break;
       default:
-        title = "Classement"
+        title = "Classement";
     }
 
     // Time frame
     if (["xp", "steps", "distance"].includes(leaderboardType)) {
       switch (timeFrame) {
         case "today":
-          title += " (Aujourd'hui)"
-          break
+          title += " (Aujourd'hui)";
+          break;
         case "week":
-          title += " (Cette Semaine)"
-          break
+          title += " (Cette Semaine)";
+          break;
         case "month":
-          title += " (Ce Mois)"
-          break
+          title += " (Ce Mois)";
+          break;
         case "all-time":
-          title += " (Tous les Temps)"
-          break
+          title += " (Tous les Temps)";
+          break;
       }
     }
 
@@ -293,19 +311,19 @@ const Leaderboard = () => {
     if (activityMode !== "all") {
       switch (activityMode) {
         case "walk":
-          title += " - Marcheurs"
-          break
+          title += " - Marcheurs";
+          break;
         case "run":
-          title += " - Coureurs"
-          break
+          title += " - Coureurs";
+          break;
         case "bike":
-          title += " - Cyclistes"
-          break
+          title += " - Cyclistes";
+          break;
       }
     }
 
-    return title
-  }
+    return title;
+  };
 
   const getMetricValue = (user) => {
     switch (leaderboardType) {
@@ -313,119 +331,121 @@ const Leaderboard = () => {
         return timeFrame === "today"
           ? user.dailyXP
           : timeFrame === "week"
-            ? user.weeklyXP
-            : timeFrame === "month"
-              ? user.monthlyXP
-              : user.totalXP
+          ? user.weeklyXP
+          : timeFrame === "month"
+          ? user.monthlyXP
+          : user.totalXP;
       case "steps":
         return timeFrame === "today"
           ? user.dailySteps
           : timeFrame === "week"
-            ? user.weeklySteps
-            : timeFrame === "month"
-              ? user.monthlySteps
-              : user.totalSteps
+          ? user.weeklySteps
+          : timeFrame === "month"
+          ? user.monthlySteps
+          : user.totalSteps;
       case "distance":
         return timeFrame === "today"
           ? user.dailyDistance
           : timeFrame === "week"
-            ? user.weeklyDistance
-            : timeFrame === "month"
-              ? user.monthlyDistance
-              : user.totalDistance
+          ? user.weeklyDistance
+          : timeFrame === "month"
+          ? user.monthlyDistance
+          : user.totalDistance;
       case "challenges":
-        return user.totalChallengesCompleted
+        return user.totalChallengesCompleted;
       case "streak":
-        return user.streak.max
+        return user.streak.max;
       case "goal-completion":
-        return user.goalCompletionRate
+        return user.goalCompletionRate;
       default:
-        return user.totalXP
+        return user.totalXP;
     }
-  }
+  };
 
   const formatMetricValue = (value, type) => {
     switch (type) {
       case "distance":
-        return `${value.toFixed(1)} km`
+        return `${value.toFixed(1)} km`;
       case "goal-completion":
-        return `${value}%`
+        return `${value}%`;
       default:
-        return value.toLocaleString("fr-FR")
+        return value.toLocaleString("fr-FR");
     }
-  }
+  };
 
   const getMetricIcon = (type) => {
     switch (type) {
       case "xp":
-        return <Trophy size={16} />
+        return <Trophy size={16} />;
       case "steps":
-        return <Footprints size={16} />
+        return <Footprints size={16} />;
       case "distance":
-        return <Spline size={16} />
+        return <Spline size={16} />;
       case "challenges":
-        return <Target size={16} />
+        return <Target size={16} />;
       case "streak":
-        return <Zap size={16} />
+        return <Zap size={16} />;
       case "goal-completion":
-        return <BarChart2 size={16} />
+        return <BarChart2 size={16} />;
       default:
-        return <Star size={16} />
+        return <Star size={16} />;
     }
-  }
+  };
 
   const getModeIcon = (mode) => {
     switch (mode) {
       case "walk":
-        return "🚶"
+        return "🚶";
       case "run":
-        return "🏃"
+        return "🏃";
       case "bike":
-        return "🚴"
+        return "🚴";
       default:
-        return "👣"
+        return "👣";
     }
-  }
+  };
 
   const handleUserClick = async (user) => {
-    const userProfile = await getUserProfile(user._id)
+    const userProfile = await getUserProfile(user._id);
     if (userProfile) {
-      setSelectedUser(userProfile)
-      setShowUserModal(true)
+      setSelectedUser(userProfile);
+      setShowUserModal(true);
     }
-  }
+  };
 
   const handleSendFriendRequest = async (userId) => {
-    await sendFriendRequest(userId)
-  }
+    await sendFriendRequest(userId);
+  };
 
   const handleSendMessage = async (userId) => {
     // In a real app, this would open a message modal
-    await sendMessage(userId, "Hello!")
-  }
+    await sendMessage(userId, "Hello!");
+  };
 
   const handleAddComment = async (e) => {
-    e.preventDefault()
-    const comment = e.target.comment.value
+    e.preventDefault();
+    const comment = e.target.comment.value;
     if (selectedUser && comment.trim()) {
-      const success = await addComment(selectedUser._id, comment)
+      const success = await addComment(selectedUser._id, comment);
       if (success) {
-        e.target.reset()
+        e.target.reset();
       }
     }
-  }
+  };
 
   // Generate activity chart data for user profile
   const generateActivityChartData = (user) => {
     // Last 7 days data
     const labels = Array.from({ length: 7 }, (_, i) => {
-      const date = new Date()
-      date.setDate(date.getDate() - (6 - i))
-      return date.toLocaleDateString("fr-FR", { weekday: "short" })
-    })
+      const date = new Date();
+      date.setDate(date.getDate() - (6 - i));
+      return date.toLocaleDateString("fr-FR", { weekday: "short" });
+    });
 
     // Generate random data based on user's average activity
-    const stepsData = labels.map(() => Math.floor(user.dailySteps * (0.7 + Math.random() * 0.6)))
+    const stepsData = labels.map(() =>
+      Math.floor(user.dailySteps * (0.7 + Math.random() * 0.6))
+    );
 
     return {
       labels,
@@ -440,34 +460,34 @@ const Leaderboard = () => {
           fill: true,
         },
       ],
-    }
-  }
+    };
+  };
 
   // Generate activity distribution chart data for user profile
   const generateActivityDistributionData = (user) => {
     // Calculate percentages based on user's preferred mode
-    let walkPercentage, runPercentage, bikePercentage
+    let walkPercentage, runPercentage, bikePercentage;
 
     switch (user.preferredMode) {
       case "walk":
-        walkPercentage = 60 + Math.floor(Math.random() * 20)
-        runPercentage = Math.floor((100 - walkPercentage) * Math.random())
-        bikePercentage = 100 - walkPercentage - runPercentage
-        break
+        walkPercentage = 60 + Math.floor(Math.random() * 20);
+        runPercentage = Math.floor((100 - walkPercentage) * Math.random());
+        bikePercentage = 100 - walkPercentage - runPercentage;
+        break;
       case "run":
-        runPercentage = 60 + Math.floor(Math.random() * 20)
-        walkPercentage = Math.floor((100 - runPercentage) * Math.random())
-        bikePercentage = 100 - walkPercentage - runPercentage
-        break
+        runPercentage = 60 + Math.floor(Math.random() * 20);
+        walkPercentage = Math.floor((100 - runPercentage) * Math.random());
+        bikePercentage = 100 - walkPercentage - runPercentage;
+        break;
       case "bike":
-        bikePercentage = 60 + Math.floor(Math.random() * 20)
-        walkPercentage = Math.floor((100 - bikePercentage) * Math.random())
-        runPercentage = 100 - walkPercentage - bikePercentage
-        break
+        bikePercentage = 60 + Math.floor(Math.random() * 20);
+        walkPercentage = Math.floor((100 - bikePercentage) * Math.random());
+        runPercentage = 100 - walkPercentage - bikePercentage;
+        break;
       default:
-        walkPercentage = 40 + Math.floor(Math.random() * 20)
-        runPercentage = 30 + Math.floor(Math.random() * 20)
-        bikePercentage = 100 - walkPercentage - runPercentage
+        walkPercentage = 40 + Math.floor(Math.random() * 20);
+        runPercentage = 30 + Math.floor(Math.random() * 20);
+        bikePercentage = 100 - walkPercentage - runPercentage;
     }
 
     return {
@@ -475,13 +495,21 @@ const Leaderboard = () => {
       datasets: [
         {
           data: [walkPercentage, runPercentage, bikePercentage],
-          backgroundColor: ["rgba(74, 145, 158, 0.7)", "rgba(33, 46, 83, 0.7)", "rgba(74, 201, 190, 0.7)"],
-          borderColor: ["rgba(74, 145, 158, 1)", "rgba(33, 46, 83, 1)", "rgba(74, 201, 190, 1)"],
+          backgroundColor: [
+            "rgba(74, 145, 158, 0.7)",
+            "rgba(33, 46, 83, 0.7)",
+            "rgba(74, 201, 190, 0.7)",
+          ],
+          borderColor: [
+            "rgba(74, 145, 158, 1)",
+            "rgba(33, 46, 83, 1)",
+            "rgba(74, 201, 190, 1)",
+          ],
           borderWidth: 1,
         },
       ],
-    }
-  }
+    };
+  };
 
   // Chart options
   const chartOptions = {
@@ -497,7 +525,7 @@ const Leaderboard = () => {
         beginAtZero: true,
       },
     },
-  }
+  };
 
   const pieChartOptions = {
     responsive: true,
@@ -507,22 +535,22 @@ const Leaderboard = () => {
         position: "right",
       },
     },
-  }
+  };
 
   // Get top 3 users
   const getTopUsers = () => {
-    return filteredUsers().slice(0, 3)
-  }
+    return filteredUsers().slice(0, 3);
+  };
 
   // Get remaining users (after top 3)
   const getRemainingUsers = () => {
-    return filteredUsers().slice(3)
-  }
+    return filteredUsers().slice(3);
+  };
 
   // Get user rank
   const getUserRank = (userId) => {
-    return filteredUsers().findIndex((user) => user._id === userId) + 1
-  }
+    return filteredUsers().findIndex((user) => user._id === userId) + 1;
+  };
 
   const LeaderboardTypeOptions = [
     { value: "xp", label: "XP", icon: <Trophy size={16} /> },
@@ -530,22 +558,30 @@ const Leaderboard = () => {
     { value: "distance", label: "Distance", icon: <Spline size={16} /> },
     { value: "challenges", label: "Défis", icon: <Target size={16} /> },
     { value: "streak", label: "Streak", icon: <Zap size={16} /> },
-    { value: "goal-completion", label: "Objectifs", icon: <BarChart2 size={16} /> },
-  ]
+    {
+      value: "goal-completion",
+      label: "Objectifs",
+      icon: <BarChart2 size={16} />,
+    },
+  ];
 
   const TimeFrameOptions = [
     { value: "today", label: "Aujourd'hui", icon: <Calendar size={16} /> },
     { value: "week", label: "Semaine", icon: <Calendar size={16} /> },
     { value: "month", label: "Mois", icon: <Calendar size={16} /> },
-    { value: "all-time", label: "Tous les temps", icon: <Calendar size={16} /> },
-  ]
+    {
+      value: "all-time",
+      label: "Tous les temps",
+      icon: <Calendar size={16} />,
+    },
+  ];
 
   const ActivityModeOptions = [
     { value: "all", label: "Tous", icon: <Users size={16} /> },
     { value: "walk", label: "Marche", icon: <Footprints size={16} /> },
     { value: "run", label: "Course", icon: <Spline size={16} /> },
     { value: "bike", label: "Vélo", icon: <Bike size={16} /> },
-  ]
+  ];
 
   const customSelectStyles = {
     control: (provided, state) => ({
@@ -566,7 +602,11 @@ const Leaderboard = () => {
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isSelected ? "var(--Couleur1)" : state.isFocused ? "var(--Couleur2)" : "transparent",
+      backgroundColor: state.isSelected
+        ? "var(--Couleur1)"
+        : state.isFocused
+        ? "var(--Couleur2)"
+        : "transparent",
       color: state.isSelected ? "white" : "var(--Noir)",
       "&:hover": {
         backgroundColor: "var(--Couleur2)",
@@ -586,29 +626,37 @@ const Leaderboard = () => {
       ...provided,
       color: "var(--Couleur2)",
     }),
-  }
+  };
 
   const customSingleValue = ({ data }) => (
     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
       {data.icon}
       {data.label}
     </div>
-  )
+  );
 
   const customOption = (props) => {
-    const { data, innerRef, innerProps, isSelected, isFocused } = props
+    const { data, innerRef, innerProps, isSelected, isFocused } = props;
     return (
       <div
         ref={innerRef}
         {...innerProps}
-        className={`metric-select__option ${isSelected ? "custom-select__option--is-selected" : ""} ${isFocused ? "custom-select__option--is-focused" : ""}`}
-        style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem", borderRadius: "4px" }}
+        className={`metric-select__option ${
+          isSelected ? "custom-select__option--is-selected" : ""
+        } ${isFocused ? "custom-select__option--is-focused" : ""}`}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          padding: "0.5rem",
+          borderRadius: "4px",
+        }}
       >
         {data.icon}
         {data.label}
       </div>
-    )
-  }
+    );
+  };
 
   // Get tab content based on active tab
   const getTabContent = () => {
@@ -621,7 +669,9 @@ const Leaderboard = () => {
               {getTopUsers().map((user3, index) => (
                 <div
                   key={user3._id}
-                  className={`podium-position podium-${index + 1} ${user3._id === user?._id ? "current-user" : ""}`}
+                  className={`podium-position podium-${index + 1} ${
+                    user3._id === user?._id ? "current-user" : ""
+                  }`}
                   onClick={() => handleUserClick(user3)}
                 >
                   <div className="podium-medal">
@@ -634,8 +684,13 @@ const Leaderboard = () => {
                     )}
                   </div>
                   <div className="podium-avatar">
-                    <img src={user3.avatarUrl || "/placeholder.svg"} alt={user3.username} />
-                    <span className="user-preferred-mode">{getModeIcon(user3.preferredMode)}</span>
+                    <img
+                      src={user3.avatarUrl || "/placeholder.svg"}
+                      alt={user3.username}
+                    />
+                    <span className="user-preferred-mode">
+                      {getModeIcon(user3.preferredMode)}
+                    </span>
                   </div>
                   <div className="podium-info">
                     <h3 className="podium-name">
@@ -644,24 +699,36 @@ const Leaderboard = () => {
                     <p className="podium-username">@{user3.username}</p>
                     <div className="podium-score">
                       {getMetricIcon(leaderboardType)}
-                      <span>{formatMetricValue(getMetricValue(user3), leaderboardType)}</span>
+                      <span>
+                        {formatMetricValue(
+                          getMetricValue(user3),
+                          leaderboardType
+                        )}
+                      </span>
                     </div>
                     <div className="podium-progress">
                       <div className="progress-container">
-                        <div className="progress-bar" style={{ width: `${user3.dailyProgress}%` }}></div>
-                        <span className="progress-text">{user3.dailyProgress}%</span>
+                        <div
+                          className="progress-bar"
+                          style={{ width: `${user3.dailyProgress}%` }}
+                        ></div>
+                        <span className="progress-text">
+                          {user3.dailyProgress}%
+                        </span>
                       </div>
                     </div>
                   </div>
                   <div className="podium-actions">
                     {user && user3._id !== user._id && (
                       <>
-                        {!user.friends.some((f) => f.userId._id === user3._id) && (
+                        {!user.friends.some(
+                          (f) => f.userId._id === user3._id
+                        ) && (
                           <button
                             className="action-icon-button"
                             onClick={(e) => {
-                              e.stopPropagation()
-                              handleSendFriendRequest(user3._id)
+                              e.stopPropagation();
+                              handleSendFriendRequest(user3._id);
                             }}
                             title="Ajouter en ami"
                           >
@@ -671,8 +738,8 @@ const Leaderboard = () => {
                         <button
                           className="action-icon-button"
                           onClick={(e) => {
-                            e.stopPropagation()
-                            handleSendMessage(user3._id)
+                            e.stopPropagation();
+                            handleSendMessage(user3._id);
                           }}
                           title="Envoyer un message"
                         >
@@ -690,37 +757,56 @@ const Leaderboard = () => {
               {getRemainingUsers().map((users, index) => (
                 <div
                   key={users._id}
-                  className={`leaderboard-card ${users._id === user?._id ? "current-user" : ""}`}
+                  className={`leaderboard-card ${
+                    users._id === user?._id ? "current-user" : ""
+                  }`}
                   onClick={() => handleUserClick(users)}
                 >
                   <div className="card-rank">{index + 4}</div>
                   <div className="card-avatar">
-                    <img src={users.avatarUrl || "/placeholder.svg"} alt={users.username} />
-                    <span className="user-preferred-mode">{getModeIcon(users.preferredMode)}</span>
+                    <img
+                      src={users.avatarUrl || "/placeholder.svg"}
+                      alt={users.username}
+                    />
+                    <span className="user-preferred-mode">
+                      {getModeIcon(users.preferredMode)}
+                    </span>
                   </div>
                   <div className="card-info">
                     <h3 className="card-name">{users.fullName}</h3>
                     <p className="card-username">@{users.username}</p>
                     <div className="card-score">
                       {getMetricIcon(leaderboardType)}
-                      <span>{formatMetricValue(getMetricValue(users), leaderboardType)}</span>
+                      <span>
+                        {formatMetricValue(
+                          getMetricValue(users),
+                          leaderboardType
+                        )}
+                      </span>
                     </div>
                     <div className="card-progress">
                       <div className="progress-container">
-                        <div className="progress-bar" style={{ width: `${users.dailyProgress}%` }}></div>
-                        <span className="progress-text">{users.dailyProgress}%</span>
+                        <div
+                          className="progress-bar"
+                          style={{ width: `${users.dailyProgress}%` }}
+                        ></div>
+                        <span className="progress-text">
+                          {users.dailyProgress}%
+                        </span>
                       </div>
                     </div>
                   </div>
                   <div className="card-actions">
                     {user && users._id !== user?._id && (
                       <>
-                        {!user.friends.some((f) => f.userId._id === users._id) && (
+                        {!user.friends.some(
+                          (f) => f.userId._id === users._id
+                        ) && (
                           <button
                             className="action-icon-button"
                             onClick={(e) => {
-                              e.stopPropagation()
-                              handleSendFriendRequest(users._id)
+                              e.stopPropagation();
+                              handleSendFriendRequest(users._id);
                             }}
                             title="Ajouter en ami"
                           >
@@ -730,8 +816,8 @@ const Leaderboard = () => {
                         <button
                           className="action-icon-button"
                           onClick={(e) => {
-                            e.stopPropagation()
-                            handleSendMessage(users._id)
+                            e.stopPropagation();
+                            handleSendMessage(users._id);
                           }}
                           title="Envoyer un message"
                         >
@@ -744,7 +830,7 @@ const Leaderboard = () => {
               ))}
             </div>
           </div>
-        )
+        );
       case "friends":
         return (
           <div className="leaderboard-friends-tab">
@@ -758,26 +844,43 @@ const Leaderboard = () => {
                   {friendsData.map((users, index) => (
                     <div
                       key={users._id}
-                      className={`friend-card ${users._id === user?._id ? "current-user" : ""}`}
+                      className={`friend-card ${
+                        users._id === user?._id ? "current-user" : ""
+                      }`}
                       onClick={() => handleUserClick(users)}
                     >
                       <div className="friend-rank">{index + 1}</div>
                       <div className="friend-avatar">
-                        <img src={users.avatarUrl || "/placeholder.svg"} alt={users.username} />
-                        <span className="user-preferred-mode">{getModeIcon(users.preferredMode)}</span>
+                        <img
+                          src={users.avatarUrl || "/placeholder.svg"}
+                          alt={users.username}
+                        />
+                        <span className="user-preferred-mode">
+                          {getModeIcon(users.preferredMode)}
+                        </span>
                       </div>
                       <div className="friend-info">
                         <h3 className="friend-name">{users.fullName}</h3>
                         <p className="friend-username">@{users.username}</p>
                         <div className="friend-score">
                           {getMetricIcon(leaderboardType)}
-                          <span>{formatMetricValue(getMetricValue(users), leaderboardType)}</span>
+                          <span>
+                            {formatMetricValue(
+                              getMetricValue(users),
+                              leaderboardType
+                            )}
+                          </span>
                         </div>
                       </div>
                       <div className="friend-progress">
                         <div className="progress-container">
-                          <div className="progress-bar" style={{ width: `${users.dailyProgress}%` }}></div>
-                          <span className="progress-text">{users.dailyProgress}%</span>
+                          <div
+                            className="progress-bar"
+                            style={{ width: `${users.dailyProgress}%` }}
+                          ></div>
+                          <span className="progress-text">
+                            {users.dailyProgress}%
+                          </span>
                         </div>
                       </div>
                       <div className="friend-actions">
@@ -785,8 +888,8 @@ const Leaderboard = () => {
                           <button
                             className="action-icon-button"
                             onClick={(e) => {
-                              e.stopPropagation()
-                              handleSendMessage(users._id)
+                              e.stopPropagation();
+                              handleSendMessage(users._id);
                             }}
                             title="Envoyer un message"
                           >
@@ -805,7 +908,7 @@ const Leaderboard = () => {
               </div>
             )}
           </div>
-        )
+        );
       case "challenges":
         return (
           <div className="leaderboard-challenges-tab">
@@ -823,11 +926,16 @@ const Leaderboard = () => {
                     </div>
                     <div className="challenge-participants">
                       {challenge.participants.map((participant, index) => (
-                        <div key={participant.user._id} className="challenge-participant">
+                        <div
+                          key={participant.user._id}
+                          className="challenge-participant"
+                        >
                           <div className="participant-rank">{index + 1}</div>
                           <div className="participant-avatar">
                             <img
-                              src={participant.user.avatarUrl || "/placeholder.svg"}
+                              src={
+                                participant.user.avatarUrl || "/placeholder.svg"
+                              }
                               alt={participant.user.username}
                             />
                           </div>
@@ -847,11 +955,16 @@ const Leaderboard = () => {
                         </div>
                       ))}
                     </div>
-                    {challenge.participants.includes(p => p.user._id !== user?._id) &&
-                      <button className="join-challenge-button" onClick={() => joinChallenge(challenge._id)}>
+                    {challenge.participants.includes(
+                      (p) => p.user._id !== user?._id
+                    ) && (
+                      <button
+                        className="join-challenge-button"
+                        onClick={() => joinChallenge(challenge._id)}
+                      >
                         Rejoindre ce défi
                       </button>
-                    }
+                    )}
                   </div>
                 ))
               ) : (
@@ -861,50 +974,81 @@ const Leaderboard = () => {
               )}
             </div>
           </div>
-        )
+        );
       case "rewards":
         return (
           <div className="leaderboard-rewards-tab">
             <div className="rewards-header">
               <h3>Tableau des récompenses</h3>
-              <p>Découvrez qui a débloqué les récompenses les plus prestigieuses</p>
+              <p>
+                Découvrez qui a débloqué les récompenses les plus prestigieuses
+              </p>
             </div>
             <div className="rewards-grid">
               {rewardsData && rewardsData.length > 0 ? (
                 rewardsData.map((reward) => (
                   <div key={reward.rewardId} className="reward-card">
                     <div className="reward-icon">
-                      <img src={reward.iconUrl || "/placeholder.svg"} alt={reward.name[user?.languagePreference]} />
+                      <img
+                        src={reward.iconUrl || "/placeholder.svg"}
+                        alt={reward.name[user?.languagePreference]}
+                      />
                     </div>
                     <h4>{reward.name[user?.languagePreference]}</h4>
                     <div className="reward-holders">
-                      {reward.earners.length >= 3 ? (reward.earners.slice(0, 3).map((holder) => (
-                        <div key={holder.user._id} className="reward-holder">
-                          <div className="holder-avatar">
-                            <img src={holder.user.avatarUrl || "/placeholder.svg"} alt={holder.user.username} />
-                          </div>
-                          <div className="holder-info">
-                            <span className="holder-name">{holder.user.fullName}</span>
-                            <span className="holder-date">
-                              Obtenu le {new Date(holder.date).toLocaleDateString("fr-FR")}
-                            </span>
-                          </div>
-                        </div>
-                      ))) : (
-                        reward.earners.map((holder) => (
-                          <div key={holder.user._id} className="reward-holder">
-                            <div className="holder-avatar">
-                              <img src={holder.user.avatarUrl || "/placeholder.svg"} alt={holder.user.username} />
+                      {reward.earners.length >= 3
+                        ? reward.earners.slice(0, 3).map((holder) => (
+                            <div
+                              key={holder.user._id}
+                              className="reward-holder"
+                            >
+                              <div className="holder-avatar">
+                                <img
+                                  src={
+                                    holder.user.avatarUrl || "/placeholder.svg"
+                                  }
+                                  alt={holder.user.username}
+                                />
+                              </div>
+                              <div className="holder-info">
+                                <span className="holder-name">
+                                  {holder.user.fullName}
+                                </span>
+                                <span className="holder-date">
+                                  Obtenu le{" "}
+                                  {new Date(holder.date).toLocaleDateString(
+                                    "fr-FR"
+                                  )}
+                                </span>
+                              </div>
                             </div>
-                            <div className="holder-info">
-                              <span className="holder-name">{holder.user.fullName}</span>
-                              <span className="holder-date">
-                                Obtenu le {new Date(holder.date).toLocaleDateString("fr-FR")}
-                              </span>
+                          ))
+                        : reward.earners.map((holder) => (
+                            <div
+                              key={holder.user._id}
+                              className="reward-holder"
+                            >
+                              <div className="holder-avatar">
+                                <img
+                                  src={
+                                    holder.user.avatarUrl || "/placeholder.svg"
+                                  }
+                                  alt={holder.user.username}
+                                />
+                              </div>
+                              <div className="holder-info">
+                                <span className="holder-name">
+                                  {holder.user.fullName}
+                                </span>
+                                <span className="holder-date">
+                                  Obtenu le{" "}
+                                  {new Date(holder.date).toLocaleDateString(
+                                    "fr-FR"
+                                  )}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-                        ))
-                      )}
+                          ))}
                     </div>
                   </div>
                 ))
@@ -915,11 +1059,11 @@ const Leaderboard = () => {
               )}
             </div>
           </div>
-        )
+        );
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const unauthenticatedContent = (pageName) => (
     <div className="auth-required">
@@ -932,14 +1076,14 @@ const Leaderboard = () => {
         Se connecter
       </Link>
     </div>
-  )
+  );
 
   const handleOverlayClick = (e) => {
     if (e.target.classList.contains("modal-overlay")) {
-      setShowUserModal(false)
-      setSelectedUser(null)
+      setShowUserModal(false);
+      setSelectedUser(null);
     }
-  }
+  };
 
   return (
     <div className="leaderboard-container">
@@ -948,7 +1092,9 @@ const Leaderboard = () => {
         <>
           <div className="leaderboard-header">
             <h1>Classements</h1>
-            <p>Découvrez où vous vous situez par rapport aux autres utilisateurs</p>
+            <p>
+              Découvrez où vous vous situez par rapport aux autres utilisateurs
+            </p>
           </div>
 
           {/* Your Position Card */}
@@ -969,7 +1115,9 @@ const Leaderboard = () => {
                   <Trophy size={24} />
                 </div>
                 <div className="stat-content">
-                  <span className="stat-value">{user.totalXP.toLocaleString("fr-FR")}</span>
+                  <span className="stat-value">
+                    {user.totalXP.toLocaleString("fr-FR")}
+                  </span>
                   <span className="stat-label">XP total</span>
                 </div>
               </div>
@@ -978,7 +1126,9 @@ const Leaderboard = () => {
                   <Footprints size={24} />
                 </div>
                 <div className="stat-content">
-                  <span className="stat-value">{user.totalSteps.toLocaleString("fr-FR")}</span>
+                  <span className="stat-value">
+                    {user.totalSteps.toLocaleString("fr-FR")}
+                  </span>
                   <span className="stat-label">Pas totaux</span>
                 </div>
               </div>
@@ -998,7 +1148,10 @@ const Leaderboard = () => {
                 <span>{user.dailyProgress}%</span>
               </div>
               <div className="progress-container">
-                <div className="progress-bar" style={{ width: `${user.dailyProgress}%` }}></div>
+                <div
+                  className="progress-bar"
+                  style={{ width: `${user.dailyProgress}%` }}
+                ></div>
               </div>
             </div>
           </div>
@@ -1006,19 +1159,31 @@ const Leaderboard = () => {
           {/* Leaderboard Controls */}
           <div className="leaderboard-controls-container">
             <div className="leaderboard-tabs">
-              <button className={activeTab === "general" ? "active" : ""} onClick={() => setActiveTab("general")}>
+              <button
+                className={activeTab === "general" ? "active" : ""}
+                onClick={() => setActiveTab("general")}
+              >
                 <Trophy size={16} />
                 <span>Général</span>
               </button>
-              <button className={activeTab === "friends" ? "active" : ""} onClick={() => setActiveTab("friends")}>
+              <button
+                className={activeTab === "friends" ? "active" : ""}
+                onClick={() => setActiveTab("friends")}
+              >
                 <Users size={16} />
                 <span>Amis</span>
               </button>
-              <button className={activeTab === "challenges" ? "active" : ""} onClick={() => setActiveTab("challenges")}>
+              <button
+                className={activeTab === "challenges" ? "active" : ""}
+                onClick={() => setActiveTab("challenges")}
+              >
                 <Target size={16} />
                 <span>Défis</span>
               </button>
-              <button className={activeTab === "rewards" ? "active" : ""} onClick={() => setActiveTab("rewards")}>
+              <button
+                className={activeTab === "rewards" ? "active" : ""}
+                onClick={() => setActiveTab("rewards")}
+              >
                 <Award size={16} />
                 <span>Récompenses</span>
               </button>
@@ -1035,10 +1200,17 @@ const Leaderboard = () => {
                 />
               </div>
 
-              <button className="filter-toggle" onClick={() => setShowFilters(!showFilters)}>
+              <button
+                className="filter-toggle"
+                onClick={() => setShowFilters(!showFilters)}
+              >
                 <Filter size={16} />
                 <span>Filtres</span>
-                {showFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                {showFilters ? (
+                  <ChevronUp size={16} />
+                ) : (
+                  <ChevronDown size={16} />
+                )}
               </button>
             </div>
 
@@ -1069,7 +1241,9 @@ const Leaderboard = () => {
                       <span>Distance</span>
                     </button>
                     <button
-                      className={leaderboardType === "challenges" ? "active" : ""}
+                      className={
+                        leaderboardType === "challenges" ? "active" : ""
+                      }
                       onClick={() => setLeaderboardType("challenges")}
                     >
                       <Target size={16} />
@@ -1083,7 +1257,9 @@ const Leaderboard = () => {
                       <span>Streak</span>
                     </button>
                     <button
-                      className={leaderboardType === "goal-completion" ? "active" : ""}
+                      className={
+                        leaderboardType === "goal-completion" ? "active" : ""
+                      }
                       onClick={() => setLeaderboardType("goal-completion")}
                     >
                       <BarChart2 size={16} />
@@ -1098,7 +1274,9 @@ const Leaderboard = () => {
                     <button
                       className={timeFrame === "today" ? "active" : ""}
                       onClick={() => setTimeFrame("today")}
-                      disabled={!["xp", "steps", "distance"].includes(leaderboardType)}
+                      disabled={
+                        !["xp", "steps", "distance"].includes(leaderboardType)
+                      }
                     >
                       <Calendar size={16} />
                       <span>Aujourd'hui</span>
@@ -1106,7 +1284,9 @@ const Leaderboard = () => {
                     <button
                       className={timeFrame === "week" ? "active" : ""}
                       onClick={() => setTimeFrame("week")}
-                      disabled={!["xp", "steps", "distance"].includes(leaderboardType)}
+                      disabled={
+                        !["xp", "steps", "distance"].includes(leaderboardType)
+                      }
                     >
                       <Calendar size={16} />
                       <span>Semaine</span>
@@ -1114,7 +1294,9 @@ const Leaderboard = () => {
                     <button
                       className={timeFrame === "month" ? "active" : ""}
                       onClick={() => setTimeFrame("month")}
-                      disabled={!["xp", "steps", "distance"].includes(leaderboardType)}
+                      disabled={
+                        !["xp", "steps", "distance"].includes(leaderboardType)
+                      }
                     >
                       <Calendar size={16} />
                       <span>Mois</span>
@@ -1132,16 +1314,28 @@ const Leaderboard = () => {
                 <div className="filter-section">
                   <h3>Mode d'activité</h3>
                   <div className="filter-options">
-                    <button className={activityMode === "all" ? "active" : ""} onClick={() => setActivityMode("all")}>
+                    <button
+                      className={activityMode === "all" ? "active" : ""}
+                      onClick={() => setActivityMode("all")}
+                    >
                       <span>Tous</span>
                     </button>
-                    <button className={activityMode === "walk" ? "active" : ""} onClick={() => setActivityMode("walk")}>
+                    <button
+                      className={activityMode === "walk" ? "active" : ""}
+                      onClick={() => setActivityMode("walk")}
+                    >
                       <span>🚶 Marche</span>
                     </button>
-                    <button className={activityMode === "run" ? "active" : ""} onClick={() => setActivityMode("run")}>
+                    <button
+                      className={activityMode === "run" ? "active" : ""}
+                      onClick={() => setActivityMode("run")}
+                    >
                       <span>🏃 Course</span>
                     </button>
-                    <button className={activityMode === "bike" ? "active" : ""} onClick={() => setActivityMode("bike")}>
+                    <button
+                      className={activityMode === "bike" ? "active" : ""}
+                      onClick={() => setActivityMode("bike")}
+                    >
                       <span>🚴 Vélo</span>
                     </button>
                   </div>
@@ -1151,7 +1345,9 @@ const Leaderboard = () => {
                   <h3>Filtres supplémentaires</h3>
                   <div className="filter-options">
                     <button
-                      className={`filter-button ${filterFriends ? "active" : ""}`}
+                      className={`filter-button ${
+                        filterFriends ? "active" : ""
+                      }`}
                       onClick={() => setFilterFriends(!filterFriends)}
                       disabled={!["challenges", "rewards"].includes(activeTab)}
                     >
@@ -1193,8 +1389,8 @@ const Leaderboard = () => {
                   <button
                     className="close-button"
                     onClick={() => {
-                      setShowUserModal(false)
-                      setSelectedUser(null)
+                      setShowUserModal(false);
+                      setSelectedUser(null);
                     }}
                   >
                     <X size={20} />
@@ -1204,25 +1400,34 @@ const Leaderboard = () => {
                 <div className="user-profile-content">
                   <div className="user-profile-header">
                     <div className="user-profile-avatar">
-                      <img src={selectedUser.avatarUrl || "/placeholder.svg"} alt={selectedUser.username} />
-                      <span className="user-preferred-mode">{getModeIcon(selectedUser.preferredMode)}</span>
+                      <img
+                        src={selectedUser.avatarUrl || "/placeholder.svg"}
+                        alt={selectedUser.username}
+                      />
+                      <span className="user-preferred-mode">
+                        {getModeIcon(selectedUser.preferredMode)}
+                      </span>
                     </div>
 
                     <div className="user-profile-info">
                       <h4>{selectedUser.fullName}</h4>
                       <p className="user-username">@{selectedUser.username}</p>
                       <p className="user-status">
-                        {selectedUser.status?.[user?.languagePreference] || "Pas de statut"}
+                        {selectedUser.status?.[user?.languagePreference] ||
+                          "Pas de statut"}
                       </p>
                       <p className="user-meta">
                         <span>{selectedUser.age} ans</span>
                         <span>{selectedUser.region}</span>
                         <span>
                           Membre depuis{" "}
-                          {new Date(selectedUser.createdAt).toLocaleDateString("fr-FR", {
-                            year: "numeric",
-                            month: "long",
-                          })}
+                          {new Date(selectedUser.createdAt).toLocaleDateString(
+                            "fr-FR",
+                            {
+                              year: "numeric",
+                              month: "long",
+                            }
+                          )}
                         </span>
                       </p>
                     </div>
@@ -1230,13 +1435,23 @@ const Leaderboard = () => {
                     <div className="user-profile-actions">
                       {user && selectedUser._id !== user._id && (
                         <>
-                          {!friends.some((f) => f.userId._id === selectedUser._id) && (
-                            <button className="action-button" onClick={() => handleSendFriendRequest(selectedUser._id)}>
+                          {!friends.some(
+                            (f) => f.userId._id === selectedUser._id
+                          ) && (
+                            <button
+                              className="action-button"
+                              onClick={() =>
+                                handleSendFriendRequest(selectedUser._id)
+                              }
+                            >
                               <UserPlus size={16} />
                               <span>Ajouter en ami</span>
                             </button>
                           )}
-                          <button className="action-button" onClick={() => handleSendMessage(selectedUser._id)}>
+                          <button
+                            className="action-button"
+                            onClick={() => handleSendMessage(selectedUser._id)}
+                          >
                             <MessageSquare size={16} />
                             <span>Message</span>
                           </button>
@@ -1251,7 +1466,9 @@ const Leaderboard = () => {
                         <Footprints size={24} />
                       </div>
                       <div className="stat-content">
-                        <span className="stat-value">{selectedUser.totalSteps.toLocaleString("fr-FR")}</span>
+                        <span className="stat-value">
+                          {selectedUser.totalSteps.toLocaleString("fr-FR")}
+                        </span>
                         <span className="stat-label">Pas totaux</span>
                       </div>
                     </div>
@@ -1261,7 +1478,9 @@ const Leaderboard = () => {
                         <Spline size={24} />
                       </div>
                       <div className="stat-content">
-                        <span className="stat-value">{selectedUser.totalDistance.toFixed(1)} km</span>
+                        <span className="stat-value">
+                          {selectedUser.totalDistance.toFixed(1)} km
+                        </span>
                         <span className="stat-label">Distance totale</span>
                       </div>
                     </div>
@@ -1271,7 +1490,9 @@ const Leaderboard = () => {
                         <Trophy size={24} />
                       </div>
                       <div className="stat-content">
-                        <span className="stat-value">{selectedUser.totalXP.toLocaleString("fr-FR")}</span>
+                        <span className="stat-value">
+                          {selectedUser.totalXP.toLocaleString("fr-FR")}
+                        </span>
                         <span className="stat-label">XP total</span>
                       </div>
                     </div>
@@ -1281,7 +1502,9 @@ const Leaderboard = () => {
                         <Zap size={24} />
                       </div>
                       <div className="stat-content">
-                        <span className="stat-value">{selectedUser.streak.current}</span>
+                        <span className="stat-value">
+                          {selectedUser.streak.current}
+                        </span>
                         <span className="stat-label">Streak actuelle</span>
                       </div>
                     </div>
@@ -1290,15 +1513,27 @@ const Leaderboard = () => {
                   <div className="user-profile-charts">
                     <div className="chart-section">
                       <h4>Activité des 7 derniers jours</h4>
-                      <div className="chart-container" style={{ height: "200px" }}>
-                        <Line data={generateActivityChartData(selectedUser)} options={chartOptions} />
+                      <div
+                        className="chart-container"
+                        style={{ height: "200px" }}
+                      >
+                        <Line
+                          data={generateActivityChartData(selectedUser)}
+                          options={chartOptions}
+                        />
                       </div>
                     </div>
 
                     <div className="chart-section">
                       <h4>Répartition des activités</h4>
-                      <div className="chart-container" style={{ height: "200px" }}>
-                        <Pie data={generateActivityDistributionData(selectedUser)} options={pieChartOptions} />
+                      <div
+                        className="chart-container"
+                        style={{ height: "200px" }}
+                      >
+                        <Pie
+                          data={generateActivityDistributionData(selectedUser)}
+                          options={pieChartOptions}
+                        />
                       </div>
                     </div>
                   </div>
@@ -1306,8 +1541,16 @@ const Leaderboard = () => {
                   <div className="user-profile-social">
                     <h4>Commentaires</h4>
                     <div className="comments-section">
-                      <form className="comment-form" onSubmit={handleAddComment}>
-                        <input type="text" name="comment" placeholder="Ajouter un commentaire..." required />
+                      <form
+                        className="comment-form"
+                        onSubmit={handleAddComment}
+                      >
+                        <input
+                          type="text"
+                          name="comment"
+                          placeholder="Ajouter un commentaire..."
+                          required
+                        />
                         <button type="submit" className="comment-button">
                           <Smile size={16} />
                           <span>Commenter</span>
@@ -1315,7 +1558,9 @@ const Leaderboard = () => {
                       </form>
 
                       <div className="comments-list">
-                        <p className="no-data">Aucun commentaire pour le moment</p>
+                        <p className="no-data">
+                          Aucun commentaire pour le moment
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1329,7 +1574,9 @@ const Leaderboard = () => {
             <Info size={16} />
             <p>
               Les classements sont visibles par tous les utilisateurs.{" "}
-              <Link to="/settings">Modifier les paramètres de confidentialité</Link>
+              <Link to="/settings">
+                Modifier les paramètres de confidentialité
+              </Link>
             </p>
           </div>
         </>
@@ -1337,7 +1584,7 @@ const Leaderboard = () => {
         unauthenticatedContent("Classements")
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Leaderboard
+export default Leaderboard;

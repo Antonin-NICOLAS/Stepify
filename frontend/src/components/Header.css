@@ -22,7 +22,7 @@
   left: 0;
   right: 0;
   z-index: var(--z-fixed);
-  margin: .75rem;
+  margin: 0.75rem;
 }
 
 .header__container {
@@ -35,13 +35,13 @@
   align-items: center;
   padding-inline: 1.5rem;
   border-radius: 1rem;
-  transition: background-color .4s;
+  transition: background-color 0.4s;
 }
 
 .header__logo {
   display: inline-flex;
   align-items: center;
-  column-gap: .25rem;
+  column-gap: 0.25rem;
 }
 
 .header__logo .logo {
@@ -71,12 +71,12 @@
   background-color: var(--body-color);
   box-shadow: 2px 0 24px var(--shadow-color);
   padding-block: 1.5rem;
-  margin: .75rem;
+  margin: 0.75rem;
   border-radius: 1rem;
-  transition: left .4s, background-color .4s, width .4s;
+  transition: left 0.4s, background-color 0.4s, width 0.4s;
 }
 
-.sidebar__container, 
+.sidebar__container,
 .sidebar__content {
   display: flex;
   flex-direction: column;
@@ -93,7 +93,7 @@
   grid-template-columns: repeat(2, max-content);
   align-items: center;
   column-gap: 1rem;
-  padding-left: 1.2rem
+  padding-left: 1.2rem;
 }
 
 .sidebar__img {
@@ -107,7 +107,7 @@
   justify-items: center;
 }
 
-.sidebar__img.user{
+.sidebar__img.user {
   align-items: center;
 }
 
@@ -126,14 +126,14 @@
 .sidebar__info h3 {
   font-size: var(--normal-font-size);
   color: var(--title-color);
-  transition: color .4s;
+  transition: color 0.4s;
 }
 
 .sidebar__info span {
   font-size: calc(7px + 0.3vh + 0.2vw);
 }
 
-.sidebar__close{
+.sidebar__close {
   display: none;
 }
 
@@ -144,7 +144,7 @@
 .sidebar__content::-webkit-scrollbar {
   display: none;
   border-radius: 20px;
-  width: .4rem;
+  width: 0.4rem;
   background-color: hsl(228, 8%, 85%);
 }
 
@@ -165,7 +165,7 @@
   margin-bottom: 1.5rem;
 }
 
-.sidebar__list, 
+.sidebar__list,
 .sidebar__actions {
   display: grid;
   row-gap: 1.5rem;
@@ -179,7 +179,7 @@
   column-gap: 1rem;
   color: var(--text-color);
   padding-left: 1.8rem;
-  transition: color .4s, opacity .4s;
+  transition: color 0.4s, opacity 0.4s;
 }
 
 .sidebar__link i {
@@ -235,7 +235,7 @@
 /*=============== BREAKPOINTS ===============*/
 /* For small devices */
 @media screen and (max-width: 360px) {
-  .sidebar__close{
+  .sidebar__close {
     display: block;
   }
   .sidebar__container,
@@ -243,7 +243,7 @@
     row-gap: 1.5rem;
   }
 
-  .sidebar__user{
+  .sidebar__user {
     padding-left: 1rem;
   }
 }
@@ -253,7 +253,7 @@
   .header {
     margin: 1rem;
     padding-left: 340px;
-    transition: padding .4s;
+    transition: padding 0.4s;
   }
   .header__container {
     height: calc(var(--header-height) + 1rem);
@@ -268,13 +268,13 @@
     width: 316px;
     margin: 1rem;
   }
-  .sidebar__info, 
+  .sidebar__info,
   .sidebar__link span {
-    transition: opacity .4s;
+    transition: opacity 0.4s;
   }
-  .sidebar__user, 
+  .sidebar__user,
   .sidebar__title {
-    transition: padding .4s;
+    transition: padding 0.4s;
   }
 
   /* Reduce sidebar */
@@ -296,7 +296,7 @@
     font-size: var(--tiny-font-size);
     font-weight: var(--font-semi-bold);
   }
-  .hide-sidebar .sidebar__info, 
+  .hide-sidebar .sidebar__info,
   .hide-sidebar .sidebar__link span {
     opacity: 0;
   }

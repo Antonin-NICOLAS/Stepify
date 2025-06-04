@@ -160,7 +160,8 @@
   gap: 1rem;
 }
 
-.account-container .save-avatar-btn, .account-container .cancel-avatar-btn {
+.account-container .save-avatar-btn,
+.account-container .cancel-avatar-btn {
   margin-top: 1rem;
 }
 
@@ -382,7 +383,7 @@
   cursor: not-allowed;
 }
 
-.account-container .save-profile-btn{
+.account-container .save-profile-btn {
   margin: 1rem 0;
 }
 
@@ -438,7 +439,8 @@
   color: var(--text-color);
 }
 
-.account-container .save-status-btn, .cancel-status-btn {
+.account-container .save-status-btn,
+.cancel-status-btn {
   margin: 0.5rem 0.5rem 0 0.5rem;
 }
 

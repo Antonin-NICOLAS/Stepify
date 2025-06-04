@@ -1,5 +1,5 @@
-const StepEntry = require('../models/StepEntry');
-const User = require('../models/User');
+const StepEntry = require("../models/StepEntry");
+const User = require("../models/User");
 
 const updateUserStatsAfterImport = async (userId, newEntries) => {
   const user = await User.findById(userId);
@@ -42,14 +42,19 @@ const updateUserStatsAfterImport = async (userId, newEntries) => {
   // Pour reconstituer le streak continu le plus récent
   for (let i = 0; i < allStreakDates.length; i++) {
     const currentDate = new Date(allStreakDates[i]);
-    const currentStr = currentDate.toISOString().split('T')[0];
+    const currentStr = currentDate.toISOString().split("T")[0];
 
     const prevDate = new Date(currentDate);
     prevDate.setDate(prevDate.getDate() - 1);
-    const prevStr = prevDate.toISOString().split('T')[0];
+    const prevStr = prevDate.toISOString().split("T")[0];
 
-    const wasPrevAchieved = await StepEntry.find({ user: userId, day: prevStr })
-      .then(entries => entries.reduce((sum, e) => sum + e.totalSteps, 0) >= dailyGoal);
+    const wasPrevAchieved = await StepEntry.find({
+      user: userId,
+      day: prevStr,
+    }).then(
+      (entries) =>
+        entries.reduce((sum, e) => sum + e.totalSteps, 0) >= dailyGoal
+    );
 
     if (!wasPrevAchieved) {
       // Nouveau streak
@@ -75,15 +80,15 @@ const updateUserStatsAfterImport = async (userId, newEntries) => {
       totalSteps: totalStepsToAdd,
       totalDistance: distanceToAdd,
       totalCalories: caloriestoAdd,
-      totalXP: totalXPToAdd
+      totalXP: totalXPToAdd,
     },
     $set: {
-      'streak.current': streakCurrent,
-      'streak.max': streakMax,
-      'streak.lastAchieved': lastAchieved,
-      'streak.startDate': startDate,
-      'streak.endDate': endDate
-    }
+      "streak.current": streakCurrent,
+      "streak.max": streakMax,
+      "streak.lastAchieved": lastAchieved,
+      "streak.startDate": startDate,
+      "streak.endDate": endDate,
+    },
   });
 };
 
@@ -114,7 +119,7 @@ const updateUserStats = async (userId) => {
 
   // === Calcul du streak ===
   const allDates = Object.keys(stepsPerDay)
-    .filter(day => stepsPerDay[day] >= dailyGoal)
+    .filter((day) => stepsPerDay[day] >= dailyGoal)
     .sort(); // 'YYYY-MM-DD'
 
   let streakCurrent = 0;
@@ -128,7 +133,7 @@ const updateUserStats = async (userId) => {
     const prevDate = new Date(currentDate);
     prevDate.setDate(prevDate.getDate() - 1);
 
-    const prevStr = prevDate.toISOString().split('T')[0];
+    const prevStr = prevDate.toISOString().split("T")[0];
 
     const isConsecutive = allDates.includes(prevStr);
 
@@ -154,11 +159,11 @@ const updateUserStats = async (userId) => {
     totalDistance,
     totalCalories,
     totalActiveTime,
-    'streak.current': streakCurrent,
-    'streak.max': streakMax,
-    'streak.lastAchieved': lastAchieved,
-    'streak.startDate': startDate,
-    'streak.endDate': endDate
+    "streak.current": streakCurrent,
+    "streak.max": streakMax,
+    "streak.lastAchieved": lastAchieved,
+    "streak.startDate": startDate,
+    "streak.endDate": endDate,
   });
 };
 

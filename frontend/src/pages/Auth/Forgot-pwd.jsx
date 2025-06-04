@@ -1,29 +1,36 @@
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 //loader
-import GlobalLoader from "../../utils/GlobalLoader"
+import GlobalLoader from "../../utils/GlobalLoader";
 //context
-import { useAuth } from "../../context/AuthContext"
+import { useAuth } from "../../context/AuthContext";
 //icons
-import { Mail, Send, ArrowLeft, KeyRound, LockKeyhole, HelpCircle } from "lucide-react"
+import {
+  Mail,
+  Send,
+  ArrowLeft,
+  KeyRound,
+  LockKeyhole,
+  HelpCircle,
+} from "lucide-react";
 //CSS
-import "./Forgot-pwd.css"
+import "./Forgot-pwd.css";
 
 function ForgotPassword() {
-  const navigate = useNavigate()
-  const { forgotPassword } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
-  const [email, setEmail] = useState("")
+  const navigate = useNavigate();
+  const { forgotPassword } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
 
   const handleForgotPwd = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
     try {
-      await forgotPassword(email, () => navigate("/email-sent"))
+      await forgotPassword(email, () => navigate("/email-sent"));
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="forgot-password-page">
@@ -35,7 +42,10 @@ function ForgotPassword() {
               <span>Stepify</span>
             </div>
             <div className="auth-stats">
-              <div className="auth-stat-item" style={{ flexDirection: 'column' }}>
+              <div
+                className="auth-stat-item"
+                style={{ flexDirection: "column" }}
+              >
                 <h3>Mot de passe oublié</h3>
                 <p>Nous vous aiderons à récupérer votre compte</p>
               </div>
@@ -80,7 +90,9 @@ function ForgotPassword() {
                   </div>
                 </div>
                 <h2>Mot de passe oublié ? 🔑</h2>
-                <p className="auth-subtitle">Entrez votre email pour réinitialiser votre mot de passe</p>
+                <p className="auth-subtitle">
+                  Entrez votre email pour réinitialiser votre mot de passe
+                </p>
               </div>
 
               <div className="auth-form-content">
@@ -99,9 +111,15 @@ function ForgotPassword() {
                   </div>
                 </div>
 
-                <button type="submit" className="auth-button auth-button-primary" disabled={isLoading}>
+                <button
+                  type="submit"
+                  className="auth-button auth-button-primary"
+                  disabled={isLoading}
+                >
                   <Send />
-                  <span>{isLoading ? "Envoi en cours..." : "Envoyer le lien"}</span>
+                  <span>
+                    {isLoading ? "Envoi en cours..." : "Envoyer le lien"}
+                  </span>
                 </button>
 
                 <Link to="/login" className="auth-button auth-button-secondary">
@@ -119,7 +137,7 @@ function ForgotPassword() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ForgotPassword
+export default ForgotPassword;

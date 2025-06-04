@@ -1,41 +1,49 @@
-import { useState } from "react"
-import { useParams, Link } from "react-router-dom"
+import { useState } from "react";
+import { useParams, Link } from "react-router-dom";
 //loader
-import GlobalLoader from "../../utils/GlobalLoader"
+import GlobalLoader from "../../utils/GlobalLoader";
 //context
-import { useAuth } from "../../context/AuthContext"
+import { useAuth } from "../../context/AuthContext";
 //icons
-import { Eye, EyeOff, Check, LockKeyhole, KeyRound, ShieldCheck, AlertCircle } from "lucide-react"
+import {
+  Eye,
+  EyeOff,
+  Check,
+  LockKeyhole,
+  KeyRound,
+  ShieldCheck,
+  AlertCircle,
+} from "lucide-react";
 //CSS
-import "./Reset-pwd.css"
-import toast from "react-hot-toast"
+import "./Reset-pwd.css";
+import toast from "react-hot-toast";
 
 function ResetPassword() {
-  const { resetPassword } = useAuth()
+  const { resetPassword } = useAuth();
 
-  const { token } = useParams()
-  const [isLoading, setIsLoading] = useState(false)
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
+  const { token } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleResetPwd = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
     try {
       await resetPassword(token, password, confirmPassword, () => {
-        setPassword("")
-        setConfirmPassword("")
-        setIsSuccess(true)
-      })
+        setPassword("");
+        setConfirmPassword("");
+        setIsSuccess(true);
+      });
     } catch (error) {
-      toast.error(error)
+      toast.error(error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   if (isSuccess) {
     return (
@@ -83,12 +91,17 @@ function ResetPassword() {
                   </div>
                 </div>
                 <h2>Réinitialisation réussie! 🎉</h2>
-                <p className="auth-subtitle">Votre mot de passe a été mis à jour</p>
+                <p className="auth-subtitle">
+                  Votre mot de passe a été mis à jour
+                </p>
               </div>
 
               <div className="auth-form-content">
                 <div className="success-message">
-                  <p>Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</p>
+                  <p>
+                    Vous pouvez maintenant vous connecter avec votre nouveau mot
+                    de passe.
+                  </p>
                 </div>
 
                 <Link to="/login" className="auth-button auth-button-primary">
@@ -100,7 +113,7 @@ function ResetPassword() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -113,7 +126,10 @@ function ResetPassword() {
               <span>Stepify</span>
             </div>
             <div className="auth-stats">
-              <div className="auth-stat-item" style={{ flexDirection: "column" }}>
+              <div
+                className="auth-stat-item"
+                style={{ flexDirection: "column" }}
+              >
                 <h3>Réinitialisation du mot de passe</h3>
                 <p>Créez un nouveau mot de passe sécurisé</p>
               </div>
@@ -149,14 +165,19 @@ function ResetPassword() {
                   </div>
                 </div>
                 <h2>Réinitialiser le mot de passe 🔒</h2>
-                <p className="auth-subtitle">Créez un nouveau mot de passe pour votre compte</p>
+                <p className="auth-subtitle">
+                  Créez un nouveau mot de passe pour votre compte
+                </p>
               </div>
 
               <div className="auth-form-content">
                 {!token && (
                   <div className="auth-alert auth-alert-error">
                     <AlertCircle />
-                    <p>Lien de réinitialisation invalide ou expiré. Veuillez demander un nouveau lien.</p>
+                    <p>
+                      Lien de réinitialisation invalide ou expiré. Veuillez
+                      demander un nouveau lien.
+                    </p>
                   </div>
                 )}
 
@@ -177,16 +198,24 @@ function ResetPassword() {
                       type="button"
                       className="auth-input-action"
                       onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                      aria-label={
+                        showPassword
+                          ? "Masquer le mot de passe"
+                          : "Afficher le mot de passe"
+                      }
                     >
                       {showPassword ? <EyeOff /> : <Eye />}
                     </button>
                   </div>
-                  <p className="password-hint">Le mot de passe doit contenir au moins 8 caractères</p>
+                  <p className="password-hint">
+                    Le mot de passe doit contenir au moins 8 caractères
+                  </p>
                 </div>
 
                 <div className="auth-input-group">
-                  <label htmlFor="confirmPassword">Confirmer le mot de passe</label>
+                  <label htmlFor="confirmPassword">
+                    Confirmer le mot de passe
+                  </label>
                   <div className="auth-input-wrapper">
                     <LockKeyhole className="auth-input-icon" />
                     <input
@@ -201,17 +230,31 @@ function ResetPassword() {
                     <button
                       type="button"
                       className="auth-input-action"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      aria-label={showConfirmPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      aria-label={
+                        showConfirmPassword
+                          ? "Masquer le mot de passe"
+                          : "Afficher le mot de passe"
+                      }
                     >
                       {showConfirmPassword ? <EyeOff /> : <Eye />}
                     </button>
                   </div>
                 </div>
 
-                <button type="submit" className="auth-button auth-button-primary" disabled={isLoading || !token}>
+                <button
+                  type="submit"
+                  className="auth-button auth-button-primary"
+                  disabled={isLoading || !token}
+                >
                   <LockKeyhole />
-                  <span>{isLoading ? "Réinitialisation..." : "Réinitialiser le mot de passe"}</span>
+                  <span>
+                    {isLoading
+                      ? "Réinitialisation..."
+                      : "Réinitialiser le mot de passe"}
+                  </span>
                 </button>
               </div>
 
@@ -224,7 +267,7 @@ function ResetPassword() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ResetPassword
+export default ResetPassword;

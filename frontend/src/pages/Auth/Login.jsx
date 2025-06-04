@@ -1,10 +1,10 @@
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import Spline from "@splinetool/react-spline"
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import Spline from "@splinetool/react-spline";
 //loader
-import GlobalLoader from "../../utils/GlobalLoader"
+import GlobalLoader from "../../utils/GlobalLoader";
 //context
-import { useAuth } from "../../context/AuthContext"
+import { useAuth } from "../../context/AuthContext";
 //icons
 import {
   Mail,
@@ -18,20 +18,20 @@ import {
   UserPlus,
   AlertCircle,
   ChevronLeft,
-} from "lucide-react"
+} from "lucide-react";
 //CSS
-import "./Login.css"
+import "./Login.css";
 
 function Auth() {
-  const navigate = useNavigate()
-  const { login, register } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate();
+  const { login, register } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
     stayLoggedIn: false,
-  })
+  });
 
   const [registerData, setRegisterData] = useState({
     email: "",
@@ -41,35 +41,39 @@ function Auth() {
     lastName: "",
     username: "",
     stayLoggedIn: false,
-  })
+  });
 
-  const [isLogin, setIsLogin] = useState(true)
-  const [showLPassword, setShowLPassword] = useState(false)
-  const [showRPassword, setShowRPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [formError, setFormError] = useState("")
+  const [isLogin, setIsLogin] = useState(true);
+  const [showLPassword, setShowLPassword] = useState(false);
+  const [showRPassword, setShowRPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setFormError("")
-    setIsLoading(true)
+    e.preventDefault();
+    setFormError("");
+    setIsLoading(true);
     try {
-      await login(loginData, () => setLoginData({ email: "", password: "", stayLoggedIn: false }), navigate)
+      await login(
+        loginData,
+        () => setLoginData({ email: "", password: "", stayLoggedIn: false }),
+        navigate
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleRegister = async (e) => {
-    e.preventDefault()
-    setFormError("")
+    e.preventDefault();
+    setFormError("");
 
     if (registerData.password !== registerData.confirmPassword) {
-      setFormError("Passwords do not match")
-      return
+      setFormError("Passwords do not match");
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       await register(registerData, () => {
         setRegisterData({
@@ -80,13 +84,13 @@ function Auth() {
           lastName: "",
           username: "",
           stayLoggedIn: false,
-        })
-        navigate("/email-verification")
-      })
+        });
+        navigate("/email-verification");
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="login-container">
@@ -126,11 +130,17 @@ function Auth() {
 
         <div className="auth-form-container">
           <div className="auth-tabs">
-            <button className={`auth-tab ${isLogin ? "active" : ""}`} onClick={() => setIsLogin(true)}>
+            <button
+              className={`auth-tab ${isLogin ? "active" : ""}`}
+              onClick={() => setIsLogin(true)}
+            >
               <LogIn size={18} />
               <span>Sign In</span>
             </button>
-            <button className={`auth-tab ${!isLogin ? "active" : ""}`} onClick={() => setIsLogin(false)}>
+            <button
+              className={`auth-tab ${!isLogin ? "active" : ""}`}
+              onClick={() => setIsLogin(false)}
+            >
               <UserPlus size={18} />
               <span>Register</span>
             </button>
@@ -143,7 +153,9 @@ function Auth() {
             </div>
           )}
 
-          <div className={`auth-forms ${isLogin ? "show-login" : "show-register"}`}>
+          <div
+            className={`auth-forms ${isLogin ? "show-login" : "show-register"}`}
+          >
             <form className="login-form" onSubmit={handleLogin}>
               <h2>Welcome Back</h2>
               <p className="form-subtitle">Log in to your Stepify account</p>
@@ -160,7 +172,9 @@ function Auth() {
                     placeholder="Enter your email"
                     autoComplete="email"
                     value={loginData.email}
-                    onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                    onChange={(e) =>
+                      setLoginData({ ...loginData, email: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -178,14 +192,18 @@ function Auth() {
                     placeholder="Enter your password"
                     autoComplete="password"
                     value={loginData.password}
-                    onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                    onChange={(e) =>
+                      setLoginData({ ...loginData, password: e.target.value })
+                    }
                     required
                   />
                   <button
                     type="button"
                     className="toggle-password"
                     onClick={() => setShowLPassword(!showLPassword)}
-                    aria-label={showLPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showLPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showLPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -197,7 +215,12 @@ function Auth() {
                   <input
                     type="checkbox"
                     checked={loginData.stayLoggedIn}
-                    onChange={() => setLoginData({ ...loginData, stayLoggedIn: !loginData.stayLoggedIn })}
+                    onChange={() =>
+                      setLoginData({
+                        ...loginData,
+                        stayLoggedIn: !loginData.stayLoggedIn,
+                      })
+                    }
                   />
                   <span className="checkmark"></span>
                   <span>Stay connected</span>
@@ -207,14 +230,22 @@ function Auth() {
                 </Link>
               </div>
 
-              <button type="submit" className="submit-button" disabled={isLoading}>
+              <button
+                type="submit"
+                className="submit-button"
+                disabled={isLoading}
+              >
                 <span>Sign In</span>
                 <ArrowRight size={18} />
               </button>
 
               <div className="form-footer">
                 <span>Don't have an account?</span>
-                <button type="button" className="switch-form" onClick={() => setIsLogin(false)}>
+                <button
+                  type="button"
+                  className="switch-form"
+                  onClick={() => setIsLogin(false)}
+                >
                   Register now
                 </button>
               </div>
@@ -222,7 +253,9 @@ function Auth() {
 
             <form className="register-form" onSubmit={handleRegister}>
               <h2>Create Account</h2>
-              <p className="form-subtitle">Join Stepify and start tracking your progress</p>
+              <p className="form-subtitle">
+                Join Stepify and start tracking your progress
+              </p>
 
               <div className="form-row">
                 <div className="form-group">
@@ -237,7 +270,12 @@ function Auth() {
                       placeholder="Your first name"
                       autoComplete="given-name"
                       value={registerData.firstName}
-                      onChange={(e) => setRegisterData({ ...registerData, firstName: e.target.value })}
+                      onChange={(e) =>
+                        setRegisterData({
+                          ...registerData,
+                          firstName: e.target.value,
+                        })
+                      }
                       required
                     />
                   </div>
@@ -255,7 +293,12 @@ function Auth() {
                       placeholder="Your last name"
                       autoComplete="family-name"
                       value={registerData.lastName}
-                      onChange={(e) => setRegisterData({ ...registerData, lastName: e.target.value })}
+                      onChange={(e) =>
+                        setRegisterData({
+                          ...registerData,
+                          lastName: e.target.value,
+                        })
+                      }
                       required
                     />
                   </div>
@@ -273,7 +316,12 @@ function Auth() {
                     type="text"
                     placeholder="Choose a username"
                     value={registerData.username}
-                    onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
+                    onChange={(e) =>
+                      setRegisterData({
+                        ...registerData,
+                        username: e.target.value,
+                      })
+                    }
                     required
                   />
                 </div>
@@ -291,7 +339,12 @@ function Auth() {
                     placeholder="Your email address"
                     autoComplete="email"
                     value={registerData.email}
-                    onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                    onChange={(e) =>
+                      setRegisterData({
+                        ...registerData,
+                        email: e.target.value,
+                      })
+                    }
                     required
                   />
                 </div>
@@ -309,14 +362,21 @@ function Auth() {
                     placeholder="Create a password"
                     autoComplete="new-password"
                     value={registerData.password}
-                    onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+                    onChange={(e) =>
+                      setRegisterData({
+                        ...registerData,
+                        password: e.target.value,
+                      })
+                    }
                     required
                   />
                   <button
                     type="button"
                     className="toggle-password"
                     onClick={() => setShowRPassword(!showRPassword)}
-                    aria-label={showRPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showRPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showRPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -335,16 +395,27 @@ function Auth() {
                     placeholder="Confirm your password"
                     autoComplete="new-password"
                     value={registerData.confirmPassword}
-                    onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
+                    onChange={(e) =>
+                      setRegisterData({
+                        ...registerData,
+                        confirmPassword: e.target.value,
+                      })
+                    }
                     required
                   />
                   <button
                     type="button"
                     className="toggle-password"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showConfirmPassword ? "Hide password" : "Show password"
+                    }
                   >
-                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showConfirmPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
                   </button>
                 </div>
               </div>
@@ -355,7 +426,11 @@ function Auth() {
                   <span className="checkmark"></span>
                   <span>
                     I agree to the{" "}
-                    <Link to="/terms-of-service" target="_blank" rel="noopener noreferrer">
+                    <Link
+                      to="/terms-of-service"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Terms of Service
                     </Link>
                   </span>
@@ -365,21 +440,34 @@ function Auth() {
                   <input
                     type="checkbox"
                     checked={registerData.stayLoggedIn}
-                    onChange={() => setRegisterData({ ...registerData, stayLoggedIn: !registerData.stayLoggedIn })}
+                    onChange={() =>
+                      setRegisterData({
+                        ...registerData,
+                        stayLoggedIn: !registerData.stayLoggedIn,
+                      })
+                    }
                   />
                   <span className="checkmark"></span>
                   <span>Stay connected after registration</span>
                 </label>
               </div>
 
-              <button type="submit" className="submit-button" disabled={isLoading}>
+              <button
+                type="submit"
+                className="submit-button"
+                disabled={isLoading}
+              >
                 <span>Create Account</span>
                 <ArrowRight size={18} />
               </button>
 
               <div className="form-footer">
                 <span>Already have an account?</span>
-                <button type="button" className="switch-form" onClick={() => setIsLogin(true)}>
+                <button
+                  type="button"
+                  className="switch-form"
+                  onClick={() => setIsLogin(true)}
+                >
                   Sign in
                 </button>
               </div>
@@ -397,7 +485,7 @@ function Auth() {
         <p>© {new Date().getFullYear()} Stepify. All rights reserved.</p>
       </div>
     </div>
-  )
+  );
 }
 
-export default Auth
+export default Auth;

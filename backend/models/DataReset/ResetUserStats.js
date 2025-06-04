@@ -1,11 +1,12 @@
-const mongoose = require('mongoose');
-const User = require('../User');
+const mongoose = require("mongoose");
+const User = require("../User");
 //.env
-require('dotenv').config()
+require("dotenv").config();
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("[RESET] MongoDB connecté"))
-  .catch(err => console.error("[RESET] Erreur de connexion MongoDB:", err));
+  .catch((err) => console.error("[RESET] Erreur de connexion MongoDB:", err));
 
 async function resetUserStats() {
   try {
@@ -33,19 +34,23 @@ async function resetUserStats() {
         max: 0,
         lastAchieved: null,
         startDate: null,
-        endDate: null
-      }
+        endDate: null,
+      },
     };
 
     const result = await User.updateMany(
       {}, // Tous les utilisateurs
       {
-        $set: resetStats
+        $set: resetStats,
       },
       { multi: true }
     );
 
-    console.log('[RESET] Statistiques réinitialisées pour', result.modifiedCount, 'utilisateurs');
+    console.log(
+      "[RESET] Statistiques réinitialisées pour",
+      result.modifiedCount,
+      "utilisateurs"
+    );
 
     // Vérification
     const users = await User.find({});
@@ -54,38 +59,42 @@ async function resetUserStats() {
         xp: user.totalXP,
         steps: user.totalSteps,
         rewards: user.rewardsUnlocked.length,
-        challenges: user.challenges.length
+        challenges: user.challenges.length,
       });
     }
-
   } catch (err) {
-    console.error('[RESET] Erreur lors de la réinitialisation:', err);
+    console.error("[RESET] Erreur lors de la réinitialisation:", err);
   } finally {
     await mongoose.connection.close();
-    console.log('[RESET] Connexion MongoDB fermée');
+    console.log("[RESET] Connexion MongoDB fermée");
   }
 }
 
 // Demande de confirmation avant l'exécution
-console.log('\n⚠️  ATTENTION: Cette opération va réinitialiser toutes les statistiques des utilisateurs');
-console.log('Les données suivantes seront conservées:');
-console.log('- Informations de compte (email, mot de passe, etc.)');
-console.log('- Paramètres de confidentialité');
-console.log('- Préférences utilisateur');
-console.log('- Liste d\'amis\n');
+console.log(
+  "\n⚠️  ATTENTION: Cette opération va réinitialiser toutes les statistiques des utilisateurs"
+);
+console.log("Les données suivantes seront conservées:");
+console.log("- Informations de compte (email, mot de passe, etc.)");
+console.log("- Paramètres de confidentialité");
+console.log("- Préférences utilisateur");
+console.log("- Liste d'amis\n");
 
-const readline = require('readline').createInterface({
+const readline = require("readline").createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
-readline.question('Êtes-vous sûr de vouloir continuer ? (oui/non) ', async (answer) => {
-  if (answer.toLowerCase() === 'oui') {
-    console.log('\n[RESET] Début de la réinitialisation...\n');
-    await resetUserStats();
-  } else {
-    console.log('\n[RESET] Opération annulée');
-    process.exit(0);
+readline.question(
+  "Êtes-vous sûr de vouloir continuer ? (oui/non) ",
+  async (answer) => {
+    if (answer.toLowerCase() === "oui") {
+      console.log("\n[RESET] Début de la réinitialisation...\n");
+      await resetUserStats();
+    } else {
+      console.log("\n[RESET] Opération annulée");
+      process.exit(0);
+    }
+    readline.close();
   }
-  readline.close();
-}); 
+);

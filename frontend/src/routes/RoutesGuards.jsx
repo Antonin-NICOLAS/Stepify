@@ -34,14 +34,19 @@ export const AuthenticatedUserRoute = ({ children }) => {
   }, [checkAuth]);
 
   if (isCheckingAuth) return <GlobalLoader />;
-  return isAuthenticated && user ? <Navigate to="/dashboard" replace /> : children;
+  return isAuthenticated && user ? (
+    <Navigate to="/dashboard" replace />
+  ) : (
+    children
+  );
 };
 
 // Route that requires email verification
 export const RequireEmailVerification = ({ children }) => {
   const { user, checkAuth } = useAuth();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const isOnVerificationPage = window.location.pathname === "/email-verification";
+  const isOnVerificationPage =
+    window.location.pathname === "/email-verification";
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -53,7 +58,9 @@ export const RequireEmailVerification = ({ children }) => {
 
   if (isCheckingAuth) return <GlobalLoader />;
   if (!isOnVerificationPage && user && !user.isVerified) {
-    return <Navigate to="/email-verification" replace state={{ showToast: true }} />;
+    return (
+      <Navigate to="/email-verification" replace state={{ showToast: true }} />
+    );
   }
   return children;
 };
@@ -72,5 +79,9 @@ export const RequireAdmin = ({ children }) => {
   }, [checkAuth]);
 
   if (isCheckingAuth) return <GlobalLoader />;
-  return user?.role === "admin" ? children : <Navigate to="/dashboard" replace />;
+  return user?.role === "admin" ? (
+    children
+  ) : (
+    <Navigate to="/dashboard" replace />
+  );
 };

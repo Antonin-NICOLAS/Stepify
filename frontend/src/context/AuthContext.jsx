@@ -1,27 +1,35 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
-import i18n from '../i18n';
-import GlobalLoader from '../utils/GlobalLoader';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import i18n from "../i18n";
+import GlobalLoader from "../utils/GlobalLoader";
 
-const API_AUTH = process.env.NODE_ENV === 'production' ? '/api/auth' : '/auth';
+const API_AUTH = process.env.NODE_ENV === "production" ? "/api/auth" : "/auth";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   // Mise à jour partielle de l'utilisateur
   const updateUserField = useCallback((field, value) => {
-    setUser(prev => (prev ? { ...prev, [field]: value } : null));
+    setUser((prev) => (prev ? { ...prev, [field]: value } : null));
   }, []);
 
   // --- Check Auth ---
   const checkAuth = useCallback(async () => {
     try {
-      const res = await axios.get(`${API_AUTH}/check-auth`, { withCredentials: true });
+      const res = await axios.get(`${API_AUTH}/check-auth`, {
+        withCredentials: true,
+      });
       const data = res.data;
       if (data.user) {
         setUser(data.user);
@@ -30,8 +38,8 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setIsAuthenticated(false);
       }
-      if (data.error === 'Session expirée ou invalide') {
-        toast.error('Session expirée ou invalide. Veuillez vous reconnecter');
+      if (data.error === "Session expirée ou invalide") {
+        toast.error("Session expirée ou invalide. Veuillez vous reconnecter");
         throw data.error;
       }
     } catch (err) {
@@ -43,7 +51,15 @@ export const AuthProvider = ({ children }) => {
 
   // --- Register ---
   const register = useCallback(async (RformData, resetForm) => {
-    const { firstName, lastName, username, email, password, confirmPassword, stayLoggedIn } = RformData;
+    const {
+      firstName,
+      lastName,
+      username,
+      email,
+      password,
+      confirmPassword,
+      stayLoggedIn,
+    } = RformData;
 
     if (!firstName || firstName.length < 2) {
       toast.error("Un prénom valide (2 caractères minimum) est requis");
@@ -58,7 +74,9 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
-      toast.error("Nom d'utilisateur invalide (3-30 caractères alphanumériques)");
+      toast.error(
+        "Nom d'utilisateur invalide (3-30 caractères alphanumériques)"
+      );
       return;
     }
     if (password.length < 8) {
@@ -70,24 +88,32 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     try {
-      const res = await axios.post(`${API_AUTH}/register`, {
-        firstName,
-        lastName,
-        username,
-        email,
-        password,
-        stayLoggedIn,
-      }, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
+      const res = await axios.post(
+        `${API_AUTH}/register`,
+        {
+          firstName,
+          lastName,
+          username,
+          email,
+          password,
+          stayLoggedIn,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
 
       const data = res.data;
 
       if (data.errors.username || data.errors.email) {
-        toast.error(data.errors.username && data.errors.email || data.errors.username || data.errors.email);
+        toast.error(
+          (data.errors.username && data.errors.email) ||
+            data.errors.username ||
+            data.errors.email
+        );
       } else {
         setUser(data.user);
         setIsAuthenticated(true);
@@ -95,7 +121,13 @@ export const AuthProvider = ({ children }) => {
         toast.success(data.message);
       }
     } catch (err) {
-      toast.error(err.response?.data?.errors?.username && err.response?.data?.errors?.email || err.response?.data?.errors?.username || err.response?.data?.errors?.email || "Erreur lors de l'inscription");
+      toast.error(
+        (err.response?.data?.errors?.username &&
+          err.response?.data?.errors?.email) ||
+          err.response?.data?.errors?.username ||
+          err.response?.data?.errors?.email ||
+          "Erreur lors de l'inscription"
+      );
     }
   }, []);
 
@@ -107,16 +139,20 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     try {
-      const res = await axios.post(`${API_AUTH}/login`, {
-        email,
-        password,
-        stayLoggedIn
-      }, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
+      const res = await axios.post(
+        `${API_AUTH}/login`,
+        {
+          email,
+          password,
+          stayLoggedIn,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
 
       const data = res.data;
 
@@ -128,8 +164,17 @@ export const AuthProvider = ({ children }) => {
         resetForm();
         if (!data.user.isVerified) {
           await resendVerificationCode(
-            () => { toast.success("Un code vous a été envoyé pour vérifier votre adresse mail") },
-            () => { toast.error(`Cliquez sur "renvoyer un mail" pour recevoir un nouveau code`) },);
+            () => {
+              toast.success(
+                "Un code vous a été envoyé pour vérifier votre adresse mail"
+              );
+            },
+            () => {
+              toast.error(
+                `Cliquez sur "renvoyer un mail" pour recevoir un nouveau code`
+              );
+            }
+          );
           navigate("/email-verification");
         } else {
           navigate("/dashboard");
@@ -149,77 +194,98 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     try {
-      const res = await axios.post(`${API_AUTH}/forgot-password`, {
-        email
-      }, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
+      const res = await axios.post(
+        `${API_AUTH}/forgot-password`,
+        {
+          email,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
       const data = res.data;
-      if (data.error) {
-        toast.error(data.error)
-      } else {
-        onSuccess()
-        toast.success(data.message);
-      }
-    } catch (err) {
-      toast.error(err.response?.data?.error || "Erreur lors de l'envoi de l'email");
-      throw err;
-    }
-  }, []);
-
-  // --- Reset Password ---
-  const resetPassword = useCallback(async (token, password, confirmPassword, onSuccess) => {
-    if (!token) return toast.error("Lien invalide ou expiré");
-    if (password !== confirmPassword) return toast.error("Les mots de passe ne correspondent pas");
-    if (password.length < 8) return toast.error("Mot de passe trop court (min 8 caractères)");
-
-    try {
-      const res = await axios.post(`${API_AUTH}/reset-password/${token}`, {
-        password,
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      const data = res.data;
-
       if (data.error) {
         toast.error(data.error);
       } else {
         onSuccess();
         toast.success(data.message);
-        setUser(null);
-        setIsAuthenticated(false);
       }
     } catch (err) {
-      toast.error(err.response?.data?.error || "Erreur lors de la réinitialisation");
+      toast.error(
+        err.response?.data?.error || "Erreur lors de l'envoi de l'email"
+      );
+      throw err;
     }
   }, []);
+
+  // --- Reset Password ---
+  const resetPassword = useCallback(
+    async (token, password, confirmPassword, onSuccess) => {
+      if (!token) return toast.error("Lien invalide ou expiré");
+      if (password !== confirmPassword)
+        return toast.error("Les mots de passe ne correspondent pas");
+      if (password.length < 8)
+        return toast.error("Mot de passe trop court (min 8 caractères)");
+
+      try {
+        const res = await axios.post(
+          `${API_AUTH}/reset-password/${token}`,
+          {
+            password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const data = res.data;
+
+        if (data.error) {
+          toast.error(data.error);
+        } else {
+          onSuccess();
+          toast.success(data.message);
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      } catch (err) {
+        toast.error(
+          err.response?.data?.error || "Erreur lors de la réinitialisation"
+        );
+      }
+    },
+    []
+  );
 
   // --- Verify Email ---
   const verifyEmail = useCallback(async (code, onSuccess) => {
     if (code.length !== 6) {
-      toast.error("Veuillez entrer le code complet à 6 chiffres")
+      toast.error("Veuillez entrer le code complet à 6 chiffres");
       throw new Error("Invalid code length");
     }
     try {
-      const res = await axios.post(`${API_AUTH}/verify-email`, {
-        code
-      }, {
-        withCredentials: true
-      });
+      const res = await axios.post(
+        `${API_AUTH}/verify-email`,
+        {
+          code,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       const data = res.data;
 
       if (data.error) {
         toast.error(data.error);
       } else {
-        setIsAuthenticated(true)
-        setUser(data.user)
+        setIsAuthenticated(true);
+        setUser(data.user);
         onSuccess();
         toast.success(data.message);
       }
@@ -231,9 +297,13 @@ export const AuthProvider = ({ children }) => {
   // --- Resend verification code ---
   const resendVerificationCode = useCallback(async (OnError, onSuccess) => {
     try {
-      const res = await axios.post(`${API_AUTH}/resend-verification-code`, {}, {
-        withCredentials: true
-      });
+      const res = await axios.post(
+        `${API_AUTH}/resend-verification-code`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
 
       const data = res.data;
 
@@ -241,14 +311,16 @@ export const AuthProvider = ({ children }) => {
         toast.error(data.error);
         OnError();
       } else {
-        setIsAuthenticated(true)
-        setUser(data.user)
+        setIsAuthenticated(true);
+        setUser(data.user);
         onSuccess();
         toast.success(data.message);
       }
     } catch (err) {
       OnError();
-      toast.error(err.response?.data?.error || "Erreur lors de l'envoi du code");
+      toast.error(
+        err.response?.data?.error || "Erreur lors de l'envoi du code"
+      );
     }
   }, []);
 
@@ -257,33 +329,43 @@ export const AuthProvider = ({ children }) => {
     if (!newEmail) return toast.error("Veuillez entrer votre email");
 
     try {
-      const res = await axios.post(`${API_AUTH}/change-verification-email`, {
-        newEmail
-      }, {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
+      const res = await axios.post(
+        `${API_AUTH}/change-verification-email`,
+        {
+          newEmail,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
       const data = res.data;
       if (data.error) {
-        toast.error(data.error)
+        toast.error(data.error);
       } else {
-        setUser(data.user)
-        onSuccess()
+        setUser(data.user);
+        onSuccess();
         toast.success(data.message);
       }
     } catch (err) {
-      toast.error(err.response?.data?.error || "Erreur lors de l'envoi de l'email");
+      toast.error(
+        err.response?.data?.error || "Erreur lors de l'envoi de l'email"
+      );
     }
-  }, [])
+  }, []);
 
   // --- Logout ---
   const logout = useCallback(async (onSuccess) => {
     try {
-      const res = await axios.post(`${API_AUTH}/logout`, {}, { withCredentials: true });
-      setIsAuthenticated(false)
-      setUser(null)
+      const res = await axios.post(
+        `${API_AUTH}/logout`,
+        {},
+        { withCredentials: true }
+      );
+      setIsAuthenticated(false);
+      setUser(null);
       toast.success(res.data.message || "Déconnecté avec succès");
       onSuccess();
     } catch (err) {
@@ -293,15 +375,19 @@ export const AuthProvider = ({ children }) => {
 
   const deleteUser = useCallback(async (onSuccess) => {
     try {
-      const res = await axios.post(`${API_AUTH}/${user?._id}/logout`, {}, { withCredentials: true });
-      setIsAuthenticated(false)
-      setUser(null)
+      const res = await axios.post(
+        `${API_AUTH}/${user?._id}/logout`,
+        {},
+        { withCredentials: true }
+      );
+      setIsAuthenticated(false);
+      setUser(null);
       toast.success(res.data.message || "Compte supprimé");
       onSuccess();
     } catch (err) {
       toast.error("Erreur lors de la suppression");
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -316,22 +402,24 @@ export const AuthProvider = ({ children }) => {
   }, [checkAuth]);
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      setUser,
-      isAuthenticated,
-      updateUserField,
-      checkAuth,
-      register,
-      login,
-      forgotPassword,
-      resetPassword,
-      verifyEmail,
-      deleteUser,
-      changeVerificationEmail,
-      resendVerificationCode,
-      logout
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        isAuthenticated,
+        updateUserField,
+        checkAuth,
+        register,
+        login,
+        forgotPassword,
+        resetPassword,
+        verifyEmail,
+        deleteUser,
+        changeVerificationEmail,
+        resendVerificationCode,
+        logout,
+      }}
+    >
       {isCheckingAuth && <GlobalLoader />}
       {children}
     </AuthContext.Provider>
@@ -341,7 +429,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

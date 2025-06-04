@@ -1,37 +1,37 @@
-import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 //loader
-import GlobalLoader from "../../utils/GlobalLoader"
+import GlobalLoader from "../../utils/GlobalLoader";
 //context
-import { useAuth } from "../../context/AuthContext"
+import { useAuth } from "../../context/AuthContext";
 //icons
-import { Mail, Send, ArrowLeft, AtSign, CheckCircle2 } from "lucide-react"
+import { Mail, Send, ArrowLeft, AtSign, CheckCircle2 } from "lucide-react";
 //CSS
-import "./ChangeEmail.css"
+import "./ChangeEmail.css";
 
 function ChangeEmail() {
-  const navigate = useNavigate()
-  const { changeVerificationEmail } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate();
+  const { changeVerificationEmail } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState("");
 
   const handleChangeVerificationEmail = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
     try {
       await changeVerificationEmail(email, () => {
-        setEmail("")
-        navigate("/email-verification")
-      })
+        setEmail("");
+        navigate("/email-verification");
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="change-email-page">
-      {isLoading && <GlobalLoader/>}
+      {isLoading && <GlobalLoader />}
       <div className="auth-container">
         <div className="auth-visual-section">
           <div className="auth-visual-content">
@@ -67,7 +67,10 @@ function ChangeEmail() {
 
         <div className="auth-form-section">
           <div className="auth-form-container">
-            <form className="auth-form" onSubmit={handleChangeVerificationEmail}>
+            <form
+              className="auth-form"
+              onSubmit={handleChangeVerificationEmail}
+            >
               <div className="auth-form-header">
                 <div className="auth-icon-container">
                   <div className="auth-icon">
@@ -75,7 +78,9 @@ function ChangeEmail() {
                   </div>
                 </div>
                 <h2>Mauvais email ?</h2>
-                <p className="auth-subtitle">Entrez votre nouvel email pour le vérifier</p>
+                <p className="auth-subtitle">
+                  Entrez votre nouvel email pour le vérifier
+                </p>
               </div>
 
               <div className="auth-form-content">
@@ -94,12 +99,21 @@ function ChangeEmail() {
                   </div>
                 </div>
 
-                <button type="submit" className="auth-button auth-button-primary" disabled={isLoading}>
+                <button
+                  type="submit"
+                  className="auth-button auth-button-primary"
+                  disabled={isLoading}
+                >
                   <Send />
-                  <span>{isLoading ? "Envoi en cours..." : "Envoyer le code"}</span>
+                  <span>
+                    {isLoading ? "Envoi en cours..." : "Envoyer le code"}
+                  </span>
                 </button>
 
-                <Link to="/email-verification" className="auth-button auth-button-secondary">
+                <Link
+                  to="/email-verification"
+                  className="auth-button auth-button-secondary"
+                >
                   <ArrowLeft />
                   <span>Retour</span>
                 </Link>
@@ -114,7 +128,7 @@ function ChangeEmail() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default ChangeEmail
+export default ChangeEmail;

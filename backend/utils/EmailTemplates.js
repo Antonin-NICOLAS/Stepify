@@ -492,7 +492,7 @@ const NewLoginEmailTemplate = `
 </body>
 
 </html>
-`
+`;
 const EmailVerificationTokenTemplate = `
 <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -900,7 +900,7 @@ const EmailVerificationTokenTemplate = `
 </body>
 
 </html>
-`
+`;
 
 const WelcomeEmailTemplate = `
 <!DOCTYPE html>
@@ -1478,7 +1478,7 @@ const WelcomeEmailTemplate = `
 	</table><!-- End -->
 </body>
 
-</html>`
+</html>`;
 
 const EmailPasswordResetTemplate = `
 <!DOCTYPE html>
@@ -1886,7 +1886,7 @@ const EmailPasswordResetTemplate = `
 </body>
 
 </html>
-`
+`;
 
 const ResetPasswordSuccessfulTemplate = `
 <!DOCTYPE html>
@@ -2262,6 +2262,12 @@ const ResetPasswordSuccessfulTemplate = `
 </body>
 
 </html>
-`
+`;
 
-module.exports = { NewLoginEmailTemplate, EmailVerificationTokenTemplate, WelcomeEmailTemplate, EmailPasswordResetTemplate, ResetPasswordSuccessfulTemplate };
+module.exports = {
+  NewLoginEmailTemplate,
+  EmailVerificationTokenTemplate,
+  WelcomeEmailTemplate,
+  EmailPasswordResetTemplate,
+  ResetPasswordSuccessfulTemplate,
+};

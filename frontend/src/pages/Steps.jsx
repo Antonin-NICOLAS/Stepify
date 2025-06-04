@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef } from "react"
-import { Link } from "react-router-dom"
-import Select from "react-select"
+import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import Select from "react-select";
 //Hooks & context
-import { useAuth } from "../context/AuthContext"
-import { useSteps } from "../hooks/useSteps"
-import { useStepsFilters } from "../hooks/useStepsFilters"
-import { useStepsStats } from "../hooks/useStepsStats"
-import GlobalLoader from "../utils/GlobalLoader"
+import { useAuth } from "../context/AuthContext";
+import { useSteps } from "../hooks/useSteps";
+import { useStepsFilters } from "../hooks/useStepsFilters";
+import { useStepsStats } from "../hooks/useStepsStats";
+import GlobalLoader from "../utils/GlobalLoader";
 //CHARTS
-import { Line } from "react-chartjs-2"
-import { Chart, registerables } from "chart.js"
+import { Line } from "react-chartjs-2";
+import { Chart, registerables } from "chart.js";
 //ICONS
 import {
   Globe,
@@ -37,35 +37,35 @@ import {
   Fingerprint,
   ChevronDown,
   ChevronUp,
-} from "lucide-react"
+} from "lucide-react";
 //CSS
-import "./Steps.css"
+import "./Steps.css";
 
 // Register Chart.js components
-Chart.register(...registerables)
+Chart.register(...registerables);
 
 const Steps = () => {
-  const { user } = useAuth()
+  const { user } = useAuth();
 
   // State for view options
-  const [viewMode, setViewMode] = useState("day")
+  const [viewMode, setViewMode] = useState("day");
   const [selectedDate, setSelectedDate] = useState(() => {
-    const now = new Date()
-    now.setHours(0, 0, 0, 0)
-    return now
-  })
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return now;
+  });
   const [dateRange, setDateRange] = useState({
     start: new Date(new Date().setDate(new Date().getDate() - 7)),
     end: new Date(),
-  })
-  const [customDateRange, setCustomDateRange] = useState(false)
+  });
+  const [customDateRange, setCustomDateRange] = useState(false);
 
   // State for modals
-  const [showModal, setShowModal] = useState(false)
-  const [currentEntry, setCurrentEntry] = useState(null)
-  const [selectedHourIndex, setSelectedHourIndex] = useState(0)
-  const now = new Date()
-  const initialHour = `${now.getHours().toString().padStart(2, "0")}:00`
+  const [showModal, setShowModal] = useState(false);
+  const [currentEntry, setCurrentEntry] = useState(null);
+  const [selectedHourIndex, setSelectedHourIndex] = useState(0);
+  const now = new Date();
+  const initialHour = `${now.getHours().toString().padStart(2, "0")}:00`;
   const [formValues, setFormValues] = useState({
     date: "",
     time: initialHour,
@@ -74,136 +74,154 @@ const Steps = () => {
     calories: "",
     mode: "walk",
     activeTime: "",
-  })
-  const [showImportModal, setShowImportModal] = useState(false)
-  const [importSource, setImportSource] = useState(null)
-  const [importFile, setImportFile] = useState(null)
-  const [uploadProgress, setUploadProgress] = useState(0)
-  const [isLoading, setIsLoading] = useState(false)
+  });
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importSource, setImportSource] = useState(null);
+  const [importFile, setImportFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   // State for chart
-  const [chartMetric, setChartMetric] = useState("totalSteps")
+  const [chartMetric, setChartMetric] = useState("totalSteps");
 
   // State for filters
-  const [showFilters, setShowFilters] = useState(false)
+  const [showFilters, setShowFilters] = useState(false);
   const [tableFilters, setTableFilters] = useState({
     mode: "all",
     verified: "all",
     favorite: "all",
     dateRange: "all",
-  })
+  });
 
   // Custom hooks
-  const { stepEntries, fetchStepEntries, addStepEntry, updateStepEntry, FavoriteEntry, deleteStepEntry, importSteps } =
-    useSteps(user?._id)
+  const {
+    stepEntries,
+    fetchStepEntries,
+    addStepEntry,
+    updateStepEntry,
+    FavoriteEntry,
+    deleteStepEntry,
+    importSteps,
+  } = useSteps(user?._id);
 
-  const { filteredEntries, filters, setFilters } = useStepsFilters(stepEntries, viewMode, selectedDate, dateRange)
+  const { filteredEntries, filters, setFilters } = useStepsFilters(
+    stepEntries,
+    viewMode,
+    selectedDate,
+    dateRange
+  );
 
-  const stats = useStepsStats(filteredEntries)
-  const EntryModalRef = useRef(null)
-  const ImportModalRef = useRef(null)
+  const stats = useStepsStats(filteredEntries);
+  const EntryModalRef = useRef(null);
+  const ImportModalRef = useRef(null);
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
-      setShowModal(false)
-      setShowImportModal(false)
-      setCurrentEntry(null)
+      setShowModal(false);
+      setShowImportModal(false);
+      setCurrentEntry(null);
     }
-  }
+  };
 
   // UseEffect
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (user?._id) {
-      fetchStepEntries()
+      fetchStepEntries();
     }
-    setIsLoading(false)
-  }, [user?._id, fetchStepEntries])
+    setIsLoading(false);
+  }, [user?._id, fetchStepEntries]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        setShowModal(false)
-        setShowImportModal(false)
-        setCurrentEntry(null)
+        setShowModal(false);
+        setShowImportModal(false);
+        setCurrentEntry(null);
       }
-    }
+    };
 
-    document.addEventListener("keydown", handleKeyDown)
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [])
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   useEffect(() => {
     if (currentEntry?.mode) {
-      const match = ModeOptions.find((opt) => opt.value === currentEntry.mode)
-      if (match) setSelectedMode(match)
+      const match = ModeOptions.find((opt) => opt.value === currentEntry.mode);
+      if (match) setSelectedMode(match);
     }
-  }, [currentEntry])
+  }, [currentEntry]);
 
   useEffect(() => {
     if (currentEntry) {
-      const hourData = currentEntry.hourlyData[selectedHourIndex]
+      const hourData = currentEntry.hourlyData[selectedHourIndex];
       setFormValues({
         steps: hourData.steps,
         distance: hourData.distance,
         calories: hourData.calories,
         mode: hourData.mode,
         activeTime: hourData.activeTime,
-      })
-      setSelectedMode(ModeOptions.find((opt) => opt.value === hourData.mode))
+      });
+      setSelectedMode(ModeOptions.find((opt) => opt.value === hourData.mode));
     }
-  }, [selectedHourIndex, currentEntry])
+  }, [selectedHourIndex, currentEntry]);
 
   // select Options
   const MetricOptions = [
     { value: "totalSteps", label: "Pas", icon: <Footprints size={16} /> },
     { value: "totalDistance", label: "Distance", icon: <Spline size={16} /> },
     { value: "totalCalories", label: "Calories", icon: <Flame size={16} /> },
-    { value: "totalActiveTime", label: "Temps actif", icon: <Clock size={16} /> },
-  ]
+    {
+      value: "totalActiveTime",
+      label: "Temps actif",
+      icon: <Clock size={16} />,
+    },
+  ];
 
   const ModeOptionsChart = [
     { value: "all", label: "Tous les modes", icon: <Globe size={16} /> },
     { value: "walk", label: "Marche", icon: <Footprints size={16} /> },
     { value: "run", label: "Course", icon: <Watch size={16} /> },
     { value: "bike", label: "Vélo", icon: <Bike size={16} /> },
-  ]
+  ];
 
   const ModeOptions = [
     { value: "walk", label: "Marche", icon: <Footprints size={20} /> },
     { value: "run", label: "Course", icon: <Watch size={16} /> },
     { value: "bike", label: "Vélo", icon: <Bike size={16} /> },
-  ]
+  ];
 
   const FilterModeOptions = [
     { value: "all", label: "Tous les modes", icon: <Globe size={16} /> },
     { value: "walk", label: "Marche", icon: <Footprints size={16} /> },
     { value: "run", label: "Course", icon: <Watch size={16} /> },
     { value: "bike", label: "Vélo", icon: <Bike size={16} /> },
-  ]
+  ];
 
   const VerifiedOptions = [
     { value: "all", label: "Tous", icon: <Globe size={16} /> },
     { value: "verified", label: "Vérifiés", icon: <Check size={16} /> },
     { value: "unverified", label: "Non vérifiés", icon: <X size={16} /> },
-  ]
+  ];
 
   const FavoriteOptions = [
     { value: "all", label: "Tous", icon: <Globe size={16} /> },
     { value: "favorite", label: "Favoris", icon: <Heart size={16} /> },
     { value: "not-favorite", label: "Non favoris", icon: <X size={16} /> },
-  ]
+  ];
 
   // State for select
   const [selectedMode, setSelectedMode] = useState(
-    ModeOptions.find((opt) => opt.value === (currentEntry?.mode || "walk")),
-  )
+    ModeOptions.find((opt) => opt.value === (currentEntry?.mode || "walk"))
+  );
 
-  const [selectedFilterMode, setSelectedFilterMode] = useState(FilterModeOptions[0])
-  const [selectedVerified, setSelectedVerified] = useState(VerifiedOptions[0])
-  const [selectedFavorite, setSelectedFavorite] = useState(FavoriteOptions[0])
+  const [selectedFilterMode, setSelectedFilterMode] = useState(
+    FilterModeOptions[0]
+  );
+  const [selectedVerified, setSelectedVerified] = useState(VerifiedOptions[0]);
+  const [selectedFavorite, setSelectedFavorite] = useState(FavoriteOptions[0]);
 
   // Custom select components
   const customSelectStyles = {
@@ -223,7 +241,11 @@ const Steps = () => {
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isSelected ? "var(--Couleur1)" : state.isFocused ? "var(--Couleur2)" : "transparent",
+      backgroundColor: state.isSelected
+        ? "var(--Couleur1)"
+        : state.isFocused
+        ? "var(--Couleur2)"
+        : "transparent",
       color: state.isSelected ? "white" : "var(--Noir)",
       "&:hover": {
         backgroundColor: "var(--Couleur2)",
@@ -233,202 +255,236 @@ const Steps = () => {
       ...provided,
       color: "var(--Noir)",
     }),
-  }
+  };
 
   const customSingleValue = ({ data }) => (
     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
       {data.icon}
       {data.label}
     </div>
-  )
+  );
 
   const customOption = (props) => {
-    const { data, innerRef, innerProps, isSelected, isFocused } = props
+    const { data, innerRef, innerProps, isSelected, isFocused } = props;
     return (
       <div
         ref={innerRef}
         {...innerProps}
-        className={`metric-select__option ${isSelected ? "custom-select__option--is-selected" : ""} ${isFocused ? "custom-select__option--is-focused" : ""}`}
-        style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem", borderRadius: "4px" }}
+        className={`metric-select__option ${
+          isSelected ? "custom-select__option--is-selected" : ""
+        } ${isFocused ? "custom-select__option--is-focused" : ""}`}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          padding: "0.5rem",
+          borderRadius: "4px",
+        }}
       >
         {data.icon}
         {data.label}
       </div>
-    )
-  }
+    );
+  };
 
   // Filter entries based on table filters
   const getFilteredTableEntries = () => {
-    let filtered = [...filteredEntries]
+    let filtered = [...filteredEntries];
 
     // Filter by mode
     if (tableFilters.mode !== "all") {
-      filtered = filtered.filter((entry) => entry.mode === tableFilters.mode)
+      filtered = filtered.filter((entry) => entry.mode === tableFilters.mode);
     }
 
     // Filter by verified status
     if (tableFilters.verified !== "all") {
       filtered = filtered.filter((entry) =>
-        tableFilters.verified === "verified" ? entry.isVerified : !entry.isVerified,
-      )
+        tableFilters.verified === "verified"
+          ? entry.isVerified
+          : !entry.isVerified
+      );
     }
 
     // Filter by favorite status
     if (tableFilters.favorite !== "all") {
       filtered = filtered.filter((entry) =>
-        tableFilters.favorite === "favorite" ? entry.isFavorite : !entry.isFavorite,
-      )
+        tableFilters.favorite === "favorite"
+          ? entry.isFavorite
+          : !entry.isFavorite
+      );
     }
 
-    return filtered
-  }
+    return filtered;
+  };
 
   // Helper functions
   const formatActiveTime = (minutes) => {
-    const hours = Math.floor(minutes / 60)
-    const mins = minutes % 60
-    return `${hours}h${mins.toString().padStart(2, "0")}`
-  }
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours}h${mins.toString().padStart(2, "0")}`;
+  };
 
   const formatDate = (date) => {
     if (viewMode === "day") {
-      return date.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+      return date.toLocaleDateString("fr-FR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
     } else if (viewMode === "week") {
-      const startOfWeek = new Date(date)
-      startOfWeek.setDate(date.getDate() - date.getDay())
-      const endOfWeek = new Date(startOfWeek)
-      endOfWeek.setDate(startOfWeek.getDate() + 6)
+      const startOfWeek = new Date(date);
+      startOfWeek.setDate(date.getDate() - date.getDay());
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
 
-      return `${startOfWeek.toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} - ${endOfWeek.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}`
+      return `${startOfWeek.toLocaleDateString("fr-FR", {
+        day: "numeric",
+        month: "short",
+      })} - ${endOfWeek.toLocaleDateString("fr-FR", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })}`;
     } else if (viewMode === "month") {
-      return date.toLocaleDateString("fr-FR", { month: "long", year: "numeric" })
+      return date.toLocaleDateString("fr-FR", {
+        month: "long",
+        year: "numeric",
+      });
     }
 
-    return date.toLocaleDateString("fr-FR")
-  }
+    return date.toLocaleDateString("fr-FR");
+  };
 
   const getWeekNumber = (date) => {
-    const firstDayOfYear = new Date(date.getFullYear(), 0, 1)
-    const pastDaysOfYear = (date - firstDayOfYear) / 86400000
-    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
-  }
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+  };
 
   const getMetricLabel = (metric) => {
     switch (metric) {
       case "steps":
-        return "Pas"
+        return "Pas";
       case "distance":
-        return "Distance (km)"
+        return "Distance (km)";
       case "calories":
-        return "Calories (kcal)"
+        return "Calories (kcal)";
       case "activeTime":
-        return "Temps actif"
+        return "Temps actif";
       default:
-        return metric
+        return metric;
     }
-  }
+  };
 
   const getModeIcon = (mode) => {
     switch (mode) {
       case "walk":
-        return <Footprints size={16} />
+        return <Footprints size={16} />;
       case "run":
-        return <Watch size={16} />
+        return <Watch size={16} />;
       case "bike":
-        return <Bike size={16} />
+        return <Bike size={16} />;
       default:
-        return <Footprints size={16} />
+        return <Footprints size={16} />;
     }
-  }
+  };
 
   // Drag & drop
-  const fileInputRef = useRef()
+  const fileInputRef = useRef();
 
   const handleDrop = (e) => {
-    e.preventDefault()
-    const file = e.dataTransfer.files[0]
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
     if (file) {
-      setImportFile(file)
+      setImportFile(file);
     }
-  }
+  };
 
   const handleDragOver = (e) => {
-    e.preventDefault()
-  }
+    e.preventDefault();
+  };
 
   const triggerFileInput = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   // CHART DATA
   const prepareChartData = () => {
-    if (filteredEntries.length === 0) return null
+    if (filteredEntries.length === 0) return null;
 
-    let labels = []
-    let data = []
+    let labels = [];
+    let data = [];
 
     if (viewMode === "day") {
-      const year = selectedDate.getFullYear()
-      const month = String(selectedDate.getMonth() + 1).padStart(2, "0")
-      const day = String(selectedDate.getDate()).padStart(2, "0")
-      const targetDay = `${year}-${month}-${day}`
+      const year = selectedDate.getFullYear();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+      const day = String(selectedDate.getDate()).padStart(2, "0");
+      const targetDay = `${year}-${month}-${day}`;
 
-      const dayEntry = filteredEntries.find((entry) => entry.day === targetDay)
+      const dayEntry = filteredEntries.find((entry) => entry.day === targetDay);
 
       if (dayEntry) {
-        const hourlyData = Array(24).fill(0)
-        const trimmed = chartMetric.slice(5)
-        const daychartmetric = trimmed.charAt(0).toLowerCase() + trimmed.slice(1)
+        const hourlyData = Array(24).fill(0);
+        const trimmed = chartMetric.slice(5);
+        const daychartmetric =
+          trimmed.charAt(0).toLowerCase() + trimmed.slice(1);
 
         dayEntry.hourlyData.forEach((hourData) => {
-          hourlyData[hourData.hour] = hourData[daychartmetric] || 0
-        })
+          hourlyData[hourData.hour] = hourData[daychartmetric] || 0;
+        });
 
-        labels = Array.from({ length: 24 }, (_, i) => `${i}:00`)
-        data = hourlyData
+        labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+        data = hourlyData;
       }
-    } else if (viewMode === "week" || (viewMode === "custom" && dateRange.end - dateRange.start < 8 * 86400000)) {
-      const dailyData = {}
+    } else if (
+      viewMode === "week" ||
+      (viewMode === "custom" && dateRange.end - dateRange.start < 8 * 86400000)
+    ) {
+      const dailyData = {};
 
       filteredEntries.forEach((entry) => {
-        const day = entry.day
+        const day = entry.day;
         if (!dailyData[day]) {
-          dailyData[day] = 0
+          dailyData[day] = 0;
         }
-        dailyData[day] += entry[chartMetric] || 0
-      })
+        dailyData[day] += entry[chartMetric] || 0;
+      });
 
-      const sortedDays = Object.keys(dailyData).sort()
+      const sortedDays = Object.keys(dailyData).sort();
 
       labels = sortedDays.map((day) => {
-        const date = new Date(day)
-        return date.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric" })
-      })
+        const date = new Date(day);
+        return date.toLocaleDateString("fr-FR", {
+          weekday: "short",
+          day: "numeric",
+        });
+      });
 
-      data = sortedDays.map((day) => dailyData[day])
+      data = sortedDays.map((day) => dailyData[day]);
     } else if (viewMode === "month" || viewMode === "custom") {
-      const weeklyData = {}
+      const weeklyData = {};
 
       filteredEntries.forEach((entry) => {
-        const date = new Date(entry.date)
-        const weekNumber = getWeekNumber(date)
-        const weekKey = `${date.getFullYear()}-W${weekNumber}`
+        const date = new Date(entry.date);
+        const weekNumber = getWeekNumber(date);
+        const weekKey = `${date.getFullYear()}-W${weekNumber}`;
 
         if (!weeklyData[weekKey]) {
-          weeklyData[weekKey] = 0
+          weeklyData[weekKey] = 0;
         }
 
-        weeklyData[weekKey] += entry[chartMetric] || 0
-      })
+        weeklyData[weekKey] += entry[chartMetric] || 0;
+      });
 
-      const sortedWeeks = Object.keys(weeklyData).sort()
+      const sortedWeeks = Object.keys(weeklyData).sort();
 
       labels = sortedWeeks.map((week) => {
-        const [year, weekNum] = week.split("-W")
-        return `Sem ${weekNum}`
-      })
+        const [year, weekNum] = week.split("-W");
+        return `Sem ${weekNum}`;
+      });
 
-      data = sortedWeeks.map((week) => weeklyData[week])
+      data = sortedWeeks.map((week) => weeklyData[week]);
     }
 
     return {
@@ -444,10 +500,10 @@ const Steps = () => {
           fill: true,
         },
       ],
-    }
-  }
+    };
+  };
 
-  const chartData = prepareChartData()
+  const chartData = prepareChartData();
 
   const chartOptions = {
     responsive: true,
@@ -460,19 +516,19 @@ const Steps = () => {
         callbacks: {
           title: (tooltipItems) => tooltipItems[0].label,
           label: (context) => {
-            let label = getMetricLabel(chartMetric) + ": "
+            let label = getMetricLabel(chartMetric) + ": ";
 
             if (chartMetric === "totalSteps") {
-              label += context.raw.toLocaleString("fr-FR")
+              label += context.raw.toLocaleString("fr-FR");
             } else if (chartMetric === "totalDistance") {
-              label += context.raw.toFixed(1) + " km"
+              label += context.raw.toFixed(1) + " km";
             } else if (chartMetric === "totalCalories") {
-              label += Math.round(context.raw) + " kcal"
+              label += Math.round(context.raw) + " kcal";
             } else if (chartMetric === "totalActiveTime") {
-              label += formatActiveTime(context.raw)
+              label += formatActiveTime(context.raw);
             }
 
-            return label
+            return label;
           },
         },
       },
@@ -483,25 +539,25 @@ const Steps = () => {
         ticks: {
           callback: (value) => {
             if (chartMetric === "totalDistance") {
-              return value + " km"
+              return value + " km";
             } else if (chartMetric === "totalCalories") {
-              return value + " kcal"
+              return value + " kcal";
             } else if (chartMetric === "totalActiveTime") {
-              return formatActiveTime(value)
+              return formatActiveTime(value);
             }
-            return value
+            return value;
           },
         },
       },
     },
-  }
+  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const formData = new FormData(e.target)
-    const hour = Number(formData.get("time").split(":")[0])
+    const formData = new FormData(e.target);
+    const hour = Number(formData.get("time").split(":")[0]);
 
     const entryData = {
       date: new Date(formData.get("date")),
@@ -516,181 +572,199 @@ const Steps = () => {
           activeTime: Number(formData.get("activeTime")),
         },
       ],
-    }
+    };
 
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      let success
+      let success;
       if (currentEntry) {
         const updatedEntry = {
           ...currentEntry,
-          hourlyData: currentEntry.hourlyData.map((hd) => (hd.hour === hour ? entryData.hourlyData[0] : hd)),
-        }
-        success = await updateStepEntry(currentEntry._id, updatedEntry)
+          hourlyData: currentEntry.hourlyData.map((hd) =>
+            hd.hour === hour ? entryData.hourlyData[0] : hd
+          ),
+        };
+        success = await updateStepEntry(currentEntry._id, updatedEntry);
       } else {
-        success = await addStepEntry(entryData)
+        success = await addStepEntry(entryData);
       }
 
       if (success) {
-        setShowModal(false)
-        setCurrentEntry(null)
+        setShowModal(false);
+        setCurrentEntry(null);
       }
     } catch (error) {
-      console.error("Submission error:", error)
+      console.error("Submission error:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleHourNavigation = (direction) => {
-    const hours = currentEntry.hourlyData.map((h) => h.hour)
-    const currentIndex = hours.indexOf(currentEntry.hourlyData[selectedHourIndex].hour)
-    const newIndex = currentIndex + direction
+    const hours = currentEntry.hourlyData.map((h) => h.hour);
+    const currentIndex = hours.indexOf(
+      currentEntry.hourlyData[selectedHourIndex].hour
+    );
+    const newIndex = currentIndex + direction;
 
     if (newIndex >= 0 && newIndex < hours.length) {
-      setSelectedHourIndex(newIndex)
+      setSelectedHourIndex(newIndex);
     }
-  }
+  };
 
   const handleFavoriteChange = async (entryId) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      await FavoriteEntry(entryId)
+      await FavoriteEntry(entryId);
     } catch (error) {
-      console.log("error:", error)
+      console.log("error:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleDelete = async (entryId) => {
     if (confirm("Êtes-vous sûr de vouloir supprimer cette entrée ?")) {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        await deleteStepEntry(entryId)
+        await deleteStepEntry(entryId);
       } catch (error) {
-        console.log("error:", error)
+        console.log("error:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
-  }
+  };
 
   const handleFileImport = async () => {
-    if (!importFile) return
-    setIsLoading(true)
-    setUploadProgress(0)
+    if (!importFile) return;
+    setIsLoading(true);
+    setUploadProgress(0);
     try {
-      await importSteps(importFile, setUploadProgress)
-      setShowImportModal(false)
-      setImportFile(null)
-      setImportSource(null)
+      await importSteps(importFile, setUploadProgress);
+      setShowImportModal(false);
+      setImportFile(null);
+      setImportSource(null);
     } catch (error) {
-      console.log("error:", error)
+      console.log("error:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleEdit = (entry) => {
-    setCurrentEntry(entry)
-    setShowModal(true)
-  }
+    setCurrentEntry(entry);
+    setShowModal(true);
+  };
 
   const navigateDate = (direction) => {
-    const newDate = new Date(selectedDate)
-    newDate.setHours(0, 0, 0, 0)
+    const newDate = new Date(selectedDate);
+    newDate.setHours(0, 0, 0, 0);
 
     if (viewMode === "day") {
-      newDate.setDate(newDate.getDate() + direction)
+      newDate.setDate(newDate.getDate() + direction);
     } else if (viewMode === "week") {
-      newDate.setDate(newDate.getDate() + direction * 7)
+      newDate.setDate(newDate.getDate() + direction * 7);
     } else if (viewMode === "month") {
-      newDate.setMonth(newDate.getMonth() + direction)
+      newDate.setMonth(newDate.getMonth() + direction);
     }
 
-    setSelectedDate(newDate)
-  }
+    setSelectedDate(newDate);
+  };
 
   const handleExport = (format) => {
-    let dataStr
+    let dataStr;
 
     if (format === "json") {
-      dataStr = JSON.stringify(stepEntries, null, 2)
+      dataStr = JSON.stringify(stepEntries, null, 2);
     } else if (format === "csv") {
-      const headers = ["date", "totalSteps", "totalDistance", "totalCalories", "mode", "totalActiveTime", "isVerified"]
-      const csvRows = [headers.join(",")]
+      const headers = [
+        "date",
+        "totalSteps",
+        "totalDistance",
+        "totalCalories",
+        "mode",
+        "totalActiveTime",
+        "isVerified",
+      ];
+      const csvRows = [headers.join(",")];
 
       stepEntries.forEach((entry) => {
         const values = headers.map((header) => {
           if (header === "date") {
-            return entry.day
+            return entry.day;
           }
-          return entry[header]
-        })
-        csvRows.push(values.join(","))
-      })
+          return entry[header];
+        });
+        csvRows.push(values.join(","));
+      });
 
-      dataStr = csvRows.join("\n")
+      dataStr = csvRows.join("\n");
     }
 
-    const blob = new Blob([dataStr], { type: format === "json" ? "application/json" : "text/csv" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `steps-data.${format}`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }
+    const blob = new Blob([dataStr], {
+      type: format === "json" ? "application/json" : "text/csv",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `steps-data.${format}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   const getInsights = () => {
-    const insights = []
+    const insights = [];
 
-    const today = new Date()
-    const twoDaysAgo = new Date(today)
-    twoDaysAgo.setDate(today.getDate() - 2)
+    const today = new Date();
+    const twoDaysAgo = new Date(today);
+    twoDaysAgo.setDate(today.getDate() - 2);
 
     const recentEntries = stepEntries?.filter((entry) => {
-      const entryDate = new Date(entry.date)
-      return entryDate >= twoDaysAgo && entryDate <= today
-    })
+      const entryDate = new Date(entry.date);
+      return entryDate >= twoDaysAgo && entryDate <= today;
+    });
 
     if (recentEntries?.length === 0) {
       insights.push({
         type: "warning",
         message: "Vous n'avez pas enregistré de pas récemment !",
-      })
+      });
     }
 
     if (filteredEntries.length > 0) {
-      const averageSteps = filteredEntries.reduce((sum, entry) => sum + entry.totalSteps, 0) / filteredEntries.length
+      const averageSteps =
+        filteredEntries.reduce((sum, entry) => sum + entry.totalSteps, 0) /
+        filteredEntries.length;
 
       if (averageSteps < 5000) {
         insights.push({
           type: "info",
-          message: "Votre moyenne de pas est inférieure aux recommandations de santé (5000 pas/jour).",
-        })
+          message:
+            "Votre moyenne de pas est inférieure aux recommandations de santé (5000 pas/jour).",
+        });
       } else if (averageSteps > 10000) {
         insights.push({
           type: "success",
-          message: "Félicitations ! Votre moyenne de pas dépasse les 10 000 pas recommandés par jour.",
-        })
+          message:
+            "Félicitations ! Votre moyenne de pas dépasse les 10 000 pas recommandés par jour.",
+        });
       }
     }
 
-    return insights
-  }
+    return insights;
+  };
 
-  const insights = getInsights()
+  const insights = getInsights();
 
   if (!user) {
     return (
       <div className="step-container">
         <h1>Vous devez vous connecter pour accéder à cette page</h1>
       </div>
-    )
+    );
   }
 
   return (
@@ -700,7 +774,10 @@ const Steps = () => {
           <GlobalLoader />
           {uploadProgress > 0 && uploadProgress < 100 && (
             <div className="progress-container">
-              <div className="progress-bar" style={{ width: `${uploadProgress}%` }}></div>
+              <div
+                className="progress-bar"
+                style={{ width: `${uploadProgress}%` }}
+              ></div>
             </div>
           )}
         </>
@@ -714,7 +791,9 @@ const Steps = () => {
               <Footprints size={30} />
             </span>
             <div className="stat-content">
-              <span className="stat-value">{stats.totalSteps.toLocaleString("fr-FR")}</span>
+              <span className="stat-value">
+                {stats.totalSteps.toLocaleString("fr-FR")}
+              </span>
               <span className="stat-label">Total de pas</span>
             </div>
           </div>
@@ -755,10 +834,16 @@ const Steps = () => {
             </span>
             <div className="stat-content">
               <div className="goal-progress">
-                <div className="progress-bar" style={{ width: `${stats.goalPercentage}%` }}></div>
+                <div
+                  className="progress-bar"
+                  style={{ width: `${stats.goalPercentage}%` }}
+                ></div>
                 <span className="progress-text">{stats.goalPercentage}%</span>
               </div>
-              <span className="stat-label">Objectif {stats.goalAchieved ? <Check size={20} /> : <X size={20} />}</span>
+              <span className="stat-label">
+                Objectif{" "}
+                {stats.goalAchieved ? <Check size={20} /> : <X size={20} />}
+              </span>
             </div>
           </div>
         </div>
@@ -772,8 +857,8 @@ const Steps = () => {
               <button
                 className={viewMode === "day" ? "active" : ""}
                 onClick={() => {
-                  setViewMode("day")
-                  setCustomDateRange(false)
+                  setViewMode("day");
+                  setCustomDateRange(false);
                 }}
               >
                 🔘 Jour
@@ -781,8 +866,8 @@ const Steps = () => {
               <button
                 className={viewMode === "week" ? "active" : ""}
                 onClick={() => {
-                  setViewMode("week")
-                  setCustomDateRange(false)
+                  setViewMode("week");
+                  setCustomDateRange(false);
                 }}
               >
                 🔘 Semaine
@@ -790,8 +875,8 @@ const Steps = () => {
               <button
                 className={viewMode === "month" ? "active" : ""}
                 onClick={() => {
-                  setViewMode("month")
-                  setCustomDateRange(false)
+                  setViewMode("month");
+                  setCustomDateRange(false);
                 }}
               >
                 🔘 Mois
@@ -799,8 +884,8 @@ const Steps = () => {
               <button
                 className={viewMode === "custom" ? "active" : ""}
                 onClick={() => {
-                  setViewMode("custom")
-                  setCustomDateRange(true)
+                  setViewMode("custom");
+                  setCustomDateRange(true);
                 }}
               >
                 🔘 Personnalisée
@@ -814,7 +899,10 @@ const Steps = () => {
                 <button className="nav-button" onClick={() => navigateDate(-1)}>
                   &lt;
                 </button>
-                <div className="date-display" onClick={() => setCustomDateRange(true)}>
+                <div
+                  className="date-display"
+                  onClick={() => setCustomDateRange(true)}
+                >
                   <Calendar size={16} />
                   <span>{formatDate(selectedDate)}</span>
                 </div>
@@ -830,7 +918,12 @@ const Steps = () => {
                     <input
                       type="date"
                       value={dateRange.start.toISOString().split("T")[0]}
-                      onChange={(e) => setDateRange({ ...dateRange, start: new Date(e.target.value) })}
+                      onChange={(e) =>
+                        setDateRange({
+                          ...dateRange,
+                          start: new Date(e.target.value),
+                        })
+                      }
                     />
                   </div>
                   <div className="date-input">
@@ -838,11 +931,19 @@ const Steps = () => {
                     <input
                       type="date"
                       value={dateRange.end.toISOString().split("T")[0]}
-                      onChange={(e) => setDateRange({ ...dateRange, end: new Date(e.target.value) })}
+                      onChange={(e) =>
+                        setDateRange({
+                          ...dateRange,
+                          end: new Date(e.target.value),
+                        })
+                      }
                     />
                   </div>
                 </div>
-                <button className="apply-button" onClick={() => setCustomDateRange(false)}>
+                <button
+                  className="apply-button"
+                  onClick={() => setCustomDateRange(false)}
+                >
                   Appliquer
                 </button>
               </div>
@@ -869,23 +970,26 @@ const Steps = () => {
             <div className="dropdown-content">
               <button
                 onClick={() => {
-                  setImportSource("Apple Health")
-                  setShowImportModal(true)
+                  setImportSource("Apple Health");
+                  setShowImportModal(true);
                 }}
               >
                 Apple Health (XML)
               </button>
               <button
                 onClick={() => {
-                  setImportSource("Samsung Health")
-                  setShowImportModal(true)
+                  setImportSource("Samsung Health");
+                  setShowImportModal(true);
                 }}
               >
                 Samsung Health (CSV)
               </button>
             </div>
           </div>
-          <button className="action-button primary" onClick={() => setShowModal(true)}>
+          <button
+            className="action-button primary"
+            onClick={() => setShowModal(true)}
+          >
             <Plus size={16} />
             <span>Ajouter</span>
           </button>
@@ -909,10 +1013,15 @@ const Steps = () => {
           <div className="chart-controls">
             <div className="metric-selector">
               <Select
-                value={MetricOptions.find((option) => option.value === chartMetric)}
+                value={MetricOptions.find(
+                  (option) => option.value === chartMetric
+                )}
                 onChange={(selected) => setChartMetric(selected.value)}
                 options={MetricOptions}
-                components={{ SingleValue: customSingleValue, Option: customOption }}
+                components={{
+                  SingleValue: customSingleValue,
+                  Option: customOption,
+                }}
                 styles={customSelectStyles}
                 classNamePrefix="metric-select"
               />
@@ -924,7 +1033,9 @@ const Steps = () => {
           {chartData ? (
             <Line data={chartData} options={chartOptions} />
           ) : (
-            <div className="no-data">Aucune donnée disponible pour cette période</div>
+            <div className="no-data">
+              Aucune donnée disponible pour cette période
+            </div>
           )}
         </div>
       </div>
@@ -935,18 +1046,32 @@ const Steps = () => {
           <div className="filter-controls">
             <div className="mode-filter">
               <Select
-                value={ModeOptionsChart.find((option) => option.value === filters.mode)}
-                onChange={(selected) => setFilters({ ...filters, mode: selected.value })}
+                value={ModeOptionsChart.find(
+                  (option) => option.value === filters.mode
+                )}
+                onChange={(selected) =>
+                  setFilters({ ...filters, mode: selected.value })
+                }
                 options={ModeOptionsChart}
-                components={{ SingleValue: customSingleValue, Option: customOption }}
+                components={{
+                  SingleValue: customSingleValue,
+                  Option: customOption,
+                }}
                 styles={customSelectStyles}
                 classNamePrefix="mode-select"
               />
             </div>
-            <button className="filter-button" onClick={() => setShowFilters(!showFilters)}>
+            <button
+              className="filter-button"
+              onClick={() => setShowFilters(!showFilters)}
+            >
               <Filter size={16} />
               <span>Filtres</span>
-              {showFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              {showFilters ? (
+                <ChevronUp size={16} />
+              ) : (
+                <ChevronDown size={16} />
+              )}
             </button>
           </div>
         </div>
@@ -958,11 +1083,14 @@ const Steps = () => {
               <Select
                 value={selectedFilterMode}
                 onChange={(selected) => {
-                  setSelectedFilterMode(selected)
-                  setTableFilters({ ...tableFilters, mode: selected.value })
+                  setSelectedFilterMode(selected);
+                  setTableFilters({ ...tableFilters, mode: selected.value });
                 }}
                 options={FilterModeOptions}
-                components={{ SingleValue: customSingleValue, Option: customOption }}
+                components={{
+                  SingleValue: customSingleValue,
+                  Option: customOption,
+                }}
                 styles={customSelectStyles}
                 classNamePrefix="filter-select"
               />
@@ -973,11 +1101,17 @@ const Steps = () => {
               <Select
                 value={selectedVerified}
                 onChange={(selected) => {
-                  setSelectedVerified(selected)
-                  setTableFilters({ ...tableFilters, verified: selected.value })
+                  setSelectedVerified(selected);
+                  setTableFilters({
+                    ...tableFilters,
+                    verified: selected.value,
+                  });
                 }}
                 options={VerifiedOptions}
-                components={{ SingleValue: customSingleValue, Option: customOption }}
+                components={{
+                  SingleValue: customSingleValue,
+                  Option: customOption,
+                }}
                 styles={customSelectStyles}
                 classNamePrefix="filter-select"
               />
@@ -988,11 +1122,17 @@ const Steps = () => {
               <Select
                 value={selectedFavorite}
                 onChange={(selected) => {
-                  setSelectedFavorite(selected)
-                  setTableFilters({ ...tableFilters, favorite: selected.value })
+                  setSelectedFavorite(selected);
+                  setTableFilters({
+                    ...tableFilters,
+                    favorite: selected.value,
+                  });
                 }}
                 options={FavoriteOptions}
-                components={{ SingleValue: customSingleValue, Option: customOption }}
+                components={{
+                  SingleValue: customSingleValue,
+                  Option: customOption,
+                }}
                 styles={customSelectStyles}
                 classNamePrefix="filter-select"
               />
@@ -1044,13 +1184,19 @@ const Steps = () => {
                     <td>
                       <div className="entry-actions">
                         <button
-                          className={`favorite-button ${entry.isFavorite && "favorite"}`}
+                          className={`favorite-button ${
+                            entry.isFavorite && "favorite"
+                          }`}
                           aria-label="Favoris"
                           onClick={() => handleFavoriteChange(entry._id)}
                         >
                           <Heart size={16} />
                         </button>
-                        <button className="edit-button" onClick={() => handleEdit(entry)} aria-label="Modifier">
+                        <button
+                          className="edit-button"
+                          onClick={() => handleEdit(entry)}
+                          aria-label="Modifier"
+                        >
                           <Edit size={16} />
                         </button>
                         <button
@@ -1079,20 +1225,27 @@ const Steps = () => {
       <div className="privacy-notice">
         <Info size={16} />
         <p>
-          Vos données sont visibles par vos amis. <Link to="/settings">Modifier les paramètres de confidentialité</Link>
+          Vos données sont visibles par vos amis.{" "}
+          <Link to="/settings">Modifier les paramètres de confidentialité</Link>
         </p>
       </div>
 
       {showModal && (
-        <div className="modal-overlay" ref={EntryModalRef} onClick={handleOverlayClick}>
+        <div
+          className="modal-overlay"
+          ref={EntryModalRef}
+          onClick={handleOverlayClick}
+        >
           <div className="modal">
             <div className="modal-header">
-              <h3>{currentEntry ? "Modifier une entrée" : "Ajouter une entrée"}</h3>
+              <h3>
+                {currentEntry ? "Modifier une entrée" : "Ajouter une entrée"}
+              </h3>
               <button
                 className="close-button"
                 onClick={() => {
-                  setShowModal(false)
-                  setCurrentEntry(null)
+                  setShowModal(false);
+                  setCurrentEntry(null);
                 }}
               >
                 <X size={20} />
@@ -1101,14 +1254,26 @@ const Steps = () => {
             <form className="entry-form" onSubmit={handleSubmit}>
               {currentEntry && (
                 <div className="hour-navigation">
-                  <button type="button" onClick={() => handleHourNavigation(-1)} disabled={selectedHourIndex === 0}>
+                  <button
+                    type="button"
+                    onClick={() => handleHourNavigation(-1)}
+                    disabled={selectedHourIndex === 0}
+                  >
                     <ArrowLeft size={25} />
                   </button>
-                  <span>Heure: {currentEntry.hourlyData[selectedHourIndex].hour.toString().padStart(2, "0")}:00</span>
+                  <span>
+                    Heure:{" "}
+                    {currentEntry.hourlyData[selectedHourIndex].hour
+                      .toString()
+                      .padStart(2, "0")}
+                    :00
+                  </span>
                   <button
                     type="button"
                     onClick={() => handleHourNavigation(1)}
-                    disabled={selectedHourIndex === currentEntry.hourlyData.length - 1}
+                    disabled={
+                      selectedHourIndex === currentEntry.hourlyData.length - 1
+                    }
                   >
                     <ArrowRight size={25} />
                   </button>
@@ -1122,7 +1287,9 @@ const Steps = () => {
                   name="date"
                   required
                   disabled={!!currentEntry}
-                  defaultValue={currentEntry?.day || new Date().toISOString().split("T")[0]}
+                  defaultValue={
+                    currentEntry?.day || new Date().toISOString().split("T")[0]
+                  }
                 />
               </div>
               {!currentEntry && (
@@ -1136,8 +1303,12 @@ const Steps = () => {
                     required
                     defaultValue={
                       currentEntry
-                        ? `${currentEntry.hourlyData[selectedHourIndex].hour.toString().padStart(2, "0")}:00`
-                        : new Date().toLocaleTimeString("fr-FR", { hour: "2-digit" })
+                        ? `${currentEntry.hourlyData[selectedHourIndex].hour
+                            .toString()
+                            .padStart(2, "0")}:00`
+                        : new Date().toLocaleTimeString("fr-FR", {
+                            hour: "2-digit",
+                          })
                     }
                   />
                 </div>
@@ -1148,13 +1319,16 @@ const Steps = () => {
                 <Select
                   value={selectedMode}
                   onChange={(selected) => {
-                    setSelectedMode(selected)
+                    setSelectedMode(selected);
                     if (["run", "bike"].includes(selected.value)) {
-                      setFormValues((prev) => ({ ...prev, steps: 0 }))
+                      setFormValues((prev) => ({ ...prev, steps: 0 }));
                     }
                   }}
                   options={ModeOptions}
-                  components={{ SingleValue: customSingleValue, Option: customOption }}
+                  components={{
+                    SingleValue: customSingleValue,
+                    Option: customOption,
+                  }}
                   styles={customSelectStyles}
                   classNamePrefix="mode-select"
                 />
@@ -1168,7 +1342,12 @@ const Steps = () => {
                   name="steps"
                   min="0"
                   value={formValues.steps}
-                  onChange={(e) => setFormValues((prev) => ({ ...prev, steps: e.target.value }))}
+                  onChange={(e) =>
+                    setFormValues((prev) => ({
+                      ...prev,
+                      steps: e.target.value,
+                    }))
+                  }
                   disabled={["run", "bike"].includes(selectedMode?.value)}
                   placeholder="Nombre de pas"
                 />
@@ -1182,7 +1361,12 @@ const Steps = () => {
                   step="0.01"
                   min="0"
                   value={formValues.distance}
-                  onChange={(e) => setFormValues((prev) => ({ ...prev, distance: e.target.value }))}
+                  onChange={(e) =>
+                    setFormValues((prev) => ({
+                      ...prev,
+                      distance: e.target.value,
+                    }))
+                  }
                   placeholder="Distance en km"
                 />
               </div>
@@ -1196,7 +1380,12 @@ const Steps = () => {
                   step="0.01"
                   min="0"
                   value={formValues.calories}
-                  onChange={(e) => setFormValues((prev) => ({ ...prev, calories: e.target.value }))}
+                  onChange={(e) =>
+                    setFormValues((prev) => ({
+                      ...prev,
+                      calories: e.target.value,
+                    }))
+                  }
                   placeholder="Calories brûlées"
                 />
               </div>
@@ -1209,7 +1398,12 @@ const Steps = () => {
                   name="activeTime"
                   min="0"
                   value={formValues.activeTime}
-                  onChange={(e) => setFormValues((prev) => ({ ...prev, activeTime: e.target.value }))}
+                  onChange={(e) =>
+                    setFormValues((prev) => ({
+                      ...prev,
+                      activeTime: e.target.value,
+                    }))
+                  }
                   placeholder="Temps actif en minutes"
                 />
               </div>
@@ -1219,8 +1413,8 @@ const Steps = () => {
                   type="button"
                   className="cancel-button"
                   onClick={() => {
-                    setShowModal(false)
-                    setCurrentEntry(null)
+                    setShowModal(false);
+                    setCurrentEntry(null);
                   }}
                 >
                   Annuler
@@ -1235,11 +1429,18 @@ const Steps = () => {
       )}
 
       {showImportModal && (
-        <div className="modal-overlay" ref={ImportModalRef} onClick={handleOverlayClick}>
+        <div
+          className="modal-overlay"
+          ref={ImportModalRef}
+          onClick={handleOverlayClick}
+        >
           <div className="modal">
             <div className="modal-header">
               <h3>Importer depuis {importSource}</h3>
-              <button className="close-button" onClick={() => setShowImportModal(false)}>
+              <button
+                className="close-button"
+                onClick={() => setShowImportModal(false)}
+              >
                 <X size={20} />
               </button>
             </div>
@@ -1260,17 +1461,25 @@ const Steps = () => {
                 <p>
                   1. Ouvrez Samsung Health
                   <br />
-                  2. Allez dans Paramètres &gt; Télécharger les données personnelles
+                  2. Allez dans Paramètres &gt; Télécharger les données
+                  personnelles
                   <br />
                   3. Sélectionnez les données à exporter
                   <br />
                   4. Uploadez le fichier CSV reçu ci-dessous
                 </p>
               )}
-              <div className="dropzone" onDrop={handleDrop} onDragOver={handleDragOver} onClick={triggerFileInput}>
+              <div
+                className="dropzone"
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onClick={triggerFileInput}
+              >
                 <UploadCloud size={40} className="dropzone-icon" />
                 <p className="dropzone-text">
-                  {importFile ? importFile.name : "Déposez un fichier ici ou cliquez pour sélectionner"}
+                  {importFile
+                    ? importFile.name
+                    : "Déposez un fichier ici ou cliquez pour sélectionner"}
                 </p>
                 <input
                   type="file"
@@ -1281,7 +1490,11 @@ const Steps = () => {
                 />
               </div>
 
-              <button className="action-button primary" onClick={handleFileImport} disabled={!importFile}>
+              <button
+                className="action-button primary"
+                onClick={handleFileImport}
+                disabled={!importFile}
+              >
                 Importer
               </button>
             </div>
@@ -1289,7 +1502,7 @@ const Steps = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Steps
+export default Steps;

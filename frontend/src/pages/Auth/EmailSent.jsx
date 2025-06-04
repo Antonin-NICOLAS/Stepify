@@ -1,8 +1,14 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 //icons
-import { MailCheck, CornerDownLeft, Mail, AlertCircle, CheckCircle2 } from "lucide-react"
+import {
+  MailCheck,
+  CornerDownLeft,
+  Mail,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 //CSS
-import "./EmailSent.css"
+import "./EmailSent.css";
 
 function EmailSent() {
   return (
@@ -14,7 +20,10 @@ function EmailSent() {
               <span>Stepify</span>
             </div>
             <div className="auth-stats">
-              <div className="auth-stat-item" style={{flexDirection: 'column'}}>
+              <div
+                className="auth-stat-item"
+                style={{ flexDirection: "column" }}
+              >
                 <h3>Vérification</h3>
                 <p>Nous prenons la sécurité de votre compte au sérieux</p>
               </div>
@@ -63,8 +72,14 @@ function EmailSent() {
 
             <div className="auth-form-content">
               <div className="email-sent-message">
-                <p>Nous avons envoyé un lien de réinitialisation à votre adresse email.</p>
-                <p>Cliquez sur le lien dans l'email pour réinitialiser votre mot de passe.</p>
+                <p>
+                  Nous avons envoyé un lien de réinitialisation à votre adresse
+                  email.
+                </p>
+                <p>
+                  Cliquez sur le lien dans l'email pour réinitialiser votre mot
+                  de passe.
+                </p>
               </div>
 
               <div className="email-sent-info">
@@ -75,7 +90,10 @@ function EmailSent() {
                 </ul>
               </div>
 
-              <Link to="/forgot-password" className="auth-button auth-button-secondary">
+              <Link
+                to="/forgot-password"
+                className="auth-button auth-button-secondary"
+              >
                 <CornerDownLeft />
                 <span>Retour</span>
               </Link>
@@ -89,7 +107,7 @@ function EmailSent() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default EmailSent
+export default EmailSent;

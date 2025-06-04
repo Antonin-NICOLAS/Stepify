@@ -42,7 +42,7 @@
 }
 
 @media (max-width: 576px) {
-  .main{
+  .main {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
