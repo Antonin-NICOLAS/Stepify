@@ -1,7 +1,55 @@
 {
   "common": {
+    "error": "Es ist ein Fehler aufgetreten",
+    "authcontext": {
+      "register": {
+        "validfirstname": "Ein gültiger Vorname (minimal 2 Zeichen) ist erforderlich",
+        "validlastname": "Ein gültiger Name (minimal 2 Zeichen) ist erforderlich",
+        "validemail": "Eine gültige E -Mail ist erforderlich",
+        "validusername": "Ein gültiger Benutzername (3-30 alphanumerische Zeichen) ist erforderlich",
+        "validpassword": "Ein gültiges Passwort (Minimum von 8 Zeichen) ist erforderlich",
+        "passwordmismatch": "Passwörter stimmen nicht überein",
+        "error": "Fehler bei der Registrierung"
+      },
+      "login": {
+        "fillallfields": "Bitte füllen Sie alle Felder aus",
+        "validemail": "Eine gültige E -Mail ist erforderlich",
+        "notverifiedsuccess": "Ein Code wurde an Sie gesendet, um Ihre E -Mail -Adresse zu überprüfen",
+        "notverifiederror": "Klicken Sie auf \"Eine E -Mail zurückgeben\", um einen neuen Code zu erhalten",
+        "error": "Fehler bei der Verbindung"
+      },
+      "forgotpassword": {
+        "validemail": "Eine gültige E -Mail ist erforderlich",
+        "error": "Fehler beim Senden der E -Mail"
+      },
+      "resetpassword": {
+        "validtoken": "Ungültiger oder abgelaufener Link",
+        "validpassword": "Ein gültiges Passwort (Minimum von 8 Zeichen) ist erforderlich",
+        "passwordmismatch": "Passwörter stimmen nicht überein",
+        "error": "Fehler beim Zurücksetzen des Passworts"
+      },
+      "verifyemail": {
+        "validcode": "Bitte geben Sie den vollständigen 6 -Digit -Code ein",
+        "error": "Fehler beim Überprüfen der E -Mail"
+      },
+      "resendverificationcode": {
+        "error": "Fehler beim Überweisen der Überprüfungs -E -Mail"
+      },
+      "changeverificationemail": {
+        "validemail": "Eine gültige E -Mail ist erforderlich",
+        "error": "Fehler beim Ändern der E -Mail"
+      },
+      "logout": {
+        "success": "Erfolgreich getrennt",
+        "error": "Fehler während der Trennung"
+      },
+      "deleteaccount": {
+        "success": "Erfolg erfolgreich gelöscht",
+        "error": "Fehler beim Löschen des Kontos"
+      }
+    },
     "usercontext": {
-      "languageupdated": "jsp comment on dit en allemand"
+      "languageupdated": "Sprache aktualisieren"
     }
   }
 }

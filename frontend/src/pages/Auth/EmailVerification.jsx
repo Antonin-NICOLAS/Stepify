@@ -129,14 +129,14 @@ function EmailVerification() {
     resendVerificationCode(
       // onError
       () => {
-        setResendDisabled(false);
-        setCountdown(0);
+        setResendDisabled(true);
+        setCountdown(60);
         setOtp(["", "", "", "", "", ""]);
       },
       // onSuccess
       () => {
-        setResendDisabled(true);
-        setCountdown(60);
+        setResendDisabled(false);
+        setCountdown(0);
         setOtp(["", "", "", "", "", ""]);
       }
     );
@@ -255,7 +255,7 @@ function EmailVerification() {
                 </div>
                 <h2>Vérifiez votre email</h2>
                 <p className="auth-subtitle">
-                  Nous avons envoyé un code à {" "}
+                  Nous avons envoyé un code à{" "}
                   {user?.email || "votre adresse email"}
                 </p>
               </div>

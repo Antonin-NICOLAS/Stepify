@@ -1,7 +1,55 @@
 {
   "common": {
+    "error": "An error occurred",
+    "authcontext": {
+      "register": {
+        "validfirstname": "A valid first name (2 characters minimum) is required",
+        "validlastname": "A valid name (2 characters minimum) is required",
+        "validemail": "A valid email is required",
+        "validusername": "A valid username (3-30 alphanumeric characters) is required",
+        "validpassword": "A valid password (8 characters minimum) is required",
+        "passwordmismatch": "Passwords do not match",
+        "error": "Error when registering"
+      },
+      "login": {
+        "fillallfields": "Please fill all fields",
+        "validemail": "A valid email is required",
+        "notverifiedsuccess": "A code has been sent to you to check your email address",
+        "notverifiederror": "Click on 'Return an email' to receive a new code",
+        "error": "Error when connection"
+      },
+      "forgotpassword": {
+        "validemail": "A valid email is required",
+        "error": "Error when sending the email"
+      },
+      "resetpassword": {
+        "validtoken": "Invalid or expired link",
+        "validpassword": "A valid password (8 characters minimum) is required",
+        "passwordmismatch": "Passwords do not match",
+        "error": "Error when resetting the password"
+      },
+      "verifyemail": {
+        "validcode": "Please enter the full 6 -digit code",
+        "error": "Error when checking the email"
+      },
+      "resendverificationcode": {
+        "error": "Error when referring the verification email"
+      },
+      "changeverificationemail": {
+        "validemail": "A valid email is required",
+        "error": "Error when changing email"
+      },
+      "logout": {
+        "success": "Successfully disconnected",
+        "error": "Error during disconnection"
+      },
+      "deleteaccount": {
+        "success": "Success deleted successfully",
+        "error": "Error when deleting the account"
+      }
+    },
     "usercontext": {
-      "languageupdated": "Language updated"
+      "languageupdated": "Update language"
     }
   }
 }

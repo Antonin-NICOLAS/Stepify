@@ -2,7 +2,7 @@ const fs = require("fs");
 const translate = require("google-translate-api-x");
 
 // Charger le fichier JSON source
-const original = JSON.parse(fs.readFileSync("auth.fr.json", "utf8"));
+const original = JSON.parse(fs.readFileSync("common.fr.json", "utf8"));
 
 // Fonction récursive pour traduire les textes
 async function translateObject(obj, toLang) {
@@ -30,8 +30,8 @@ async function translateAll() {
   const languages = ["en", "es", "de"];
   for (const lang of languages) {
     const translated = await translateObject(original, lang);
-    fs.writeFileSync(`auth.${lang}.json`, JSON.stringify(translated, null, 2), "utf8");
-    console.log(`Fichier traduit en ${lang} sauvegardé sous auth.${lang}.json`);
+    fs.writeFileSync(`common.${lang}.json`, JSON.stringify(translated, null, 2), "utf8");
+    console.log(`Fichier traduit en ${lang} sauvegardé sous common.${lang}.json`);
   }
 }
 

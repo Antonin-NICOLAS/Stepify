@@ -8,6 +8,7 @@ import {
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import i18n from "./i18n";
+import { useTranslation } from "react-i18next";
 import GlobalLoader from "../utils/GlobalLoader";
 
 const API_AUTH = process.env.NODE_ENV === "production" ? "/api/auth" : "/auth";
@@ -18,6 +19,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const { t } = useTranslation(["common"]);
 
   // Mise à jour partielle de l'utilisateur
   const updateUserField = useCallback((field, value) => {
@@ -40,8 +42,8 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setIsAuthenticated(false);
       }
-      if (data.error === "Session expirée ou invalide") {
-        toast.error("Session expirée ou invalide. Veuillez vous reconnecter");
+      if (data.error) {
+        toast.error(data.error || t("common:common.error"));
         throw data.error;
       }
     } catch (err) {
@@ -64,29 +66,27 @@ export const AuthProvider = ({ children }) => {
     } = RformData;
 
     if (!firstName || firstName.length < 2) {
-      toast.error("Un prénom valide (2 caractères minimum) est requis");
+      toast.error(t("common:common.authcontext.register.validfirstname"));
       return;
     }
     if (!lastName || lastName.length < 2) {
-      toast.error("Un nom valide (2 caractères minimum) est requis");
+      toast.error(t("common:common.authcontext.register.validlastname"));
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error("Veuillez entrer une adresse email valide");
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error(t("common:common.authcontext.register.validemail"));
       return;
     }
     if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
-      toast.error(
-        "Nom d'utilisateur invalide (3-30 caractères alphanumériques)"
-      );
+      toast.error(t("common:common.authcontext.register.validusername"));
       return;
     }
     if (password.length < 8) {
-      toast.error("Le mot de passe doit contenir au moins 8 caractères");
+      toast.error(t("common:common.authcontext.register.validpassword"));
       return;
     }
     if (password !== confirmPassword) {
-      toast.error("Les mots de passe ne correspondent pas");
+      toast.error(t("common:common.authcontext.register.passwordmismatch"));
       return;
     }
     try {
@@ -114,7 +114,8 @@ export const AuthProvider = ({ children }) => {
         toast.error(
           (data.errors.username && data.errors.email) ||
             data.errors.username ||
-            data.errors.email
+            data.errors.email ||
+            t("common:common.error")
         );
       } else {
         setUser(data.user);
@@ -129,8 +130,9 @@ export const AuthProvider = ({ children }) => {
           err.response?.data?.errors?.email) ||
           err.response?.data?.errors?.username ||
           err.response?.data?.errors?.email ||
-          "Erreur lors de l'inscription"
+          t("common:common.authcontext.register.error")
       );
+      throw err;
     }
   }, []);
 
@@ -138,9 +140,14 @@ export const AuthProvider = ({ children }) => {
   const login = useCallback(async (LformData, resetForm, navigate) => {
     const { email, password, stayLoggedIn } = LformData;
     if (!email || !password) {
-      toast.error("Veuillez remplir tous les champs");
+      toast.error(t("common:common.authcontext.login.fillallfields"));
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error(t("common:common.authcontext.login.validemail"));
+      return;
+    }
+
     try {
       const res = await axios.post(
         `${API_AUTH}/login`,
@@ -160,7 +167,8 @@ export const AuthProvider = ({ children }) => {
       const data = res.data;
 
       if (data.error) {
-        toast.error(data.error);
+        toast.error(data.error || t("common:common.error"));
+        throw data.error;
       } else {
         setUser(data.user);
         setIsAuthenticated(true);
@@ -169,13 +177,13 @@ export const AuthProvider = ({ children }) => {
         if (!data.user.isVerified) {
           await resendVerificationCode(
             () => {
-              toast.success(
-                "Un code vous a été envoyé pour vérifier votre adresse mail"
+              toast.error(
+                t("common:common.authcontext.login.notverifiederror")
               );
             },
             () => {
-              toast.error(
-                `Cliquez sur "renvoyer un mail" pour recevoir un nouveau code`
+              toast.success(
+                t("common:common.authcontext.login.notverifiedsucess")
               );
             }
           );
@@ -186,7 +194,9 @@ export const AuthProvider = ({ children }) => {
         toast.success(data.message);
       }
     } catch (err) {
-      toast.error(err.response?.data?.error || "Erreur lors de la connexion");
+      toast.error(
+        err.response?.data?.error || t("common:common.authcontext.login.error")
+      );
       throw err;
     }
   }, []);
@@ -194,7 +204,7 @@ export const AuthProvider = ({ children }) => {
   // --- Forgot Password ---
   const forgotPassword = useCallback(async (email, onSuccess) => {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error("Veuillez entrer une adresse email valide");
+      toast.error(t("common:common.authcontext.forgotpassword.validemail"));
       return;
     }
     try {
@@ -212,14 +222,16 @@ export const AuthProvider = ({ children }) => {
       );
       const data = res.data;
       if (data.error) {
-        toast.error(data.error);
+        toast.error(data.error || t("common:common.error"));
+        throw data.error;
       } else {
         onSuccess();
         toast.success(data.message);
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || "Erreur lors de l'envoi de l'email"
+        err.response?.data?.error ||
+          t("common:common.authcontext.forgotpassword.error")
       );
       throw err;
     }
@@ -228,11 +240,18 @@ export const AuthProvider = ({ children }) => {
   // --- Reset Password ---
   const resetPassword = useCallback(
     async (token, password, confirmPassword, onSuccess) => {
-      if (!token) return toast.error("Lien invalide ou expiré");
+      if (!token)
+        return toast.error(
+          t("common:common.authcontext.resetpassword.validtoken")
+        );
       if (password !== confirmPassword)
-        return toast.error("Les mots de passe ne correspondent pas");
+        return toast.error(
+          t("common:common.authcontext.resetpassword.passwordmismatch")
+        );
       if (password.length < 8)
-        return toast.error("Mot de passe trop court (min 8 caractères)");
+        return toast.error(
+          t("common:common.authcontext.resetpassword.validpassword")
+        );
 
       try {
         const res = await axios.post(
@@ -250,7 +269,8 @@ export const AuthProvider = ({ children }) => {
         const data = res.data;
 
         if (data.error) {
-          toast.error(data.error);
+          toast.error(data.error || t("common:common.error"));
+          throw data.error;
         } else {
           onSuccess();
           toast.success(data.message);
@@ -259,8 +279,10 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (err) {
         toast.error(
-          err.response?.data?.error || "Erreur lors de la réinitialisation"
+          err.response?.data?.error ||
+            t("common:common.authcontext.resetpassword.error")
         );
+        throw err;
       }
     },
     []
@@ -269,7 +291,7 @@ export const AuthProvider = ({ children }) => {
   // --- Verify Email ---
   const verifyEmail = useCallback(async (code, onSuccess) => {
     if (code.length !== 6) {
-      toast.error("Veuillez entrer le code complet à 6 chiffres");
+      toast.error(t("common:common.authcontext.verifyemail.validcode"));
       throw new Error("Invalid code length");
     }
     try {
@@ -286,7 +308,8 @@ export const AuthProvider = ({ children }) => {
       const data = res.data;
 
       if (data.error) {
-        toast.error(data.error);
+        toast.error(data.error || t("common:common.error"));
+        throw data.error;
       } else {
         setUser(data.user);
         setIsAuthenticated(true);
@@ -295,7 +318,11 @@ export const AuthProvider = ({ children }) => {
         toast.success(data.message);
       }
     } catch (err) {
-      toast.error(err.response?.data?.error || "Erreur de vérification");
+      toast.error(
+        err.response?.data?.error ||
+          t("common:common.authcontext.verifyemail.error")
+      );
+      throw err;
     }
   }, []);
 
@@ -313,8 +340,9 @@ export const AuthProvider = ({ children }) => {
       const data = res.data;
 
       if (data.error) {
-        toast.error(data.error);
+        toast.error(data.error || t("common:common.error"));
         OnError();
+        throw data.error;
       } else {
         setIsAuthenticated(true);
         setUser(data.user);
@@ -324,15 +352,18 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       OnError();
       toast.error(
-        err.response?.data?.error || "Erreur lors de l'envoi du code"
+        err.response?.data?.error ||
+          t("common:common.authcontext.resendverificationcode.error")
       );
+      throw err;
     }
   }, []);
 
   // --- Change verification email ---
   const changeVerificationEmail = useCallback(async (newEmail, onSuccess) => {
-    if (!newEmail) return toast.error("Veuillez entrer votre email");
-
+    if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+      return toast.error(t("common:common.authcontext.changeverificationemail.validemail"));
+    }
     try {
       const res = await axios.post(
         `${API_AUTH}/change-verification-email`,
@@ -348,7 +379,8 @@ export const AuthProvider = ({ children }) => {
       );
       const data = res.data;
       if (data.error) {
-        toast.error(data.error);
+        toast.error(data.error || t("common:common.error"));
+        throw data.error;
       } else {
         setUser(data.user);
         onSuccess();
@@ -356,8 +388,9 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || "Erreur lors de l'envoi de l'email"
+        err.response?.data?.error || t("common:common.authcontext.changeverificationemail.error")
       );
+      throw err;
     }
   }, []);
 
@@ -373,10 +406,11 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       i18n.changeLanguage();
       document.documentElement.lang = navigator.language.slice(0, 2);
-      toast.success(res.data.message || "Déconnecté avec succès");
+      toast.success(res.data.message || t("common:common.authcontext.logout.success"));
       onSuccess();
     } catch (err) {
-      toast.error("Erreur lors de la déconnexion");
+      toast.error(t("common:common.authcontext.logout.error"));
+      throw err;
     }
   }, []);
 
@@ -389,10 +423,11 @@ export const AuthProvider = ({ children }) => {
       );
       setIsAuthenticated(false);
       setUser(null);
-      toast.success(res.data.message || "Compte supprimé");
+      toast.success(res.data.message || t("common:common.authcontext.deleteaccount.success"));
       onSuccess();
     } catch (err) {
-      toast.error("Erreur lors de la suppression");
+      toast.error(t("common:common.authcontext.deleteaccount.error"));
+      throw err;
     }
   }, []);
 

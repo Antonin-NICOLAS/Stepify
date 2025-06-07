@@ -1,5 +1,53 @@
 {
   "common": {
+    "error": "une erreur s'est produite",
+    "authcontext": {
+      "register": {
+        "validfirstname": "Un prénom valide (2 caractères minimum) est requis",
+        "validlastname": "Un nom valide (2 caractères minimum) est requis",
+        "validemail": "Un email valide est requis",
+        "validusername": "Un nom d'utilisateur valide (3-30 caractères alphanumériques) est requis",
+        "validpassword": "Un mot de passe valide (8 caractères minimum) est requis",
+        "passwordmismatch": "Les mots de passe ne correspondent pas",
+        "error": "Erreur lors de l'inscription"
+      },
+      "login": {
+        "fillallfields": "Veuillez remplir tous les champs",
+        "validemail": "Un email valide est requis",
+        "notverifiedsuccess": "Un code vous a été envoyé pour vérifier votre adresse mail",
+        "notverifiederror": "Cliquez sur 'renvoyer un mail' pour recevoir un nouveau code",
+        "error": "Erreur lors de la connexion"
+      },
+      "forgotpassword": {
+        "validemail": "Un email valide est requis",
+        "error": "Erreur lors de l'envoi de l'email"
+      },
+      "resetpassword": {
+        "validtoken": "Lien invalide ou expiré",
+        "validpassword": "Un mot de passe valide (8 caractères minimum) est requis",
+        "passwordmismatch": "Les mots de passe ne correspondent pas",
+        "error": "Erreur lors de la réinitialisation du mot de passe"
+      },
+      "verifyemail": {
+        "validcode": "Veuillez entrer le code complet à 6 chiffres",
+        "error": "Erreur lors de la vérification de l'email"
+      },
+      "resendverificationcode": {
+        "error": "Erreur lors du renvoi du mail de vérification"
+      },
+      "changeverificationemail": {
+        "validemail": "Un email valide est requis",
+        "error": "Erreur lors du changement d'email"
+      },
+      "logout": {
+        "success": "Déconnecté avec succès",
+        "error": "Erreur lors de la déconnexion"
+      },
+      "deleteaccount": {
+        "success": "Compte supprimé avec succès",
+        "error": "Erreur lors de la suppression du compte"
+      }
+    },
     "usercontext": {
       "languageupdated": "Langue mise à jour"
     }
