@@ -111,7 +111,7 @@
 
   /* =================== FORM SECTION =================== */
   .auth-form-section {
-    min-width: 500px;
+    width: 50%;
     background-color: var(--body-color);
     padding: 2rem;
     display: flex;
@@ -353,6 +353,7 @@
     }
 
     .auth-form-section {
+      min-width: unset;
       width: 100%;
     }
   }

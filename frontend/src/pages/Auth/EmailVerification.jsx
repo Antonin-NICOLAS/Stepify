@@ -236,7 +236,7 @@ function EmailVerification() {
                   <AlertCircle />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>Pas reçu?</h4>
+                  <h4>Pas reçu ?</h4>
                   <p>Vous pouvez demander un nouveau code</p>
                 </div>
               </div>
@@ -255,7 +255,7 @@ function EmailVerification() {
                 </div>
                 <h2>Vérifiez votre email</h2>
                 <p className="auth-subtitle">
-                  Nous avons envoyé un code à{" "}
+                  Nous avons envoyé un code à {" "}
                   {user?.email || "votre adresse email"}
                 </p>
               </div>
@@ -296,7 +296,7 @@ function EmailVerification() {
                 </button>
 
                 <div className="resend-container">
-                  <p>Vous n'avez pas reçu de code?</p>
+                  <p>Vous n'avez pas reçu de code ?</p>
                   <button
                     type="button"
                     className={`resend-btn ${resendDisabled ? "disabled" : ""}`}
@@ -319,7 +319,7 @@ function EmailVerification() {
               </div>
 
               <div className="auth-form-footer">
-                <span>Mauvaise adresse email?</span>
+                <span>Mauvaise adresse email ?</span>
                 <Link to="/change-email">Changer d'email</Link>
               </div>
             </form>

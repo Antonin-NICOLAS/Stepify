@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import GlobalLoader from "../../utils/GlobalLoader";
 //context
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 //icons
 import {
   Mail,
@@ -17,6 +18,7 @@ import {
 import "./Forgot-pwd.css";
 
 function ForgotPassword() {
+  const { t } = useTranslation(["auth"]);
   const navigate = useNavigate();
   const { forgotPassword } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -46,16 +48,16 @@ function ForgotPassword() {
                 className="auth-stat-item"
                 style={{ flexDirection: "column" }}
               >
-                <h3>Mot de passe oublié</h3>
-                <p>Nous vous aiderons à récupérer votre compte</p>
+                <h3>{t("auth:auth.forgotpassword.visual.title")}</h3>
+                <p>{t("auth:auth.forgotpassword.visual.description")}</p>
               </div>
               <div className="auth-stat-item">
                 <div className="auth-stat-icon">
                   <Mail />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>Email de récupération</h4>
-                  <p>Nous vous enverrons un lien de réinitialisation</p>
+                  <h4>{t("auth:auth.forgotpassword.visual.step1")}</h4>
+                  <p>{t("auth:auth.forgotpassword.visual.step1description")}</p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -63,8 +65,8 @@ function ForgotPassword() {
                   <KeyRound />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>Nouveau mot de passe</h4>
-                  <p>Créez un mot de passe sécurisé</p>
+                  <h4>{t("auth:auth.forgotpassword.visual.step2")}</h4>
+                  <p>{t("auth:auth.forgotpassword.visual.step2description")}</p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -72,8 +74,8 @@ function ForgotPassword() {
                   <HelpCircle />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>Besoin d'aide?</h4>
-                  <p>Notre équipe de support est disponible</p>
+                  <h4>{t("auth:auth.forgotpassword.visual.step3")}</h4>
+                  <p>{t("auth:auth.forgotpassword.visual.step3descrption")}</p>
                 </div>
               </div>
             </div>
@@ -89,15 +91,17 @@ function ForgotPassword() {
                     <LockKeyhole />
                   </div>
                 </div>
-                <h2>Mot de passe oublié ? 🔑</h2>
+                <h2>{t("auth:auth.forgotpassword.form.title")}</h2>
                 <p className="auth-subtitle">
-                  Entrez votre email pour réinitialiser votre mot de passe
+                  {t("auth:auth.forgotpassword.form.description")}
                 </p>
               </div>
 
               <div className="auth-form-content">
                 <div className="auth-input-group">
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email">
+                    {t("auth:auth.forgotpassword.form.email")}
+                  </label>
                   <div className="auth-input-wrapper">
                     <Mail className="auth-input-icon" />
                     <input
@@ -118,19 +122,23 @@ function ForgotPassword() {
                 >
                   <Send />
                   <span>
-                    {isLoading ? "Envoi en cours..." : "Envoyer le lien"}
+                    {isLoading
+                      ? t("auth:auth.forgotpassword.form.sendinprogress")
+                      : t("auth:auth.forgotpassword.form.send")}
                   </span>
                 </button>
 
                 <Link to="/login" className="auth-button auth-button-secondary">
                   <ArrowLeft />
-                  <span>Retour à la connexion</span>
+                  <span>{t("auth:auth.forgotpassword.form.return")}</span>
                 </Link>
               </div>
 
               <div className="auth-form-footer">
-                <span>Vous vous souvenez de votre mot de passe ?</span>
-                <Link to="/login">Se connecter</Link>
+                <span>{t("auth:auth.forgotpassword.footer.question")}</span>
+                <Link to="/login">
+                  {t("auth:auth.forgotpassword.footer.button")}
+                </Link>
               </div>
             </form>
           </div>

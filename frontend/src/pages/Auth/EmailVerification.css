@@ -1,8 +1,4 @@
 /* =================== GLOBAL RESET STYLES =================== */
-:root {
-  --auth-form-width: 450px;
-  --auth-visual-width: 450px;
-}
 
 .verification-page {
   display: flex;
@@ -111,7 +107,7 @@
 
   /* =================== FORM SECTION =================== */
   .auth-form-section {
-    min-width: 500px;
+    width: 50%;
     background-color: var(--body-color);
     padding: 2rem;
     display: flex;
@@ -340,38 +336,6 @@
   }
 }
 
-/* =================== RESPONSIVE STYLES =================== */
-@media (max-width: 900px) {
-  .verification-page {
-    .auth-container {
-      flex-direction: column;
-      max-width: var(--auth-form-width);
-    }
-
-    .auth-visual-section {
-      display: none;
-    }
-
-    .auth-form-section {
-      width: 100%;
-    }
-  }
-}
-
-@media (max-width: 500px) {
-  .verification-page {
-    .auth-form-section {
-      padding: 1.5rem;
-    }
-
-    .auth-form-footer {
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-    }
-  }
-}
-
 /* =================== EMAIL VERIFICATION SPECIFIC STYLES =================== */
 .verification-page {
   .auth-form-content {
@@ -459,8 +423,51 @@
   }
 }
 
+/* =================== RESPONSIVE STYLES =================== */
+@media (max-width: 900px) {
+  .verification-page {
+    .auth-container {
+      flex-direction: column;
+      width: 90%;
+    }
+
+    .otp-container {
+      margin: 0;
+    }
+
+    .auth-visual-section {
+      display: none;
+    }
+
+    .auth-form-section {
+      width: 100%;
+    }
+  }
+}
+
 @media (max-width: 500px) {
   .verification-page {
+    .auth-container {
+      width: 95%;
+    }
+
+        .auth-form {
+      gap: 0.75rem;
+    }
+    .auth-form-content {
+      gap: 0.75rem;
+    }
+
+    .auth-form-section {
+      padding: 1.5rem;
+    }
+
+    .auth-form-footer {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
     .otp-container {
       gap: 0.35rem;
     }
@@ -475,6 +482,7 @@
 
 @media (max-width: 400px) {
   .verification-page {
+
     .otp-input {
       width: 35px;
       height: 45px;

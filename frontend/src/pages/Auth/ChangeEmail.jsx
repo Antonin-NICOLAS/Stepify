@@ -4,12 +4,14 @@ import { useNavigate, Link } from "react-router-dom";
 import GlobalLoader from "../../utils/GlobalLoader";
 //context
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 //icons
 import { Mail, Send, ArrowLeft, AtSign, CheckCircle2 } from "lucide-react";
 //CSS
 import "./ChangeEmail.css";
 
 function ChangeEmail() {
+  const { t } = useTranslation(["auth"]);
   const navigate = useNavigate();
   const { changeVerificationEmail } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -39,17 +41,20 @@ function ChangeEmail() {
               <span>Stepify</span>
             </div>
             <div className="auth-stats">
-              <div className="auth-stat-item">
-                <h3>Changer d'email</h3>
-                <p>Mettez à jour votre adresse email pour la vérification</p>
+              <div
+                className="auth-stat-item"
+                style={{ flexDirection: "column" }}
+              >
+                <h3>{t("auth:changeemail.visual.title")}</h3>
+                <p>{t("auth:changeemail.visual.description")}n</p>
               </div>
               <div className="auth-stat-item">
                 <div className="auth-stat-icon">
                   <Mail />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>Nouvel email</h4>
-                  <p>Entrez votre nouvelle adresse email</p>
+                  <h4>{t("auth:changeemail.visual.newemail")}</h4>
+                  <p>{t("auth:changeemail.visual.enternewemail")}</p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -57,8 +62,8 @@ function ChangeEmail() {
                   <CheckCircle2 />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>Vérification</h4>
-                  <p>Vous recevrez un nouveau code de vérification</p>
+                  <h4>{t("auth:changeemail.visual.verification")}</h4>
+                  <p>{t("auth:changeemail.visual.receiveverification")}</p>
                 </div>
               </div>
             </div>
@@ -77,21 +82,23 @@ function ChangeEmail() {
                     <AtSign />
                   </div>
                 </div>
-                <h2>Mauvais email ?</h2>
+                <h2>{t("auth:changeemail.form.title")}</h2>
                 <p className="auth-subtitle">
-                  Entrez votre nouvel email pour le vérifier
+                  {t("auth:changeemail.form.description")}
                 </p>
               </div>
 
               <div className="auth-form-content">
                 <div className="auth-input-group">
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email">
+                    {t("auth:changeemail.form.email")}
+                  </label>
                   <div className="auth-input-wrapper">
                     <Mail className="auth-input-icon" />
                     <input
                       id="email"
                       type="email"
-                      placeholder="Entrez votre email"
+                      placeholder={t("auth:changeemail.form.enteremail")}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -106,7 +113,9 @@ function ChangeEmail() {
                 >
                   <Send />
                   <span>
-                    {isLoading ? "Envoi en cours..." : "Envoyer le code"}
+                    {isLoading
+                      ? t("auth:changeemail.form.sendinprocess")
+                      : t("auth:changeemail.form.send")}
                   </span>
                 </button>
 
@@ -115,13 +124,13 @@ function ChangeEmail() {
                   className="auth-button auth-button-secondary"
                 >
                   <ArrowLeft />
-                  <span>Retour</span>
+                  <span>{t("auth:changeemail.form.return")}</span>
                 </Link>
               </div>
 
               <div className="auth-form-footer">
-                <span>Vous aviez renseigné le bon email ?</span>
-                <Link to="/email-verification">Retour à la vérification</Link>
+                <span>{t("auth:changeemail.footer.question")}</span>
+                <Link to="/email-verification">{t("auth:changeemail.footer.button")}</Link>
               </div>
             </form>
           </div>

@@ -33,6 +33,8 @@ export const AuthProvider = ({ children }) => {
       const data = res.data;
       if (data.user) {
         setUser(data.user);
+        document.documentElement.lang = data.user.languagePreference;
+        i18n.changeLanguage(data.user.languagePreference);
         setIsAuthenticated(data.success);
       } else {
         setUser(null);
@@ -117,6 +119,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setUser(data.user);
         setIsAuthenticated(true);
+        checkAuth();
         resetForm();
         toast.success(data.message);
       }
@@ -161,6 +164,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setUser(data.user);
         setIsAuthenticated(true);
+        checkAuth();
         resetForm();
         if (!data.user.isVerified) {
           await resendVerificationCode(
@@ -284,8 +288,9 @@ export const AuthProvider = ({ children }) => {
       if (data.error) {
         toast.error(data.error);
       } else {
-        setIsAuthenticated(true);
         setUser(data.user);
+        setIsAuthenticated(true);
+        checkAuth();
         onSuccess();
         toast.success(data.message);
       }
@@ -366,6 +371,8 @@ export const AuthProvider = ({ children }) => {
       );
       setIsAuthenticated(false);
       setUser(null);
+      i18n.changeLanguage();
+      document.documentElement.lang = navigator.language.slice(0, 2);
       toast.success(res.data.message || "Déconnecté avec succès");
       onSuccess();
     } catch (err) {
@@ -393,10 +400,6 @@ export const AuthProvider = ({ children }) => {
     const verifyAuth = async () => {
       await checkAuth();
       setIsCheckingAuth(false);
-      if (user) {
-        document.documentElement.lang = user.languagePreference;
-        i18n.changeLanguage(user.languagePreference);
-      }
     };
     verifyAuth();
   }, [checkAuth]);

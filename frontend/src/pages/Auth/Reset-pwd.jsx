@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import GlobalLoader from "../../utils/GlobalLoader";
 //context
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 //icons
 import {
   Eye,
@@ -19,6 +20,7 @@ import "./Reset-pwd.css";
 import toast from "react-hot-toast";
 
 function ResetPassword() {
+  const { t } = useTranslation(["auth"]);
   const { resetPassword } = useAuth();
 
   const { token } = useParams();
@@ -57,16 +59,16 @@ function ResetPassword() {
               </div>
               <div className="auth-stats">
                 <div className="auth-stat-item">
-                  <h3>Réinitialisation réussie</h3>
-                  <p>Votre mot de passe a été mis à jour avec succès</p>
+                  <h3>{t("auth:auth.resetpassword.success.visualtitle")}</h3>
+                  <p>{t("auth:auth.resetpassword.success.visualdescription")}</p>
                 </div>
                 <div className="auth-stat-item">
                   <div className="auth-stat-icon success">
                     <Check />
                   </div>
                   <div className="auth-stat-info">
-                    <h4>Mot de passe mis à jour</h4>
-                    <p>Votre nouveau mot de passe est actif</p>
+                    <h4>{t("auth:auth.resetpassword.success.visualstep1")}</h4>
+                    <p>{t("auth:auth.resetpassword.success.step1description")}</p>
                   </div>
                 </div>
                 <div className="auth-stat-item">
@@ -74,8 +76,8 @@ function ResetPassword() {
                     <ShieldCheck />
                   </div>
                   <div className="auth-stat-info">
-                    <h4>Compte sécurisé</h4>
-                    <p>Votre compte est maintenant protégé</p>
+                    <h4>{t("auth:auth.resetpassword.success.visualstep2")}</h4>
+                    <p>{t("auth:auth.resetpassword.success.visualstep2description")}</p>
                   </div>
                 </div>
               </div>
@@ -90,23 +92,20 @@ function ResetPassword() {
                     <Check />
                   </div>
                 </div>
-                <h2>Réinitialisation réussie! 🎉</h2>
+                <h2>{t("auth:auth.resetpassword.success.title")}</h2>
                 <p className="auth-subtitle">
-                  Votre mot de passe a été mis à jour
+                  {t("auth:auth.resetpassword.success.description")}
                 </p>
               </div>
 
               <div className="auth-form-content">
                 <div className="success-message">
-                  <p>
-                    Vous pouvez maintenant vous connecter avec votre nouveau mot
-                    de passe.
-                  </p>
+                  <p>{t("auth:auth.resetpassword.success.message")}</p>
                 </div>
 
                 <Link to="/login" className="auth-button auth-button-primary">
                   <LockKeyhole />
-                  <span>Se connecter</span>
+                  <span>{t("auth:auth.resetpassword.success.button")}</span>
                 </Link>
               </div>
             </div>
@@ -130,16 +129,16 @@ function ResetPassword() {
                 className="auth-stat-item"
                 style={{ flexDirection: "column" }}
               >
-                <h3>Réinitialisation du mot de passe</h3>
-                <p>Créez un nouveau mot de passe sécurisé</p>
+                <h3>{t("auth:auth.resetpassword.visual.title")}</h3>
+                <p>{t("auth:auth.resetpassword.visual.description")}</p>
               </div>
               <div className="auth-stat-item">
                 <div className="auth-stat-icon">
                   <KeyRound />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>Nouveau mot de passe</h4>
-                  <p>Choisissez un mot de passe fort</p>
+                  <h4>{t("auth:auth.resetpassword.visual.step1")}</h4>
+                  <p>{t("auth:auth.resetpassword.visual.step1description")}</p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -147,8 +146,8 @@ function ResetPassword() {
                   <ShieldCheck />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>Sécurité</h4>
-                  <p>Utilisez au moins 8 caractères</p>
+                  <h4>{t("auth:auth.resetpassword.visual.step2")}</h4>
+                  <p>{t("auth:auth.resetpassword.visual.step2description")}</p>
                 </div>
               </div>
             </div>
@@ -164,9 +163,9 @@ function ResetPassword() {
                     <LockKeyhole />
                   </div>
                 </div>
-                <h2>Réinitialiser le mot de passe 🔒</h2>
+                <h2>{t("auth:auth.resetpassword.form.title")}</h2>
                 <p className="auth-subtitle">
-                  Créez un nouveau mot de passe pour votre compte
+                  {t("auth:auth.resetpassword.form.subtitle")}
                 </p>
               </div>
 
@@ -174,21 +173,23 @@ function ResetPassword() {
                 {!token && (
                   <div className="auth-alert auth-alert-error">
                     <AlertCircle />
-                    <p>
-                      Lien de réinitialisation invalide ou expiré. Veuillez
-                      demander un nouveau lien.
-                    </p>
+                    <p>{t("auth:auth.resetpassword.form.invalidlink")}</p>
                   </div>
                 )}
 
                 <div className="auth-input-group">
-                  <label htmlFor="password">Nouveau mot de passe</label>
+                  <label htmlFor="password">
+                    {t("auth:auth.resetpassword.form.password")}
+                  </label>
                   <div className="auth-input-wrapper">
                     <LockKeyhole className="auth-input-icon" />
                     <input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Entrez votre nouveau mot de passe"
+                      placeholder={t(
+                        "auth:auth.resetpassword.form.enterpassword"
+                      )}
+                      autoComplete="new-password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -200,28 +201,31 @@ function ResetPassword() {
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={
                         showPassword
-                          ? "Masquer le mot de passe"
-                          : "Afficher le mot de passe"
+                          ? t("auth:auth.resetpassword.form.hidepassword")
+                          : t("auth:auth.resetpassword.form.showpassword")
                       }
                     >
                       {showPassword ? <EyeOff /> : <Eye />}
                     </button>
                   </div>
                   <p className="password-hint">
-                    Le mot de passe doit contenir au moins 8 caractères
+                    {t("auth:auth.resetpassword.form.passwordhint")}
                   </p>
                 </div>
 
                 <div className="auth-input-group">
                   <label htmlFor="confirmPassword">
-                    Confirmer le mot de passe
+                    {t("auth:auth.resetpassword.form.confirmpassword")}
                   </label>
                   <div className="auth-input-wrapper">
                     <LockKeyhole className="auth-input-icon" />
                     <input
                       id="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Confirmez votre mot de passe"
+                      placeholder={t(
+                        "auth:auth.resetpassword.form.confirmyourpassword"
+                      )}
+                      autoComplete="new-password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
@@ -235,8 +239,8 @@ function ResetPassword() {
                       }
                       aria-label={
                         showConfirmPassword
-                          ? "Masquer le mot de passe"
-                          : "Afficher le mot de passe"
+                          ? t("auth:auth.resetpassword.form.hidepassword")
+                          : t("auth:auth.resetpassword.form.showpassword")
                       }
                     >
                       {showConfirmPassword ? <EyeOff /> : <Eye />}
@@ -252,15 +256,17 @@ function ResetPassword() {
                   <LockKeyhole />
                   <span>
                     {isLoading
-                      ? "Réinitialisation..."
-                      : "Réinitialiser le mot de passe"}
+                      ? t("auth:auth.resetpassword.form.loading")
+                      : t("auth:auth.resetpassword.form.submit")}
                   </span>
                 </button>
               </div>
 
               <div className="auth-form-footer">
-                <span>Vous vous souvenez de votre mot de passe?</span>
-                <Link to="/login">Se connecter</Link>
+                <span>{t("auth:auth.resetpassword.footer.question")}</span>
+                <Link to="/login">
+                  {t("auth:auth.resetpassword.footer.button")}
+                </Link>
               </div>
             </form>
           </div>

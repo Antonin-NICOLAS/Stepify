@@ -25,6 +25,8 @@ export const AuthenticatedUserRoute = ({ children }) => {
   const { isAuthenticated, user, checkAuth } = useAuth();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
+  const isAdmin = user?.role === "admin";
+
   useEffect(() => {
     const verifyAuth = async () => {
       await checkAuth();
@@ -34,7 +36,7 @@ export const AuthenticatedUserRoute = ({ children }) => {
   }, [checkAuth]);
 
   if (isCheckingAuth) return <GlobalLoader />;
-  return isAuthenticated && user ? (
+  return !isAdmin && isAuthenticated && user ? (
     <Navigate to="/dashboard" replace />
   ) : (
     children

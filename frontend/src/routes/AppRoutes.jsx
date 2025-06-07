@@ -19,8 +19,6 @@ import Rewards from "../pages/Rewards.jsx";
 import Friends from "../pages/Friends.jsx";
 import Settings from "../pages/Settings.jsx";
 import About from "../pages/About.jsx";
-//loader
-import GlobalLoader from "../utils/GlobalLoader.jsx";
 //terms of services
 import TermsOfService from "../pages/Documents/TermsOfService.jsx";
 //AUTH

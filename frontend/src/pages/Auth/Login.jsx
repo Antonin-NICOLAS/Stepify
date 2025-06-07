@@ -5,6 +5,7 @@ import Spline from "@splinetool/react-spline";
 import GlobalLoader from "../../utils/GlobalLoader";
 //context
 import { useAuth } from "../../context/AuthContext";
+import { useTranslation } from "react-i18next";
 //icons
 import {
   Mail,
@@ -23,6 +24,7 @@ import {
 import "./Login.css";
 
 function Auth() {
+  const { t } = useTranslation(["auth"]);
   const navigate = useNavigate();
   const { login, register } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +71,7 @@ function Auth() {
     setFormError("");
 
     if (registerData.password !== registerData.confirmPassword) {
-      setFormError("Passwords do not match");
+      setFormError(t("auth:auth.login.form.error.passwordmismatch"));
       return;
     }
 
@@ -109,20 +111,26 @@ function Auth() {
             <Spline scene="https://prod.spline.design/mXCYrxjtEUkHhzFi/scene.splinecode" />
           </div>
           <div className="auth-info">
-            <h2>Track Your Progress</h2>
-            <p>Join thousands of users improving their fitness with Stepify</p>
+            <h2>{t("auth:auth.login.visual.title")}</h2>
+            <p>{t("auth:auth.login.visual.description")}</p>
             <div className="auth-stats">
               <div className="stat-item">
                 <span className="stat-value">10K+</span>
-                <span className="stat-label">Active Users</span>
+                <span className="stat-label">
+                  {t("auth:auth.login.visual.stat1")}
+                </span>
               </div>
               <div className="stat-item">
                 <span className="stat-value">500+</span>
-                <span className="stat-label">Défis</span>
+                <span className="stat-label">
+                  {t("auth:auth.login.visual.stat2")}
+                </span>
               </div>
               <div className="stat-item">
                 <span className="stat-value">1M+</span>
-                <span className="stat-label">Steps Tracked</span>
+                <span className="stat-label">
+                  {t("auth:auth.login.visual.stat3")}
+                </span>
               </div>
             </div>
           </div>
@@ -135,14 +143,14 @@ function Auth() {
               onClick={() => setIsLogin(true)}
             >
               <LogIn size={18} />
-              <span>Sign In</span>
+              <span>{t("auth:auth.login.tabs.login")}</span>
             </button>
             <button
               className={`auth-tab ${!isLogin ? "active" : ""}`}
               onClick={() => setIsLogin(false)}
             >
               <UserPlus size={18} />
-              <span>Register</span>
+              <span>{t("auth:auth.login.tabs.register")}</span>
             </button>
           </div>
 
@@ -157,19 +165,21 @@ function Auth() {
             className={`auth-forms ${isLogin ? "show-login" : "show-register"}`}
           >
             <form className="login-form" onSubmit={handleLogin}>
-              <h2>Welcome Back</h2>
-              <p className="form-subtitle">Log in to your Stepify account</p>
+              <h2>{t("auth:auth.login.form.login.title")}</h2>
+              <p className="form-subtitle">
+                {t("auth:auth.login.form.login.subtitle")}
+              </p>
 
               <div className="form-group">
                 <label htmlFor="login-email">
                   <Mail size={16} />
-                  <span>Email</span>
+                  <span>{t("auth:auth.login.form.login.email")}</span>
                 </label>
                 <div className="input-container">
                   <input
                     id="login-email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={t("auth:auth.login.form.login.enteremail")}
                     autoComplete="email"
                     value={loginData.email}
                     onChange={(e) =>
@@ -183,13 +193,13 @@ function Auth() {
               <div className="form-group">
                 <label htmlFor="login-password">
                   <Lock size={16} />
-                  <span>Password</span>
+                  <span>{t("auth:auth.login.form.login.password")}</span>
                 </label>
                 <div className="input-container">
                   <input
                     id="login-password"
                     type={showLPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder={t("auth:auth.login.form.login.enterpassword")}
                     autoComplete="password"
                     value={loginData.password}
                     onChange={(e) =>
@@ -202,7 +212,9 @@ function Auth() {
                     className="toggle-password"
                     onClick={() => setShowLPassword(!showLPassword)}
                     aria-label={
-                      showLPassword ? "Hide password" : "Show password"
+                      showLPassword
+                        ? t("auth:auth.login.form.login.showpassword")
+                        : t("auth:auth.login.form.login.hidepassword")
                     }
                   >
                     {showLPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -223,10 +235,10 @@ function Auth() {
                     }
                   />
                   <span className="checkmark"></span>
-                  <span>Stay connected</span>
+                  <span>{t("auth:auth.login.form.login.stayconnected")}</span>
                 </label>
                 <Link to="/forgot-password" className="forgot-password">
-                  Forgot password?
+                  {t("auth:auth.login.form.login.forgotpassword")}
                 </Link>
               </div>
 
@@ -235,39 +247,39 @@ function Auth() {
                 className="submit-button"
                 disabled={isLoading}
               >
-                <span>Sign In</span>
+                <span>{isLoading ? t("auth:auth.login.form.login.loading") : t("auth:auth.login.form.login.submit")}</span>
                 <ArrowRight size={18} />
               </button>
 
               <div className="form-footer">
-                <span>Don't have an account?</span>
+                <span>{t("auth:auth.login.form.login.noaccount")}</span>
                 <button
                   type="button"
                   className="switch-form"
                   onClick={() => setIsLogin(false)}
                 >
-                  Register now
+                  {t("auth:auth.login.form.login.registernow")}
                 </button>
               </div>
             </form>
 
             <form className="register-form" onSubmit={handleRegister}>
-              <h2>Create Account</h2>
+              <h2>{t("auth:auth.login.form.register.title")}</h2>
               <p className="form-subtitle">
-                Join Stepify and start tracking your progress
+                {t("auth:auth.login.form.register.subtitle")}
               </p>
 
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="register-firstname">
                     <User size={16} />
-                    <span>First Name</span>
+                    <span>{t("auth:auth.login.form.register.firstname")}</span>
                   </label>
                   <div className="input-container">
                     <input
                       id="register-firstname"
                       type="text"
-                      placeholder="Your first name"
+                      placeholder={t("auth:auth.login.form.register.enterfirstname")}
                       autoComplete="given-name"
                       value={registerData.firstName}
                       onChange={(e) =>
@@ -284,13 +296,13 @@ function Auth() {
                 <div className="form-group">
                   <label htmlFor="register-lastname">
                     <User size={16} />
-                    <span>Last Name</span>
+                    <span>{t("auth:auth.login.form.register.lastname")}</span>
                   </label>
                   <div className="input-container">
                     <input
                       id="register-lastname"
                       type="text"
-                      placeholder="Your last name"
+                      placeholder={t("auth:auth.login.form.register.enterlastname")}
                       autoComplete="family-name"
                       value={registerData.lastName}
                       onChange={(e) =>
@@ -308,13 +320,13 @@ function Auth() {
               <div className="form-group">
                 <label htmlFor="register-username">
                   <IdCard size={16} />
-                  <span>Username</span>
+                  <span>{t("auth:auth.login.form.register.username")}</span>
                 </label>
                 <div className="input-container">
                   <input
                     id="register-username"
                     type="text"
-                    placeholder="Choose a username"
+                    placeholder={t("auth:auth.login.form.register.enterusername")}
                     value={registerData.username}
                     onChange={(e) =>
                       setRegisterData({
@@ -330,13 +342,13 @@ function Auth() {
               <div className="form-group">
                 <label htmlFor="register-email">
                   <Mail size={16} />
-                  <span>Email</span>
+                  <span>{t("auth:auth.login.form.register.email")}</span>
                 </label>
                 <div className="input-container">
                   <input
                     id="register-email"
                     type="email"
-                    placeholder="Your email address"
+                    placeholder={t("auth:auth.login.form.register.enteremail")}
                     autoComplete="email"
                     value={registerData.email}
                     onChange={(e) =>
@@ -353,13 +365,13 @@ function Auth() {
               <div className="form-group">
                 <label htmlFor="register-password">
                   <Lock size={16} />
-                  <span>Password</span>
+                  <span>{t("auth:auth.login.form.register.password")}</span>
                 </label>
                 <div className="input-container">
                   <input
                     id="register-password"
                     type={showRPassword ? "text" : "password"}
-                    placeholder="Create a password"
+                    placeholder={t("auth:auth.login.form.register.createpassword")}
                     autoComplete="new-password"
                     value={registerData.password}
                     onChange={(e) =>
@@ -386,13 +398,13 @@ function Auth() {
               <div className="form-group">
                 <label htmlFor="register-confirm-password">
                   <Lock size={16} />
-                  <span>Confirm Password</span>
+                  <span></span>
                 </label>
                 <div className="input-container">
                   <input
                     id="register-confirm-password"
                     type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm your password"
+                    placeholder={t("auth:auth.login.form.register.confirmyourpassword")}
                     autoComplete="new-password"
                     value={registerData.confirmPassword}
                     onChange={(e) =>
@@ -408,7 +420,7 @@ function Auth() {
                     className="toggle-password"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     aria-label={
-                      showConfirmPassword ? "Hide password" : "Show password"
+                      showConfirmPassword ? t("auth:auth.login.form.register.showpassword") : t("auth:auth.login.form.register.showpassword")
                     }
                   >
                     {showConfirmPassword ? (
@@ -425,13 +437,13 @@ function Auth() {
                   <input type="checkbox" required />
                   <span className="checkmark"></span>
                   <span>
-                    I agree to the{" "}
+                    {t("auth:auth.login.form.register.tos")}{" "}
                     <Link
                       to="/terms-of-service"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Terms of Service
+                      {t("auth:auth.login.form.register.toslink")}
                     </Link>
                   </span>
                 </label>
@@ -448,7 +460,7 @@ function Auth() {
                     }
                   />
                   <span className="checkmark"></span>
-                  <span>Stay connected after registration</span>
+                  <span>{t("auth:auth.login.form.register.stayconnected")}</span>
                 </label>
               </div>
 
@@ -457,18 +469,18 @@ function Auth() {
                 className="submit-button"
                 disabled={isLoading}
               >
-                <span>Create Account</span>
+                <span>{isLoading ? t("auth:auth.login.form.register.loading") : t("auth:auth.login.form.register.submit")}</span>
                 <ArrowRight size={18} />
               </button>
 
               <div className="form-footer">
-                <span>Already have an account?</span>
+                <span>{t("auth:auth.login.form.register.alreadyaccount")}</span>
                 <button
                   type="button"
                   className="switch-form"
                   onClick={() => setIsLogin(true)}
                 >
-                  Sign in
+                  {t("auth:auth.login.form.register.signin")}
                 </button>
               </div>
             </form>
@@ -478,11 +490,11 @@ function Auth() {
 
       <div className="auth-footer">
         <div className="footer-links">
-          <Link to="#">Help</Link>
-          <Link to="#">Privacy</Link> {/*TODO: privacy and help pages */}
-          <Link to="/terms-of-service">Terms</Link>
+          <Link to="#">{t("auth:auth.login.footer.help")}</Link>
+          <Link to="#">{t("auth:auth.login.footer.privacy")}</Link> {/*TODO: privacy and help pages */}
+          <Link to="/terms-of-service">{t("auth:auth.login.footer.terms")}</Link>
         </div>
-        <p>© {new Date().getFullYear()} Stepify. All rights reserved.</p>
+        <p>© {new Date().getFullYear()}{" "}{t("auth:auth.login.footer.copyright")}</p>
       </div>
     </div>
   );

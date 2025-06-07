@@ -1576,6 +1576,7 @@ const EmailPasswordResetTemplate = `
 			}
 
 			.row-6 .column-2 .block-1.paragraph_block td.pad>div,
+			.row-6 .column-2 .block-3.paragraph_block td.pad>div,
 			.row-7 .column-2 .block-1.paragraph_block td.pad>div {
 				font-size: 10px !important;
 			}
@@ -1726,8 +1727,7 @@ const EmailPasswordResetTemplate = `
 															</td>
 														</tr>
 													</table>
-													<div class="spacer_block block-2" style="height:10px;line-height:10px;font-size:1px;">&#8202;</div>
-													<table class="button_block block-3" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+													<table class="button_block block-2" width="100%" border="0" cellpadding="10" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td class="pad">
 																<div class="alignment" align="center"><a href="{resetUrl}" target="_blank" style="color:#ffffff;text-decoration:none;"><!--[if mso]>
@@ -1737,6 +1737,15 @@ const EmailPasswordResetTemplate = `
 <v:textbox inset="0px,0px,0px,0px">
 <center dir="false" style="color:#ffffff;font-family:sans-serif;font-size:16px">
 <![endif]--><span class="button" style="background-color: #101; border-bottom: 1px solid #101; border-left: 1px solid #101; border-radius: 4px; border-right: 1px solid #101; border-top: 1px solid #101; color: #ffffff; display: inline-block; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; font-size: 16px; font-weight: undefined; mso-border-alt: none; padding-bottom: 5px; padding-top: 5px; padding-left: 20px; padding-right: 20px; text-align: center; width: auto; word-break: keep-all; letter-spacing: normal;"><span style="word-break: break-word; line-height: 32px;">Reset Password</span></span><!--[if mso]></center></v:textbox></v:roundrect><![endif]--></a></div>
+															</td>
+														</tr>
+													</table>
+													<table class="paragraph_block block-3" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
+														<tr>
+															<td class="pad" style="padding-bottom:10px;padding-left:20px;padding-right:10px;padding-top:10px;">
+																<div style="color:#848484;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;font-size:14px;font-weight:400;line-height:1.8;text-align:center;mso-line-height-alt:25px;">
+																	<p style="margin: 0; word-break: break-word;">Ce lien n'est fonctionnel qu'une heure. Si vous dépassez, ce temps, veuillez faire une nouvelle demande</p>
+																</div>
 															</td>
 														</tr>
 													</table>
