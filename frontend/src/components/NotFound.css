@@ -128,7 +128,7 @@
 }
 
 .not-found-container .map:before {
-  content: "";
+  content: '';
   position: absolute;
   top: 20px;
   left: 20px;
@@ -165,7 +165,7 @@
 }
 
 .not-found-container .map-marker.pulse:after {
-  content: "";
+  content: '';
   position: absolute;
   width: 40px;
   height: 40px;
@@ -336,7 +336,7 @@
 }
 
 .not-found-container .suggestion-links a:after {
-  content: "";
+  content: '';
   position: absolute;
   width: 0;
   height: 2px;

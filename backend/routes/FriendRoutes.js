@@ -1,19 +1,19 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+const express = require('express')
+const cors = require('cors')
+require('dotenv').config()
 //middleware
-const { verifyToken, requireAuth } = require("../middlewares/VerifyToken.js");
-const { localization } = require("../middlewares/Localization");
+const { verifyToken, requireAuth } = require('../middlewares/VerifyToken.js')
+const { localization } = require('../middlewares/Localization')
 //controllers
 const {
   getFriends,
   getFriendRequests,
   searchUsers,
   removeFriend,
-} = require("../controllers/FriendController");
+} = require('../controllers/FriendController')
 
 //router
-const router = express.Router();
+const router = express.Router()
 
 //middleware
 router.use(
@@ -21,14 +21,14 @@ router.use(
     credentials: true,
     origin: process.env.FRONTEND_SERVER,
   })
-);
+)
 
-router.use(verifyToken, localization, requireAuth);
+router.use(verifyToken, localization, requireAuth)
 
 //routes
-router.get("/:userId/friends", getFriends);
-router.get("/:userId/search", searchUsers);
-router.get("/:userId/requests", getFriendRequests);
-router.post("/:userId/:friendId/remove-friend", removeFriend);
+router.get('/:userId/friends', getFriends)
+router.get('/:userId/search', searchUsers)
+router.get('/:userId/requests', getFriendRequests)
+router.post('/:userId/:friendId/remove-friend', removeFriend)
 
-module.exports = router;
+module.exports = router

@@ -1,18 +1,18 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 const {
   isDateInFuture,
   convertLocalToUTC,
-} = require("../helpers/DateTimeHelper");
-require("./User.js");
+} = require('../helpers/DateTimeHelper')
+require('./User.js')
 
 // Validateurs personnalisés
 const validateDates = function (value) {
-  if (!this.startDate) return true;
-  const endDateUTC = convertLocalToUTC(value, this.timezone);
-  const startDateUTC = convertLocalToUTC(this.startDate, this.timezone);
-  return !value || endDateUTC > startDateUTC;
-};
+  if (!this.startDate) return true
+  const endDateUTC = convertLocalToUTC(value, this.timezone)
+  const startDateUTC = convertLocalToUTC(this.startDate, this.timezone)
+  return !value || endDateUTC > startDateUTC
+}
 
 const validateXPReward = function (value) {
   const minRewards = {
@@ -20,9 +20,9 @@ const validateXPReward = function (value) {
     medium: 100,
     hard: 200,
     extreme: 500,
-  };
-  return value >= minRewards[this.difficulty];
-};
+  }
+  return value >= minRewards[this.difficulty]
+}
 
 const validateGoal = function (value) {
   const minGoals = {
@@ -30,10 +30,10 @@ const validateGoal = function (value) {
     distance: 0.5, // en km
     calories: 100,
     xp: 50,
-  };
-  const baseType = this.activityType.split("-")[0];
-  return value >= minGoals[baseType] || baseType === "any";
-};
+  }
+  const baseType = this.activityType.split('-')[0]
+  return value >= minGoals[baseType] || baseType === 'any'
+}
 
 const challengeSchema = new Schema({
   name: {
@@ -53,34 +53,34 @@ const challengeSchema = new Schema({
     required: true,
     validate: {
       validator: function (value) {
-        return isDateInFuture(value, this.timezone);
+        return isDateInFuture(value, this.timezone)
       },
-      message: "La date de début doit être dans le futur",
+      message: 'La date de début doit être dans le futur',
     },
   },
   endDate: {
     type: Date,
     validate: [
       validateDates,
-      "La date de fin doit être après la date de début",
+      'La date de fin doit être après la date de début',
     ],
   },
 
-  creator: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  creator: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   activityType: {
     type: String,
     enum: [
-      "steps",
-      "steps-time",
-      "distance",
-      "distance-time",
-      "calories",
-      "calories-time",
-      "xp",
-      "xp-time",
-      "any",
+      'steps',
+      'steps-time',
+      'distance',
+      'distance-time',
+      'calories',
+      'calories-time',
+      'xp',
+      'xp-time',
+      'any',
     ],
-    default: "steps",
+    default: 'steps',
   },
   goal: {
     type: Number,
@@ -96,11 +96,11 @@ const challengeSchema = new Schema({
     min: 1,
     required: function () {
       return [
-        "steps-time",
-        "distance-time",
-        "calories-time",
-        "xp-time",
-      ].includes(this.activityType);
+        'steps-time',
+        'distance-time',
+        'calories-time',
+        'xp-time',
+      ].includes(this.activityType)
     },
   },
   xpReward: {
@@ -113,13 +113,13 @@ const challengeSchema = new Schema({
   },
   difficulty: {
     type: String,
-    enum: ["easy", "medium", "hard", "extreme"],
+    enum: ['easy', 'medium', 'hard', 'extreme'],
     required: true,
   },
 
   participants: [
     {
-      user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+      user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
       goal: { type: Number, default: 0 },
       xpEarned: { type: Number, default: 0 },
       time: { type: Number, min: 0 },
@@ -132,8 +132,8 @@ const challengeSchema = new Schema({
 
   status: {
     type: String,
-    enum: ["upcoming", "active", "completed"],
-    default: "upcoming",
+    enum: ['upcoming', 'active', 'completed'],
+    default: 'upcoming',
   },
 
   isPrivate: { type: Boolean, default: false },
@@ -144,46 +144,46 @@ const challengeSchema = new Schema({
   timezone: {
     type: String,
     required: true,
-    default: "UTC",
+    default: 'UTC',
   },
-});
+})
 
 // Middleware pre-save pour copier le texte original dans la langue source
-challengeSchema.pre("save", function (next) {
-  if (this.isModified("name") || this.isModified("description")) {
+challengeSchema.pre('save', function (next) {
+  if (this.isModified('name') || this.isModified('description')) {
     if (this.name?.original) {
-      this.name[this.sourceLang] = this.name.original;
+      this.name[this.sourceLang] = this.name.original
     }
     if (this.description?.original) {
-      this.description[this.sourceLang] = this.description.original;
+      this.description[this.sourceLang] = this.description.original
     }
   }
-  next();
-});
+  next()
+})
 
 challengeSchema.index({
   createdAt: 1,
   creator: 1,
-});
+})
 
 // Index pour la recherche de challenges publics
 challengeSchema.index({
   isPrivate: 1,
   status: 1,
   startDate: -1,
-});
+})
 
 // Index pour la recherche de participants
 challengeSchema.index({
-  "participants.user": 1,
+  'participants.user': 1,
   status: 1,
   startDate: -1,
-});
+})
 
 // Index pour le classement
 challengeSchema.index({
-  "participants.progress": -1,
+  'participants.progress': -1,
   status: 1,
-});
+})
 
-module.exports = mongoose.model("Challenge", challengeSchema);
+module.exports = mongoose.model('Challenge', challengeSchema)

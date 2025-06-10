@@ -1,5 +1,5 @@
-import { Routes, Route } from "react-router-dom";
-import MainLayout from "../layouts/MainLayout.jsx";
+import { Routes, Route } from 'react-router-dom'
+import MainLayout from '../layouts/MainLayout.jsx'
 
 // Route guards
 import {
@@ -7,32 +7,32 @@ import {
   AuthenticatedUserRoute,
   RequireEmailVerification,
   RequireAdmin,
-} from "./RoutesGuards.jsx";
+} from './RoutesGuards.jsx'
 
 // Pages
-import Home from "../pages/Home.jsx";
-import Dashboard from "../pages/Dashboard.jsx";
-import Challenges from "../pages/Challenges/Challenges.jsx";
-import Steps from "../pages/Steps.jsx";
-import Leaderboard from "../pages/Leaderboard.jsx";
-import Rewards from "../pages/Rewards.jsx";
-import Friends from "../pages/Friends.jsx";
-import Profile from "../pages/Profile.jsx";
-import Settings from "../pages/Settings/Settings.jsx";
-import About from "../pages/About.jsx";
+import Home from '../pages/Home.jsx'
+import Dashboard from '../pages/Dashboard.jsx'
+import Challenges from '../pages/Challenges/Challenges.jsx'
+import Steps from '../pages/Steps.jsx'
+import Leaderboard from '../pages/Leaderboard.jsx'
+import Rewards from '../pages/Rewards.jsx'
+import Friends from '../pages/Friends.jsx'
+import Profile from '../pages/Profile.jsx'
+import Settings from '../pages/Settings/Settings.jsx'
+import About from '../pages/About.jsx'
 //terms of services
-import TermsOfService from "../pages/Documents/TermsOfService.jsx";
+import TermsOfService from '../pages/Documents/TermsOfService.jsx'
 //AUTH
-import Login from "../pages/Auth/Login.jsx";
-import EmailVerification from "../pages/Auth/EmailVerification.jsx";
-import ChangeVerificationEmail from "../pages/Auth/ChangeEmail.jsx";
-import ForgotPassword from "../pages/Auth/Forgot-pwd.jsx";
-import EmailSent from "../pages/Auth/EmailSent.jsx";
-import ResetPassword from "../pages/Auth/Reset-pwd.jsx";
-import TwoFactorVerification from "../pages/Auth/TwoFactorVerification.jsx";
-import TwoFactorSetup from "../pages/Settings/TwoFactorSetup.jsx";
+import Login from '../pages/Auth/Login.jsx'
+import EmailVerification from '../pages/Auth/EmailVerification.jsx'
+import ChangeVerificationEmail from '../pages/Auth/ChangeEmail.jsx'
+import ForgotPassword from '../pages/Auth/Forgot-pwd.jsx'
+import EmailSent from '../pages/Auth/EmailSent.jsx'
+import ResetPassword from '../pages/Auth/Reset-pwd.jsx'
+import TwoFactorVerification from '../pages/Auth/TwoFactorVerification.jsx'
+import TwoFactorSetup from '../pages/Settings/TwoFactorSetup.jsx'
 //OTHERS
-import NotFound from "../components/NotFound.jsx";
+import NotFound from '../components/NotFound.jsx'
 
 export default function AppRoutes() {
   return (
@@ -130,7 +130,7 @@ export default function AppRoutes() {
               <Dashboard />
             </RequireAdmin>
           }
-        />{" "}
+        />{' '}
         {/* TODO : admin page */}
         <Route path="*" element={<NotFound />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
@@ -205,5 +205,5 @@ export default function AppRoutes() {
       />
       {/* TODO : <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
     </Routes>
-  );
+  )
 }

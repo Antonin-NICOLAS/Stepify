@@ -1,17 +1,17 @@
-const UserModel = require("../models/User");
-const ChallengeModel = require("../models/Challenge");
-const StepEntryModel = require("../models/StepEntry");
-const NotificationModel = require("../models/Notification");
+const UserModel = require('../models/User')
+const ChallengeModel = require('../models/Challenge')
+const StepEntryModel = require('../models/StepEntry')
+const NotificationModel = require('../models/Notification')
 // sécurité
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const UAParser = require("ua-parser-js");
-const CryptoJS = require("crypto-js");
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const UAParser = require('ua-parser-js')
+const CryptoJS = require('crypto-js')
 // images
-const cloudinary = require("../config/cloudinary");
+const cloudinary = require('../config/cloudinary')
 // utils
-const ms = require("ms");
-const { checkAuthorization } = require("../middlewares/VerifyAuthorization");
+const ms = require('ms')
+const { checkAuthorization } = require('../middlewares/VerifyAuthorization')
 const {
   GenerateAuthCookie,
   generateVerificationCode,
@@ -19,11 +19,11 @@ const {
   validateUsername,
   generateSessionFingerprint,
   findLocation,
-} = require("../helpers/AuthHelpers");
+} = require('../helpers/AuthHelpers')
 const {
   sendLocalizedError,
   sendLocalizedSuccess,
-} = require("../utils/ResponseHelper");
+} = require('../utils/ResponseHelper')
 // emails
 const {
   sendNewLoginEmail,
@@ -32,53 +32,53 @@ const {
   sendResetPasswordEmail,
   sendResetPasswordSuccessfulEmail,
   sendTwoFactorEmailCode,
-} = require("../utils/SendMail");
+} = require('../utils/SendMail')
 // .env
-require("dotenv").config();
+require('dotenv').config()
 
 //// ACCOUNT MANAGEMENT ////
 
 // register
 const createUser = async (req, res) => {
   const { firstName, lastName, username, email, password, stayLoggedIn } =
-    req.body;
+    req.body
 
   try {
     // Validations améliorées
     if (!firstName || firstName.length < 2) {
-      return sendLocalizedError(res, 400, "errors.auth.firstName_min");
+      return sendLocalizedError(res, 400, 'errors.auth.firstName_min')
     }
     if (!lastName || lastName.length < 2) {
-      return sendLocalizedError(res, 400, "errors.auth.lastName_min");
+      return sendLocalizedError(res, 400, 'errors.auth.lastName_min')
     }
     if (!email || !validateEmail(email)) {
-      return sendLocalizedError(res, 400, "errors.auth.invalid_email");
+      return sendLocalizedError(res, 400, 'errors.auth.invalid_email')
     }
     if (!username || !validateUsername(username)) {
-      return sendLocalizedError(res, 400, "errors.auth.invalid_username");
+      return sendLocalizedError(res, 400, 'errors.auth.invalid_username')
     }
     if (!password || password.length < 8) {
-      return sendLocalizedError(res, 400, "errors.auth.password_min");
+      return sendLocalizedError(res, 400, 'errors.auth.password_min')
     }
 
     // Vérifications email/username existant
     const existingUser = await UserModel.findOne({
       $or: [{ email }, { username }],
     })
-      .select("email username")
-      .lean();
+      .select('email username')
+      .lean()
 
     if (existingUser) {
       if (existingUser.email === email) {
-        return sendLocalizedError(res, 400, "errors.auth.email_exists");
+        return sendLocalizedError(res, 400, 'errors.auth.email_exists')
       }
       if (existingUser.username === username) {
-        return sendLocalizedError(res, 400, "errors.auth.username_exists");
+        return sendLocalizedError(res, 400, 'errors.auth.username_exists')
       }
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const verificationCode = generateVerificationCode();
+    const hashedPassword = await bcrypt.hash(password, 12)
+    const verificationCode = generateVerificationCode()
 
     const newUser = await UserModel.create({
       firstName,
@@ -94,331 +94,327 @@ const createUser = async (req, res) => {
       activeSessions: [
         {
           ipAddress: req.ip,
-          userAgent: req.headers["user-agent"],
+          userAgent: req.headers['user-agent'],
         },
       ],
       dailyGoal: 10000, // Valeur par défaut
-      themePreference: "auto",
-      languagePreference: "fr",
-    });
+      themePreference: 'auto',
+      languagePreference: 'fr',
+    })
 
-    await sendVerificationEmail(newUser.email, verificationCode);
-    GenerateAuthCookie(res, newUser, stayLoggedIn);
+    await sendVerificationEmail(newUser.email, verificationCode)
+    GenerateAuthCookie(res, newUser, stayLoggedIn)
 
     //save new session
-    const userAgent = req.headers["user-agent"] || "unknown";
+    const userAgent = req.headers['user-agent'] || 'unknown'
     const ipAddress =
-      req.ip || req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+      req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress
     const sessionDuration = stayLoggedIn
       ? ms(process.env.SESSION_DURATION_LONG)
-      : ms(process.env.SESSION_DURATION_SHORT);
+      : ms(process.env.SESSION_DURATION_SHORT)
 
     newUser.activeSessions.push({
       ipAddress,
       userAgent,
       fingerprint: generateSessionFingerprint(req),
       expiresAt: new Date(Date.now() + sessionDuration),
-    });
+    })
 
-    await newUser.save();
+    await newUser.save()
 
     // Ne pas renvoyer les informations sensibles
-    const userResponse = newUser.toMinimal();
+    const userResponse = newUser.toMinimal()
 
     return sendLocalizedSuccess(
       res,
-      "success.auth.account_created",
+      'success.auth.account_created',
       {},
       { user: userResponse }
-    );
+    )
   } catch (error) {
-    console.error("Erreur lors de la création du compte:", error);
-    return sendLocalizedError(res, 500, "errors.auth.creation_error");
+    console.error('Erreur lors de la création du compte:', error)
+    return sendLocalizedError(res, 500, 'errors.auth.creation_error')
   }
-};
+}
 
 // verify email
 const verifyEmail = async (req, res) => {
-  const { code } = req.body;
-  const { jwtauth } = req.cookies;
+  const { code } = req.body
+  const { jwtauth } = req.cookies
 
   try {
     if (!jwtauth) {
       return sendLocalizedError(
         res,
         401,
-        "errors.generic.authentication_required"
-      );
+        'errors.generic.authentication_required'
+      )
     }
 
-    const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET);
-    const user = await UserModel.findById(decoded.id);
+    const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET)
+    const user = await UserModel.findById(decoded.id)
 
     if (!user) {
-      return sendLocalizedError(res, 404, "errors.generic.user_not_found");
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
     }
 
     if (user.isVerified) {
-      return sendLocalizedError(res, 400, "errors.auth.already_verified");
+      return sendLocalizedError(res, 400, 'errors.auth.already_verified')
     }
 
     if (user.verificationToken !== code) {
       return sendLocalizedError(
         res,
         400,
-        "errors.auth.invalid_verification_code"
-      );
+        'errors.auth.invalid_verification_code'
+      )
     }
 
     if (user.verificationTokenExpiresAt < Date.now()) {
       return sendLocalizedError(
         res,
         400,
-        "errors.auth.verification_code_expired"
-      );
+        'errors.auth.verification_code_expired'
+      )
     }
 
-    user.isVerified = true;
-    user.verificationToken = undefined;
-    user.verificationTokenExpiresAt = undefined;
-    user.lastLoginAt = new Date();
-    await user.save();
+    user.isVerified = true
+    user.verificationToken = undefined
+    user.verificationTokenExpiresAt = undefined
+    user.lastLoginAt = new Date()
+    await user.save()
 
-    await sendWelcomeEmail(user.email, user.firstName);
+    await sendWelcomeEmail(user.email, user.firstName)
 
-    const userResponse = user.toMinimal();
+    const userResponse = user.toMinimal()
 
     return sendLocalizedSuccess(
       res,
-      "success.auth.email_verified",
+      'success.auth.email_verified',
       {},
       { user: userResponse }
-    );
+    )
   } catch (error) {
-    console.error("Erreur lors de la vérification de l'email:", error);
-    if (error.name === "JsonWebTokenError") {
-      return sendLocalizedError(res, 401, "errors.auth.invalid_token");
+    console.error("Erreur lors de la vérification de l'email:", error)
+    if (error.name === 'JsonWebTokenError') {
+      return sendLocalizedError(res, 401, 'errors.auth.invalid_token')
     }
-    return sendLocalizedError(res, 500, "errors.auth.email_verification_error");
+    return sendLocalizedError(res, 500, 'errors.auth.email_verification_error')
   }
-};
+}
 
 // resend verification email
 const resendVerificationEmail = async (req, res) => {
-  const { jwtauth } = req.cookies;
+  const { jwtauth } = req.cookies
 
   try {
     if (!jwtauth) {
       return sendLocalizedError(
         res,
         401,
-        "errors.generic.authentication_required"
-      );
+        'errors.generic.authentication_required'
+      )
     }
 
-    const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET);
-    const user = await UserModel.findById(decoded.id);
+    const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET)
+    const user = await UserModel.findById(decoded.id)
 
     if (!user) {
-      return sendLocalizedError(res, 404, "errors.generic.user_not_found");
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
     }
 
     if (user.isVerified) {
-      return sendLocalizedError(res, 400, "errors.auth.already_verified");
+      return sendLocalizedError(res, 400, 'errors.auth.already_verified')
     }
 
     // Générer un nouveau code avec une expiration
-    user.verificationToken = generateVerificationCode();
+    user.verificationToken = generateVerificationCode()
     user.verificationTokenExpiresAt =
-      Date.now() + ms(process.env.VERIFICATION_TOKEN_EXPIRY);
-    await user.save();
+      Date.now() + ms(process.env.VERIFICATION_TOKEN_EXPIRY)
+    await user.save()
 
-    await sendVerificationEmail(user.email, user.verificationToken);
+    await sendVerificationEmail(user.email, user.verificationToken)
 
-    return sendLocalizedSuccess(res, "success.auth.verification_code_sent");
+    return sendLocalizedSuccess(res, 'success.auth.verification_code_sent')
   } catch (error) {
     console.error(
-      "Erreur lors de la demande de renvoi du code de vérification:",
+      'Erreur lors de la demande de renvoi du code de vérification:',
       error
-    );
-    return sendLocalizedError(res, 500, "errors.auth.email_resent_error");
+    )
+    return sendLocalizedError(res, 500, 'errors.auth.email_resent_error')
   }
-};
+}
 
 // change verification email
 const ChangeVerificationEmail = async (req, res) => {
-  const { newEmail } = req.body;
+  const { newEmail } = req.body
 
   try {
     if (!newEmail || !validateEmail(newEmail)) {
-      return sendLocalizedError(res, 400, "errors.auth.invalid_email");
+      return sendLocalizedError(res, 400, 'errors.auth.invalid_email')
     }
 
-    const user = await UserModel.findById(req.userId);
+    const user = await UserModel.findById(req.userId)
     if (!user) {
-      return sendLocalizedError(res, 404, "errors.generic.user_not_found");
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
     }
 
     if (user.isVerified) {
-      return sendLocalizedError(res, 404, "errors.auth.already_verified");
+      return sendLocalizedError(res, 404, 'errors.auth.already_verified')
     }
 
     if (user.email === newEmail) {
-      return sendLocalizedError(res, 404, "errors.auth.same_email_change");
+      return sendLocalizedError(res, 404, 'errors.auth.same_email_change')
     }
 
-    const emailExists = await UserModel.findOne({ email: newEmail });
+    const emailExists = await UserModel.findOne({ email: newEmail })
     if (emailExists) {
-      return sendLocalizedError(res, 404, "errors.auth.email_exists");
+      return sendLocalizedError(res, 404, 'errors.auth.email_exists')
     }
 
-    user.email = newEmail;
-    user.isVerified = false;
-    user.verificationToken = generateVerificationCode();
+    user.email = newEmail
+    user.isVerified = false
+    user.verificationToken = generateVerificationCode()
     user.verificationTokenExpiresAt =
-      Date.now() + ms(process.env.VERIFICATION_TOKEN_EXPIRY);
-    await user.save();
+      Date.now() + ms(process.env.VERIFICATION_TOKEN_EXPIRY)
+    await user.save()
 
-    res.clearCookie("jwtauth", {
-      secure: process.env.NODE_ENV === "production",
+    res.clearCookie('jwtauth', {
+      secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
-      ...(process.env.NODE_ENV === "production" && {
-        domain: "step-ify.vercel.app",
+      sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'none',
+      ...(process.env.NODE_ENV === 'production' && {
+        domain: 'step-ify.vercel.app',
       }),
-    });
+    })
 
-    await sendVerificationEmail(user.email, user.verificationToken);
-    GenerateAuthCookie(res, user, false);
+    await sendVerificationEmail(user.email, user.verificationToken)
+    GenerateAuthCookie(res, user, false)
 
-    return sendLocalizedSuccess(res, "success.auth.email_updated");
+    return sendLocalizedSuccess(res, 'success.auth.email_updated')
   } catch (error) {
-    console.error("Erreur lors du changement d'email:", error);
-    return sendLocalizedError(res, 500, "errors.auth.email_change_error");
+    console.error("Erreur lors du changement d'email:", error)
+    return sendLocalizedError(res, 500, 'errors.auth.email_change_error')
   }
-};
+}
 
 // delete an account
 const deleteUser = async (req, res) => {
-  const { userId } = req.params;
-  const { password } = req.body;
+  const { userId } = req.params
+  const { password } = req.body
 
-  if (checkAuthorization(req, res, userId)) return;
+  if (checkAuthorization(req, res, userId)) return
 
   try {
     if (!password) {
-      return sendLocalizedError(res, 400, "errors.auth.password_required");
+      return sendLocalizedError(res, 400, 'errors.auth.password_required')
     }
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(userId)
     if (!user) {
-      return sendLocalizedError(res, 404, "errors.generic.user_not_found");
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password)
     if (!isMatch) {
-      return sendLocalizedError(res, 401, "errors.auth.password_incorrect");
+      return sendLocalizedError(res, 401, 'errors.auth.password_incorrect')
     }
 
     // 1. Supprimer les challenges créés par l'utilisateur
-    await ChallengeModel.deleteMany({ creator: userId });
+    await ChallengeModel.deleteMany({ creator: userId })
 
     // 2. Supprimer les participations à des challenges
     await ChallengeModel.updateMany(
       {},
       { $pull: { participants: { user: userId } } }
-    );
+    )
 
     // 3. Supprimer les entrées de pas (StepEntry)
-    await StepEntryModel.deleteMany({ user: userId });
+    await StepEntryModel.deleteMany({ user: userId })
 
     // 4. Supprimer toutes les notifications où il est destinataire ou expéditeur
     await NotificationModel.deleteMany({
       $or: [{ recipient: userId }, { sender: userId }],
-    });
+    })
 
     // 5. Retirer l'utilisateur de la liste d'amis des autres
-    await UserModel.updateMany({}, { $pull: { friends: { userId: userId } } });
+    await UserModel.updateMany({}, { $pull: { friends: { userId: userId } } })
 
     // 6. Supprimer les demandes d'amis (envoyées ou reçues)
     await UserModel.updateMany(
       {},
       { $pull: { friendRequests: { userId: userId } } }
-    );
+    )
 
     // 7. Supprimer l'avatar de l'utilisateur
-    if (user.avatarUrl && user.avatarUrl.includes("res.cloudinary.com")) {
-      const publicId = user.avatarUrl.split("/").slice(-1)[0].split(".")[0];
-      await cloudinary.uploader.destroy(`stepify/avatars/${publicId}`);
+    if (user.avatarUrl && user.avatarUrl.includes('res.cloudinary.com')) {
+      const publicId = user.avatarUrl.split('/').slice(-1)[0].split('.')[0]
+      await cloudinary.uploader.destroy(`stepify/avatars/${publicId}`)
     }
 
     // 8. Supprimer enfin l'utilisateur lui-même
-    await UserModel.findByIdAndDelete(userId);
+    await UserModel.findByIdAndDelete(userId)
 
-    res.clearCookie("jwtauth", {
-      secure: process.env.NODE_ENV === "production",
+    res.clearCookie('jwtauth', {
+      secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "lax" : "none",
-      ...(process.env.NODE_ENV === "production" && {
-        domain: "step-ify.vercel.app",
+      sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'none',
+      ...(process.env.NODE_ENV === 'production' && {
+        domain: 'step-ify.vercel.app',
       }),
-    });
+    })
 
-    return sendLocalizedSuccess(res, "success.auth.account_deleted");
+    return sendLocalizedSuccess(res, 'success.auth.account_deleted')
   } catch (error) {
-    console.error("Erreur lors de la suppression du compte:", error);
-    return sendLocalizedError(res, 500, "errors.auth.deletion_error");
+    console.error('Erreur lors de la suppression du compte:', error)
+    return sendLocalizedError(res, 500, 'errors.auth.deletion_error')
   }
-};
+}
 
 //// ACCOUNT REQ ////
 
 // login
 const loginUser = async (req, res) => {
-  const { email, password, stayLoggedIn } = req.body;
+  const { email, password, stayLoggedIn } = req.body
 
   try {
     if (!email || !password) {
-      return sendLocalizedError(
-        res,
-        400,
-        "errors.auth.email_password_required"
-      );
+      return sendLocalizedError(res, 400, 'errors.auth.email_password_required')
     }
 
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email })
     if (!user) {
-      return sendLocalizedError(res, 401, "errors.auth.email_not_found");
+      return sendLocalizedError(res, 401, 'errors.auth.email_not_found')
     }
 
     if (user.lockUntil && user.lockUntil > Date.now()) {
       const remainingTime = Math.ceil(
         (user.lockUntil - Date.now()) / (1000 * 60)
-      );
+      )
       return sendLocalizedError(
         res,
         429,
-        "errors.auth.limit_reached",
+        'errors.auth.limit_reached',
         { remainingTime },
         {
           retryAfter: remainingTime * 60, // en secondes
         }
-      );
+      )
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password)
     if (!isMatch) {
-      user.loginAttempts += 1;
-      const delay = Math.min(1000 * Math.pow(2, user.loginAttempts), 30000); // Délai exponentiel max 30s
-      await new Promise((resolve) => setTimeout(resolve, delay));
+      user.loginAttempts += 1
+      const delay = Math.min(1000 * Math.pow(2, user.loginAttempts), 30000) // Délai exponentiel max 30s
+      await new Promise((resolve) => setTimeout(resolve, delay))
 
       if (user.loginAttempts >= 5) {
-        user.lockUntil = Date.now() + 15 * 60 * 1000;
-        await user.save();
-        return sendLocalizedError(res, 429, "errors.auth.account_locked");
+        user.lockUntil = Date.now() + 15 * 60 * 1000
+        await user.save()
+        return sendLocalizedError(res, 429, 'errors.auth.account_locked')
       }
-      await user.save();
-      return sendLocalizedError(res, 401, "errors.auth.password_incorrect");
+      await user.save()
+      return sendLocalizedError(res, 401, 'errors.auth.password_incorrect')
     }
 
     // Si la 2FA est activée, renvoyer une réponse spéciale
@@ -427,29 +423,29 @@ const loginUser = async (req, res) => {
       user.twoFactorAuth?.emailEnabled ||
       user.twoFactorAuth?.webauthnEnabled
     ) {
-      const preferredMethod = user.twoFactorAuth.preferredMethod;
-      const availableMethods = [];
+      const preferredMethod = user.twoFactorAuth.preferredMethod
+      const availableMethods = []
 
-      if (user.twoFactorAuth.appEnabled) availableMethods.push("app");
-      if (user.twoFactorAuth.emailEnabled) availableMethods.push("email");
-      if (user.twoFactorAuth.webauthnEnabled) availableMethods.push("webauthn");
+      if (user.twoFactorAuth.appEnabled) availableMethods.push('app')
+      if (user.twoFactorAuth.emailEnabled) availableMethods.push('email')
+      if (user.twoFactorAuth.webauthnEnabled) availableMethods.push('webauthn')
 
       if (
-        user.twoFactorAuth.preferredMethod === "email" &&
-        availableMethods.includes("email")
+        user.twoFactorAuth.preferredMethod === 'email' &&
+        availableMethods.includes('email')
       ) {
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
-        user.twoFactorAuth.emailCode = code;
+        const code = Math.floor(100000 + Math.random() * 900000).toString()
+        user.twoFactorAuth.emailCode = code
         user.twoFactorAuth.emailCodeExpires = new Date(
           Date.now() + 10 * 60 * 1000
-        );
-        await user.save();
-        sendTwoFactorEmailCode(user.email, user.firstName, code);
+        )
+        await user.save()
+        sendTwoFactorEmailCode(user.email, user.firstName, code)
       }
 
       return sendLocalizedSuccess(
         res,
-        "success.auth.2fa_required",
+        'success.auth.2fa_required',
         {},
         {
           requiresTwoFactor: true,
@@ -459,30 +455,30 @@ const loginUser = async (req, res) => {
           preferredMethod,
           availableMethods,
         }
-      );
+      )
     }
 
     // Mettre à jour la dernière connexion
-    user.lastLoginAt = Date.now();
-    user.loginAttempts = 0;
-    user.lockUntil = null;
+    user.lastLoginAt = Date.now()
+    user.loginAttempts = 0
+    user.lockUntil = null
 
-    const userAgent = req.headers["user-agent"] || "unknown";
+    const userAgent = req.headers['user-agent'] || 'unknown'
     const ipAddress =
-      req.ip || req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+      req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress
     const sessionDuration = stayLoggedIn
       ? ms(process.env.SESSION_DURATION_LONG)
-      : ms(process.env.SESSION_DURATION_SHORT);
+      : ms(process.env.SESSION_DURATION_SHORT)
 
     //vérification des sessions expirées
     user.activeSessions = user.activeSessions.filter(
       (session) => session.expiresAt > Date.now()
-    );
+    )
 
     // pas plus de 5 sessions en mm temps
     if (user.activeSessions.length >= 5) {
-      user.activeSessions.sort((a, b) => a.expiresAt - b.expiresAt);
-      user.activeSessions.shift();
+      user.activeSessions.sort((a, b) => a.expiresAt - b.expiresAt)
+      user.activeSessions.shift()
     }
 
     user.activeSessions.push({
@@ -490,126 +486,126 @@ const loginUser = async (req, res) => {
       userAgent,
       fingerprint: generateSessionFingerprint(req),
       expiresAt: new Date(Date.now() + sessionDuration),
-    });
+    })
 
-    await user.save();
+    await user.save()
 
-    GenerateAuthCookie(res, user, stayLoggedIn);
-    const location = await findLocation(user, ipAddress);
+    GenerateAuthCookie(res, user, stayLoggedIn)
+    const location = await findLocation(user, ipAddress)
 
-    const parser = new UAParser(userAgent);
-    const device = parser.getDevice();
-    const os = parser.getOS();
-    const browser = parser.getBrowser();
+    const parser = new UAParser(userAgent)
+    const device = parser.getDevice()
+    const os = parser.getOS()
+    const browser = parser.getBrowser()
 
     const deviceInfo =
       `${browser.name} ${browser.version} sur ${os.name} ${os.version}` +
-      (device.model ? ` (${device.vendor || ""} ${device.model})` : "");
+      (device.model ? ` (${device.vendor || ''} ${device.model})` : '')
 
-    await sendNewLoginEmail(user, ipAddress, deviceInfo, location);
+    await sendNewLoginEmail(user, ipAddress, deviceInfo, location)
 
-    const userResponse = user.toMinimal();
+    const userResponse = user.toMinimal()
 
     return sendLocalizedSuccess(
       res,
-      "success.auth.successful_login",
+      'success.auth.successful_login',
       {},
       {
         user: userResponse,
         requiresTwoFactor: false,
         isVerified: user.isVerified,
       }
-    );
+    )
   } catch (error) {
-    console.error("Erreur lors de la connexion:", error);
-    return sendLocalizedError(res, 500, "errors.auth.login_error");
+    console.error('Erreur lors de la connexion:', error)
+    return sendLocalizedError(res, 500, 'errors.auth.login_error')
   }
-};
+}
 
 // forgot password
 const forgotPassword = async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.body
 
   try {
     if (!email || !validateEmail(email)) {
-      return sendLocalizedError(res, 400, "errors.auth.invalid_email");
+      return sendLocalizedError(res, 400, 'errors.auth.invalid_email')
     }
 
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email })
     if (!user) {
-      return sendLocalizedSuccess(res, "success.auth.reset_link_sent");
+      return sendLocalizedSuccess(res, 'success.auth.reset_link_sent')
     }
 
     const randomPart = CryptoJS.lib.WordArray.random(32).toString(
       CryptoJS.enc.Hex
-    );
-    const timestampPart = Date.now().toString(36);
-    const resetToken = randomPart + timestampPart;
-    user.resetPasswordToken = resetToken;
+    )
+    const timestampPart = Date.now().toString(36)
+    const resetToken = randomPart + timestampPart
+    user.resetPasswordToken = resetToken
     user.resetPasswordTokenExpiresAt =
-      Date.now() + ms(process.env.RESET_TOKEN_EXPIRY);
-    await user.save();
+      Date.now() + ms(process.env.RESET_TOKEN_EXPIRY)
+    await user.save()
 
-    const resetUrl = `${process.env.FRONTEND_SERVER}/reset-password/${resetToken}`;
-    await sendResetPasswordEmail(user.email, resetUrl);
+    const resetUrl = `${process.env.FRONTEND_SERVER}/reset-password/${resetToken}`
+    await sendResetPasswordEmail(user.email, resetUrl)
 
-    return sendLocalizedSuccess(res, "success.auth.reset_link_sent");
+    return sendLocalizedSuccess(res, 'success.auth.reset_link_sent')
   } catch (error) {
     console.error(
-      "Erreur lors de la demande de réinitialisation de mot de passe:",
+      'Erreur lors de la demande de réinitialisation de mot de passe:',
       error
-    );
-    return sendLocalizedError(res, 500, "errors.auth.reset_request_error");
+    )
+    return sendLocalizedError(res, 500, 'errors.auth.reset_request_error')
   }
-};
+}
 
 // reset password
 const resetPassword = async (req, res) => {
-  const { token } = req.params;
-  const { password } = req.body;
+  const { token } = req.params
+  const { password } = req.body
 
   try {
     if (!password || password.length < 8) {
-      return sendLocalizedError(res, 400, "errors.auth.password_min");
+      return sendLocalizedError(res, 400, 'errors.auth.password_min')
     }
 
     const user = await UserModel.findOne({
       resetPasswordToken: token,
       resetPasswordTokenExpiresAt: { $gt: Date.now() },
-    });
+    })
 
     if (!user) {
-      return sendLocalizedError(res, 400, "errors.auth.invalid_reset_link");
+      return sendLocalizedError(res, 400, 'errors.auth.invalid_reset_link')
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
-    user.password = hashedPassword;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordTokenExpiresAt = undefined;
-    await user.save();
+    const hashedPassword = await bcrypt.hash(password, 12)
+    user.password = hashedPassword
+    user.resetPasswordToken = undefined
+    user.resetPasswordTokenExpiresAt = undefined
+    await user.save()
 
-    await sendResetPasswordSuccessfulEmail(user.email, user.firstName);
+    await sendResetPasswordSuccessfulEmail(user.email, user.firstName)
 
-    return sendLocalizedSuccess(res, "success.auth.password_reset");
+    return sendLocalizedSuccess(res, 'success.auth.password_reset')
   } catch (error) {
-    console.error("Erreur lors de la réinitialisation du mot de passe:", error);
-    return sendLocalizedError(res, 500, "errors.auth.reset_error");
+    console.error('Erreur lors de la réinitialisation du mot de passe:', error)
+    return sendLocalizedError(res, 500, 'errors.auth.reset_error')
   }
-};
+}
 
 // logout
 const logoutUser = async (req, res) => {
   try {
     if (req.userId) {
-      const user = await UserModel.findById(req.userId);
+      const user = await UserModel.findById(req.userId)
       if (!user) {
-        return sendLocalizedError(res, 404, "errors.generic.user_not_found");
+        return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
       } else {
-        const userAgent = req.headers["user-agent"] || "unknown";
+        const userAgent = req.headers['user-agent'] || 'unknown'
         const ipAddress =
           req.ip ||
-          req.headers["x-forwarded-for"] ||
-          req.connection.remoteAddress;
+          req.headers['x-forwarded-for'] ||
+          req.connection.remoteAddress
 
         // Supprimer la session actuelle
         user.activeSessions = user.activeSessions.filter(
@@ -617,26 +613,26 @@ const logoutUser = async (req, res) => {
             !(
               session.ipAddress === ipAddress && session.userAgent === userAgent
             )
-        );
-        await user.save();
+        )
+        await user.save()
       }
     }
 
-    res.clearCookie("jwtauth", {
-      secure: process.env.NODE_ENV === "production" ? true : false,
-      httpOnly: process.env.NODE_ENV === "production" ? true : false,
-      sameSite: process.env.NODE_ENV === "production" ? "lax" : "",
-      ...(process.env.NODE_ENV === "production" && {
-        domain: "step-ify.vercel.app",
+    res.clearCookie('jwtauth', {
+      secure: process.env.NODE_ENV === 'production' ? true : false,
+      httpOnly: process.env.NODE_ENV === 'production' ? true : false,
+      sameSite: process.env.NODE_ENV === 'production' ? 'lax' : '',
+      ...(process.env.NODE_ENV === 'production' && {
+        domain: 'step-ify.vercel.app',
       }),
-    });
+    })
 
-    return sendLocalizedSuccess(res, "success.auth.logged_out");
+    return sendLocalizedSuccess(res, 'success.auth.logged_out')
   } catch (error) {
-    console.error("Erreur lors de la déconnexion:", error);
-    return sendLocalizedError(res, 500, "errors.auth.logout_error");
+    console.error('Erreur lors de la déconnexion:', error)
+    return sendLocalizedError(res, 500, 'errors.auth.logout_error')
   }
-};
+}
 
 //// CONTEXT ////
 
@@ -644,46 +640,46 @@ const logoutUser = async (req, res) => {
 const checkAuth = async (req, res) => {
   try {
     const user = await UserModel.findById(req.userId).populate(
-      "friends.userId",
-      "avatarUrl firstName lastName username"
-    );
+      'friends.userId',
+      'avatarUrl firstName lastName username'
+    )
 
     if (!user) {
-      return sendLocalizedError(res, 404, "errors.generic.user_not_found");
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
     }
 
-    const currentFingerprint = generateSessionFingerprint(req);
+    const currentFingerprint = generateSessionFingerprint(req)
     const currentSession = user.activeSessions.find(
       (session) =>
         session.fingerprint === currentFingerprint &&
         new Date(session.expiresAt) > new Date()
-    );
+    )
 
     if (!currentSession) {
-      res.clearCookie("jwtauth", {
-        secure: process.env.NODE_ENV === "production" ? true : false,
-        httpOnly: process.env.NODE_ENV === "production" ? true : false,
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "",
-        ...(process.env.NODE_ENV === "production" && {
-          domain: "step-ify.vercel.app",
+      res.clearCookie('jwtauth', {
+        secure: process.env.NODE_ENV === 'production' ? true : false,
+        httpOnly: process.env.NODE_ENV === 'production' ? true : false,
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : '',
+        ...(process.env.NODE_ENV === 'production' && {
+          domain: 'step-ify.vercel.app',
         }),
-      });
-      return sendLocalizedError(res, 401, "errors.auth.session_expired");
+      })
+      return sendLocalizedError(res, 401, 'errors.auth.session_expired')
     }
 
-    const userResponse = user.toMinimal();
-    return sendLocalizedSuccess(res, null, {}, { user: userResponse });
+    const userResponse = user.toMinimal()
+    return sendLocalizedSuccess(res, null, {}, { user: userResponse })
   } catch (error) {
     console.error(
       "Erreur lors de la vérification de l'authentification:",
       error
-    );
-    if (error.name === "JsonWebTokenError") {
-      return sendLocalizedError(res, 401, "errors.auth.invalid_token");
+    )
+    if (error.name === 'JsonWebTokenError') {
+      return sendLocalizedError(res, 401, 'errors.auth.invalid_token')
     }
-    return sendLocalizedError(res, 500, "errors.auth.check_auth_error");
+    return sendLocalizedError(res, 500, 'errors.auth.check_auth_error')
   }
-};
+}
 
 module.exports = {
   createUser,
@@ -696,4 +692,4 @@ module.exports = {
   resetPassword,
   logoutUser,
   checkAuth,
-};
+}

@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useState, useRef, useEffect } from 'react'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import {
   Shield,
   ShieldCheck,
@@ -9,133 +9,133 @@ import {
   CheckCircle2,
   Smartphone,
   ClockIcon as ClockFading,
-} from "lucide-react";
-import "./TwoFactorVerification.css";
+} from 'lucide-react'
+import './TwoFactorVerification.css'
 
 function TwoFactorVerification() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { verifyLoginTwoFactor } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [resendDisabled, setResendDisabled] = useState(false);
-  const [countdown, setCountdown] = useState(0);
-  const [isVerified, setIsVerified] = useState(false);
-  const [showBackupCode, setShowBackupCode] = useState(false);
-  const [backupCode, setBackupCode] = useState("");
-  const inputRefs = useRef([]);
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { verifyLoginTwoFactor } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
+  const [otp, setOtp] = useState(['', '', '', '', '', ''])
+  const [resendDisabled, setResendDisabled] = useState(false)
+  const [countdown, setCountdown] = useState(0)
+  const [isVerified, setIsVerified] = useState(false)
+  const [showBackupCode, setShowBackupCode] = useState(false)
+  const [backupCode, setBackupCode] = useState('')
+  const inputRefs = useRef([])
 
   // Récupérer les paramètres de navigation
-  const { email, method, stayLoggedIn } = location.state || {};
+  const { email, method, stayLoggedIn } = location.state || {}
 
   // Rediriger si les paramètres sont manquants
   useEffect(() => {
     if (!email || !method) {
-      navigate("/login");
+      navigate('/login')
     }
-  }, [email, method, navigate]);
+  }, [email, method, navigate])
 
   // Handle countdown for resend button
   useEffect(() => {
     if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
+      return () => clearTimeout(timer)
     } else if (countdown === 0 && resendDisabled) {
-      setResendDisabled(false);
+      setResendDisabled(false)
     }
-  }, [countdown, resendDisabled]);
+  }, [countdown, resendDisabled])
 
   // Handle input change and auto-focus next input
   const handleChange = (index, value) => {
     if (value.length > 1) {
-      value = value.slice(0, 1);
+      value = value.slice(0, 1)
     }
 
     if (value && !/^\d+$/.test(value)) {
-      return;
+      return
     }
 
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
+    const newOtp = [...otp]
+    newOtp[index] = value
+    setOtp(newOtp)
 
     if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
+      inputRefs.current[index + 1]?.focus()
     }
-  };
+  }
 
   // Handle backspace key
   const handleKeyDown = (index, e) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus()
     }
-  };
+  }
 
   // Handle paste event
   const handlePaste = (e) => {
-    e.preventDefault();
-    const pastedData = e.clipboardData.getData("text");
-    if (!/^\d+$/.test(pastedData)) return;
+    e.preventDefault()
+    const pastedData = e.clipboardData.getData('text')
+    if (!/^\d+$/.test(pastedData)) return
 
-    const digits = pastedData.slice(0, 6).split("");
-    const newOtp = [...otp];
+    const digits = pastedData.slice(0, 6).split('')
+    const newOtp = [...otp]
 
     digits.forEach((digit, index) => {
       if (index < 6) {
-        newOtp[index] = digit;
+        newOtp[index] = digit
       }
-    });
+    })
 
-    setOtp(newOtp);
+    setOtp(newOtp)
 
     if (digits.length < 6) {
-      inputRefs.current[digits.length]?.focus();
+      inputRefs.current[digits.length]?.focus()
     }
-  };
+  }
 
   // Focus the first input on mount
   useEffect(() => {
     if (inputRefs.current[0]) {
-      inputRefs.current[0].focus();
+      inputRefs.current[0].focus()
     }
-  }, []);
+  }, [])
 
   // Handle code submission
   const handleVerification = async (e) => {
-    e.preventDefault();
-    const otpCode = showBackupCode ? backupCode : otp.join("");
+    e.preventDefault()
+    const otpCode = showBackupCode ? backupCode : otp.join('')
 
     if (
       (!showBackupCode && otpCode.length !== 6) ||
       (showBackupCode && !backupCode.trim())
     ) {
-      return;
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       await verifyLoginTwoFactor(email, stayLoggedIn, otpCode, () => {
-        setIsVerified(true);
+        setIsVerified(true)
         setTimeout(() => {
-          navigate("/dashboard");
-        }, 2000);
-      });
+          navigate('/dashboard')
+        }, 2000)
+      })
     } catch (error) {
-      console.error("Error during verification:", error);
+      console.error('Error during verification:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   // Handle resend code
   const handleResend = async () => {
-    if (resendDisabled) return;
+    if (resendDisabled) return
 
-    setResendDisabled(true);
-    setCountdown(60);
-    setOtp(["", "", "", "", "", ""]);
-    setBackupCode("");
-  };
+    setResendDisabled(true)
+    setCountdown(60)
+    setOtp(['', '', '', '', '', ''])
+    setBackupCode('')
+  }
 
   if (isVerified) {
     return (
@@ -148,16 +148,16 @@ function TwoFactorVerification() {
               </div>
               <div className="auth-stats">
                 <div className="auth-stat-item">
-                  <h3>{t("auth.2fa.success.title")}</h3>
-                  <p>{t("auth.2fa.success.description")}</p>
+                  <h3>{t('auth.2fa.success.title')}</h3>
+                  <p>{t('auth.2fa.success.description')}</p>
                 </div>
                 <div className="auth-stat-item">
                   <div className="auth-stat-icon success">
                     <CheckCircle2 />
                   </div>
                   <div className="auth-stat-info">
-                    <h4>{t("auth.2fa.success.step1")}</h4>
-                    <p>{t("auth.2fa.success.step1description")}</p>
+                    <h4>{t('auth.2fa.success.step1')}</h4>
+                    <p>{t('auth.2fa.success.step1description')}</p>
                   </div>
                 </div>
                 <div className="auth-stat-item">
@@ -165,8 +165,8 @@ function TwoFactorVerification() {
                     <CheckCircle2 />
                   </div>
                   <div className="auth-stat-info">
-                    <h4>{t("auth.2fa.success.step2")}</h4>
-                    <p>{t("auth.2fa.success.step2description")}</p>
+                    <h4>{t('auth.2fa.success.step2')}</h4>
+                    <p>{t('auth.2fa.success.step2description')}</p>
                   </div>
                 </div>
               </div>
@@ -181,22 +181,22 @@ function TwoFactorVerification() {
                     <CheckCircle2 />
                   </div>
                 </div>
-                <h2>{t("auth.2fa.success.title")}</h2>
+                <h2>{t('auth.2fa.success.title')}</h2>
                 <p className="auth-subtitle">
-                  {t("auth.2fa.success.subtitle")}
+                  {t('auth.2fa.success.subtitle')}
                 </p>
               </div>
 
               <div className="auth-form-content">
                 <div className="success-message">
-                  <p>{t("auth.emailverification.success.content.redirect")}</p>
+                  <p>{t('auth.emailverification.success.content.redirect')}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -210,21 +210,21 @@ function TwoFactorVerification() {
             <div className="auth-stats">
               <div
                 className="auth-stat-item"
-                style={{ flexDirection: "column" }}
+                style={{ flexDirection: 'column' }}
               >
-                <h3>{t("auth.2fa.visual.title")}</h3>
-                <p>{t("auth.2fa.visual.description")}</p>
+                <h3>{t('auth.2fa.visual.title')}</h3>
+                <p>{t('auth.2fa.visual.description')}</p>
               </div>
               <div className="auth-stat-item">
                 <div className="auth-stat-icon">
                   <Smartphone />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth.2fa.visual.step1")}</h4>
+                  <h4>{t('auth.2fa.visual.step1')}</h4>
                   <p>
-                    {method === "email"
-                      ? t("auth.2fa.visual.step1description-mail")
-                      : t("auth.2fa.visual.step1description-app")}
+                    {method === 'email'
+                      ? t('auth.2fa.visual.step1description-mail')
+                      : t('auth.2fa.visual.step1description-app')}
                   </p>
                 </div>
               </div>
@@ -233,8 +233,8 @@ function TwoFactorVerification() {
                   <Key />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth.2fa.visual.step2")}</h4>
-                  <p>{t("auth.2fa.visual.step2description")}</p>
+                  <h4>{t('auth.2fa.visual.step2')}</h4>
+                  <p>{t('auth.2fa.visual.step2description')}</p>
                 </div>
               </div>
             </div>
@@ -250,11 +250,11 @@ function TwoFactorVerification() {
                     <Shield />
                   </div>
                 </div>
-                <h2>{t("account.security.2fa")}</h2>
+                <h2>{t('account.security.2fa')}</h2>
                 <p className="auth-subtitle">
-                  {method === "email"
-                    ? t("auth.2fa.process.subtitle-email")
-                    : t("auth.2fa.process.subtitle-app")}
+                  {method === 'email'
+                    ? t('auth.2fa.process.subtitle-email')
+                    : t('auth.2fa.process.subtitle-app')}
                 </p>
               </div>
 
@@ -262,10 +262,10 @@ function TwoFactorVerification() {
                 <div className="verification-message">
                   <p>
                     {showBackupCode
-                      ? t("auth.2fa.process.backup-message")
-                      : method === "email"
-                        ? t("auth.2fa.process.email-message")
-                        : t("auth.2fa.process.app-message")}
+                      ? t('auth.2fa.process.backup-message')
+                      : method === 'email'
+                        ? t('auth.2fa.process.email-message')
+                        : t('auth.2fa.process.app-message')}
                   </p>
                 </div>
 
@@ -291,7 +291,7 @@ function TwoFactorVerification() {
                 ) : (
                   <div className="auth-input-group">
                     <label htmlFor="backupCode">
-                      {t("auth.2fa.visual.step2")}
+                      {t('auth.2fa.visual.step2')}
                     </label>
                     <div className="auth-input-wrapper">
                       <div className="auth-input-icon">
@@ -316,15 +316,15 @@ function TwoFactorVerification() {
                   className="auth-button auth-button-primary"
                   disabled={
                     isLoading ||
-                    (!showBackupCode && otp.join("").length !== 6) ||
+                    (!showBackupCode && otp.join('').length !== 6) ||
                     (showBackupCode && !backupCode.trim())
                   }
                 >
                   <ShieldCheck />
                   <span>
                     {isLoading
-                      ? t("auth.login.form.accesskey.verification")
-                      : t("auth.emailverification.process.form.verify")}
+                      ? t('auth.login.form.accesskey.verification')
+                      : t('auth.emailverification.process.form.verify')}
                   </span>
                 </button>
 
@@ -333,39 +333,39 @@ function TwoFactorVerification() {
                     type="button"
                     className="toggle-backup-btn"
                     onClick={() => {
-                      setShowBackupCode(!showBackupCode);
-                      setOtp(["", "", "", "", "", ""]);
-                      setBackupCode("");
+                      setShowBackupCode(!showBackupCode)
+                      setOtp(['', '', '', '', '', ''])
+                      setBackupCode('')
                     }}
                   >
                     {showBackupCode ? (
                       <>
                         <Smartphone />
                         <span>
-                          {method === "email"
-                            ? t("auth.2fa.process.use-email-code")
-                            : t("auth.2fa.process.use-app-code")}
+                          {method === 'email'
+                            ? t('auth.2fa.process.use-email-code')
+                            : t('auth.2fa.process.use-app-code')}
                         </span>
                       </>
                     ) : (
                       <>
                         <Key />
-                        <span>{t("auth.2fa.process.use-backup-code")}</span>
+                        <span>{t('auth.2fa.process.use-backup-code')}</span>
                       </>
                     )}
                   </button>
 
-                  {!showBackupCode && method === "email" && (
+                  {!showBackupCode && method === 'email' && (
                     <div className="resend-container">
                       <p>
-                        {method === "email"
-                          ? t("auth.2fa.process.resend-email")
-                          : t("auth.2fa.process.resend-app")}
+                        {method === 'email'
+                          ? t('auth.2fa.process.resend-email')
+                          : t('auth.2fa.process.resend-app')}
                       </p>
                       <button
                         type="button"
                         className={`resend-btn ${
-                          resendDisabled ? "disabled" : ""
+                          resendDisabled ? 'disabled' : ''
                         }`}
                         onClick={handleResend}
                         disabled={resendDisabled}
@@ -374,14 +374,14 @@ function TwoFactorVerification() {
                           <>
                             <ClockFading />
                             <span>
-                              {t("auth.2fa.process.retry-in")} {countdown}s
+                              {t('auth.2fa.process.retry-in')} {countdown}s
                             </span>
                           </>
                         ) : (
                           <>
                             <RefreshCw />
                             <span>
-                              {t("auth.emailverification.process.form.button")}
+                              {t('auth.emailverification.process.form.button')}
                             </span>
                           </>
                         )}
@@ -392,15 +392,15 @@ function TwoFactorVerification() {
               </div>
 
               <div className="auth-form-footer">
-                <span>{t("auth.2fa.process.question")}</span>
-                <Link to="/support">{t("common.contact-support")}</Link>
+                <span>{t('auth.2fa.process.question')}</span>
+                <Link to="/support">{t('common.contact-support')}</Link>
               </div>
             </form>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default TwoFactorVerification;
+export default TwoFactorVerification

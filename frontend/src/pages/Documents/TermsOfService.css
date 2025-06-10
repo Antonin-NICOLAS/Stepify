@@ -2,7 +2,7 @@
   max-width: 800px;
   margin: 20px auto;
   padding: 2rem;
-  font-family: "Segoe UI", sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   font-size: calc(10px + 0.5vh + 0.35vw);
   line-height: 1.6;
   color: var(--Noir);

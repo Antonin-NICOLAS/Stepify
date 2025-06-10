@@ -1,15 +1,15 @@
 {
-    "version": 2,
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/api"
-        }
-    ],
-    "crons": [
-        {
-            "path": "/cron/all",
-            "schedule": "0 22 * * *"
-        }
-    ]
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/cron/all",
+      "schedule": "0 22 * * *"
+    }
+  ]
 }

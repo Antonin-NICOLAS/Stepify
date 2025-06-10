@@ -1,5 +1,5 @@
-import React from "react";
-import "./TermsOfService.css";
+import React from 'react'
+import './TermsOfService.css'
 
 function TermsOfService() {
   return (
@@ -232,7 +232,7 @@ function TermsOfService() {
         </p>
       </section>
     </div>
-  );
+  )
 }
 
-export default TermsOfService;
+export default TermsOfService

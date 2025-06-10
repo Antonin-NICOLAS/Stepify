@@ -1,205 +1,201 @@
-import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import { toast } from "react-hot-toast";
-import { useFriends } from "./useFriends";
+import { useState, useEffect, useCallback } from 'react'
+import axios from 'axios'
+import { toast } from 'react-hot-toast'
+import { useFriends } from './useFriends'
 
 const API_NOTIFICATION =
-  process.env.NODE_ENV === "production" ? "/api/notification" : "/notification";
+  process.env.NODE_ENV === 'production' ? '/api/notification' : '/notification'
 
 export const useNotifications = (userId) => {
-  const [notifications, setNotifications] = useState([]);
-  const [challengeNotifications, setChallengeNotifications] = useState([]);
-  const { fetchFriends, fetchFriendRequests } = useFriends(userId);
+  const [notifications, setNotifications] = useState([])
+  const [challengeNotifications, setChallengeNotifications] = useState([])
+  const { fetchFriends, fetchFriendRequests } = useFriends(userId)
 
   const fetchNotifications = useCallback(async () => {
     try {
       const { data } = await axios.get(`${API_NOTIFICATION}/${userId}/all`, {
         withCredentials: true,
-      });
+      })
 
       if (data.success) {
-        setNotifications(data.notifications);
+        setNotifications(data.notifications)
       } else {
-        toast.error(data.error || "Erreur lors du chargement des données");
+        toast.error(data.error || 'Erreur lors du chargement des données')
       }
     } catch (err) {
-      console.error("Fetch error:", err);
-      toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur",
-      );
+      console.error('Fetch error:', err)
+      toast.error(err.response?.data?.error || 'Erreur de connexion au serveur')
     }
-  }, []);
+  }, [])
 
   const fetchChallengeNotifications = useCallback(async () => {
     try {
       const { data } = await axios.get(
         `${API_NOTIFICATION}/${userId}/challenge`,
-        { withCredentials: true },
-      );
+        { withCredentials: true }
+      )
 
       if (data.success) {
-        setChallengeNotifications(data.notifications);
+        setChallengeNotifications(data.notifications)
       } else {
-        toast.error(data.error || "Erreur lors du chargement des données");
+        toast.error(data.error || 'Erreur lors du chargement des données')
       }
     } catch (err) {
-      console.error("Fetch error:", err);
-      toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur",
-      );
+      console.error('Fetch error:', err)
+      toast.error(err.response?.data?.error || 'Erreur de connexion au serveur')
     }
-  }, [userId]);
+  }, [userId])
 
   const sendFriendRequest = async (toId) => {
     if (userId === toId) {
-      toast.error("Vous ne pouvez pas vous envoyer une demande d'ami");
-      return false;
+      toast.error("Vous ne pouvez pas vous envoyer une demande d'ami")
+      return false
     }
     try {
       const { data } = await axios.post(
         `${API_NOTIFICATION}/${toId}/friend-request`,
         { userId },
-        { withCredentials: true },
-      );
+        { withCredentials: true }
+      )
 
       if (data.success) {
-        await fetchNotifications();
-        await fetchFriendRequests();
-        toast.success(data.message || "Notification envoyée");
+        await fetchNotifications()
+        await fetchFriendRequests()
+        toast.success(data.message || 'Notification envoyée')
       } else {
-        toast.error(data.error || "Erreur lors de l'envoi de la notification");
-        return false;
+        toast.error(data.error || "Erreur lors de l'envoi de la notification")
+        return false
       }
     } catch (error) {
-      console.error("Error sending friend request:", error);
+      console.error('Error sending friend request:', error)
       toast.error(
         error.response?.data?.error ||
-          "Erreur lors de l'envoi de la notification",
-      );
-      return false;
+          "Erreur lors de l'envoi de la notification"
+      )
+      return false
     }
-  };
+  }
 
   const acceptFriendRequest = async (requesterId, inviteId) => {
     try {
       const { data } = await axios.post(
         `${API_NOTIFICATION}/${userId}/${inviteId}/accept-friend`,
         { requesterId },
-        { withCredentials: true },
-      );
+        { withCredentials: true }
+      )
 
       if (data.success) {
-        toast.success(data.message || "Demande d'ami acceptée");
-        await fetchFriends();
-        return true;
+        toast.success(data.message || "Demande d'ami acceptée")
+        await fetchFriends()
+        return true
       } else {
-        toast.error(data.error || "Erreur lors de l'acceptation de la demande");
-        return false;
+        toast.error(data.error || "Erreur lors de l'acceptation de la demande")
+        return false
       }
     } catch (error) {
-      console.error("Error accepting friend:", error);
+      console.error('Error accepting friend:', error)
       toast.error(
         error.response?.data?.error ||
-          "Erreur lors de l'acceptation de la demande",
-      );
-      return false;
+          "Erreur lors de l'acceptation de la demande"
+      )
+      return false
     }
-  };
+  }
 
   const declineFriendRequest = async (inviteId) => {
     try {
       const { data } = await axios.post(
         `${API_NOTIFICATION}/${userId}/${inviteId}/decline-friend`,
-        { withCredentials: true },
-      );
+        { withCredentials: true }
+      )
 
       if (data.success) {
-        toast.success(data.message || "Demande d'ami refusée");
-        await fetchFriendRequests();
-        return true;
+        toast.success(data.message || "Demande d'ami refusée")
+        await fetchFriendRequests()
+        return true
       } else {
-        toast.error(data.error || "Erreur lors du refus de la demande");
-        return false;
+        toast.error(data.error || 'Erreur lors du refus de la demande')
+        return false
       }
     } catch (error) {
-      console.error("Error refusing friend request:", error);
+      console.error('Error refusing friend request:', error)
       toast.error(
-        error.response?.data?.error || "Erreur lors du refus de la demande",
-      );
-      return false;
+        error.response?.data?.error || 'Erreur lors du refus de la demande'
+      )
+      return false
     }
-  };
+  }
 
   const cancelFriendRequest = async (inviteId) => {
     try {
       const { data } = await axios.post(
         `${API_NOTIFICATION}/${userId}/${inviteId}/cancel-friend`,
-        { withCredentials: true },
-      );
+        { withCredentials: true }
+      )
 
       if (data.success) {
-        toast.success(data.message || "Demande d'ami annulée");
-        await fetchFriendRequests();
-        return true;
+        toast.success(data.message || "Demande d'ami annulée")
+        await fetchFriendRequests()
+        return true
       } else {
-        toast.error(data.error || "Erreur lors de l'annulation de la demande");
-        return false;
+        toast.error(data.error || "Erreur lors de l'annulation de la demande")
+        return false
       }
     } catch (error) {
-      console.error("Error cancelling friend request:", error);
+      console.error('Error cancelling friend request:', error)
       toast.error(
         error.response?.data?.error ||
-          "Erreur lors de l'annulation de la demande",
-      );
-      return false;
+          "Erreur lors de l'annulation de la demande"
+      )
+      return false
     }
-  };
+  }
 
   const respondToChallengeInvite = async (inviteId) => {
     try {
       const { data } = await axios.post(
         `${API_NOTIFICATION}/${userId}/${inviteId}/remove-friend`,
-        { withCredentials: true },
-      );
+        { withCredentials: true }
+      )
 
       if (data.success) {
-        toast.success(data.message || "Réponse à l'invitation envoyée");
-        await fetchNotifications();
-        await fetchChallengeNotifications();
-        return true;
+        toast.success(data.message || "Réponse à l'invitation envoyée")
+        await fetchNotifications()
+        await fetchChallengeNotifications()
+        return true
       } else {
-        toast.error(data.error || "Erreur lors de l'envoi de la réponse");
-        return false;
+        toast.error(data.error || "Erreur lors de l'envoi de la réponse")
+        return false
       }
     } catch (error) {
-      console.error("Send Challenge response error:", error);
+      console.error('Send Challenge response error:', error)
       toast.error(
-        error.response?.data?.error || "Erreur lors de l'envoi de la réponse",
-      );
-      return false;
+        error.response?.data?.error || "Erreur lors de l'envoi de la réponse"
+      )
+      return false
     }
-  };
+  }
 
   const markNotificationAsRead = async (notificationId) => {
     try {
       const { data } = await axios.patch(
         `${API_NOTIFICATION}/${userId}/${notificationId}/read`,
         {},
-        { withCredentials: true },
-      );
+        { withCredentials: true }
+      )
 
       if (data.success) {
-        await fetchNotifications();
+        await fetchNotifications()
       } else {
-        toast.error(data.error || "Erreur lors du marquage comme lu");
+        toast.error(data.error || 'Erreur lors du marquage comme lu')
       }
     } catch (error) {
-      console.error("Mark as read error:", error);
+      console.error('Mark as read error:', error)
       toast.error(
-        error.response?.data?.error || "Erreur lors du marquage comme lu",
-      );
+        error.response?.data?.error || 'Erreur lors du marquage comme lu'
+      )
     }
-  };
+  }
 
   // Send message
   const sendMessage = useCallback(
@@ -213,26 +209,26 @@ export const useNotifications = (userId) => {
           },
           {
             withCredentials: true,
-          },
-        );
+          }
+        )
 
         if (data.success) {
-          toast.success(data.message || "Message envoyé");
-          return true;
+          toast.success(data.message || 'Message envoyé')
+          return true
         } else {
-          toast.error(data.error || "Erreur lors de l'envoi du message");
-          return false;
+          toast.error(data.error || "Erreur lors de l'envoi du message")
+          return false
         }
       } catch (err) {
-        console.error("Send message error:", err);
+        console.error('Send message error:', err)
         toast.error(
-          err.response?.data?.error || "Erreur lors de l'envoi du message",
-        );
-        return false;
+          err.response?.data?.error || "Erreur lors de l'envoi du message"
+        )
+        return false
       }
     },
-    [userId],
-  );
+    [userId]
+  )
 
   // Add comment to user profile
   const addComment = useCallback(
@@ -246,33 +242,33 @@ export const useNotifications = (userId) => {
           },
           {
             withCredentials: true,
-          },
-        );
+          }
+        )
 
         if (data.success) {
-          toast.success(data.message || "Commentaire ajouté");
-          return true;
+          toast.success(data.message || 'Commentaire ajouté')
+          return true
         } else {
-          toast.error(data.error || "Erreur lors de l'ajout du commentaire");
-          return false;
+          toast.error(data.error || "Erreur lors de l'ajout du commentaire")
+          return false
         }
       } catch (err) {
-        console.error("Add comment error:", err);
+        console.error('Add comment error:', err)
         toast.error(
-          err.response?.data?.error || "Erreur lors de l'ajout du commentaire",
-        );
-        return false;
+          err.response?.data?.error || "Erreur lors de l'ajout du commentaire"
+        )
+        return false
       }
     },
-    [userId],
-  );
+    [userId]
+  )
 
   useEffect(() => {
     if (userId) {
-      fetchNotifications();
-      fetchChallengeNotifications();
+      fetchNotifications()
+      fetchChallengeNotifications()
     }
-  }, [userId, fetchNotifications]);
+  }, [userId, fetchNotifications])
 
   return {
     notifications,
@@ -287,5 +283,5 @@ export const useNotifications = (userId) => {
     markNotificationAsRead,
     addComment,
     sendMessage,
-  };
-};
+  }
+}

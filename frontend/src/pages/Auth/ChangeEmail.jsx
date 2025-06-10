@@ -1,37 +1,37 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 //loader
-import GlobalLoader from "../../utils/GlobalLoader";
+import GlobalLoader from '../../utils/GlobalLoader'
 //context
-import { useAuth } from "../../context/AuthContext";
-import { useTranslation } from "react-i18next";
+import { useAuth } from '../../context/AuthContext'
+import { useTranslation } from 'react-i18next'
 //icons
-import { Mail, Send, ArrowLeft, AtSign, CheckCircle2 } from "lucide-react";
+import { Mail, Send, ArrowLeft, AtSign, CheckCircle2 } from 'lucide-react'
 //CSS
-import "./ChangeEmail.css";
+import './ChangeEmail.css'
 
 function ChangeEmail() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { changeVerificationEmail } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { changeVerificationEmail } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('')
 
   const handleChangeVerificationEmail = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+    e.preventDefault()
+    setIsLoading(true)
     try {
       await changeVerificationEmail(email, () => {
-        setEmail("");
-        navigate("/email-verification");
-      });
+        setEmail('')
+        navigate('/email-verification')
+      })
     } catch (error) {
-      console.error("Error changing verification email:", error);
+      console.error('Error changing verification email:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="change-email-page">
@@ -45,18 +45,18 @@ function ChangeEmail() {
             <div className="auth-stats">
               <div
                 className="auth-stat-item"
-                style={{ flexDirection: "column" }}
+                style={{ flexDirection: 'column' }}
               >
-                <h3>{t("auth.changeemail.visual.title")}</h3>
-                <p>{t("auth.changeemail.visual.description")}n</p>
+                <h3>{t('auth.changeemail.visual.title')}</h3>
+                <p>{t('auth.changeemail.visual.description')}n</p>
               </div>
               <div className="auth-stat-item">
                 <div className="auth-stat-icon">
                   <Mail />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth.changeemail.visual.newemail")}</h4>
-                  <p>{t("auth.changeemail.visual.enternewemail")}</p>
+                  <h4>{t('auth.changeemail.visual.newemail')}</h4>
+                  <p>{t('auth.changeemail.visual.enternewemail')}</p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -64,8 +64,8 @@ function ChangeEmail() {
                   <CheckCircle2 />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth.changeemail.visual.verification")}</h4>
-                  <p>{t("auth.changeemail.visual.receiveverification")}</p>
+                  <h4>{t('auth.changeemail.visual.verification')}</h4>
+                  <p>{t('auth.changeemail.visual.receiveverification')}</p>
                 </div>
               </div>
             </div>
@@ -84,21 +84,21 @@ function ChangeEmail() {
                     <AtSign />
                   </div>
                 </div>
-                <h2>{t("auth.changeemail.form.title")}</h2>
+                <h2>{t('auth.changeemail.form.title')}</h2>
                 <p className="auth-subtitle">
-                  {t("auth.changeemail.form.description")}
+                  {t('auth.changeemail.form.description')}
                 </p>
               </div>
 
               <div className="auth-form-content">
                 <div className="auth-input-group">
-                  <label htmlFor="email">{t("common.email")}</label>
+                  <label htmlFor="email">{t('common.email')}</label>
                   <div className="auth-input-wrapper">
                     <Mail className="auth-input-icon" />
                     <input
                       id="email"
                       type="email"
-                      placeholder={t("auth.changeemail.form.enteremail")}
+                      placeholder={t('auth.changeemail.form.enteremail')}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -114,8 +114,8 @@ function ChangeEmail() {
                   <Send />
                   <span>
                     {isLoading
-                      ? t("auth.changeemail.form.sendinprocess")
-                      : t("auth.changeemail.form.send")}
+                      ? t('auth.changeemail.form.sendinprocess')
+                      : t('auth.changeemail.form.send')}
                   </span>
                 </button>
 
@@ -124,14 +124,14 @@ function ChangeEmail() {
                   className="auth-button auth-button-secondary"
                 >
                   <ArrowLeft />
-                  <span>{t("common.back")}</span>
+                  <span>{t('common.back')}</span>
                 </Link>
               </div>
 
               <div className="auth-form-footer">
-                <span>{t("auth.changeemail.footer.question")}</span>
+                <span>{t('auth.changeemail.footer.question')}</span>
                 <Link to="/email-verification">
-                  {t("auth.changeemail.footer.button")}
+                  {t('auth.changeemail.footer.button')}
                 </Link>
               </div>
             </form>
@@ -139,7 +139,7 @@ function ChangeEmail() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default ChangeEmail;
+export default ChangeEmail

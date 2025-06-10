@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import Select from "react-select";
+import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
+import Select from 'react-select'
 // Context
-import { useRewards } from "../hooks/useRewards";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
-import GlobalLoader from "../utils/GlobalLoader";
+import { useRewards } from '../hooks/useRewards'
+import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
+import GlobalLoader from '../utils/GlobalLoader'
 // Icons & charts
 import {
   Icon,
@@ -40,9 +40,9 @@ import {
   BadgeInfo,
   LucideAward,
   ThumbsUp,
-} from "lucide-react";
-import { sneaker, watchActivity } from "@lucide/lab";
-import { Pie, Bar } from "react-chartjs-2";
+} from 'lucide-react'
+import { sneaker, watchActivity } from '@lucide/lab'
+import { Pie, Bar } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
   ArcElement,
@@ -52,9 +52,9 @@ import {
   LinearScale,
   BarElement,
   Title,
-} from "chart.js";
+} from 'chart.js'
 // CSS
-import "./Rewards.css";
+import './Rewards.css'
 
 // Register Chart.js components
 ChartJS.register(
@@ -64,21 +64,21 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
-  Title,
-);
+  Title
+)
 
 const Rewards = () => {
-  const { user } = useAuth();
-  const { theme } = useTheme();
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const { user } = useAuth()
+  const { theme } = useTheme()
+  const [activeTab, setActiveTab] = useState('dashboard')
   const [filters, setFilters] = useState({
-    type: "all",
-    tier: "all",
-    status: "all",
-    search: "",
-  });
-  const [sortBy, setSortBy] = useState("progress");
-  const [showFilters, setShowFilters] = useState(false);
+    type: 'all',
+    tier: 'all',
+    status: 'all',
+    search: '',
+  })
+  const [sortBy, setSortBy] = useState('progress')
+  const [showFilters, setShowFilters] = useState(false)
   const [rewardStats, setRewardStats] = useState({
     total: 0,
     unlocked: 0,
@@ -87,14 +87,14 @@ const Rewards = () => {
     byTier: {},
     recentlyUnlocked: null,
     nextToUnlock: null,
-  });
-  const [noir, setNoir] = useState(null);
-  const [selectedReward, setSelectedReward] = useState(null);
-  const [showRewardModal, setShowRewardModal] = useState(false);
-  const [showAllUsers, setShowAllUsers] = useState(false);
-  const [animateReward, setAnimateReward] = useState(null);
-  const confettiRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(true);
+  })
+  const [noir, setNoir] = useState(null)
+  const [selectedReward, setSelectedReward] = useState(null)
+  const [showRewardModal, setShowRewardModal] = useState(false)
+  const [showAllUsers, setShowAllUsers] = useState(false)
+  const [animateReward, setAnimateReward] = useState(null)
+  const confettiRef = useRef(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Use the real rewards hook
   const {
@@ -105,101 +105,101 @@ const Rewards = () => {
     fetchMyRewards,
     fetchVitrineRewards,
     setInVitrine,
-  } = useRewards(user?._id);
+  } = useRewards(user?._id)
 
   // modal close handler
-  const RewardModalRef = useRef(null);
+  const RewardModalRef = useRef(null)
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
-      setShowRewardModal(false);
-      setSelectedReward(null);
+      setShowRewardModal(false)
+      setSelectedReward(null)
     }
-  };
+  }
 
   const customSelectStyles = {
     control: (provided, state) => ({
       ...provided,
-      background: theme === "dark" ? "#333" : "white",
-      color: theme === "dark" ? "white" : "black",
+      background: theme === 'dark' ? '#333' : 'white',
+      color: theme === 'dark' ? 'white' : 'black',
       borderColor: state.isFocused
-        ? "#80bdff"
-        : theme === "dark"
-          ? "#555"
-          : "#ccc",
-      boxShadow: state.isFocused ? "0 0 0 0.2rem rgba(0,123,255,.25)" : null,
-      "&:hover": {
-        borderColor: state.isFocused ? "#80bdff" : "#aaa",
+        ? '#80bdff'
+        : theme === 'dark'
+          ? '#555'
+          : '#ccc',
+      boxShadow: state.isFocused ? '0 0 0 0.2rem rgba(0,123,255,.25)' : null,
+      '&:hover': {
+        borderColor: state.isFocused ? '#80bdff' : '#aaa',
       },
     }),
     singleValue: (provided, state) => ({
       ...provided,
-      color: theme === "dark" ? "white" : "black",
+      color: theme === 'dark' ? 'white' : 'black',
     }),
     menu: (provided, state) => ({
       ...provided,
-      background: theme === "dark" ? "#333" : "white",
-      color: theme === "dark" ? "white" : "black",
+      background: theme === 'dark' ? '#333' : 'white',
+      color: theme === 'dark' ? 'white' : 'black',
     }),
     option: (provided, state) => ({
       ...provided,
       background: state.isFocused
-        ? "#007bff"
-        : theme === "dark"
-          ? "#333"
-          : "white",
-      color: state.isFocused ? "white" : theme === "dark" ? "white" : "black",
-      "&:hover": {
-        background: "#007bff",
-        color: "white",
+        ? '#007bff'
+        : theme === 'dark'
+          ? '#333'
+          : 'white',
+      color: state.isFocused ? 'white' : theme === 'dark' ? 'white' : 'black',
+      '&:hover': {
+        background: '#007bff',
+        color: 'white',
       },
     }),
-  };
+  }
 
   useEffect(() => {
     const fetchAll = async () => {
       if (user?._id) {
-        await fetchRewards();
-        await fetchMyRewards();
-        await fetchVitrineRewards();
+        await fetchRewards()
+        await fetchMyRewards()
+        await fetchVitrineRewards()
       }
-      setIsLoading(false);
-    };
-    fetchAll();
-  }, [user?._id, fetchRewards, fetchMyRewards, fetchVitrineRewards]);
+      setIsLoading(false)
+    }
+    fetchAll()
+  }, [user?._id, fetchRewards, fetchMyRewards, fetchVitrineRewards])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setNoir(getCssVar("--Noir"));
-    }, 0);
-    return () => clearTimeout(timeout);
-  }, [theme]);
+      setNoir(getCssVar('--Noir'))
+    }, 0)
+    return () => clearTimeout(timeout)
+  }, [theme])
 
   function getCssVar(name) {
-    return getComputedStyle(document.body).getPropertyValue(name).trim();
+    return getComputedStyle(document.body).getPropertyValue(name).trim()
   }
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        () => {
-          setShowRewardModal(false);
-          setSelectedReward(null);
-        };
+      if (e.key === 'Escape') {
+        ;() => {
+          setShowRewardModal(false)
+          setSelectedReward(null)
+        }
       }
-    };
+    }
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown)
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [setShowRewardModal, setSelectedReward]);
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [setShowRewardModal, setSelectedReward])
 
   // Process rewards data when it changes
   useEffect(() => {
     if (rewards.length > 0 && myRewards.length > 0) {
       // Create a lookup map for faster access
-      const myRewardsMap = new Map();
+      const myRewardsMap = new Map()
 
       // Process myRewards data to create a map of unlocked rewards
       myRewards.forEach((item) => {
@@ -208,13 +208,13 @@ const Rewards = () => {
             progress: item.progress,
             unlockedAt: item.unlockedAt,
             unlocked: item.progress === 100,
-          });
+          })
         }
-      });
+      })
 
       // Create user rewards array with processed data
       const userRewards = rewards.map((reward) => {
-        const myReward = myRewardsMap.get(reward._id || reward.id);
+        const myReward = myRewardsMap.get(reward._id || reward.id)
 
         return {
           ...reward,
@@ -223,103 +223,103 @@ const Rewards = () => {
           unlockedAt: myReward ? myReward.unlockedAt : null,
           unlockedPercentage:
             Math.round(Math.random() * 80) +
-            (reward.tier === "bronze"
+            (reward.tier === 'bronze'
               ? 10
-              : reward.tier === "silver"
+              : reward.tier === 'silver'
                 ? 5
-                : reward.tier === "gold"
+                : reward.tier === 'gold'
                   ? 3
-                  : reward.tier === "platinum"
+                  : reward.tier === 'platinum'
                     ? 2
                     : 1),
-        };
-      });
+        }
+      })
 
       // Calculate stats
-      calculateRewardStats(rewards, userRewards);
+      calculateRewardStats(rewards, userRewards)
     }
-  }, [rewards, myRewards]);
+  }, [rewards, myRewards])
 
   // Calculate reward statistics
   const calculateRewardStats = (allRewards, userRewards) => {
-    const total = allRewards.length;
-    const unlocked = userRewards.filter((r) => r.unlocked).length;
-    const percentage = total > 0 ? Math.round((unlocked / total) * 100) : 0;
+    const total = allRewards.length
+    const unlocked = userRewards.filter((r) => r.unlocked).length
+    const percentage = total > 0 ? Math.round((unlocked / total) * 100) : 0
 
     // Group by type
-    const byType = {};
-    const byTier = {};
+    const byType = {}
+    const byTier = {}
 
     // Initialize counters for all criteria types and tiers
     const criteriaTypes = [
-      "steps",
-      "steps-time",
-      "distance",
-      "distance-time",
-      "calories",
-      "calories-time",
-      "streak",
-      "level",
-      "customgoal",
-      "challenges",
-      "challenges-time",
-      "rank",
-      "friend",
-    ];
+      'steps',
+      'steps-time',
+      'distance',
+      'distance-time',
+      'calories',
+      'calories-time',
+      'streak',
+      'level',
+      'customgoal',
+      'challenges',
+      'challenges-time',
+      'rank',
+      'friend',
+    ]
 
     const tierTypes = [
-      "bronze",
-      "silver",
-      "gold",
-      "platinum",
-      "ruby",
-      "sapphire",
-      "diamond",
-    ];
+      'bronze',
+      'silver',
+      'gold',
+      'platinum',
+      'ruby',
+      'sapphire',
+      'diamond',
+    ]
 
     criteriaTypes.forEach((criteria) => {
-      byType[criteria] = { total: 0, unlocked: 0 };
-    });
+      byType[criteria] = { total: 0, unlocked: 0 }
+    })
 
     tierTypes.forEach((tier) => {
-      byTier[tier] = { total: 0, unlocked: 0 };
-    });
+      byTier[tier] = { total: 0, unlocked: 0 }
+    })
 
     // Count the rewards by type and tier
     allRewards.forEach((reward) => {
       // Count by type
       if (byType[reward.criteria]) {
-        byType[reward.criteria].total += 1;
+        byType[reward.criteria].total += 1
       }
 
       // Count by tier
       if (byTier[reward.tier]) {
-        byTier[reward.tier].total += 1;
+        byTier[reward.tier].total += 1
       }
-    });
+    })
 
     // Count unlocked rewards
     userRewards.forEach((reward) => {
       if (reward.unlocked) {
         if (byType[reward.criteria]) {
-          byType[reward.criteria].unlocked += 1;
+          byType[reward.criteria].unlocked += 1
         }
 
         if (byTier[reward.tier]) {
-          byTier[reward.tier].unlocked += 1;
+          byTier[reward.tier].unlocked += 1
         }
       }
-    });
+    })
 
     // Find recently unlocked reward
     const recentlyUnlocked = userRewards
       .filter((r) => r.unlocked)
-      .sort((a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt))[0];
+      .sort((a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt))[0]
 
     // Find next reward to unlock (closest to completion (progress > 20%))
     const nextToUnlock = userRewards
       .filter((r) => !r.unlocked && r.progress > 20)
-      .sort((a, b) => b.progress - a.progress)[0];
+      .sort((a, b) => b.progress - a.progress)[0]
 
     setRewardStats({
       total,
@@ -329,19 +329,19 @@ const Rewards = () => {
       byTier,
       recentlyUnlocked,
       nextToUnlock,
-    });
-  };
+    })
+  }
 
   // Filter rewards based on current filters
   const filteredRewards = () => {
     // If rewards aren't loaded yet, return empty array
-    if (!rewards || rewards.length === 0) return [];
+    if (!rewards || rewards.length === 0) return []
 
     // Get all rewards with their unlock status
     const allUserRewards = rewards.map((reward) => {
       const myReward = myRewards.find(
-        (r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id),
-      );
+        (r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id)
+      )
 
       return {
         ...reward,
@@ -350,9 +350,9 @@ const Rewards = () => {
         unlockedAt: myReward ? myReward.unlockedAt : null,
         unlockedPercentage:
           Math.round(Math.random() * 80) +
-          (reward.tier === "bronze" ? 10 : reward.tier === "silver" ? 5 : 3),
-      };
-    });
+          (reward.tier === 'bronze' ? 10 : reward.tier === 'silver' ? 5 : 3),
+      }
+    })
 
     return allUserRewards.filter((reward) => {
       // Filter by search
@@ -361,7 +361,7 @@ const Rewards = () => {
         (reward.name[user?.languagePreference]
           .toLowerCase()
           .includes(filters.search.toLowerCase()) ||
-          reward.name.en.toLowerCase().includes(filters.search.toLowerCase()));
+          reward.name.en.toLowerCase().includes(filters.search.toLowerCase()))
       const descMatch =
         reward.description &&
         (reward.description[user?.languagePreference]
@@ -369,53 +369,53 @@ const Rewards = () => {
           .includes(filters.search.toLowerCase()) ||
           reward.description.en
             .toLowerCase()
-            .includes(filters.search.toLowerCase()));
+            .includes(filters.search.toLowerCase()))
 
       if (filters.search && !nameMatch && !descMatch) {
-        return false;
+        return false
       }
 
       // Filter by type
-      if (filters.type !== "all" && reward.criteria !== filters.type) {
-        return false;
+      if (filters.type !== 'all' && reward.criteria !== filters.type) {
+        return false
       }
 
       // Filter by tier
-      if (filters.tier !== "all" && reward.tier !== filters.tier) {
-        return false;
+      if (filters.tier !== 'all' && reward.tier !== filters.tier) {
+        return false
       }
 
       // Filter by status
-      if (filters.status === "unlocked" && !reward.unlocked) {
-        return false;
+      if (filters.status === 'unlocked' && !reward.unlocked) {
+        return false
       }
-      if (filters.status === "locked" && reward.unlocked) {
-        return false;
+      if (filters.status === 'locked' && reward.unlocked) {
+        return false
       }
 
-      return true;
-    });
-  };
+      return true
+    })
+  }
 
   // Sort filtered rewards
   const sortedRewards = () => {
-    const filtered = filteredRewards();
+    const filtered = filteredRewards()
 
     switch (sortBy) {
-      case "name":
+      case 'name':
         return filtered.sort((a, b) => {
-          const nameA = a.name[user?.languagePreference] || a.name?.en || "";
-          const nameB = b.name[user?.languagePreference] || b.name?.en || "";
-          return nameA.localeCompare(nameB);
-        });
-      case "progress":
+          const nameA = a.name[user?.languagePreference] || a.name?.en || ''
+          const nameB = b.name[user?.languagePreference] || b.name?.en || ''
+          return nameA.localeCompare(nameB)
+        })
+      case 'progress':
         return filtered.sort((a, b) => {
           // Unlocked rewards first, then by progress
-          if (a.unlocked && !b.unlocked) return -1;
-          if (!a.unlocked && b.unlocked) return 1;
-          return b.progress - a.progress;
-        });
-      case "tier":
+          if (a.unlocked && !b.unlocked) return -1
+          if (!a.unlocked && b.unlocked) return 1
+          return b.progress - a.progress
+        })
+      case 'tier':
         const tierOrder = {
           bronze: 1,
           silver: 2,
@@ -424,191 +424,191 @@ const Rewards = () => {
           ruby: 5,
           sapphire: 6,
           diamond: 7,
-        };
-        return filtered.sort((a, b) => tierOrder[b.tier] - tierOrder[a.tier]);
-      case "date":
+        }
+        return filtered.sort((a, b) => tierOrder[b.tier] - tierOrder[a.tier])
+      case 'date':
         return filtered.sort((a, b) => {
-          if (!a.unlocked && !b.unlocked) return b.progress - a.progress;
-          if (!a.unlocked) return 1;
-          if (!b.unlocked) return -1;
-          return new Date(b.unlockedAt) - new Date(a.unlockedAt);
-        });
-      case "rarity":
+          if (!a.unlocked && !b.unlocked) return b.progress - a.progress
+          if (!a.unlocked) return 1
+          if (!b.unlocked) return -1
+          return new Date(b.unlockedAt) - new Date(a.unlockedAt)
+        })
+      case 'rarity':
         return filtered.sort(
-          (a, b) => a.unlockedPercentage - b.unlockedPercentage,
-        );
+          (a, b) => a.unlockedPercentage - b.unlockedPercentage
+        )
       default:
-        return filtered;
+        return filtered
     }
-  };
+  }
 
   // Handle reward click
   const handleRewardClick = (reward) => {
-    setSelectedReward(reward);
-    setShowRewardModal(true);
-  };
+    setSelectedReward(reward)
+    setShowRewardModal(true)
+  }
 
   // Handle adding/removing reward from vitrine
   const handleToggleShowcase = async (reward) => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      await setInVitrine(reward._id);
+      await setInVitrine(reward._id)
     } catch (error) {
-      console.error("Error seting vitrine:", error);
+      console.error('Error seting vitrine:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   // Handle reward animation
   const triggerRewardAnimation = (reward) => {
-    setAnimateReward(reward);
+    setAnimateReward(reward)
     setTimeout(() => {
-      setAnimateReward(null);
-    }, 3000);
-  };
+      setAnimateReward(null)
+    }, 3000)
+  }
 
   // Get criteria label
   const getCriteriaLabel = (criteria) => {
     switch (criteria) {
-      case "steps":
-        return "Pas";
-      case "steps-time":
-        return "Pas (Temps)";
-      case "distance":
-        return "Distance";
-      case "distance-time":
-        return "Distance (Temps)";
-      case "calories":
-        return "Calories";
-      case "calories-time":
-        return "Calories (Temps)";
-      case "streak":
-        return "Streak";
-      case "level":
-        return "Niveau";
-      case "customgoal":
-        return "Objectif personnalisé";
-      case "challenges":
-        return "Défis";
-      case "challenges-time":
-        return "Défis (Temps)";
-      case "rank":
-        return "Classement";
-      case "friend":
-        return "Social";
+      case 'steps':
+        return 'Pas'
+      case 'steps-time':
+        return 'Pas (Temps)'
+      case 'distance':
+        return 'Distance'
+      case 'distance-time':
+        return 'Distance (Temps)'
+      case 'calories':
+        return 'Calories'
+      case 'calories-time':
+        return 'Calories (Temps)'
+      case 'streak':
+        return 'Streak'
+      case 'level':
+        return 'Niveau'
+      case 'customgoal':
+        return 'Objectif personnalisé'
+      case 'challenges':
+        return 'Défis'
+      case 'challenges-time':
+        return 'Défis (Temps)'
+      case 'rank':
+        return 'Classement'
+      case 'friend':
+        return 'Social'
       default:
-        return criteria;
+        return criteria
     }
-  };
+  }
 
   // Get criteria icon
   const getCriteriaIcon = (criteria) => {
     switch (criteria) {
-      case "steps":
-        return <Footprints size={16} />;
-      case "steps-time":
-        return <Icon iconNode={sneaker} size={16} />;
-      case "distance":
-        return <Spline size={16} />;
-      case "distance-time":
-        return <Watch size={16} />;
-      case "calories":
-        return <Flame size={16} />;
-      case "calories-time":
-        return <Icon iconNode={watchActivity} size={16} />;
-      case "streak":
-        return <Zap size={16} />;
-      case "level":
-        return <Star size={16} />;
-      case "customgoal":
-        return <Target size={16} />;
-      case "challenges":
-        return <Dumbbell size={16} />;
-      case "challenges-time":
-        return <CircleGauge size={16} />;
-      case "rank":
-        return <Crown size={16} />;
-      case "friend":
-        return <Users size={16} />;
+      case 'steps':
+        return <Footprints size={16} />
+      case 'steps-time':
+        return <Icon iconNode={sneaker} size={16} />
+      case 'distance':
+        return <Spline size={16} />
+      case 'distance-time':
+        return <Watch size={16} />
+      case 'calories':
+        return <Flame size={16} />
+      case 'calories-time':
+        return <Icon iconNode={watchActivity} size={16} />
+      case 'streak':
+        return <Zap size={16} />
+      case 'level':
+        return <Star size={16} />
+      case 'customgoal':
+        return <Target size={16} />
+      case 'challenges':
+        return <Dumbbell size={16} />
+      case 'challenges-time':
+        return <CircleGauge size={16} />
+      case 'rank':
+        return <Crown size={16} />
+      case 'friend':
+        return <Users size={16} />
       default:
-        return <Medal size={16} />;
+        return <Medal size={16} />
     }
-  };
+  }
 
   // Get tier color class
   const getTierColorClass = (tier) => {
     switch (tier) {
-      case "bronze":
-        return "tier-bronze";
-      case "silver":
-        return "tier-silver";
-      case "gold":
-        return "tier-gold";
-      case "platinum":
-        return "tier-platinum";
-      case "ruby":
-        return "tier-ruby";
-      case "sapphire":
-        return "tier-sapphire";
-      case "diamond":
-        return "tier-diamond";
+      case 'bronze':
+        return 'tier-bronze'
+      case 'silver':
+        return 'tier-silver'
+      case 'gold':
+        return 'tier-gold'
+      case 'platinum':
+        return 'tier-platinum'
+      case 'ruby':
+        return 'tier-ruby'
+      case 'sapphire':
+        return 'tier-sapphire'
+      case 'diamond':
+        return 'tier-diamond'
       default:
-        return "";
+        return ''
     }
-  };
+  }
 
   // Get tier label
   const getTierLabel = (tier) => {
     switch (tier) {
-      case "bronze":
-        return "Bronze";
-      case "silver":
-        return "Argent";
-      case "gold":
-        return "Or";
-      case "platinum":
-        return "Platine";
-      case "ruby":
-        return "Rubis";
-      case "sapphire":
-        return "Saphir";
-      case "diamond":
-        return "Diamant";
+      case 'bronze':
+        return 'Bronze'
+      case 'silver':
+        return 'Argent'
+      case 'gold':
+        return 'Or'
+      case 'platinum':
+        return 'Platine'
+      case 'ruby':
+        return 'Rubis'
+      case 'sapphire':
+        return 'Saphir'
+      case 'diamond':
+        return 'Diamant'
       default:
-        return tier;
+        return tier
     }
-  };
+  }
 
   // Format date
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
+    const date = new Date(dateString)
+    return date.toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })
+  }
 
   // Generate monthly rewards data
   const generateMonthlyRewardsData = () => {
     // If no unlocked rewards, return empty data
     if (!myRewards || myRewards.length === 0) {
-      return Array(12).fill(0);
+      return Array(12).fill(0)
     }
 
     // Count rewards unlocked per month
-    const monthlyData = Array(12).fill(0);
+    const monthlyData = Array(12).fill(0)
 
     myRewards.forEach((reward) => {
       if (reward.progress === 100 && reward.unlockedAt) {
-        const month = new Date(reward.unlockedAt).getMonth();
-        monthlyData[month]++;
+        const month = new Date(reward.unlockedAt).getMonth()
+        monthlyData[month]++
       }
-    });
+    })
 
-    return monthlyData;
-  };
+    return monthlyData
+  }
 
   // Get empty dashboard content
   const getEmptyDashboardContent = () => {
@@ -656,8 +656,8 @@ const Rewards = () => {
           </Link>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   // Get empty catalog content
   const getEmptyCatalogContent = () => {
@@ -790,17 +790,17 @@ const Rewards = () => {
                   <div
                     key={index}
                     className={`reward-preview-card ${getTierColorClass(
-                      reward.tier,
+                      reward.tier
                     )}`}
                   >
                     <div className="reward-preview-icon">
                       <img
                         src={
                           reward.iconUrl ||
-                          "/placeholder.svg?height=100&width=100&text=🏆"
+                          '/placeholder.svg?height=100&width=100&text=🏆'
                         }
                         alt={
-                          reward.name[user?.languagePreference] || "Récompense"
+                          reward.name[user?.languagePreference] || 'Récompense'
                         }
                       />
                     </div>
@@ -808,12 +808,12 @@ const Rewards = () => {
                       <h5>
                         {reward.name[user?.languagePreference] ||
                           reward.name[user?.languagePreference] ||
-                          "Récompense"}
+                          'Récompense'}
                       </h5>
                       <p>
                         {reward.description[user?.languagePreference] ||
                           reward.description?.en ||
-                          "Complétez des objectifs pour débloquer cette récompense."}
+                          'Complétez des objectifs pour débloquer cette récompense.'}
                       </p>
                       <span className="reward-preview-tier">
                         {getTierLabel(reward.tier)}
@@ -826,8 +826,8 @@ const Rewards = () => {
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   // Get empty showcase content
   const getEmptyShowcaseContent = () => {
@@ -872,71 +872,71 @@ const Rewards = () => {
 
           <button
             className="empty-showcase-action"
-            onClick={() => setActiveTab("catalog")}
+            onClick={() => setActiveTab('catalog')}
           >
             <Medal size={16} />
             Explorer les récompenses disponibles
           </button>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   // Get dashboard content
   const getDashboardContent = () => {
     // If there are no unlocked rewards, show empty dashboard
     if (!myRewards || rewardStats.unlocked === 0) {
-      return getEmptyDashboardContent();
+      return getEmptyDashboardContent()
     }
 
     // Chart data for criteria summary
     const criteriaChartData = {
       labels: Object.entries(rewardStats.byType).map(([criteria]) =>
-        getCriteriaLabel(criteria),
+        getCriteriaLabel(criteria)
       ),
       datasets: [
         {
-          label: "Récompenses",
+          label: 'Récompenses',
           data: Object.entries(rewardStats.byType).map(
-            ([, stats]) => stats.unlocked,
+            ([, stats]) => stats.unlocked
           ),
           backgroundColor: [
-            "rgba(255, 99, 132, 0.6)",
-            "rgba(54, 162, 235, 0.6)",
-            "rgba(255, 206, 86, 0.6)",
-            "rgba(75, 192, 192, 0.6)",
-            "rgba(153, 102, 255, 0.6)",
-            "rgba(255, 159, 64, 0.6)",
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
           ],
           borderWidth: 1,
         },
       ],
-    };
+    }
 
     // Chart data for tier summary
     const tierChartData = {
       labels: Object.entries(rewardStats.byTier).map(([tier]) =>
-        getTierLabel(tier),
+        getTierLabel(tier)
       ),
       datasets: [
         {
-          label: "Récompenses",
+          label: 'Récompenses',
           data: Object.entries(rewardStats.byTier).map(
-            ([, stats]) => stats.unlocked,
+            ([, stats]) => stats.unlocked
           ),
           backgroundColor: [
-            "rgba(255, 99, 132, 0.6)",
-            "rgba(54, 162, 235, 0.6)",
-            "rgba(255, 206, 86, 0.6)",
-            "rgba(75, 192, 192, 0.6)",
-            "rgba(153, 102, 255, 0.6)",
-            "rgba(255, 159, 64, 0.6)",
-            "rgba(128, 0, 128, 0.6)", // Purple for diamond
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(128, 0, 128, 0.6)', // Purple for diamond
           ],
           borderWidth: 1,
         },
       ],
-    };
+    }
 
     // Chart options
     const chartOptions = {
@@ -944,13 +944,13 @@ const Rewards = () => {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: "bottom",
+          position: 'bottom',
         },
         title: {
           display: false,
         },
       },
-    };
+    }
 
     return (
       <div className="rewards-dashboard">
@@ -997,7 +997,7 @@ const Rewards = () => {
                           className="progress-bar"
                           style={{
                             width: `${Math.round(
-                              (stats.unlocked / stats.total) * 100,
+                              (stats.unlocked / stats.total) * 100
                             )}%`,
                           }}
                         ></div>
@@ -1028,7 +1028,7 @@ const Rewards = () => {
                           className="progress-bar"
                           style={{
                             width: `${Math.round(
-                              (stats.unlocked / stats.total) * 100,
+                              (stats.unlocked / stats.total) * 100
                             )}%`,
                           }}
                         ></div>
@@ -1057,12 +1057,12 @@ const Rewards = () => {
                   <img
                     src={
                       rewardStats.recentlyUnlocked.iconUrl ||
-                      "/placeholder.svg?height=100&width=100&text=🏆"
+                      '/placeholder.svg?height=100&width=100&text=🏆'
                     }
                     alt={
                       rewardStats.recentlyUnlocked.name[
                         user?.languagePreference
-                      ] || "Récompense"
+                      ] || 'Récompense'
                     }
                   />
                 </div>
@@ -1072,19 +1072,19 @@ const Rewards = () => {
                       user?.languagePreference
                     ] ||
                       rewardStats.recentlyUnlocked.name?.en ||
-                      "Récompense"}
+                      'Récompense'}
                   </h4>
                   <p className="highlight-description">
                     {rewardStats.recentlyUnlocked.description[
                       user?.languagePreference
                     ] ||
                       rewardStats.recentlyUnlocked.description?.en ||
-                      "Description de la récompense"}
+                      'Description de la récompense'}
                   </p>
                   <div className="highlight-meta">
                     <span
                       className={`highlight-tier ${getTierColorClass(
-                        rewardStats.recentlyUnlocked.tier,
+                        rewardStats.recentlyUnlocked.tier
                       )}`}
                     >
                       {getTierLabel(rewardStats.recentlyUnlocked.tier)}
@@ -1118,11 +1118,11 @@ const Rewards = () => {
                   <img
                     src={
                       rewardStats.nextToUnlock.iconUrl ||
-                      "/placeholder.svg?height=100&width=100&text=🏆"
+                      '/placeholder.svg?height=100&width=100&text=🏆'
                     }
                     alt={
                       rewardStats.nextToUnlock.name[user?.languagePreference] ||
-                      "Récompense"
+                      'Récompense'
                     }
                   />
                 </div>
@@ -1130,19 +1130,19 @@ const Rewards = () => {
                   <h4 className="highlight-name">
                     {rewardStats.nextToUnlock.name[user?.languagePreference] ||
                       rewardStats.nextToUnlock.name?.en ||
-                      "Récompense"}
+                      'Récompense'}
                   </h4>
                   <p className="highlight-description">
                     {rewardStats.nextToUnlock.description[
                       user?.languagePreference
                     ] ||
                       rewardStats.nextToUnlock.description?.en ||
-                      "Description de la récompense"}
+                      'Description de la récompense'}
                   </p>
                   <div className="highlight-meta">
                     <span
                       className={`highlight-tier ${getTierColorClass(
-                        rewardStats.nextToUnlock.tier,
+                        rewardStats.nextToUnlock.tier
                       )}`}
                     >
                       {getTierLabel(rewardStats.nextToUnlock.tier)}
@@ -1186,26 +1186,26 @@ const Rewards = () => {
                       {
                         data: Object.keys(rewardStats.byType)
                           .filter(
-                            (type) => rewardStats.byType[type].unlocked > 0,
+                            (type) => rewardStats.byType[type].unlocked > 0
                           )
                           .map((type) => rewardStats.byType[type].unlocked),
                         backgroundColor: [
-                          "rgba(74, 145, 158, 0.7)",
-                          "rgba(74, 201, 190, 0.7)",
-                          "rgba(33, 46, 83, 0.7)",
-                          "rgba(190, 211, 195, 0.7)",
-                          "rgba(235, 172, 162, 0.7)",
-                          "rgba(206, 106, 107, 0.7)",
-                          "rgba(43, 90, 115, 0.7)",
+                          'rgba(74, 145, 158, 0.7)',
+                          'rgba(74, 201, 190, 0.7)',
+                          'rgba(33, 46, 83, 0.7)',
+                          'rgba(190, 211, 195, 0.7)',
+                          'rgba(235, 172, 162, 0.7)',
+                          'rgba(206, 106, 107, 0.7)',
+                          'rgba(43, 90, 115, 0.7)',
                         ],
                         borderColor: [
-                          "rgba(74, 145, 158, 1)",
-                          "rgba(74, 201, 190, 1)",
-                          "rgba(33, 46, 83, 1)",
-                          "rgba(190, 211, 195, 1)",
-                          "rgba(235, 172, 162, 1)",
-                          "rgba(206, 106, 107, 1)",
-                          "rgba(43, 90, 115, 1)",
+                          'rgba(74, 145, 158, 1)',
+                          'rgba(74, 201, 190, 1)',
+                          'rgba(33, 46, 83, 1)',
+                          'rgba(190, 211, 195, 1)',
+                          'rgba(235, 172, 162, 1)',
+                          'rgba(206, 106, 107, 1)',
+                          'rgba(43, 90, 115, 1)',
                         ],
                         borderWidth: 1,
                       },
@@ -1216,7 +1216,7 @@ const Rewards = () => {
                     maintainAspectRatio: true,
                     plugins: {
                       legend: {
-                        position: "right",
+                        position: 'right',
                         labels: {
                           color: noir,
                           font: {
@@ -1227,16 +1227,14 @@ const Rewards = () => {
                       tooltip: {
                         callbacks: {
                           label: (context) => {
-                            const label = context.label || "";
-                            const value = context.raw || 0;
+                            const label = context.label || ''
+                            const value = context.raw || 0
                             const total = context.dataset.data.reduce(
                               (a, b) => a + b,
-                              0,
-                            );
-                            const percentage = Math.round(
-                              (value / total) * 100,
-                            );
-                            return `${label}: ${value} (${percentage}%)`;
+                              0
+                            )
+                            const percentage = Math.round((value / total) * 100)
+                            return `${label}: ${value} (${percentage}%)`
                           },
                         },
                       },
@@ -1255,7 +1253,7 @@ const Rewards = () => {
                         (r) =>
                           r.progress === 100 &&
                           new Date(r.unlockedAt) >
-                            new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+                            new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
                       ).length
                     }
                   </span>
@@ -1267,7 +1265,7 @@ const Rewards = () => {
                   <span className="stats-value">
                     {
                       filteredRewards().filter(
-                        (r) => r.unlocked && r.unlockedPercentage < 10,
+                        (r) => r.unlocked && r.unlockedPercentage < 10
                       ).length
                     }
                   </span>
@@ -1281,8 +1279,8 @@ const Rewards = () => {
                         .reduce((sum, r) => sum + r.progress, 0) /
                         Math.max(
                           1,
-                          filteredRewards().filter((r) => !r.unlocked).length,
-                        ),
+                          filteredRewards().filter((r) => !r.unlocked).length
+                        )
                     )}
                     %
                   </span>
@@ -1292,16 +1290,16 @@ const Rewards = () => {
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   // Get catalog content
   const getCatalogContent = () => {
-    const filtered = sortedRewards();
+    const filtered = sortedRewards()
 
     // If there are no rewards, show empty catalog
     if (rewards.length === 0) {
-      return getEmptyCatalogContent();
+      return getEmptyCatalogContent()
     }
 
     return (
@@ -1420,7 +1418,7 @@ const Rewards = () => {
             <div
               key={reward._id || reward.id}
               className={`reward-card ${
-                reward.unlocked ? "unlocked" : "locked"
+                reward.unlocked ? 'unlocked' : 'locked'
               }`}
               onClick={() => handleRewardClick(reward)}
             >
@@ -1432,9 +1430,9 @@ const Rewards = () => {
                 <img
                   src={
                     reward.iconUrl ||
-                    "/placeholder.svg?height=100&width=100&text=🏆"
+                    '/placeholder.svg?height=100&width=100&text=🏆'
                   }
-                  alt={reward.name[user?.languagePreference] || "Récompense"}
+                  alt={reward.name[user?.languagePreference] || 'Récompense'}
                 />
               </div>
 
@@ -1442,12 +1440,12 @@ const Rewards = () => {
                 <h3 className="reward-name">
                   {reward.name[user?.languagePreference] ||
                     reward.name?.en ||
-                    "Récompense"}
+                    'Récompense'}
                 </h3>
                 <p className="reward-description">
                   {reward.description[user?.languagePreference] ||
                     reward.description?.en ||
-                    "Description de la récompense"}
+                    'Description de la récompense'}
                 </p>
 
                 <div className="reward-meta">
@@ -1486,29 +1484,29 @@ const Rewards = () => {
                       vitrine.some(
                         (r) =>
                           (r.rewardId._id || r.rewardId.id) ===
-                          (reward._id || reward.id),
+                          (reward._id || reward.id)
                       )
-                        ? "active"
-                        : ""
-                    } ${vitrine.length >= 3 ? "no-vitrine" : ""}`}
+                        ? 'active'
+                        : ''
+                    } ${vitrine.length >= 3 ? 'no-vitrine' : ''}`}
                     onClick={(e) => {
-                      e.stopPropagation();
-                      handleToggleShowcase(reward);
+                      e.stopPropagation()
+                      handleToggleShowcase(reward)
                     }}
                     title={
                       vitrine.some(
                         (r) =>
                           (r.rewardId._id || r.rewardId.id) ===
-                          (reward._id || reward.id),
+                          (reward._id || reward.id)
                       )
-                        ? "Retirer de la vitrine"
-                        : "Ajouter à la vitrine"
+                        ? 'Retirer de la vitrine'
+                        : 'Ajouter à la vitrine'
                     }
                   >
                     {vitrine.some(
                       (r) =>
                         (r.rewardId._id || r.rewardId.id) ===
-                        (reward._id || reward.id),
+                        (reward._id || reward.id)
                     ) ? (
                       <Bookmark size={16} />
                     ) : (
@@ -1529,14 +1527,14 @@ const Rewards = () => {
           )}
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   // Get showcase content
   const getShowcaseContent = () => {
     // If there are no unlocked rewards, show empty showcase
     if (!myRewards || myRewards.length === 0) {
-      return getEmptyShowcaseContent();
+      return getEmptyShowcaseContent()
     }
 
     return (
@@ -1552,7 +1550,7 @@ const Rewards = () => {
               <div
                 key={reward._id || reward.id}
                 className={`featured-reward ${getTierColorClass(
-                  reward.rewardId.tier,
+                  reward.rewardId.tier
                 )}`}
                 onClick={() => handleRewardClick(reward.rewardId)}
               >
@@ -1560,11 +1558,11 @@ const Rewards = () => {
                   <img
                     src={
                       reward.rewardId.iconUrl ||
-                      "/placeholder.svg?height=100&width=100&text=🏆"
+                      '/placeholder.svg?height=100&width=100&text=🏆'
                     }
                     alt={
                       reward.rewardId.name[user?.languagePreference] ||
-                      "Récompense"
+                      'Récompense'
                     }
                   />
                   <div className="featured-shine"></div>
@@ -1573,12 +1571,12 @@ const Rewards = () => {
                   <h3 className="featured-name">
                     {reward.rewardId.name[user?.languagePreference] ||
                       reward.rewardId.name?.en ||
-                      "Récompense"}
+                      'Récompense'}
                   </h3>
                   <p className="featured-description">
                     {reward.rewardId.description[user?.languagePreference] ||
                       reward.rewardId.description?.en ||
-                      "Description de la récompense"}
+                      'Description de la récompense'}
                   </p>
                   <div className="featured-meta">
                     <span className="featured-tier">
@@ -1595,8 +1593,8 @@ const Rewards = () => {
                 <button
                   className="remove-showcase"
                   onClick={(e) => {
-                    e.stopPropagation();
-                    handleToggleShowcase(reward.rewardId);
+                    e.stopPropagation()
+                    handleToggleShowcase(reward.rewardId)
                   }}
                   title="Retirer de la vitrine"
                 >
@@ -1608,7 +1606,7 @@ const Rewards = () => {
             <div className="empty-showcase">
               <p>
                 Vous n'avez pas encore ajouté de récompenses à votre vitrine.
-                Allez dans le catalogue et cliquez sur l'icône{" "}
+                Allez dans le catalogue et cliquez sur l'icône{' '}
                 <BookmarkPlus size={16} /> pour ajouter une récompense à votre
                 vitrine.
               </p>
@@ -1637,10 +1635,10 @@ const Rewards = () => {
                     <img
                       src={
                         reward.iconUrl ||
-                        "/placeholder.svg?height=100&width=100&text=🏆"
+                        '/placeholder.svg?height=100&width=100&text=🏆'
                       }
                       alt={
-                        reward.name[user?.languagePreference] || "Récompense"
+                        reward.name[user?.languagePreference] || 'Récompense'
                       }
                     />
                   </div>
@@ -1648,24 +1646,24 @@ const Rewards = () => {
                     <h4>
                       {reward.name[user?.languagePreference] ||
                         reward.name?.en ||
-                        "Récompense"}
+                        'Récompense'}
                     </h4>
                     <p>
                       {reward.description[user?.languagePreference] ||
                         reward.description?.en ||
-                        "Description de la récompense"}
+                        'Description de la récompense'}
                     </p>
                   </div>
                   {!vitrine.some(
                     (r) =>
                       (r.rewardId._id || r.rewardId.id) ===
-                      (reward._id || reward.id),
+                      (reward._id || reward.id)
                   ) && (
                     <button
                       className="add-to-showcase"
                       onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleShowcase(reward);
+                        e.stopPropagation()
+                        handleToggleShowcase(reward)
                       }}
                       disabled={vitrine.length >= 3}
                     >
@@ -1705,60 +1703,60 @@ const Rewards = () => {
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   // Get stats content
   const getStatsContent = () => {
     // If there are no unlocked rewards, show empty dashboard (reuse the same component)
     if (!myRewards || myRewards.length === 0) {
-      return getEmptyDashboardContent();
+      return getEmptyDashboardContent()
     }
 
     // Chart data for criteria distribution
     const criteriaDistributionData = {
       labels: Object.entries(rewardStats.byType).map(([criteria]) =>
-        getCriteriaLabel(criteria),
+        getCriteriaLabel(criteria)
       ),
       datasets: [
         {
           data: Object.entries(rewardStats.byType).map(
-            ([, stats]) => stats.total,
+            ([, stats]) => stats.total
           ),
           backgroundColor: [
-            "rgba(255, 99, 132, 0.6)",
-            "rgba(54, 162, 235, 0.6)",
-            "rgba(255, 206, 86, 0.6)",
-            "rgba(75, 192, 192, 0.6)",
-            "rgba(153, 102, 255, 0.6)",
-            "rgba(255, 159, 64, 0.6)",
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
           ],
         },
       ],
-    };
+    }
 
     // Chart data for tier distribution
     const tierDistributionData = {
       labels: Object.entries(rewardStats.byTier).map(([tier]) =>
-        getTierLabel(tier),
+        getTierLabel(tier)
       ),
       datasets: [
         {
           data: Object.entries(rewardStats.byTier).map(
-            ([, stats]) => stats.total,
+            ([, stats]) => stats.total
           ),
           backgroundColor: [
-            "rgba(255, 99, 132, 0.6)",
-            "rgba(54, 162, 235, 0.6)",
-            "rgba(255, 206, 86, 0.6)",
-            "rgba(75, 192, 192, 0.6)",
-            "rgba(153, 102, 255, 0.6)",
-            "rgba(255, 159, 64, 0.6)",
-            "rgba(128, 0, 128, 0.6)", // Purple for diamond
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(128, 0, 128, 0.6)', // Purple for diamond
           ],
         },
       ],
-    };
+    }
 
     // Chart options
     const chartOptions = {
@@ -1766,13 +1764,13 @@ const Rewards = () => {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: "bottom",
+          position: 'bottom',
         },
         title: {
           display: false,
         },
       },
-    };
+    }
 
     return (
       <div className="rewards-stats">
@@ -1798,22 +1796,22 @@ const Rewards = () => {
                         .filter((type) => rewardStats.byType[type].unlocked > 0)
                         .map((type) => rewardStats.byType[type].unlocked),
                       backgroundColor: [
-                        "rgba(74, 145, 158, 0.7)",
-                        "rgba(74, 201, 190, 0.7)",
-                        "rgba(33, 46, 83, 0.7)",
-                        "rgba(190, 211, 195, 0.7)",
-                        "rgba(235, 172, 162, 0.7)",
-                        "rgba(206, 106, 107, 0.7)",
-                        "rgba(43, 90, 115, 0.7)",
+                        'rgba(74, 145, 158, 0.7)',
+                        'rgba(74, 201, 190, 0.7)',
+                        'rgba(33, 46, 83, 0.7)',
+                        'rgba(190, 211, 195, 0.7)',
+                        'rgba(235, 172, 162, 0.7)',
+                        'rgba(206, 106, 107, 0.7)',
+                        'rgba(43, 90, 115, 0.7)',
                       ],
                       borderColor: [
-                        "rgba(74, 145, 158, 1)",
-                        "rgba(74, 201, 190, 1)",
-                        "rgba(33, 46, 83, 1)",
-                        "rgba(190, 211, 195, 1)",
-                        "rgba(235, 172, 162, 1)",
-                        "rgba(206, 106, 107, 1)",
-                        "rgba(43, 90, 115, 1)",
+                        'rgba(74, 145, 158, 1)',
+                        'rgba(74, 201, 190, 1)',
+                        'rgba(33, 46, 83, 1)',
+                        'rgba(190, 211, 195, 1)',
+                        'rgba(235, 172, 162, 1)',
+                        'rgba(206, 106, 107, 1)',
+                        'rgba(43, 90, 115, 1)',
                       ],
                       borderWidth: 1,
                     },
@@ -1824,7 +1822,7 @@ const Rewards = () => {
                   maintainAspectRatio: true,
                   plugins: {
                     legend: {
-                      position: "right",
+                      position: 'right',
                       labels: {
                         color: noir,
                         font: {
@@ -1850,25 +1848,25 @@ const Rewards = () => {
                     .map((tier) => getTierLabel(tier)),
                   datasets: [
                     {
-                      label: "Débloquées",
+                      label: 'Débloquées',
                       data: Object.keys(rewardStats.byTier)
                         .filter((tier) => rewardStats.byTier[tier].total > 0)
                         .map((tier) => rewardStats.byTier[tier].unlocked),
-                      backgroundColor: "rgba(74, 145, 158, 0.7)",
-                      borderColor: "rgba(74, 145, 158, 1)",
+                      backgroundColor: 'rgba(74, 145, 158, 0.7)',
+                      borderColor: 'rgba(74, 145, 158, 1)',
                       borderWidth: 1,
                     },
                     {
-                      label: "Verrouillées",
+                      label: 'Verrouillées',
                       data: Object.keys(rewardStats.byTier)
                         .filter((tier) => rewardStats.byTier[tier].total > 0)
                         .map(
                           (tier) =>
                             rewardStats.byTier[tier].total -
-                            rewardStats.byTier[tier].unlocked,
+                            rewardStats.byTier[tier].unlocked
                         ),
-                      backgroundColor: "rgba(190, 211, 195, 0.7)",
-                      borderColor: "rgba(190, 211, 195, 1)",
+                      backgroundColor: 'rgba(190, 211, 195, 0.7)',
+                      borderColor: 'rgba(190, 211, 195, 1)',
                       borderWidth: 1,
                     },
                   ],
@@ -1892,7 +1890,7 @@ const Rewards = () => {
                   },
                   plugins: {
                     legend: {
-                      position: "top",
+                      position: 'top',
                       labels: {
                         color: noir,
                       },
@@ -1911,25 +1909,25 @@ const Rewards = () => {
               <Bar
                 data={{
                   labels: [
-                    "Jan",
-                    "Fév",
-                    "Mar",
-                    "Avr",
-                    "Mai",
-                    "Juin",
-                    "Juil",
-                    "Août",
-                    "Sep",
-                    "Oct",
-                    "Nov",
-                    "Déc",
+                    'Jan',
+                    'Fév',
+                    'Mar',
+                    'Avr',
+                    'Mai',
+                    'Juin',
+                    'Juil',
+                    'Août',
+                    'Sep',
+                    'Oct',
+                    'Nov',
+                    'Déc',
                   ],
                   datasets: [
                     {
-                      label: "Récompenses débloquées",
+                      label: 'Récompenses débloquées',
                       data: generateMonthlyRewardsData(),
-                      backgroundColor: "rgba(74, 145, 158, 0.7)",
-                      borderColor: "rgba(74, 145, 158, 1)",
+                      backgroundColor: 'rgba(74, 145, 158, 0.7)',
+                      borderColor: 'rgba(74, 145, 158, 1)',
                       borderWidth: 1,
                     },
                   ],
@@ -1953,7 +1951,7 @@ const Rewards = () => {
                   },
                   plugins: {
                     legend: {
-                      position: "top",
+                      position: 'top',
                       labels: {
                         color: noir,
                       },
@@ -1982,7 +1980,7 @@ const Rewards = () => {
                 {filteredRewards()
                   .filter((r) => r.unlocked)
                   .sort(
-                    (a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt),
+                    (a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt)
                   )
                   .slice(0, 10)
                   .map((reward) => (
@@ -1995,18 +1993,18 @@ const Rewards = () => {
                           <img
                             src={
                               reward.iconUrl ||
-                              "/placeholder.svg?height=100&width=100&text=🏆"
+                              '/placeholder.svg?height=100&width=100&text=🏆'
                             }
                             alt={
                               reward.name[user?.languagePreference] ||
-                              "Récompense"
+                              'Récompense'
                             }
                             className="table-icon"
                           />
                           <span>
                             {reward.name[user?.languagePreference] ||
                               reward.name?.en ||
-                              "Récompense"}
+                              'Récompense'}
                           </span>
                         </div>
                       </td>
@@ -2014,7 +2012,7 @@ const Rewards = () => {
                       <td>
                         <span
                           className={`table-tier ${getTierColorClass(
-                            reward.tier,
+                            reward.tier
                           )}`}
                         >
                           {getTierLabel(reward.tier)}
@@ -2027,7 +2025,7 @@ const Rewards = () => {
 
                 {filteredRewards().filter((r) => r.unlocked).length === 0 && (
                   <tr>
-                    <td colSpan="5" style={{ textAlign: "center" }}>
+                    <td colSpan="5" style={{ textAlign: 'center' }}>
                       Aucune récompense débloquée
                     </td>
                   </tr>
@@ -2047,7 +2045,7 @@ const Rewards = () => {
               <div className="insight-content">
                 <h4>Votre meilleur mois</h4>
                 <p>
-                  <strong>Mai 2025</strong> - Vous avez débloqué{" "}
+                  <strong>Mai 2025</strong> - Vous avez débloqué{' '}
                   {generateMonthlyRewardsData()[4]} récompenses ce mois-là !
                 </p>
               </div>
@@ -2064,23 +2062,23 @@ const Rewards = () => {
                     {(() => {
                       // Find the category with the highest unlock percentage
                       const categories = Object.entries(
-                        rewardStats.byType,
-                      ).filter(([_, stats]) => stats.total > 0);
-                      if (categories.length === 0) return "Pas quotidiens";
+                        rewardStats.byType
+                      ).filter(([_, stats]) => stats.total > 0)
+                      if (categories.length === 0) return 'Pas quotidiens'
 
                       const highestCategory = categories.reduce(
                         (prev, curr) => {
                           const prevPercentage =
-                            prev[1].unlocked / prev[1].total;
+                            prev[1].unlocked / prev[1].total
                           const currPercentage =
-                            curr[1].unlocked / curr[1].total;
-                          return prevPercentage > currPercentage ? prev : curr;
-                        },
-                      );
+                            curr[1].unlocked / curr[1].total
+                          return prevPercentage > currPercentage ? prev : curr
+                        }
+                      )
 
-                      return getCriteriaLabel(highestCategory[0]);
+                      return getCriteriaLabel(highestCategory[0])
                     })()}
-                  </strong>{" "}
+                  </strong>{' '}
                   - Vous excellez dans cette catégorie !
                 </p>
               </div>
@@ -2101,24 +2099,24 @@ const Rewards = () => {
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   // Get tab content based on active tab
   const getTabContent = () => {
     switch (activeTab) {
-      case "dashboard":
-        return getDashboardContent();
-      case "catalog":
-        return getCatalogContent();
-      case "showcase":
-        return getShowcaseContent();
-      case "stats":
-        return getStatsContent();
+      case 'dashboard':
+        return getDashboardContent()
+      case 'catalog':
+        return getCatalogContent()
+      case 'showcase':
+        return getShowcaseContent()
+      case 'stats':
+        return getStatsContent()
       default:
-        return getDashboardContent();
+        return getDashboardContent()
     }
-  };
+  }
 
   return (
     <div className="rewards-container">
@@ -2133,29 +2131,29 @@ const Rewards = () => {
 
       <div className="rewards-tabs">
         <button
-          className={activeTab === "dashboard" ? "active" : ""}
-          onClick={() => setActiveTab("dashboard")}
+          className={activeTab === 'dashboard' ? 'active' : ''}
+          onClick={() => setActiveTab('dashboard')}
         >
           <Trophy size={16} />
           <span>Tableau de bord</span>
         </button>
         <button
-          className={activeTab === "catalog" ? "active" : ""}
-          onClick={() => setActiveTab("catalog")}
+          className={activeTab === 'catalog' ? 'active' : ''}
+          onClick={() => setActiveTab('catalog')}
         >
           <Medal size={16} />
           <span>Catalogue</span>
         </button>
         <button
-          className={activeTab === "showcase" ? "active" : ""}
-          onClick={() => setActiveTab("showcase")}
+          className={activeTab === 'showcase' ? 'active' : ''}
+          onClick={() => setActiveTab('showcase')}
         >
           <Star size={16} />
           <span>Vitrine</span>
         </button>
         <button
-          className={activeTab === "stats" ? "active" : ""}
-          onClick={() => setActiveTab("stats")}
+          className={activeTab === 'stats' ? 'active' : ''}
+          onClick={() => setActiveTab('stats')}
         >
           <BarChart2 size={16} />
           <span>Statistiques</span>
@@ -2177,8 +2175,8 @@ const Rewards = () => {
               <button
                 className="close-button"
                 onClick={() => {
-                  setShowRewardModal(false);
-                  setSelectedReward(null);
+                  setShowRewardModal(false)
+                  setSelectedReward(null)
                 }}
               >
                 <X size={20} />
@@ -2188,17 +2186,17 @@ const Rewards = () => {
             <div className="reward-modal-content">
               <div
                 className={`reward-modal-icon ${getTierColorClass(
-                  selectedReward.tier,
+                  selectedReward.tier
                 )}`}
               >
                 <img
                   src={
                     selectedReward.iconUrl ||
-                    "/placeholder.svg?height=100&width=100&text=🏆"
+                    '/placeholder.svg?height=100&width=100&text=🏆'
                   }
                   alt={
                     selectedReward.name[user?.languagePreference] ||
-                    "Récompense"
+                    'Récompense'
                   }
                 />
               </div>
@@ -2207,19 +2205,19 @@ const Rewards = () => {
                 <h2 className="reward-modal-name">
                   {selectedReward.name[user?.languagePreference] ||
                     selectedReward.name?.en ||
-                    "Récompense"}
+                    'Récompense'}
                 </h2>
                 <p className="reward-modal-description">
                   {selectedReward.description[user?.languagePreference] ||
                     selectedReward.description?.en ||
-                    "Description de la récompense"}
+                    'Description de la récompense'}
                 </p>
 
                 <div className="reward-modal-meta">
                   <div className="meta-item">
                     <span className="meta-label">Type</span>
                     <span className="meta-value">
-                      {getCriteriaIcon(selectedReward.criteria)}{" "}
+                      {getCriteriaIcon(selectedReward.criteria)}{' '}
                       {getCriteriaLabel(selectedReward.criteria)}
                     </span>
                   </div>
@@ -2228,7 +2226,7 @@ const Rewards = () => {
                     <span className="meta-label">Niveau</span>
                     <span
                       className={`meta-value tier-badge ${getTierColorClass(
-                        selectedReward.tier,
+                        selectedReward.tier
                       )}`}
                     >
                       {getTierLabel(selectedReward.tier)}
@@ -2284,7 +2282,7 @@ const Rewards = () => {
                       {selectedReward.progress > 0
                         ? `Continuez vos efforts ! Vous êtes sur la bonne voie pour débloquer cette récompense.`
                         : `Commencez à accumuler des ${getCriteriaLabel(
-                            selectedReward.criteria,
+                            selectedReward.criteria
                           ).toLowerCase()} pour progresser vers cette récompense.`}
                     </p>
                   </div>
@@ -2298,10 +2296,10 @@ const Rewards = () => {
                           vitrine.some(
                             (r) =>
                               (r.rewardId._id || r.rewardId.id) ===
-                              (selectedReward._id || selectedReward.id),
+                              (selectedReward._id || selectedReward.id)
                           )
-                            ? "active"
-                            : ""
+                            ? 'active'
+                            : ''
                         }`}
                         onClick={() => handleToggleShowcase(selectedReward)}
                         disabled={
@@ -2309,14 +2307,14 @@ const Rewards = () => {
                           !vitrine.some(
                             (r) =>
                               (r.rewardId._id || r.rewardId.id) ===
-                              (selectedReward._id || selectedReward.id),
+                              (selectedReward._id || selectedReward.id)
                           )
                         }
                       >
                         {vitrine.some(
                           (r) =>
                             (r.rewardId._id || r.rewardId.id) ===
-                            (selectedReward._id || selectedReward.id),
+                            (selectedReward._id || selectedReward.id)
                         ) ? (
                           <>
                             <Bookmark size={16} />
@@ -2336,7 +2334,7 @@ const Rewards = () => {
                     </>
                   ) : (
                     <button className="focus-action">
-                      {" "}
+                      {' '}
                       {/* TODO: fonction définir comme objectif un reward */}
                       <Target size={16} />
                       <span>Définir comme objectif</span>
@@ -2350,12 +2348,12 @@ const Rewards = () => {
                 <h4>Qui d'autre a débloqué cette récompense ?</h4>
                 {(() => {
                   const otherOwners = selectedReward.earnedBy.filter(
-                    (owner) => owner.user._id !== user?._id,
-                  );
+                    (owner) => owner.user._id !== user?._id
+                  )
                   const displayedOwners = showAllUsers
                     ? otherOwners
-                    : otherOwners.slice(0, 3);
-                  const hiddenCount = otherOwners.length - 3;
+                    : otherOwners.slice(0, 3)
+                  const hiddenCount = otherOwners.length - 3
 
                   return otherOwners.length > 0 ? (
                     <div className="social-users">
@@ -2364,7 +2362,7 @@ const Rewards = () => {
                           <img
                             src={
                               owner.user.avatarUrl ||
-                              "/placeholder.svg?height=40&width=40&text=TM"
+                              '/placeholder.svg?height=40&width=40&text=TM'
                             }
                             alt="User"
                           />
@@ -2378,7 +2376,7 @@ const Rewards = () => {
                           onClick={() => setShowAllUsers(!showAllUsers)}
                           className="more-users"
                         >
-                          {showAllUsers ? "Voir moins" : `+${hiddenCount}`}
+                          {showAllUsers ? 'Voir moins' : `+${hiddenCount}`}
                         </button>
                       )}
                     </div>
@@ -2386,7 +2384,7 @@ const Rewards = () => {
                     <p>
                       Personne n'a jamais débloqué cette récompense à part vous
                     </p>
-                  );
+                  )
                 })()}
               </div>
             )}
@@ -2402,10 +2400,10 @@ const Rewards = () => {
               <img
                 src={
                   animateReward.iconUrl ||
-                  "/placeholder.svg?height=100&width=100&text=🏆"
+                  '/placeholder.svg?height=100&width=100&text=🏆'
                 }
                 alt={
-                  animateReward.name[user?.languagePreference] || "Récompense"
+                  animateReward.name[user?.languagePreference] || 'Récompense'
                 }
               />
             </div>
@@ -2414,7 +2412,7 @@ const Rewards = () => {
               <h2>
                 {animateReward.name[user?.languagePreference] ||
                   animateReward.name?.en ||
-                  "Récompense"}
+                  'Récompense'}
               </h2>
             </div>
             <div className="animation-confetti" ref={confettiRef}></div>
@@ -2426,12 +2424,12 @@ const Rewards = () => {
       <div className="privacy-notice">
         <Info size={16} />
         <p>
-          Vos récompenses sont visibles par vos amis.{" "}
+          Vos récompenses sont visibles par vos amis.{' '}
           <Link to="/settings">Modifier les paramètres de confidentialité</Link>
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Rewards;
+export default Rewards

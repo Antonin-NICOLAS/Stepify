@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
 //context
-import { useTheme } from "../context/ThemeContext";
-import { useTranslation } from "react-i18next";
-import { useAuth } from "../context/AuthContext";
+import { useTheme } from '../context/ThemeContext'
+import { useTranslation } from 'react-i18next'
+import { useAuth } from '../context/AuthContext'
 //images
-import Account from "../assets/account.png";
-import Logo from "../assets/icon.png";
+import Account from '../assets/account.png'
+import Logo from '../assets/icon.png'
 //icons
 import {
   LayoutDashboard,
@@ -23,53 +23,53 @@ import {
   LogIn,
   LogOut,
   Users,
-} from "lucide-react";
+} from 'lucide-react'
 //CSS
-import "./Header.css";
+import './Header.css'
 
 function Header() {
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { user, isAuthenticated, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isMobileView, setIsMobileView] = useState(false);
-  const closeMenuRef = useRef(null);
-  const sidebarRef = useRef(null);
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+  const { user, isAuthenticated, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isMobileView, setIsMobileView] = useState(false)
+  const closeMenuRef = useRef(null)
+  const sidebarRef = useRef(null)
 
   const toggleSidebar = () => {
-    setSidebarOpen((prev) => !prev);
-  };
+    setSidebarOpen((prev) => !prev)
+  }
 
   const handleLogout = () => {
     logout(() => {
-      navigate("/login");
-      setSidebarOpen(false);
-    });
-  };
+      navigate('/login')
+      setSidebarOpen(false)
+    })
+  }
 
   const handleNavClick = () => {
     if (isMobileView) {
-      setSidebarOpen(false);
+      setSidebarOpen(false)
     }
-  };
+  }
 
   // Vérifie si la vue est mobile (< 1150px)
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobileView(window.innerWidth < 1150);
-    };
+      setIsMobileView(window.innerWidth < 1150)
+    }
 
     // Vérifie au chargement
-    checkScreenSize();
+    checkScreenSize()
 
     // Écoute les changements de taille
-    window.addEventListener("resize", checkScreenSize);
+    window.addEventListener('resize', checkScreenSize)
 
     return () => {
-      window.removeEventListener("resize", checkScreenSize);
-    };
-  }, []);
+      window.removeEventListener('resize', checkScreenSize)
+    }
+  }, [])
 
   // Gestion du clic en dehors de la sidebar
   useEffect(() => {
@@ -83,23 +83,23 @@ function Header() {
         !sidebarRef.current.contains(event.target) &&
         !closeMenuRef.current.contains(event.target)
       ) {
-        setSidebarOpen(false);
+        setSidebarOpen(false)
       }
-    };
+    }
 
     // Ajoute l'écouteur seulement en vue mobile
     if (isMobileView) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside)
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isMobileView, sidebarOpen]);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isMobileView, sidebarOpen])
 
   return (
     <>
-      <header className={`header ${sidebarOpen ? "left-pd" : ""}`} id="header">
+      <header className={`header ${sidebarOpen ? 'left-pd' : ''}`} id="header">
         <div className="header__container">
           <NavLink to="/" onClick={handleNavClick} className="header__logo">
             <img src={Logo} alt="Logo" className="logo" />
@@ -115,13 +115,13 @@ function Header() {
       </header>
 
       <nav
-        className={`sidebar ${sidebarOpen ? "hide-sidebar" : ""}`}
+        className={`sidebar ${sidebarOpen ? 'hide-sidebar' : ''}`}
         id="sidebar"
         ref={sidebarRef}
       >
         <div className="sidebar__container">
           <div className="sidebar__user">
-            <div className={user ? "sidebar__img user" : "sidebar__img"}>
+            <div className={user ? 'sidebar__img user' : 'sidebar__img'}>
               {user ? (
                 <img src={user.avatarUrl} className="userimg" alt="profile" />
               ) : (
@@ -130,12 +130,12 @@ function Header() {
             </div>
             {user ? (
               <NavLink to="/profile" className="sidebar__info">
-                <h3>{user ? `${user.fullName}` : "Guest"}</h3>
+                <h3>{user ? `${user.fullName}` : 'Guest'}</h3>
                 <span>{user && user.email}</span>
               </NavLink>
             ) : (
               <div className="sidebar__info">
-                <h3>{user ? `${user.fullName}` : "Guest"}</h3>
+                <h3>{user ? `${user.fullName}` : 'Guest'}</h3>
                 <span>{user && user.email}</span>
               </div>
             )}
@@ -146,14 +146,14 @@ function Header() {
               onClick={toggleSidebar}
             >
               <ChevronsLeft />
-              <span>{t("common.header.close")}</span>
+              <span>{t('common.header.close')}</span>
             </button>
           </div>
 
           <div className="sidebar__content">
             <div>
               <h3 className="sidebar__title nav">
-                {t("common.header.title1")}
+                {t('common.header.title1')}
               </h3>
               <div className="sidebar__list">
                 <NavLink
@@ -162,7 +162,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <LayoutDashboard />
-                  <span>{t("common.header.dashboard")}</span>
+                  <span>{t('common.header.dashboard')}</span>
                 </NavLink>
                 <NavLink
                   to="/steps"
@@ -170,7 +170,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <Footprints />
-                  <span>{t("common.header.steps")}</span>
+                  <span>{t('common.header.steps')}</span>
                 </NavLink>
                 <NavLink
                   to="/challenges"
@@ -178,7 +178,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <Dumbbell />
-                  <span>{t("common.header.challenges")}</span>
+                  <span>{t('common.header.challenges')}</span>
                 </NavLink>
                 <NavLink
                   to="/rewards"
@@ -186,7 +186,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <Award />
-                  <span>{t("common.header.rewards")}</span>
+                  <span>{t('common.header.rewards')}</span>
                 </NavLink>
                 <NavLink
                   to="/leaderboard"
@@ -194,7 +194,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <AlignStartVertical />
-                  <span>{t("common.header.leaderboard")}</span>
+                  <span>{t('common.header.leaderboard')}</span>
                 </NavLink>
                 <NavLink
                   to="/friends"
@@ -202,13 +202,13 @@ function Header() {
                   className="sidebar__link"
                 >
                   <Users />
-                  <span>{t("common.header.friends")}</span>
+                  <span>{t('common.header.friends')}</span>
                 </NavLink>
               </div>
             </div>
 
             <div>
-              <h3 className="sidebar__title">{t("common.header.title2")}</h3>
+              <h3 className="sidebar__title">{t('common.header.title2')}</h3>
               <div className="sidebar__list">
                 {user && (
                   <NavLink
@@ -217,7 +217,7 @@ function Header() {
                     className="sidebar__link"
                   >
                     <Settings />
-                    <span>{t("common.header.settings")}</span>
+                    <span>{t('common.header.settings')}</span>
                   </NavLink>
                 )}
                 <NavLink
@@ -226,7 +226,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <Info />
-                  <span>{t("common.header.about")}</span>
+                  <span>{t('common.header.about')}</span>
                 </NavLink>
               </div>
             </div>
@@ -237,13 +237,13 @@ function Header() {
               className="sidebar__link sidebar__theme"
               onClick={toggleTheme}
             >
-              {theme === "dark" ? <Sun /> : <Moon />}
-              <span>{t("common.header.theme")}</span>
+              {theme === 'dark' ? <Sun /> : <Moon />}
+              <span>{t('common.header.theme')}</span>
             </button>
             {isAuthenticated ? (
               <button className="sidebar__link" onClick={handleLogout}>
                 <LogOut />
-                <span>{t("common.header.logout")}</span>
+                <span>{t('common.header.logout')}</span>
               </button>
             ) : (
               <NavLink
@@ -252,14 +252,14 @@ function Header() {
                 className="sidebar__link"
               >
                 <LogIn />
-                <span>{t("common.header.login")}</span>
+                <span>{t('common.header.login')}</span>
               </NavLink>
             )}
           </div>
         </div>
       </nav>
     </>
-  );
+  )
 }
 
-export default Header;
+export default Header

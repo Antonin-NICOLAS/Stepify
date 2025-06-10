@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const hourlyDataSchema = new Schema(
   {
@@ -8,16 +8,16 @@ const hourlyDataSchema = new Schema(
     distance: { type: Number, min: 0, default: 0 }, // en km
     calories: { type: Number, min: 0, default: 0 },
     activeTime: { type: Number, min: 0, default: 0 }, // en minutes
-    mode: { type: String, enum: ["walk", "run", "bike"], default: "walk" },
+    mode: { type: String, enum: ['walk', 'run', 'bike'], default: 'walk' },
   },
   { _id: false }
-);
+)
 
 const stepEntrySchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
       index: true,
     },
@@ -36,8 +36,8 @@ const stepEntrySchema = new Schema(
     // Mode dominant de la journée
     dominantMode: {
       type: String,
-      enum: ["walk", "run", "bike"],
-      default: "walk",
+      enum: ['walk', 'run', 'bike'],
+      default: 'walk',
     },
 
     // Métadonnées
@@ -47,6 +47,6 @@ const stepEntrySchema = new Schema(
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
-);
+)
 
-module.exports = mongoose.model("StepEntry", stepEntrySchema);
+module.exports = mongoose.model('StepEntry', stepEntrySchema)

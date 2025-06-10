@@ -232,7 +232,7 @@
 }
 
 .active-link::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   width: 3px;
@@ -300,7 +300,7 @@
     font-size: 0;
   }
   .hide-sidebar .sidebar__title.nav::after {
-    content: "NAV";
+    content: 'NAV';
     font-size: var(--tiny-font-size);
     font-weight: var(--font-semi-bold);
   }

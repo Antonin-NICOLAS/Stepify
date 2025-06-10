@@ -34,13 +34,13 @@
 }
 
 .twofactor-verification-page .auth-visual-section::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("/placeholder.svg?height=600&width=600") center / cover
+  background: url('/placeholder.svg?height=600&width=600') center / cover
     no-repeat;
   opacity: 0.1;
 }

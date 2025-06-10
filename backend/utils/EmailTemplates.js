@@ -492,7 +492,7 @@ const NewLoginEmailTemplate = `
 </body>
 
 </html>
-`;
+`
 const EmailVerificationTokenTemplate = `
 <!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -900,7 +900,7 @@ const EmailVerificationTokenTemplate = `
 </body>
 
 </html>
-`;
+`
 
 const WelcomeEmailTemplate = `
 <!DOCTYPE html>
@@ -1478,7 +1478,7 @@ const WelcomeEmailTemplate = `
 	</table><!-- End -->
 </body>
 
-</html>`;
+</html>`
 
 const EmailPasswordResetTemplate = `
 <!DOCTYPE html>
@@ -1895,7 +1895,7 @@ const EmailPasswordResetTemplate = `
 </body>
 
 </html>
-`;
+`
 
 const ResetPasswordSuccessfulTemplate = `
 <!DOCTYPE html>
@@ -2271,7 +2271,7 @@ const ResetPasswordSuccessfulTemplate = `
 </body>
 
 </html>
-`;
+`
 
 const TwoFactorSetupEmailTemplate = (firstName) => `
       <h1>Bonjour ${firstName},</h1>
@@ -2280,7 +2280,7 @@ const TwoFactorSetupEmailTemplate = (firstName) => `
       <p>Une fois le QR code scanné, vous devrez entrer le code généré par l'application pour activer la 2FA.</p>
       <p>Si vous n'avez pas initié cette action, veuillez contacter immédiatement notre support.</p>
       <p>Cordialement,<br>L'équipe Stepify</p>
-    `;
+    `
 
 const BackupCodesEmailTemplate = (firstName, backupCodes) => `
       <h1>Bonjour ${firstName},</h1>
@@ -2291,12 +2291,12 @@ const BackupCodesEmailTemplate = (firstName, backupCodes) => `
             (code) =>
               `<div style="font-family: monospace; margin: 5px 0;">${code.code}</div>`
           )
-          .join("")}
+          .join('')}
       </div>
       <p>Ces codes vous permettront de vous connecter si vous perdez l'accès à votre application d'authentification.</p>
       <p>Chaque code ne peut être utilisé qu'une seule fois.</p>
       <p>Cordialement,<br>L'équipe Stepify</p>
-	  `;
+	  `
 
 const TwoFactorEmailCodeTemplate = (firstName, code) => `
         <h1>Bonjour ${firstName},</h1>
@@ -2304,7 +2304,7 @@ const TwoFactorEmailCodeTemplate = (firstName, code) => `
         <h2 style="font-size: 32px; letter-spacing: 5px; text-align: center; padding: 20px; background: #f5f5f5; border-radius: 8px;">${code}</h2>
         <p>Ce code expirera dans 10 minutes.</p>
         <p>Si vous n'avez pas demandé ce code, veuillez ignorer cet email.</p>
-        <p>Cordialement,<br>L'équipe Stepify</p>`;
+        <p>Cordialement,<br>L'équipe Stepify</p>`
 
 module.exports = {
   NewLoginEmailTemplate,
@@ -2314,5 +2314,5 @@ module.exports = {
   ResetPasswordSuccessfulTemplate,
   TwoFactorSetupEmailTemplate,
   BackupCodesEmailTemplate,
-  TwoFactorEmailCodeTemplate
-};
+  TwoFactorEmailCodeTemplate,
+}

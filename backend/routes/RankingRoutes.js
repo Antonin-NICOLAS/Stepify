@@ -1,19 +1,19 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+const express = require('express')
+const cors = require('cors')
+require('dotenv').config()
 //middleware
-const { verifyToken, requireAuth } = require("../middlewares/VerifyToken.js");
-const { localization } = require("../middlewares/Localization");
+const { verifyToken, requireAuth } = require('../middlewares/VerifyToken.js')
+const { localization } = require('../middlewares/Localization')
 //controllers
 const {
   getGlobalRanking,
   getFriendsRanking,
   getChallengesRanking,
   getRewardsRanking,
-} = require("../controllers/RankingController");
+} = require('../controllers/RankingController')
 
 //router
-const router = express.Router();
+const router = express.Router()
 
 //middleware
 router.use(
@@ -21,14 +21,14 @@ router.use(
     credentials: true,
     origin: process.env.FRONTEND_SERVER,
   })
-);
+)
 
-router.use(verifyToken, localization, requireAuth);
+router.use(verifyToken, localization, requireAuth)
 
 //routes
-router.get("/:userId", getGlobalRanking);
-router.get("/:userId/friends", getFriendsRanking);
-router.get("/:userId/challenges", getChallengesRanking);
-router.get("/:userId/rewards", getRewardsRanking);
+router.get('/:userId', getGlobalRanking)
+router.get('/:userId/friends', getFriendsRanking)
+router.get('/:userId/challenges', getChallengesRanking)
+router.get('/:userId/rewards', getRewardsRanking)
 
-module.exports = router;
+module.exports = router

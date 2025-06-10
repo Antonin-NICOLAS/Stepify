@@ -1,22 +1,22 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-require("./StepEntry.js");
-require("./Reward.js");
-require("./Challenge.js");
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+require('./StepEntry.js')
+require('./Reward.js')
+require('./Challenge.js')
 
 const userSchema = new Schema(
   {
     // --- Informations de base ---
     firstName: {
       type: String,
-      required: [true, "Le prénom est requis"],
-      minlength: [2, "Le prénom doit contenir au moins 2 caractères"],
+      required: [true, 'Le prénom est requis'],
+      minlength: [2, 'Le prénom doit contenir au moins 2 caractères'],
       trim: true,
     },
     lastName: {
       type: String,
-      required: [true, "Le nom est requis"],
-      minlength: [2, "Le nom doit contenir au moins 2 caractères"],
+      required: [true, 'Le nom est requis'],
+      minlength: [2, 'Le nom doit contenir au moins 2 caractères'],
       trim: true,
     },
     username: {
@@ -42,19 +42,19 @@ const userSchema = new Schema(
       type: String,
       required: [true, "L'email est requis"],
       unique: true,
-      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Veuillez entrer un email valide"],
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Veuillez entrer un email valide'],
       trim: true,
       lowercase: true,
     },
     password: {
       type: String,
-      required: [true, "Le mot de passe est requis"],
-      minlength: [8, "Le mot de passe doit contenir au moins 8 caractères"],
+      required: [true, 'Le mot de passe est requis'],
+      minlength: [8, 'Le mot de passe doit contenir au moins 8 caractères'],
     },
     avatarUrl: {
       type: String,
       default:
-        "https://res.cloudinary.com/dpqhhckyj/image/upload/v1748295671/account_hpeh3t.png",
+        'https://res.cloudinary.com/dpqhhckyj/image/upload/v1748295671/account_hpeh3t.png',
       match: [
         /^https?:\/\/.+\..+$/,
         "L'URL de l'avatar doit être une URL valide",
@@ -64,30 +64,30 @@ const userSchema = new Schema(
       fr: {
         type: String,
         default: "Salut, j'utilise Stepify !",
-        maxlength: [150, "Le statut ne peut pas dépasser 150 caractères"],
+        maxlength: [150, 'Le statut ne peut pas dépasser 150 caractères'],
       },
       en: {
         type: String,
-        default: "Hi, I am using Stepify!",
-        maxlength: [150, "Status cannot exceed 150 characters"],
+        default: 'Hi, I am using Stepify!',
+        maxlength: [150, 'Status cannot exceed 150 characters'],
       },
       es: {
         type: String,
-        default: "¡Hola, uso Stepify!",
-        maxlength: [150, "El estado no puede superar los 150 caracteres"],
+        default: '¡Hola, uso Stepify!',
+        maxlength: [150, 'El estado no puede superar los 150 caracteres'],
       },
       de: {
         type: String,
-        default: "Hallo, ich benutze Stepify!",
-        maxlength: [150, "Der Status kann nicht länger als 150 Zeichen sein"],
+        default: 'Hallo, ich benutze Stepify!',
+        maxlength: [150, 'Der Status kann nicht länger als 150 Zeichen sein'],
       },
     },
 
     // --- Authentification & Sécurité ---
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: "user",
+      enum: ['user', 'admin'],
+      default: 'user',
       required: true,
     },
     isVerified: {
@@ -130,7 +130,7 @@ const userSchema = new Schema(
       lockUntil: Date,
       preferredMethod: {
         type: String,
-        enum: ["app", "email", "webauthn"],
+        enum: ['app', 'email', 'webauthn'],
         default: undefined,
       },
       appEnabled: {
@@ -159,18 +159,24 @@ const userSchema = new Schema(
       challenge: {
         type: String,
       },
-      webauthnCredentials: [{
-        credentialId: String,
-        publicKey: String,
-        counter: Number,
-        deviceType: String,
-        backedUp: Boolean,
-        transports: [String],
-        createdAt: {
-          type: Date,
-          default: Date.now
-        }
-      }],
+      challengeExpires: {
+        type: Date,
+        default: null,
+      },
+      webauthnCredentials: [
+        {
+          credentialId: String,
+          publicKey: String,
+          counter: Number,
+          deviceType: String,
+          backedUp: Boolean,
+          transports: [String],
+          createdAt: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
       backupCodes: [
         {
           code: String,
@@ -214,18 +220,18 @@ const userSchema = new Schema(
         type: {
           type: String,
           enum: [
-            "steps",
-            "steps-time",
-            "distance",
-            "distance-time",
-            "calories",
-            "calories-time",
-            "xp",
-            "xp-time",
-            "streak",
-            "challenges",
-            "challenges-time",
-            "rank",
+            'steps',
+            'steps-time',
+            'distance',
+            'distance-time',
+            'calories',
+            'calories-time',
+            'xp',
+            'xp-time',
+            'streak',
+            'challenges',
+            'challenges-time',
+            'rank',
           ],
           required: true,
         },
@@ -244,12 +250,12 @@ const userSchema = new Schema(
           min: 0,
           required: function () {
             return [
-              "steps-time",
-              "distance-time",
-              "calories-time",
-              "xp-time",
-              "challenges-time",
-            ].includes(this.type);
+              'steps-time',
+              'distance-time',
+              'calories-time',
+              'xp-time',
+              'challenges-time',
+            ].includes(this.type)
           },
         },
         deadline: {
@@ -257,9 +263,9 @@ const userSchema = new Schema(
           required: true,
           validate: {
             validator: function (v) {
-              return v > new Date();
+              return v > new Date()
             },
-            message: "La date limite doit être dans le futur",
+            message: 'La date limite doit être dans le futur',
           },
         },
         createdAt: {
@@ -296,7 +302,7 @@ const userSchema = new Schema(
       {
         rewardId: {
           type: Schema.Types.ObjectId,
-          ref: "Reward",
+          ref: 'Reward',
           required: true,
         },
         progress: {
@@ -318,7 +324,7 @@ const userSchema = new Schema(
       {
         challengeId: {
           type: Schema.Types.ObjectId,
-          ref: "Challenge",
+          ref: 'Challenge',
           required: true,
         },
         joinedAt: {
@@ -357,7 +363,7 @@ const userSchema = new Schema(
       {
         userId: {
           type: Schema.Types.ObjectId,
-          ref: "User",
+          ref: 'User',
           required: true,
         },
         addedAt: {
@@ -370,7 +376,7 @@ const userSchema = new Schema(
       {
         notificationId: {
           type: Schema.Types.ObjectId,
-          ref: "Notification",
+          ref: 'Notification',
           required: true,
         },
       },
@@ -401,13 +407,13 @@ const userSchema = new Schema(
     // --- Préférences utilisateur ---
     themePreference: {
       type: String,
-      enum: ["light", "dark", "auto"],
-      default: "auto",
+      enum: ['light', 'dark', 'auto'],
+      default: 'auto',
     },
     languagePreference: {
       type: String,
-      enum: ["fr", "en", "es", "de"],
-      default: "fr",
+      enum: ['fr', 'en', 'es', 'de'],
+      default: 'fr',
     },
     notificationPreferences: {
       activitySummary: { type: Boolean, default: true },
@@ -439,73 +445,73 @@ const userSchema = new Schema(
     toJSON: {
       virtuals: true,
       transform: function (doc, ret) {
-        delete ret.password;
-        delete ret.verificationToken;
-        delete ret.resetPasswordToken;
-        delete ret.activeSessions;
-        delete ret.loginAttempts;
-        delete ret.lockUntil;
+        delete ret.password
+        delete ret.verificationToken
+        delete ret.resetPasswordToken
+        delete ret.activeSessions
+        delete ret.loginAttempts
+        delete ret.lockUntil
         if (ret.twoFactorAuth) {
-          delete ret.twoFactorAuth.secret;
-          delete ret.twoFactorAuth.backupCodes;
+          delete ret.twoFactorAuth.secret
+          delete ret.twoFactorAuth.backupCodes
         }
-        return ret;
+        return ret
       },
     },
     toObject: {
       virtuals: true,
     },
   }
-);
+)
 
 // Virtual pour le nom complet
-userSchema.virtual("fullName").get(function () {
-  return `${this.firstName} ${this.lastName}`;
-});
+userSchema.virtual('fullName').get(function () {
+  return `${this.firstName} ${this.lastName}`
+})
 
 // fonction pour envoyer l'utilisateur avec le minimum de données
 userSchema.methods.toMinimal = function () {
-  const userObj = this.toObject({ virtuals: true });
+  const userObj = this.toObject({ virtuals: true })
   // sensible
-  delete userObj.password;
-  delete userObj.verificationToken;
-  delete userObj.resetPasswordToken;
-  delete userObj.activeSessions;
-  delete userObj.loginAttempts;
-  delete userObj.lockUntil;
-  delete userObj.twoFactorAuth.secret;
-  delete userObj.twoFactorAuth.backupCodes;
+  delete userObj.password
+  delete userObj.verificationToken
+  delete userObj.resetPasswordToken
+  delete userObj.activeSessions
+  delete userObj.loginAttempts
+  delete userObj.lockUntil
+  delete userObj.twoFactorAuth.secret
+  delete userObj.twoFactorAuth.backupCodes
   //delete userObj.privacySettings;
   //delete userObj.notificationPreferences;
   // Arrays
-  delete userObj.rewardsUnlocked;
-  delete userObj.friendRequests;
-  delete userObj.customGoals;
-  delete userObj.challenges;
+  delete userObj.rewardsUnlocked
+  delete userObj.friendRequests
+  delete userObj.customGoals
+  delete userObj.challenges
   // Stats
-  delete userObj.totalCalories;
-  delete userObj.totalDistance;
-  delete userObj.totalSteps;
-  delete userObj.totalXP;
-  delete userObj.totalCustomGoalsCompleted;
-  delete userObj.totalChallengesCompleted;
-  delete userObj.rankingHistory;
-  delete userObj.streak;
-  delete userObj.level;
-  return userObj;
-};
+  delete userObj.totalCalories
+  delete userObj.totalDistance
+  delete userObj.totalSteps
+  delete userObj.totalXP
+  delete userObj.totalCustomGoalsCompleted
+  delete userObj.totalChallengesCompleted
+  delete userObj.rankingHistory
+  delete userObj.streak
+  delete userObj.level
+  return userObj
+}
 
 // Méthode pour le progrès de l'objectif quotidien
 userSchema.methods.calculateTodayProgress = async function () {
-  const StepEntry = mongoose.model("StepEntry");
-  const today = new Date().toISOString().split("T")[0];
+  const StepEntry = mongoose.model('StepEntry')
+  const today = new Date().toISOString().split('T')[0]
 
-  const entry = await StepEntry.findOne({ user: this._id, day: today });
-  const todaySteps = entry?.totalSteps || 0;
-  return Math.min(Math.round((todaySteps / this.dailyGoal) * 1000) / 10, 100); // max 100%
-};
+  const entry = await StepEntry.findOne({ user: this._id, day: today })
+  const todaySteps = entry?.totalSteps || 0
+  return Math.min(Math.round((todaySteps / this.dailyGoal) * 1000) / 10, 100) // max 100%
+}
 
 // Index pour améliorer les performances
-userSchema.index({ "customGoals.deadline": 1 });
+userSchema.index({ 'customGoals.deadline': 1 })
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema)

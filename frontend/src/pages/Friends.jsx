@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 // Context & Hooks
-import { useAuth } from "../context/AuthContext";
-import { useFriends } from "../hooks/useFriends";
-import { useNotifications } from "../hooks/useNotifications";
-import { useUser } from "../context/UserContext";
-import GlobalLoader from "../utils/GlobalLoader";
+import { useAuth } from '../context/AuthContext'
+import { useFriends } from '../hooks/useFriends'
+import { useNotifications } from '../hooks/useNotifications'
+import { useUser } from '../context/UserContext'
+import GlobalLoader from '../utils/GlobalLoader'
 // Icons
 import {
   Users,
@@ -29,19 +29,19 @@ import {
   Check,
   AlertTriangle,
   Star,
-} from "lucide-react";
+} from 'lucide-react'
 // Charts
-import { Line } from "react-chartjs-2";
-import { Chart, registerables } from "chart.js";
+import { Line } from 'react-chartjs-2'
+import { Chart, registerables } from 'chart.js'
 // CSS
-import "./Friends.css";
+import './Friends.css'
 
 // Register Chart.js components
-Chart.register(...registerables);
+Chart.register(...registerables)
 
 const Friends = () => {
-  const { user } = useAuth();
-  const { getUserProfile } = useUser();
+  const { user } = useAuth()
+  const { getUserProfile } = useUser()
   const {
     friends,
     friendRequests,
@@ -52,22 +52,22 @@ const Friends = () => {
     fetchFriendRequests,
     searchUsers,
     removeFriend,
-  } = useFriends(user?._id);
+  } = useFriends(user?._id)
   const {
     sendFriendRequest,
     acceptFriendRequest,
     declineFriendRequest,
     cancelFriendRequest,
-  } = useNotifications(user?._id);
+  } = useNotifications(user?._id)
   // State
-  const [activeTab, setActiveTab] = useState("friends");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
-  const [sortBy, setSortBy] = useState("name");
-  const [filterActivity, setFilterActivity] = useState("all");
-  const [selectedFriend, setSelectedFriend] = useState(null);
-  const [showFriendModal, setShowFriendModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('friends')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
+  const [sortBy, setSortBy] = useState('name')
+  const [filterActivity, setFilterActivity] = useState('all')
+  const [selectedFriend, setSelectedFriend] = useState(null)
+  const [showFriendModal, setShowFriendModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Settings state
   const [settings, setSettings] = useState({
@@ -75,158 +75,158 @@ const Friends = () => {
     allowFriendRequests: true,
     showActivityToFriends: true,
     showStatsToFriends: true,
-  });
+  })
 
-  const modalRef = useRef(null);
+  const modalRef = useRef(null)
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
-      setShowFriendModal(false);
-      setSelectedFriend(null);
+      setShowFriendModal(false)
+      setSelectedFriend(null)
     }
-  };
+  }
 
   useEffect(() => {
     const fetchAll = async () => {
       if (user?._id) {
-        await fetchFriends();
-        await fetchFriendRequests();
+        await fetchFriends()
+        await fetchFriendRequests()
       }
-      setIsLoading(false);
-    };
-    fetchAll();
-  }, [user?._id, fetchFriends, fetchFriendRequests]);
+      setIsLoading(false)
+    }
+    fetchAll()
+  }, [user?._id, fetchFriends, fetchFriendRequests])
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        setShowFriendModal(false);
-        setSelectedFriend(null);
+      if (e.key === 'Escape') {
+        setShowFriendModal(false)
+        setSelectedFriend(null)
       }
-    };
+    }
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown)
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   // Search with debounce
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (searchQuery.trim()) {
-        searchUsers(searchQuery);
+        searchUsers(searchQuery)
       }
-    }, 500);
+    }, 500)
 
-    return () => clearTimeout(timeoutId);
-  }, [searchQuery, searchUsers]);
+    return () => clearTimeout(timeoutId)
+  }, [searchQuery, searchUsers])
 
   // Helper functions
   const getActivityStatus = (friend) => {
-    const lastActivity = new Date(friend.lastActivity);
-    const now = new Date();
-    const diffHours = (now - lastActivity) / (1000 * 60 * 60);
+    const lastActivity = new Date(friend.lastActivity)
+    const now = new Date()
+    const diffHours = (now - lastActivity) / (1000 * 60 * 60)
 
-    if (diffHours < 1) return { status: "online", text: "En ligne" };
-    if (diffHours < 24) return { status: "today", text: "Actif aujourd'hui" };
-    if (diffHours < 168) return { status: "week", text: "Actif cette semaine" };
-    return { status: "inactive", text: "Inactif" };
-  };
+    if (diffHours < 1) return { status: 'online', text: 'En ligne' }
+    if (diffHours < 24) return { status: 'today', text: "Actif aujourd'hui" }
+    if (diffHours < 168) return { status: 'week', text: 'Actif cette semaine' }
+    return { status: 'inactive', text: 'Inactif' }
+  }
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })
+  }
 
   const sortFriends = (friendsList) => {
-    const sorted = [...friendsList];
+    const sorted = [...friendsList]
 
     switch (sortBy) {
-      case "name":
-        return sorted.sort((a, b) => a.fullName.localeCompare(b.fullName));
-      case "activity":
+      case 'name':
+        return sorted.sort((a, b) => a.fullName.localeCompare(b.fullName))
+      case 'activity':
         return sorted.sort(
-          (a, b) => new Date(b.lastActivity) - new Date(a.lastActivity),
-        );
-      case "added":
-        return sorted.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
-      case "steps":
-        return sorted.sort((a, b) => (b.totalSteps || 0) - (a.totalSteps || 0));
+          (a, b) => new Date(b.lastActivity) - new Date(a.lastActivity)
+        )
+      case 'added':
+        return sorted.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt))
+      case 'steps':
+        return sorted.sort((a, b) => (b.totalSteps || 0) - (a.totalSteps || 0))
       default:
-        return sorted;
+        return sorted
     }
-  };
+  }
 
   const filterFriends = (friendsList) => {
-    if (filterActivity === "all") return friendsList;
+    if (filterActivity === 'all') return friendsList
 
     return friendsList.filter((friend) => {
-      const activity = getActivityStatus(friend);
-      return activity.status === filterActivity;
-    });
-  };
+      const activity = getActivityStatus(friend)
+      return activity.status === filterActivity
+    })
+  }
 
   const handleFriendClick = async (friend) => {
-    const friendProfile = await getUserProfile(friend.userId._id);
+    const friendProfile = await getUserProfile(friend.userId._id)
     if (friendProfile) {
-      setSelectedFriend(friendProfile);
-      setShowFriendModal(true);
+      setSelectedFriend(friendProfile)
+      setShowFriendModal(true)
     }
-  };
+  }
 
   const handleSendFriendRequest = async (userId) => {
-    await sendFriendRequest(userId);
-  };
+    await sendFriendRequest(userId)
+  }
 
   const handleAcceptRequest = async (requestId, inviteId) => {
-    await acceptFriendRequest(requestId, inviteId);
-  };
+    await acceptFriendRequest(requestId, inviteId)
+  }
 
   const handleDeclineRequest = async (inviteId) => {
-    await declineFriendRequest(inviteId);
-  };
+    await declineFriendRequest(inviteId)
+  }
 
   const handleRemoveFriend = async (friendId) => {
-    if (confirm("Êtes-vous sûr de vouloir supprimer cet ami ?")) {
-      await removeFriend(friendId);
+    if (confirm('Êtes-vous sûr de vouloir supprimer cet ami ?')) {
+      await removeFriend(friendId)
     }
-  };
+  }
 
   const handleCancelRequest = async (requestId) => {
-    await cancelFriendRequest(requestId);
-  };
+    await cancelFriendRequest(requestId)
+  }
 
   // Generate activity chart data for friend profile
   const generateActivityChartData = (friend) => {
     const labels = Array.from({ length: 7 }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - (6 - i));
-      return date.toLocaleDateString("fr-FR", { weekday: "short" });
-    });
+      const date = new Date()
+      date.setDate(date.getDate() - (6 - i))
+      return date.toLocaleDateString('fr-FR', { weekday: 'short' })
+    })
 
     const stepsData = labels.map(() =>
-      Math.floor((friend.dailySteps || 5000) * (0.7 + Math.random() * 0.6)),
-    );
+      Math.floor((friend.dailySteps || 5000) * (0.7 + Math.random() * 0.6))
+    )
 
     return {
       labels,
       datasets: [
         {
-          label: "Pas",
+          label: 'Pas',
           data: stepsData,
-          backgroundColor: "rgba(74, 145, 158, 0.2)",
-          borderColor: "rgba(74, 145, 158, 1)",
+          backgroundColor: 'rgba(74, 145, 158, 0.2)',
+          borderColor: 'rgba(74, 145, 158, 1)',
           borderWidth: 2,
           tension: 0.4,
           fill: true,
         },
       ],
-    };
-  };
+    }
+  }
 
   const chartOptions = {
     responsive: true,
@@ -241,12 +241,12 @@ const Friends = () => {
         beginAtZero: true,
       },
     },
-  };
+  }
 
   // Get tab content
   const getTabContent = () => {
     switch (activeTab) {
-      case "friends":
+      case 'friends':
         return (
           <div className="friends-content">
             <div className="friends-header">
@@ -260,9 +260,9 @@ const Friends = () => {
                   <span>
                     {
                       friends.filter(
-                        (f) => getActivityStatus(f.userId).status === "online",
+                        (f) => getActivityStatus(f.userId).status === 'online'
                       ).length
-                    }{" "}
+                    }{' '}
                     en ligne
                   </span>
                 </div>
@@ -318,7 +318,7 @@ const Friends = () => {
             {friends.length > 0 ? (
               <div className="friends-grid">
                 {filterFriends(sortFriends(friends)).map((friend) => {
-                  const activity = getActivityStatus(friend.userId);
+                  const activity = getActivityStatus(friend.userId)
                   return (
                     <div
                       key={friend._id}
@@ -327,7 +327,7 @@ const Friends = () => {
                     >
                       <div className="friend-avatar">
                         <img
-                          src={friend.userId.avatarUrl || "/placeholder.svg"}
+                          src={friend.userId.avatarUrl || '/placeholder.svg'}
                           alt={friend.userId.username}
                         />
                         <div
@@ -344,7 +344,7 @@ const Friends = () => {
                         </p>
                         <p className="friend-status">
                           {friend.userId.status?.[user?.languagePreference] ||
-                            "Pas de statut"}
+                            'Pas de statut'}
                         </p>
 
                         <div className="friend-stats">
@@ -352,7 +352,7 @@ const Friends = () => {
                             <Footprints size={12} />
                             <span>
                               {(friend.userId.totalSteps || 0).toLocaleString(
-                                "fr-FR",
+                                'fr-FR'
                               )}
                             </span>
                           </div>
@@ -384,7 +384,7 @@ const Friends = () => {
                         <button
                           className="action-icon-button"
                           onClick={(e) => {
-                            e.stopPropagation();
+                            e.stopPropagation()
                             // Handle message
                           }}
                           title="Envoyer un message"
@@ -394,8 +394,8 @@ const Friends = () => {
                         <button
                           className="action-icon-button danger"
                           onClick={(e) => {
-                            e.stopPropagation();
-                            handleRemoveFriend(friend.userId._id);
+                            e.stopPropagation()
+                            handleRemoveFriend(friend.userId._id)
                           }}
                           title="Supprimer l'ami"
                         >
@@ -403,7 +403,7 @@ const Friends = () => {
                         </button>
                       </div>
                     </div>
-                  );
+                  )
                 })}
               </div>
             ) : (
@@ -419,7 +419,7 @@ const Friends = () => {
                 <div className="empty-actions">
                   <button
                     className="action-button primary"
-                    onClick={() => setActiveTab("search")}
+                    onClick={() => setActiveTab('search')}
                   >
                     <Search size={16} />
                     <span>Rechercher des amis</span>
@@ -428,9 +428,9 @@ const Friends = () => {
               </div>
             )}
           </div>
-        );
+        )
 
-      case "requests":
+      case 'requests':
         return (
           <div className="requests-content">
             <div className="requests-section">
@@ -446,7 +446,7 @@ const Friends = () => {
                     <div key={request._id} className="request-card received">
                       <div className="request-avatar">
                         <img
-                          src={request.sender.avatarUrl || "/placeholder.svg"}
+                          src={request.sender.avatarUrl || '/placeholder.svg'}
                           alt={request.sender.username}
                         />
                       </div>
@@ -499,7 +499,7 @@ const Friends = () => {
                       <div className="request-avatar">
                         <img
                           src={
-                            request.recipient.avatarUrl || "/placeholder.svg"
+                            request.recipient.avatarUrl || '/placeholder.svg'
                           }
                           alt={request.recipient.username}
                         />
@@ -535,9 +535,9 @@ const Friends = () => {
               )}
             </div>
           </div>
-        );
+        )
 
-      case "search":
+      case 'search':
         return (
           <div className="search-content">
             <div className="search-header">
@@ -556,7 +556,7 @@ const Friends = () => {
             </div>
 
             <div className="search-results">
-              {searchQuery.trim() === "" ? (
+              {searchQuery.trim() === '' ? (
                 <div className="empty-search">
                   <div className="empty-icon">
                     <Search size={48} />
@@ -573,7 +573,7 @@ const Friends = () => {
                     <div key={searchUser._id} className="search-result-card">
                       <div className="result-avatar">
                         <img
-                          src={searchUser.avatarUrl || "/placeholder.svg"}
+                          src={searchUser.avatarUrl || '/placeholder.svg'}
                           alt={searchUser.username}
                         />
                       </div>
@@ -585,7 +585,7 @@ const Friends = () => {
                             <Footprints size={12} />
                             <span>
                               {(searchUser.totalSteps || 0).toLocaleString(
-                                "fr-FR",
+                                'fr-FR'
                               )}
                             </span>
                           </div>
@@ -597,14 +597,14 @@ const Friends = () => {
                       </div>
                       <div className="result-actions">
                         {friends.some(
-                          (f) => f.userId._id === searchUser._id,
+                          (f) => f.userId._id === searchUser._id
                         ) ? (
                           <button className="action-button disabled">
                             <Check size={16} />
                             <span>Déjà ami</span>
                           </button>
                         ) : sentRequests.some(
-                            (r) => r.recipient._id === searchUser._id,
+                            (r) => r.recipient._id === searchUser._id
                           ) ? (
                           <button className="action-button disabled">
                             <Clock size={16} />
@@ -636,9 +636,9 @@ const Friends = () => {
               ) : null}
             </div>
           </div>
-        );
+        )
 
-      case "settings":
+      case 'settings':
         return (
           <div className="settings-content">
             <div className="settings-header">
@@ -739,12 +739,12 @@ const Friends = () => {
               </div>
             </div>
           </div>
-        );
+        )
 
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   if (!user) {
     return (
@@ -760,7 +760,7 @@ const Friends = () => {
           </Link>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -773,15 +773,15 @@ const Friends = () => {
 
       <div className="friends-tabs">
         <button
-          className={activeTab === "friends" ? "active" : ""}
-          onClick={() => setActiveTab("friends")}
+          className={activeTab === 'friends' ? 'active' : ''}
+          onClick={() => setActiveTab('friends')}
         >
           <Users size={16} />
           <span>Amis</span>
         </button>
         <button
-          className={activeTab === "requests" ? "active" : ""}
-          onClick={() => setActiveTab("requests")}
+          className={activeTab === 'requests' ? 'active' : ''}
+          onClick={() => setActiveTab('requests')}
         >
           <UserPlus size={16} />
           <span>Demandes</span>
@@ -792,15 +792,15 @@ const Friends = () => {
           )}
         </button>
         <button
-          className={activeTab === "search" ? "active" : ""}
-          onClick={() => setActiveTab("search")}
+          className={activeTab === 'search' ? 'active' : ''}
+          onClick={() => setActiveTab('search')}
         >
           <Search size={16} />
           <span>Rechercher</span>
         </button>
         <button
-          className={activeTab === "settings" ? "active" : ""}
-          onClick={() => setActiveTab("settings")}
+          className={activeTab === 'settings' ? 'active' : ''}
+          onClick={() => setActiveTab('settings')}
         >
           <Settings size={16} />
           <span>Paramètres</span>
@@ -822,8 +822,8 @@ const Friends = () => {
               <button
                 className="close-button"
                 onClick={() => {
-                  setShowFriendModal(false);
-                  setSelectedFriend(null);
+                  setShowFriendModal(false)
+                  setSelectedFriend(null)
                 }}
               >
                 <X size={20} />
@@ -834,7 +834,7 @@ const Friends = () => {
               <div className="friend-detail-header">
                 <div className="friend-detail-avatar">
                   <img
-                    src={selectedFriend.avatarUrl || "/placeholder.svg"}
+                    src={selectedFriend.avatarUrl || '/placeholder.svg'}
                     alt={selectedFriend.username}
                   />
                   <div
@@ -849,7 +849,7 @@ const Friends = () => {
                   <p className="username">@{selectedFriend.username}</p>
                   <p className="status">
                     {selectedFriend.status?.[user?.languagePreference] ||
-                      "Pas de statut"}
+                      'Pas de statut'}
                   </p>
                 </div>
 
@@ -868,7 +868,7 @@ const Friends = () => {
                   </div>
                   <div className="stat-content">
                     <span className="stat-value">
-                      {(selectedFriend.totalSteps || 0).toLocaleString("fr-FR")}
+                      {(selectedFriend.totalSteps || 0).toLocaleString('fr-FR')}
                     </span>
                     <span className="stat-label">Pas totaux</span>
                   </div>
@@ -892,7 +892,7 @@ const Friends = () => {
                   </div>
                   <div className="stat-content">
                     <span className="stat-value">
-                      {(selectedFriend.totalXP || 0).toLocaleString("fr-FR")}
+                      {(selectedFriend.totalXP || 0).toLocaleString('fr-FR')}
                     </span>
                     <span className="stat-label">XP total</span>
                   </div>
@@ -914,7 +914,7 @@ const Friends = () => {
               {settings.showActivityToFriends && (
                 <div className="chart-section">
                   <h4>Activité des 7 derniers jours</h4>
-                  <div className="chart-container" style={{ height: "200px" }}>
+                  <div className="chart-container" style={{ height: '200px' }}>
                     <Line
                       data={generateActivityChartData(selectedFriend)}
                       options={chartOptions}
@@ -927,8 +927,8 @@ const Friends = () => {
                 <button
                   className="action-button danger"
                   onClick={() => {
-                    setShowFriendModal(false);
-                    handleRemoveFriend(selectedFriend._id);
+                    setShowFriendModal(false)
+                    handleRemoveFriend(selectedFriend._id)
                   }}
                 >
                   <UserMinus size={16} />
@@ -945,17 +945,17 @@ const Friends = () => {
         <Info size={16} />
         <p>
           Vos informations d'amis sont privées et ne sont partagées qu'avec vos
-          amis confirmés.{" "}
+          amis confirmés.{' '}
           <button
             className="privacy-link"
-            onClick={() => setActiveTab("settings")}
+            onClick={() => setActiveTab('settings')}
           >
             Modifier les paramètres de confidentialité
           </button>
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Friends;
+export default Friends

@@ -18,17 +18,17 @@ const sendLocalizedResponse = (
   const response = {
     success,
     ...additionalData,
-  };
+  }
 
   if (success === true && messagePath) {
-    response.message = res.locals.t(messagePath, params);
+    response.message = res.locals.t(messagePath, params)
   }
   if (success === false && messagePath) {
-    response.error = res.locals.t(messagePath, params);
+    response.error = res.locals.t(messagePath, params)
   }
 
-  res.status(statusCode).json(response);
-};
+  res.status(statusCode).json(response)
+}
 
 /**
  * Envoie une réponse d'erreur avec un message localisé
@@ -52,8 +52,8 @@ const sendLocalizedError = (
     errorPath,
     params,
     additionalData
-  );
-};
+  )
+}
 
 /**
  * Envoie une réponse de succès avec un message localisé
@@ -68,11 +68,11 @@ const sendLocalizedSuccess = (
   params = {},
   additionalData = {}
 ) => {
-  sendLocalizedResponse(res, 200, true, successPath, params, additionalData);
-};
+  sendLocalizedResponse(res, 200, true, successPath, params, additionalData)
+}
 
 module.exports = {
   sendLocalizedResponse,
   sendLocalizedError,
   sendLocalizedSuccess,
-};
+}

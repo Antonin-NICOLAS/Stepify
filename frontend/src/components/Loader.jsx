@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion'
 
 const SvgLoader = ({ size = 150 }) => {
   // Path variants for animation
@@ -11,11 +11,11 @@ const SvgLoader = ({ size = 150 }) => {
       pathLength: 1,
       opacity: 1,
       transition: {
-        pathLength: { type: "spring", duration: 2.5, bounce: 0 },
+        pathLength: { type: 'spring', duration: 2.5, bounce: 0 },
         opacity: { duration: 0.5 },
       },
     },
-  };
+  }
 
   // Container variants for the pulsing effect
   const containerVariants = {
@@ -26,10 +26,10 @@ const SvgLoader = ({ size = 150 }) => {
       transition: {
         duration: 3,
         repeat: Number.POSITIVE_INFINITY,
-        ease: "easeInOut",
+        ease: 'easeInOut',
       },
     },
-  };
+  }
 
   return (
     <div className="loader-container">
@@ -150,7 +150,7 @@ const SvgLoader = ({ size = 150 }) => {
                 ...pathVariants.visible,
                 transition: {
                   pathLength: {
-                    type: "spring",
+                    type: 'spring',
                     duration: 3,
                     bounce: 0,
                     delay: 0.5,
@@ -264,7 +264,7 @@ const SvgLoader = ({ size = 150 }) => {
               transition: {
                 duration: 3,
                 repeat: Number.POSITIVE_INFINITY,
-                ease: "linear",
+                ease: 'linear',
               },
             }}
             pathLength="1"
@@ -297,7 +297,7 @@ const SvgLoader = ({ size = 150 }) => {
               transition: {
                 duration: 4,
                 repeat: Number.POSITIVE_INFINITY,
-                ease: "linear",
+                ease: 'linear',
                 delay: 0.5,
               },
             }}
@@ -329,7 +329,7 @@ const SvgLoader = ({ size = 150 }) => {
         }
       `}</style>
     </div>
-  );
-};
+  )
+}
 
-export default SvgLoader;
+export default SvgLoader

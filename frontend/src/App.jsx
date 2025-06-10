@@ -1,17 +1,17 @@
-import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import { UserProvider } from "./context/UserContext";
-import { ThemeProvider } from "./context/ThemeContext";
-import axios from "axios";
-import { Toaster } from "react-hot-toast";
-import AppRoutes from "./routes/AppRoutes.jsx";
-import "./App.css";
-import "./context/i18n.js";
-import "./index.css";
+import { BrowserRouter } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext'
+import { UserProvider } from './context/UserContext'
+import { ThemeProvider } from './context/ThemeContext'
+import axios from 'axios'
+import { Toaster } from 'react-hot-toast'
+import AppRoutes from './routes/AppRoutes.jsx'
+import './App.css'
+import './context/i18n.js'
+import './index.css'
 
 axios.defaults.baseURL =
-  process.env.NODE_ENV === "production" ? "" : process.env.BACKEND_SERVER;
-axios.defaults.withCredentials = true;
+  process.env.NODE_ENV === 'production' ? '' : process.env.BACKEND_SERVER
+axios.defaults.withCredentials = true
 
 function App() {
   return (
@@ -26,8 +26,8 @@ function App() {
                 toastOptions={{
                   duration: 3500,
                   style: {
-                    background: "var(--bleu)",
-                    color: "#fff",
+                    background: 'var(--bleu)',
+                    color: '#fff',
                   },
                 }}
               />
@@ -37,7 +37,7 @@ function App() {
         </UserProvider>
       </AuthProvider>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

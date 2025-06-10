@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
-import { useNotifications } from "../../hooks/useNotifications";
+import { useState, useRef, useEffect } from 'react'
+import { useNotifications } from '../../hooks/useNotifications'
 // loader
-import GlobalLoader from "../../utils/GlobalLoader";
+import GlobalLoader from '../../utils/GlobalLoader'
 // icons
 import {
   Icon,
@@ -27,9 +27,9 @@ import {
   Share2,
   UserPlus,
   MessageSquare,
-} from "lucide-react";
-import { sneaker, watchActivity } from "@lucide/lab";
-import { Line, Pie } from "react-chartjs-2";
+} from 'lucide-react'
+import { sneaker, watchActivity } from '@lucide/lab'
+import { Line, Pie } from 'react-chartjs-2'
 
 const ChallengeDetailModal = ({
   challenge,
@@ -38,178 +38,178 @@ const ChallengeDetailModal = ({
   onLeave,
   user,
 }) => {
-  const { sendFriendRequest } = useNotifications(user?._id);
-  const [isLoading, setIsLoading] = useState(false);
-  const modalRef = useRef(null);
+  const { sendFriendRequest } = useNotifications(user?._id)
+  const [isLoading, setIsLoading] = useState(false)
+  const modalRef = useRef(null)
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
-      onClose();
+      onClose()
     }
-  };
+  }
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        onClose();
+      if (e.key === 'Escape') {
+        onClose()
       }
-    };
+    }
 
-    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown)
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose]);
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [onClose])
 
   const computeGlobalProgress = (participants = []) => {
-    if (!Array.isArray(participants) || !participants.length) return 0;
-    const total = participants.reduce((sum, p) => sum + (p.progress || 0), 0);
-    return Math.round(total / participants.length);
-  };
+    if (!Array.isArray(participants) || !participants.length) return 0
+    const total = participants.reduce((sum, p) => sum + (p.progress || 0), 0)
+    return Math.round(total / participants.length)
+  }
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
+    return new Date(date).toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    })
+  }
 
   const formatgoal = (value, type) => {
     switch (type) {
-      case "steps":
-        return `${value} pas`;
-      case "steps-time":
-        return `${value} pas par jour`;
-      case "distance":
-        return `${value} km`;
-      case "distance-time":
-        return `${value} km par jour`;
-      case "calories":
-        return `${value} kcal`;
-      case "calories-time":
-        return `${value} kcal par jour`;
-      case "xp":
-        return `${value} XP`;
+      case 'steps':
+        return `${value} pas`
+      case 'steps-time':
+        return `${value} pas par jour`
+      case 'distance':
+        return `${value} km`
+      case 'distance-time':
+        return `${value} km par jour`
+      case 'calories':
+        return `${value} kcal`
+      case 'calories-time':
+        return `${value} kcal par jour`
+      case 'xp':
+        return `${value} XP`
       default:
-        return value;
+        return value
     }
-  };
+  }
 
   // Get status badge
   const getStatusBadge = (status) => {
     switch (status) {
-      case "upcoming":
+      case 'upcoming':
         return (
           <span className="status-badge upcoming">
             <Calendar size={12} /> À venir
           </span>
-        );
-      case "active":
+        )
+      case 'active':
         return (
           <span className="status-badge active">
             <Zap size={12} /> En cours
           </span>
-        );
-      case "completed":
+        )
+      case 'completed':
         return (
           <span className="status-badge completed">
             <Check size={12} /> Terminé
           </span>
-        );
+        )
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   const getActivityTypeIcon = (type) => {
     switch (type) {
-      case "xp":
-        return <Trophy size={16} />;
-      case "xp-time":
-        return <Award size={16} />;
-      case "steps":
-        return <Footprints size={16} />;
-      case "steps-time":
-        return <Icon iconNode={sneaker} size={16} />;
-      case "distance":
-        return <Spline size={16} />;
-      case "distance-time":
-        return <Watch size={16} />;
-      case "calories":
-        return <Flame size={16} />;
-      case "calories-time":
-        return <Icon iconNode={watchActivity} size={16} />;
-      case "any":
-        return <Activity size={16} />;
+      case 'xp':
+        return <Trophy size={16} />
+      case 'xp-time':
+        return <Award size={16} />
+      case 'steps':
+        return <Footprints size={16} />
+      case 'steps-time':
+        return <Icon iconNode={sneaker} size={16} />
+      case 'distance':
+        return <Spline size={16} />
+      case 'distance-time':
+        return <Watch size={16} />
+      case 'calories':
+        return <Flame size={16} />
+      case 'calories-time':
+        return <Icon iconNode={watchActivity} size={16} />
+      case 'any':
+        return <Activity size={16} />
     }
-  };
+  }
 
   const getDaysRemaining = (endDate) => {
-    const now = new Date();
-    const end = new Date(endDate);
-    const diffTime = end - now;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
+    const now = new Date()
+    const end = new Date(endDate)
+    const diffTime = end - now
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays
+  }
 
   // Generate progress chart data
   const generateProgressChartData = (challenge) => {
-    const now = new Date();
-    const startDate = new Date(challenge.startDate);
+    const now = new Date()
+    const startDate = new Date(challenge.startDate)
     const days = Math.min(
       7,
-      Math.ceil((now - startDate) / (1000 * 60 * 60 * 24)),
-    );
+      Math.ceil((now - startDate) / (1000 * 60 * 60 * 24))
+    )
 
     const labels = Array.from({ length: days }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - (days - 1 - i));
-      return date.toLocaleDateString("fr-FR", { weekday: "short" });
-    });
+      const date = new Date()
+      date.setDate(date.getDate() - (days - 1 - i))
+      return date.toLocaleDateString('fr-FR', { weekday: 'short' })
+    })
 
     // Progression linéaire jusqu'à la valeur actuelle
     const progressData = Array.from({ length: days }, (_, i) =>
-      Math.round((i / (days - 1)) * challenge.progress),
-    );
+      Math.round((i / (days - 1)) * challenge.progress)
+    )
 
     return {
       labels,
       datasets: [
         {
-          label: "Progression (%)",
+          label: 'Progression (%)',
           data: progressData,
-          backgroundColor: "rgba(74, 145, 158, 0.2)",
-          borderColor: "rgba(74, 145, 158, 1)",
+          backgroundColor: 'rgba(74, 145, 158, 0.2)',
+          borderColor: 'rgba(74, 145, 158, 1)',
           borderWidth: 2,
           tension: 0.4,
           fill: true,
         },
       ],
-    };
-  };
+    }
+  }
 
   // Generate participants distribution chart data
   const generateParticipantsChartData = (challenge) => {
     // Group participants by progress ranges
     const ranges = [
-      { label: "0-25%", count: 0 },
-      { label: "26-50%", count: 0 },
-      { label: "51-75%", count: 0 },
-      { label: "76-100%", count: 0 },
-    ];
+      { label: '0-25%', count: 0 },
+      { label: '26-50%', count: 0 },
+      { label: '51-75%', count: 0 },
+      { label: '76-100%', count: 0 },
+    ]
 
     challenge.participants.forEach((participant) => {
       if (participant.progress <= 25) {
-        ranges[0].count++;
+        ranges[0].count++
       } else if (participant.progress <= 50) {
-        ranges[1].count++;
+        ranges[1].count++
       } else if (participant.progress <= 75) {
-        ranges[2].count++;
+        ranges[2].count++
       } else {
-        ranges[3].count++;
+        ranges[3].count++
       }
-    });
+    })
 
     return {
       labels: ranges.map((r) => r.label),
@@ -217,22 +217,22 @@ const ChallengeDetailModal = ({
         {
           data: ranges.map((r) => r.count),
           backgroundColor: [
-            "rgba(206, 106, 107, 0.7)",
-            "rgba(235, 172, 162, 0.7)",
-            "rgba(190, 211, 195, 0.7)",
-            "rgba(74, 145, 158, 0.7)",
+            'rgba(206, 106, 107, 0.7)',
+            'rgba(235, 172, 162, 0.7)',
+            'rgba(190, 211, 195, 0.7)',
+            'rgba(74, 145, 158, 0.7)',
           ],
           borderColor: [
-            "rgba(206, 106, 107, 1)",
-            "rgba(235, 172, 162, 1)",
-            "rgba(190, 211, 195, 1)",
-            "rgba(74, 145, 158, 1)",
+            'rgba(206, 106, 107, 1)',
+            'rgba(235, 172, 162, 1)',
+            'rgba(190, 211, 195, 1)',
+            'rgba(74, 145, 158, 1)',
           ],
           borderWidth: 1,
         },
       ],
-    };
-  };
+    }
+  }
 
   // Chart options
   const lineChartOptions = {
@@ -252,33 +252,33 @@ const ChallengeDetailModal = ({
         },
       },
     },
-  };
+  }
 
   const pieChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: "right",
+        position: 'right',
         labels: {
           boxWidth: 15,
           padding: 15,
         },
       },
     },
-  };
+  }
 
   // Handle friend request
   const handleFriendRequest = async (participant) => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      await sendFriendRequest(participant.user._id);
+      await sendFriendRequest(participant.user._id)
     } catch (error) {
-      console.error("Error sending friend request:", error);
+      console.error('Error sending friend request:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="modal-overlay" onClick={handleOverlayClick} ref={modalRef}>
@@ -323,12 +323,12 @@ const ChallengeDetailModal = ({
                   <span className="info-label">Créé par</span>
                   <div className="creator-info">
                     <img
-                      src={challenge.creator?.avatarUrl || "/placeholder.svg"}
+                      src={challenge.creator?.avatarUrl || '/placeholder.svg'}
                       alt={challenge.creator?.username}
                       className="creator-avatar"
                     />
                     <span className="creator-name">
-                      {challenge.creator?.firstName}{" "}
+                      {challenge.creator?.firstName}{' '}
                       {challenge.creator?.lastName}
                     </span>
                   </div>
@@ -338,7 +338,7 @@ const ChallengeDetailModal = ({
                   <span className="info-label">Dates</span>
                   <span className="info-value">
                     <CalendarIcon size={16} />
-                    {formatDate(challenge.startDate)} -{" "}
+                    {formatDate(challenge.startDate)} -{' '}
                     {formatDate(challenge.endDate)}
                   </span>
                 </div>
@@ -364,18 +364,18 @@ const ChallengeDetailModal = ({
                   <span className="info-value">
                     <Users size={16} />
                     {challenge.participants.length} participant
-                    {challenge.participants.length > 1 ? "s" : ""}
+                    {challenge.participants.length > 1 ? 's' : ''}
                   </span>
                 </div>
 
-                {challenge.status === "active" && (
+                {challenge.status === 'active' && (
                   <div className="info-item">
                     <span className="info-label">Temps restant</span>
                     <span className="info-value">
                       <Clock size={16} />
                       {getDaysRemaining(challenge.endDate) > 0
                         ? `${getDaysRemaining(challenge.endDate)} jours`
-                        : "Dernier jour !"}
+                        : 'Dernier jour !'}
                     </span>
                   </div>
                 )}
@@ -405,7 +405,7 @@ const ChallengeDetailModal = ({
                     className="progress-bar"
                     style={{
                       width: `${computeGlobalProgress(
-                        challenge.participants,
+                        challenge.participants
                       )}%`,
                     }}
                   ></div>
@@ -415,7 +415,7 @@ const ChallengeDetailModal = ({
               <div className="challenge-charts">
                 <div className="chart-container">
                   <h5>Évolution de la progression</h5>
-                  <div className="chart" style={{ height: "200px" }}>
+                  <div className="chart" style={{ height: '200px' }}>
                     <Line
                       data={generateProgressChartData(challenge)}
                       options={lineChartOptions}
@@ -425,7 +425,7 @@ const ChallengeDetailModal = ({
 
                 <div className="chart-container">
                   <h5>Répartition des participants</h5>
-                  <div className="chart" style={{ height: "200px" }}>
+                  <div className="chart" style={{ height: '200px' }}>
                     <Pie
                       data={generateParticipantsChartData(challenge)}
                       options={pieChartOptions}
@@ -445,7 +445,7 @@ const ChallengeDetailModal = ({
                       <div
                         key={participant.userId}
                         className={`participant-item ${
-                          participant.userId === user?._id ? "current-user" : ""
+                          participant.userId === user?._id ? 'current-user' : ''
                         }`}
                       >
                         <div className="participant-rank">
@@ -463,7 +463,7 @@ const ChallengeDetailModal = ({
                         <div className="participant-avatar">
                           <img
                             src={
-                              participant?.user.avatarUrl || "/placeholder.svg"
+                              participant?.user.avatarUrl || '/placeholder.svg'
                             }
                             alt={participant?.user.username}
                           />
@@ -471,7 +471,7 @@ const ChallengeDetailModal = ({
 
                         <div className="participant-info">
                           <span className="participant-name">
-                            {participant.user.firstName}{" "}
+                            {participant.user.firstName}{' '}
                             {participant.user.lastName}
                           </span>
                           <span className="participant-username">
@@ -483,7 +483,7 @@ const ChallengeDetailModal = ({
                           <div className="participant-value">
                             {formatgoal(
                               participant.goal,
-                              challenge.activityType,
+                              challenge.activityType
                             )}
                           </div>
                           <div className="progress-container">
@@ -530,7 +530,7 @@ const ChallengeDetailModal = ({
           </div>
 
           <div className="challenge-detail-actions">
-            {challenge.status !== "completed" && (
+            {challenge.status !== 'completed' && (
               <>
                 <button className="action-button primary">
                   <Share2 size={16} />
@@ -538,7 +538,7 @@ const ChallengeDetailModal = ({
                 </button>
 
                 {challenge.creator._id === user?._id &&
-                  challenge.status !== "completed" && (
+                  challenge.status !== 'completed' && (
                     <button
                       className="action-button secondary"
                       onClick={onDelete}
@@ -548,7 +548,7 @@ const ChallengeDetailModal = ({
                     </button>
                   )}
                 {challenge.creator._id !== user?._id &&
-                  challenge.status !== "completed" && (
+                  challenge.status !== 'completed' && (
                     <button
                       className="action-button secondary"
                       onClick={onLeave}
@@ -563,7 +563,7 @@ const ChallengeDetailModal = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChallengeDetailModal;
+export default ChallengeDetailModal

@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-require("./User.js");
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+require('./User.js')
 
 const rewardSchema = new Schema({
   name: {
@@ -19,40 +19,40 @@ const rewardSchema = new Schema({
   criteria: {
     type: String,
     enum: [
-      "steps",
-      "steps-time",
-      "distance",
-      "distance-time",
-      "calories",
-      "calories-time",
-      "streak",
-      "level",
-      "customgoal",
-      "challenges",
-      "challenges-time",
-      "rank",
-      "friend",
+      'steps',
+      'steps-time',
+      'distance',
+      'distance-time',
+      'calories',
+      'calories-time',
+      'streak',
+      'level',
+      'customgoal',
+      'challenges',
+      'challenges-time',
+      'rank',
+      'friend',
     ],
     required: true,
   },
   tier: {
     type: String,
     enum: [
-      "bronze",
-      "silver",
-      "gold",
-      "platinum",
-      "ruby",
-      "sapphire",
-      "diamond",
+      'bronze',
+      'silver',
+      'gold',
+      'platinum',
+      'ruby',
+      'sapphire',
+      'diamond',
     ],
-    default: "bronze",
+    default: 'bronze',
   },
   time: { type: Number, min: 1 }, //days
 
   earnedBy: [
     {
-      user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+      user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
       times: { type: Number, min: 1, default: 1 }, // combien de fois la récompense a été gagnée
       date: { type: Date, default: Date.now }, // débloquée à
     },
@@ -62,6 +62,6 @@ const rewardSchema = new Schema({
   minLevel: { type: Number, default: 0 }, //level minimum pour débloquer
   isRepeatable: { type: Boolean, default: false },
   target: { type: Number, min: 1, required: true }, // ex: 10000 pas
-});
+})
 
-module.exports = mongoose.model("Reward", rewardSchema);
+module.exports = mongoose.model('Reward', rewardSchema)
