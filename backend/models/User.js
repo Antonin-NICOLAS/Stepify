@@ -118,6 +118,69 @@ const userSchema = new Schema(
         },
       },
     ],
+    twoFactorAuth: {
+      attempts: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5,
+      },
+      lastAttempt: Date,
+      lastVerified: Date,
+      lockUntil: Date,
+      preferredMethod: {
+        type: String,
+        enum: ["app", "email", "webauthn"],
+        default: undefined,
+      },
+      appEnabled: {
+        type: Boolean,
+        default: false,
+      },
+      secret: {
+        type: String,
+      },
+      emailEnabled: {
+        type: Boolean,
+        default: false,
+      },
+      emailCode: {
+        type: String,
+        default: null,
+      },
+      emailCodeExpires: {
+        type: Date,
+        default: null,
+      },
+      webauthnEnabled: {
+        type: Boolean,
+        default: false,
+      },
+      challenge: {
+        type: String,
+      },
+      webauthnCredentials: [{
+        credentialId: String,
+        publicKey: String,
+        counter: Number,
+        deviceType: String,
+        backedUp: Boolean,
+        transports: [String],
+        createdAt: {
+          type: Date,
+          default: Date.now
+        }
+      }],
+      backupCodes: [
+        {
+          code: String,
+          used: {
+            type: Boolean,
+            default: false,
+          },
+        },
+      ],
+    },
 
     // --- Objectifs & Statistiques ---
     dailyGoal: {
@@ -382,6 +445,10 @@ const userSchema = new Schema(
         delete ret.activeSessions;
         delete ret.loginAttempts;
         delete ret.lockUntil;
+        if (ret.twoFactorAuth) {
+          delete ret.twoFactorAuth.secret;
+          delete ret.twoFactorAuth.backupCodes;
+        }
         return ret;
       },
     },
@@ -399,18 +466,32 @@ userSchema.virtual("fullName").get(function () {
 // fonction pour envoyer l'utilisateur avec le minimum de données
 userSchema.methods.toMinimal = function () {
   const userObj = this.toObject({ virtuals: true });
+  // sensible
   delete userObj.password;
   delete userObj.verificationToken;
   delete userObj.resetPasswordToken;
   delete userObj.activeSessions;
   delete userObj.loginAttempts;
   delete userObj.lockUntil;
+  delete userObj.twoFactorAuth.secret;
+  delete userObj.twoFactorAuth.backupCodes;
+  //delete userObj.privacySettings;
+  //delete userObj.notificationPreferences;
+  // Arrays
   delete userObj.rewardsUnlocked;
   delete userObj.friendRequests;
-  delete userObj.privacySettings;
   delete userObj.customGoals;
   delete userObj.challenges;
-  delete userObj.notificationPreferences;
+  // Stats
+  delete userObj.totalCalories;
+  delete userObj.totalDistance;
+  delete userObj.totalSteps;
+  delete userObj.totalXP;
+  delete userObj.totalCustomGoalsCompleted;
+  delete userObj.totalChallengesCompleted;
+  delete userObj.rankingHistory;
+  delete userObj.streak;
+  delete userObj.level;
   return userObj;
 };
 

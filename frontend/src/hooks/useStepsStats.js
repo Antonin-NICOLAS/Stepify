@@ -21,19 +21,19 @@ export const useStepsStats = (filteredEntries) => {
 
     const totalSteps = filteredEntries.reduce(
       (sum, entry) => sum + entry.totalSteps,
-      0
+      0,
     );
     const totalDistance = filteredEntries.reduce(
       (sum, entry) => sum + entry.totalDistance,
-      0
+      0,
     );
     const totalCalories = filteredEntries.reduce(
       (sum, entry) => sum + entry.totalCalories,
-      0
+      0,
     );
     const totalActiveTime = filteredEntries.reduce(
       (sum, entry) => sum + entry.totalActiveTime,
-      0
+      0,
     );
 
     // Assuming a daily goal of 10,000 steps
@@ -42,7 +42,7 @@ export const useStepsStats = (filteredEntries) => {
     const goalAchieved = averageSteps >= dailyGoal;
     const goalPercentage = Math.min(
       100,
-      Math.round((averageSteps / dailyGoal) * 100)
+      Math.round((averageSteps / dailyGoal) * 100),
     );
 
     return {

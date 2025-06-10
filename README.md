@@ -23,9 +23,10 @@ Stepify est une application web de suivi d'activité physique ludique. Marchez, 
 
 ## 🔧 À faire (Roadmap / Summer Contest)
 
-- [x] 🔒 **Mail lien de réinitialisation de mot de passe** : afficher qu’il expire dans 1 heure
-- [x] Intertionaliser Verificationpage.jsx
+- [ ] Intertionaliser Verificationpage.jsx
 - [x] 🔒 **Mail de connection**
+- [ ] 🔒 **Internationaliser les emails** + Attach Backupcodes file to email
+- [x] 🔒 **Mail lien de réinitialisation de mot de passe** : afficher qu’il expire dans 1 heure
 - [ ] 📊 **Remplacer les graphiques Highcharts** par Chart.js
 - [x] 🧩 **Universaliser tous les icônes** (Design System)
 - [ ] 💡 **Ajouter un layout modals** pour sortir en cliquant à l’extérieur :

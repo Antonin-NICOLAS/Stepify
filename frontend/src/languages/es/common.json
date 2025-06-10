@@ -1,55 +1,120 @@
 {
-  "common": {
-    "error": "Ocurrió un error",
-    "authcontext": {
-      "register": {
-        "validfirstname": "Se requiere un nombre válido (mínimo de 2 caracteres)",
-        "validlastname": "Se requiere un nombre válido (mínimo de 2 caracteres)",
-        "validemail": "Se requiere un correo electrónico válido",
-        "validusername": "Se requiere un nombre de usuario válido (3-30 caracteres alfanuméricos)",
-        "validpassword": "Se requiere una contraseña válida (mínimo de 8 caracteres)",
-        "passwordmismatch": "Las contraseñas no coinciden",
-        "error": "Error al registrarse"
+  "activityTypes": {
+    "steps": "No"
+  },
+  "authcontext": {
+    "2fa": {
+      "backup": {
+        "error": "Error durante la recuperación por código de copia de seguridad"
+      },
+      "disable": {
+        "error": "Error al desactivar la doble autenticación"
+      },
+      "enable": {
+        "error": "Error al activar la doble autenticación por aplicación"
+      },
+      "enableemail": {
+        "error": "Error al activar la doble autenticación por correo electrónico"
+      },
+      "generatekey": {
+        "error": "Error durante la configuración de WebAuthn"
       },
       "login": {
-        "fillallfields": "Por favor llene todos los campos",
-        "validemail": "Se requiere un correo electrónico válido",
-        "notverifiedsuccess": "Se le ha enviado un código para verificar su dirección de correo electrónico",
-        "notverifiederror": "Haga clic en 'devolver un correo electrónico' para recibir un nuevo código",
-        "error": "Error cuando la conexión"
+        "error": "Error durante la autenticación de doble factor"
       },
-      "forgotpassword": {
-        "validemail": "Se requiere un correo electrónico válido",
-        "error": "Error al enviar el correo electrónico"
+      "status": {
+        "error": "Error al recuperar métodos activos de autenticación doble"
       },
-      "resetpassword": {
-        "validtoken": "Enlace no válido o caducado",
-        "validpassword": "Se requiere una contraseña válida (mínimo de 8 caracteres)",
-        "passwordmismatch": "Las contraseñas no coinciden",
-        "error": "Error al restablecer la contraseña"
+      "verify": {
+        "error": "Error al verificar la doble autenticación por aplicación"
       },
       "verifyemail": {
-        "validcode": "Ingrese el código completo de 6 dígitos",
-        "error": "Error al verificar el correo electrónico"
+        "error": "Error al verificar la doble autenticación por correo electrónico"
       },
-      "resendverificationcode": {
-        "error": "Error al referir el correo electrónico de verificación"
-      },
-      "changeverificationemail": {
-        "validemail": "Se requiere un correo electrónico válido",
-        "error": "Error al cambiar el correo electrónico"
-      },
-      "logout": {
-        "success": "Desconectado con éxito",
-        "error": "Error durante la desconexión"
-      },
-      "deleteaccount": {
-        "success": "Éxito eliminado con éxito",
-        "error": "Error al eliminar la cuenta"
+      "verifyregisterkey": {
+        "error": "No registrar la clave"
       }
     },
-    "usercontext": {
-      "languageupdated": "Idioma de actualización"
+    "changeverificationemail": {
+      "error": "Error al cambiar el correo electrónico",
+      "validemail": "Se requiere un correo electrónico válido"
+    },
+    "deleteaccount": {
+      "error": "Error al eliminar la cuenta",
+      "success": "Éxito eliminado con éxito"
+    },
+    "forgotpassword": {
+      "error": "Error al enviar el correo electrónico",
+      "validemail": "Se requiere un correo electrónico válido"
+    },
+    "login": {
+      "error": "Error cuando la conexión",
+      "fillallfields": "Por favor llene todos los campos",
+      "notverifiederror": "Haga clic en 'devolver un correo electrónico' para recibir un nuevo código",
+      "notverifiedsuccess": "Se le ha enviado un código para verificar su dirección de correo electrónico",
+      "validemail": "Se requiere un correo electrónico válido"
+    },
+    "logout": {
+      "error": "Error durante la desconexión",
+      "success": "Desconectado con éxito"
+    },
+    "register": {
+      "error": "Error al registrarse",
+      "passwordmismatch": "Las contraseñas no coinciden",
+      "validemail": "Se requiere un correo electrónico válido",
+      "validfirstname": "Se requiere un nombre válido (mínimo de 2 caracteres)",
+      "validlastname": "Se requiere un nombre válido (mínimo de 2 caracteres)",
+      "validpassword": "Se requiere una contraseña válida (mínimo de 8 caracteres)",
+      "validusername": "Se requiere un nombre de usuario válido (3-30 caracteres alfanuméricos)"
+    },
+    "resendverificationcode": {
+      "error": "Error al referir el correo electrónico de verificación"
+    },
+    "resetpassword": {
+      "error": "Error al restablecer la contraseña",
+      "passwordmismatch": "Las contraseñas no coinciden",
+      "validpassword": "Se requiere una contraseña válida (mínimo de 8 caracteres)",
+      "validtoken": "Enlace no válido o caducado"
+    },
+    "verifyemail": {
+      "error": "Error al verificar el correo electrónico",
+      "validcode": "Ingrese el código completo de 6 dígitos"
     }
+  },
+  "back": "Atrás",
+  "cancel": "Cancelar",
+  "contact-support": "Póngase en contacto con el soporte",
+  "delete": "BORRAR",
+  "download": "Descargar",
+  "email": "Dirección de correo electrónico",
+  "error": "Ocurrió un error",
+  "header": {
+    "about": "Acerca de",
+    "challenges": "Desafío",
+    "close": "Sube el menú",
+    "dashboard": "Panel",
+    "friends": "Amigos",
+    "leaderboard": "Clasificación",
+    "login": "Conexión",
+    "logout": "Desconexión",
+    "rewards": "Premio",
+    "settings": "Ajustes",
+    "steps": "Mis pasos",
+    "theme": "Tema",
+    "title1": "NAVEGACIÓN",
+    "title2": "GENERAL"
+  },
+  "manage": "Administrar",
+  "notfound": {
+    "home": "Bienvenido",
+    "message": "Ups ! La página que estás buscando parece haber perdido su propia aventura.",
+    "search": "O intenta buscar algo más:",
+    "searchplaceholder": "Investigar ...",
+    "suggestions": "Puede que esté buscando:",
+    "title": "Página de bruja"
+  },
+  "password": "Contraseña",
+  "usercontext": {
+    "languageupdated": "Idioma de actualización"
   }
 }

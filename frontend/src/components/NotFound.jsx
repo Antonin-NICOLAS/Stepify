@@ -1,9 +1,11 @@
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./NotFound.css";
 import { Home, ArrowLeft, Search } from "lucide-react";
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const goBack = () => {
     navigate(-1);
@@ -27,11 +29,8 @@ const NotFoundPage = () => {
             <div className="digit">4</div>
           </div>
 
-          <h1 className="error-title">Page Not Found</h1>
-          <p className="error-message">
-            Oops! The page you're looking for seems to have wandered off on its
-            own adventure.
-          </p>
+          <h1 className="error-title">{t("common.notfound.title")}</h1>
+          <p className="error-message">{t("common.notfound.message")}</p>
 
           <div className="illustration">
             <div className="map">
@@ -43,20 +42,21 @@ const NotFoundPage = () => {
           <div className="action-buttons">
             <button className="action-btn back-btn" onClick={goBack}>
               <ArrowLeft size={18} />
-              <span>Go Back</span>
+              <span>{t("common.back")}</span>
             </button>
             <button className="action-btn home-btn" onClick={goHome}>
               <Home size={18} />
-              <span>Home Page</span>
+              <span>{t("common.notfound.home")}</span>
             </button>
           </div>
 
           <div className="search-container">
-            <div className="search-label">
-              Or try searching for something else:
-            </div>
+            <div className="search-label">{t("common.notfound.search")}</div>
             <div className="search-box">
-              <input type="text" placeholder="Search..." />{" "}
+              <input
+                type="text"
+                placeholder={t("common.notfound.searchplaceholder")}
+              />{" "}
               {/* TODO: search function + french version */}
               <button className="search-btn">
                 <Search size={18} />
@@ -66,19 +66,19 @@ const NotFoundPage = () => {
         </div>
 
         <div className="suggestions-card">
-          <h3>You might be looking for:</h3>
+          <h3>{t("common.notfound.suggestions")}</h3>
           <ul className="suggestion-links">
             <li>
-              <Link to="/dashboard">Dashboard</Link>
+              <Link to="/dashboard">{t("common.header.dashboard")}</Link>
             </li>
             <li>
-              <Link to="/steps">Mes pas</Link>
+              <Link to="/steps">{t("common.header.steps")}</Link>
             </li>
             <li>
-              <Link to="/challenges">Défis</Link>
+              <Link to="/challenges">{t("common.header.challenges")}</Link>
             </li>
             <li>
-              <Link to="/settings">Réglages</Link>
+              <Link to="/settings">{t("common.header.settings")}</Link>
             </li>
           </ul>
         </div>

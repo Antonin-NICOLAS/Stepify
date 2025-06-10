@@ -1,78 +1,205 @@
 {
-  "account": {
-    "user": {
-      "membersince": "Miembro desde el",
-      "email": "Dirección de correo electrónico",
-      "status": {
-        "dnd": "No molestar",
-        "gym": "En el gimnasio",
-        "busy": "Ocupado",
-        "custom": "Personalizado",
-        "default": "Hola, ¡yo uso Stepify!",
-        "running": "Carreras",
-        "available": "Disponible"
-      },
-      "details": "Datos de la cuenta",
-      "lastName": "Appellido",
-      "username": "Nombre de usuario",
-      "firstName": "Nombre",
-      "preferences": "Preferencias",
-      "custom_status_placeholder": "Escribe tu estado personalizado"
+  "2fa-setup": {
+    "backup": {
+      "description": "¡Su autenticación de dos factores ahora está activada! Guarde estos códigos de recuperación seguros.",
+      "download": "Descargar los códigos",
+      "final-button": "Para terminar",
+      "important": "Importante",
+      "keep": "Mantenga estos códigos en seguridad",
+      "title": "Códigos de respaldo",
+      "warning": "Use estos códigos si pierde acceso a su teléfono"
     },
-    "theme": {
-      "dark": "Oscuro",
-      "light": "Claro",
-      "title": "Tema",
-      "system": "Sistema"
+    "card": {
+      "active": "Activado",
+      "appdescription": "Use Google Authenticator, Authy u otra aplicación",
+      "apptitle": "Aplicación de autenticación",
+      "desactive": "Desactivado",
+      "emaildescription": "Recibir códigos por correo electrónico",
+      "mask-backupcodes": "Ocultar los códigos de copia de seguridad",
+      "show-backupcodes": "Ver códigos de copia de seguridad",
+      "webauthndescription": "Use su dispositivo o una llave de seguridad física",
+      "webauthntitle": "Llave de seguridad"
     },
-    "title": "Mi cuenta",
-    "avatar": {
-      "edit": "Cambiar avatar",
-      "update": "Actualizar avatar",
-      "dropHere": "Cargar imagen aquí"
+    "description": "Asegure su cuenta con protección adicional",
+    "disable-app": {
+      "title": "Ingrese el código de verificación para confirmar la desactivación."
     },
-    "errors": {
-      "themeUpdate": "Error al actualizar el tema",
-      "avatarUpload": "Error al actualizar el avatar",
-      "profileUpdate": "Error al actualizar el perfil",
-      "languageUpdate": "Error de actualización de idioma",
-      "nofileselected": "Ningún fichero seleccionado",
-      "passwordUpdate": "Error al cambiar la contraseña",
-      "dailyGoalUpdate": "Error al actualizar el objetivo diario"
+    "disable-email": {
+      "description": "Ingrese su contraseña para confirmar la desactivación.",
+      "title": "Deshabilitar la doble autenticación"
     },
-    "upload": "URL de la imagen",
-    "buttons": {
-      "edit": "Modifique",
-      "save": "Regístrese en",
-      "cancel": "Cancelar",
-      "change": "Cambiador",
-      "saveProfile": "Guardar cambios"
+    "main": {
+      "description": "La autenticación de dos fábricas agrega una capa de seguridad adicional a su cuenta. Elija uno o más métodos de verificación."
     },
-    "activity": {
-      "steps": "Pasos totales",
-      "title": "Su empresa",
-      "streak": "Registro (días)",
-      "distance": "Distancia (km)",
-      "challenges": "Retos superados"
+    "setup-app": {
+      "app-configured": "Configuré la aplicación",
+      "description": "Escanee este código QR con su aplicación de autenticación (Google Authenticator, Authy, etc.) o ingrese la clave manualmente.",
+      "manual-key": "Llave manual",
+      "qr-code-alt": "Código de autenticación doble QR",
+      "title": "Configuración de la aplicación de autenticación"
     },
-    "language": {
-      "de": "Alemán",
-      "en": "Inglés",
-      "es": "Español",
-      "fr": "Francés",
-      "title": "Idioma"
+    "setup-webauthn": {
+      "config-now": "Configurar ahora",
+      "description": "Siga las instrucciones de su navegador para registrar una nueva clave o dispositivo de seguridad.",
+      "title": "Configuración de clave de seguridad"
     },
-    "password": {
-      "new": "Nueva contraseña",
-      "save": "Guardar contraseña",
-      "title": "Contraseña",
-      "confirm": "Confirmar contraseña",
-      "current": "Contraseña actual"
+    "success": {
+      "back-to-settings": "Volver a los parámetros",
+      "description": "Los códigos de verificación se enviarán a su dirección de correo electrónico.",
+      "title": "¡Doble autenticación activada con éxito!"
     },
-    "dailyGoal": {
-      "edit": "Cambia tu objetivo diario",
-      "save": "Lente de registro",
-      "title": "Objetivo diario"
+    "verify": {
+      "activate": "Verificar y activar",
+      "app-entercode": "Ingrese el código de 6 dígitos generado por su aplicación de autenticación.",
+      "email-entercode": "Ingrese el código de 6 dígitos enviado a su dirección de correo electrónico.",
+      "label-code": "Código de verificación",
+      "title": "Verificación de código"
     }
+  },
+  "activity": {
+    "challenges": "Retos superados",
+    "distance": "Distancia (km)",
+    "steps": "Pasos totales",
+    "streak": "Registro (días)",
+    "title": "Su empresa"
+  },
+  "avatar": {
+    "dropHere": "Cargar imagen aquí",
+    "edit": "Cambiar avatar",
+    "title": "Avatar",
+    "update": "Actualizar avatar"
+  },
+  "buttons": {
+    "change": "Cambiador",
+    "edit": "Modifique",
+    "save": "Regístrese en",
+    "saveProfile": "Guardar cambios"
+  },
+  "dailyGoal": {
+    "edit": "Cambia tu objetivo diario",
+    "save": "Lente de registro",
+    "title": "Objetivo diario"
+  },
+  "delete": {
+    "confirm": "Confirmar la eliminación",
+    "confirm-button": "Borrar",
+    "confirm-description": "Esta acción es irreversible. Todos sus datos se eliminarán definitivamente.",
+    "confirm-placeholder": "BORRAR",
+    "description": "Elimine su cuenta de forma permanente y todos sus datos",
+    "subtitle": "Eliminar cuenta",
+    "title": "Zona de peligro"
+  },
+  "errors": {
+    "avatarUpload": "Error al actualizar el avatar",
+    "dailyGoalUpdate": "Error al actualizar el objetivo diario",
+    "languageUpdate": "Error de actualización de idioma",
+    "nofileselected": "Ningún fichero seleccionado",
+    "passwordUpdate": "Error al cambiar la contraseña",
+    "profileUpdate": "Error al actualizar el perfil",
+    "themeUpdate": "Error al actualizar el tema"
+  },
+  "language": {
+    "de": "Alemán",
+    "description": "Elige tu idioma favorito",
+    "en": "Inglés",
+    "es": "Español",
+    "fr": "Francés",
+    "title": "Idioma"
+  },
+  "notif": {
+    "activity-description": "Recibir un resumen diario",
+    "activity-title": "Resumen de la actividad",
+    "friend-activity-description": "Notificaciones por la actividad de tus amigos",
+    "friend-activity-title": "Actividad de amigos",
+    "friend-request-description": "Notificaciones para las solicitudes de amigos",
+    "goal-reached-description": "Notificaciones cuando alcanza sus objetivos",
+    "goal-reached-title": "Objetivos alcanzados",
+    "new-challenge-description": "Notificaciones para nuevos desafíos",
+    "new-challenge-title": "Nuevos desafíos",
+    "title": "Notificaciones"
+  },
+  "password": {
+    "confirm": "Confirmar contraseña",
+    "criterias": {
+      "len": "Al menos 8 caracteres",
+      "lowercase": "Una pequeña carta",
+      "number": "Una figura",
+      "title": "Requisitos de contraseña:",
+      "uppercase": "Una letra mayúscula"
+    },
+    "current": "Contraseña actual",
+    "low": "Débil",
+    "medium": "PROMEDIO",
+    "modify": "Cambia tu contraseña",
+    "new": "Nueva contraseña",
+    "save": "Guardar contraseña",
+    "strong": "Fuerte",
+    "very-low": "Muy débil",
+    "weak": "La contraseña no es lo suficientemente fuerte"
+  },
+  "privacy": {
+    "challenge-setting-subtitle": "Permitir invitaciones a desafíos",
+    "challenge-setting-title": "Invitaciones a desafíos",
+    "friend-request-setting-subtitle": "Autorizar las solicitudes de amigos",
+    "friend-request-setting-title": "Amigos",
+    "friend-setting-subtitle": "Permita que los amigos vean su actividad",
+    "friend-setting-title": "Actividad visible por amigos",
+    "last-login-setting-subtitle": "Muestra tu última conexión",
+    "last-login-setting-title": "Última conexión visible",
+    "public-stats-setting-subtitle": "Hacer públicos sus estadísticas",
+    "public-stats-setting-title": "Estadística pública"
+  },
+  "security": {
+    "2fa": "Autenticación de dos factores",
+    "2fa-disabled-description": "Desactivado: active para más seguridad",
+    "2fa-enabled-description": "Activado: su cuenta está protegida",
+    "2fa_disable": "Desactivar",
+    "2fa_disabled": "Desactivado",
+    "2fa_enable": "Permitir",
+    "2fa_enabled": "Activado",
+    "delete_confirmation": "Escriba <1>BORRAR</1> para confirmar:",
+    "write-delete": "Escriba 'Eliminar' para confirmar"
+  },
+  "sessions": {
+    "description": "Administre sus conexiones activas",
+    "loggedin": "Conectado:",
+    "terminate-all": "Terminar todas las sesiones",
+    "title": "Sesiones activas",
+    "unknown-device": "Dispositivo desconocido"
+  },
+  "settings": {
+    "redirect": "Perfil",
+    "title": "Parámetros"
+  },
+  "status": {
+    "custom_status_placeholder": "Estado personalizado ...",
+    "options": {
+      "available": "Disponible",
+      "busy": "Ocupado",
+      "custom": "Personalizado",
+      "default": "Hola, uso Stepify!",
+      "dnd": "No molestar",
+      "gym": "En el gimnasio",
+      "running": "En la carrera"
+    }
+  },
+  "theme": {
+    "dark": "Oscuro",
+    "description": "Elija la apariencia de la aplicación",
+    "light": "Claro",
+    "system": "Sistema",
+    "title": "Tema"
+  },
+  "title": "Mi cuenta",
+  "upload": "URL de la imagen",
+  "user": {
+    "details": "Datos de la cuenta",
+    "email": "Dirección de correo electrónico",
+    "firstName": "Nombre",
+    "lastName": "Appellido",
+    "membersince": "Miembro desde el",
+    "preferences": "Preferencias",
+    "status": {},
+    "username": "Nombre de usuario"
   }
 }

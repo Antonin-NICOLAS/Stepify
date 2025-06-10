@@ -23,7 +23,7 @@ export const useSteps = (userId) => {
     } catch (err) {
       console.error("Fetch error:", err);
       toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur"
+        err.response?.data?.error || "Erreur de connexion au serveur",
       );
     }
   }, [userId]);
@@ -33,7 +33,7 @@ export const useSteps = (userId) => {
       const { data } = await axios.post(
         `${API_STEP}/${userId}/new`,
         entryData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -57,7 +57,7 @@ export const useSteps = (userId) => {
       const { data } = await axios.put(
         `${API_STEP}/${userId}/${entryId}/modify`,
         entryData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -72,7 +72,7 @@ export const useSteps = (userId) => {
     } catch (error) {
       console.error("Update error:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors de la modification"
+        error.response?.data?.error || "Erreur lors de la modification",
       );
       return false;
     }
@@ -82,7 +82,7 @@ export const useSteps = (userId) => {
     try {
       const { data } = await axios.put(
         `${API_STEP}/${userId}/${entryId}/favorite`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -95,7 +95,7 @@ export const useSteps = (userId) => {
     } catch (error) {
       console.error("Favorites error:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors de la mise en favoris"
+        error.response?.data?.error || "Erreur lors de la mise en favoris",
       );
       return false;
     }
@@ -105,7 +105,7 @@ export const useSteps = (userId) => {
     try {
       const { data } = await axios.delete(
         `${API_STEP}/${userId}/${entryId}/delete`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -120,7 +120,7 @@ export const useSteps = (userId) => {
     } catch (error) {
       console.error("Delete error:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors de la suppression"
+        error.response?.data?.error || "Erreur lors de la suppression",
       );
       return false;
     }
@@ -140,11 +140,11 @@ export const useSteps = (userId) => {
           headers: { "Content-Type": "multipart/form-data" },
           onUploadProgress: (progressEvent) => {
             const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
+              (progressEvent.loaded * 100) / progressEvent.total,
             );
             if (onProgress) onProgress(percentCompleted);
           },
-        }
+        },
       );
 
       if (data.success) {
@@ -159,7 +159,7 @@ export const useSteps = (userId) => {
     } catch (error) {
       console.error("Import error:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors de l'importation"
+        error.response?.data?.error || "Erreur lors de l'importation",
       );
       return false;
     }

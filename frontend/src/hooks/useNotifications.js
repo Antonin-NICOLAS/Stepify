@@ -25,7 +25,7 @@ export const useNotifications = (userId) => {
     } catch (err) {
       console.error("Fetch error:", err);
       toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur"
+        err.response?.data?.error || "Erreur de connexion au serveur",
       );
     }
   }, []);
@@ -34,7 +34,7 @@ export const useNotifications = (userId) => {
     try {
       const { data } = await axios.get(
         `${API_NOTIFICATION}/${userId}/challenge`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -45,7 +45,7 @@ export const useNotifications = (userId) => {
     } catch (err) {
       console.error("Fetch error:", err);
       toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur"
+        err.response?.data?.error || "Erreur de connexion au serveur",
       );
     }
   }, [userId]);
@@ -59,7 +59,7 @@ export const useNotifications = (userId) => {
       const { data } = await axios.post(
         `${API_NOTIFICATION}/${toId}/friend-request`,
         { userId },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -74,7 +74,7 @@ export const useNotifications = (userId) => {
       console.error("Error sending friend request:", error);
       toast.error(
         error.response?.data?.error ||
-          "Erreur lors de l'envoi de la notification"
+          "Erreur lors de l'envoi de la notification",
       );
       return false;
     }
@@ -85,7 +85,7 @@ export const useNotifications = (userId) => {
       const { data } = await axios.post(
         `${API_NOTIFICATION}/${userId}/${inviteId}/accept-friend`,
         { requesterId },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -100,7 +100,7 @@ export const useNotifications = (userId) => {
       console.error("Error accepting friend:", error);
       toast.error(
         error.response?.data?.error ||
-          "Erreur lors de l'acceptation de la demande"
+          "Erreur lors de l'acceptation de la demande",
       );
       return false;
     }
@@ -110,7 +110,7 @@ export const useNotifications = (userId) => {
     try {
       const { data } = await axios.post(
         `${API_NOTIFICATION}/${userId}/${inviteId}/decline-friend`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -124,7 +124,7 @@ export const useNotifications = (userId) => {
     } catch (error) {
       console.error("Error refusing friend request:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors du refus de la demande"
+        error.response?.data?.error || "Erreur lors du refus de la demande",
       );
       return false;
     }
@@ -134,7 +134,7 @@ export const useNotifications = (userId) => {
     try {
       const { data } = await axios.post(
         `${API_NOTIFICATION}/${userId}/${inviteId}/cancel-friend`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -149,7 +149,7 @@ export const useNotifications = (userId) => {
       console.error("Error cancelling friend request:", error);
       toast.error(
         error.response?.data?.error ||
-          "Erreur lors de l'annulation de la demande"
+          "Erreur lors de l'annulation de la demande",
       );
       return false;
     }
@@ -159,7 +159,7 @@ export const useNotifications = (userId) => {
     try {
       const { data } = await axios.post(
         `${API_NOTIFICATION}/${userId}/${inviteId}/remove-friend`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -174,7 +174,7 @@ export const useNotifications = (userId) => {
     } catch (error) {
       console.error("Send Challenge response error:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors de l'envoi de la réponse"
+        error.response?.data?.error || "Erreur lors de l'envoi de la réponse",
       );
       return false;
     }
@@ -185,7 +185,7 @@ export const useNotifications = (userId) => {
       const { data } = await axios.patch(
         `${API_NOTIFICATION}/${userId}/${notificationId}/read`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -196,7 +196,7 @@ export const useNotifications = (userId) => {
     } catch (error) {
       console.error("Mark as read error:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors du marquage comme lu"
+        error.response?.data?.error || "Erreur lors du marquage comme lu",
       );
     }
   };
@@ -213,7 +213,7 @@ export const useNotifications = (userId) => {
           },
           {
             withCredentials: true,
-          }
+          },
         );
 
         if (data.success) {
@@ -226,12 +226,12 @@ export const useNotifications = (userId) => {
       } catch (err) {
         console.error("Send message error:", err);
         toast.error(
-          err.response?.data?.error || "Erreur lors de l'envoi du message"
+          err.response?.data?.error || "Erreur lors de l'envoi du message",
         );
         return false;
       }
     },
-    [userId]
+    [userId],
   );
 
   // Add comment to user profile
@@ -246,7 +246,7 @@ export const useNotifications = (userId) => {
           },
           {
             withCredentials: true,
-          }
+          },
         );
 
         if (data.success) {
@@ -259,12 +259,12 @@ export const useNotifications = (userId) => {
       } catch (err) {
         console.error("Add comment error:", err);
         toast.error(
-          err.response?.data?.error || "Erreur lors de l'ajout du commentaire"
+          err.response?.data?.error || "Erreur lors de l'ajout du commentaire",
         );
         return false;
       }
     },
-    [userId]
+    [userId],
   );
 
   useEffect(() => {

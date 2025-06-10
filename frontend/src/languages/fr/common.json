@@ -1,55 +1,120 @@
 {
-  "common": {
-    "error": "une erreur s'est produite",
-    "authcontext": {
-      "register": {
-        "validfirstname": "Un prénom valide (2 caractères minimum) est requis",
-        "validlastname": "Un nom valide (2 caractères minimum) est requis",
-        "validemail": "Un email valide est requis",
-        "validusername": "Un nom d'utilisateur valide (3-30 caractères alphanumériques) est requis",
-        "validpassword": "Un mot de passe valide (8 caractères minimum) est requis",
-        "passwordmismatch": "Les mots de passe ne correspondent pas",
-        "error": "Erreur lors de l'inscription"
+  "activityTypes": {
+    "steps": "pas"
+  },
+  "authcontext": {
+    "2fa": {
+      "backup": {
+        "error": "Erreur lors de la récupération par code de sauvegarde"
+      },
+      "disable": {
+        "error": "Erreur lors de la désactivation de la double authentification"
+      },
+      "enable": {
+        "error": "Erreur lors de l'activation de la double authentification par application"
+      },
+      "enableemail": {
+        "error": "Erreur lors de l'activation de la double authentification par email"
+      },
+      "generatekey": {
+        "error": "Erreur lors de la configuration WebAuthn"
       },
       "login": {
-        "fillallfields": "Veuillez remplir tous les champs",
-        "validemail": "Un email valide est requis",
-        "notverifiedsuccess": "Un code vous a été envoyé pour vérifier votre adresse mail",
-        "notverifiederror": "Cliquez sur 'renvoyer un mail' pour recevoir un nouveau code",
-        "error": "Erreur lors de la connexion"
+        "error": "Erreur lors de l'authentification à double facteur"
       },
-      "forgotpassword": {
-        "validemail": "Un email valide est requis",
-        "error": "Erreur lors de l'envoi de l'email"
+      "status": {
+        "error": "Erreur lors de la récupération des méthodes de double authentification actives"
       },
-      "resetpassword": {
-        "validtoken": "Lien invalide ou expiré",
-        "validpassword": "Un mot de passe valide (8 caractères minimum) est requis",
-        "passwordmismatch": "Les mots de passe ne correspondent pas",
-        "error": "Erreur lors de la réinitialisation du mot de passe"
+      "verify": {
+        "error": "Erreur lors de la vérification de la double authentification par application"
       },
       "verifyemail": {
-        "validcode": "Veuillez entrer le code complet à 6 chiffres",
-        "error": "Erreur lors de la vérification de l'email"
+        "error": "Erreur lors de la vérification de la double authentification par email"
       },
-      "resendverificationcode": {
-        "error": "Erreur lors du renvoi du mail de vérification"
-      },
-      "changeverificationemail": {
-        "validemail": "Un email valide est requis",
-        "error": "Erreur lors du changement d'email"
-      },
-      "logout": {
-        "success": "Déconnecté avec succès",
-        "error": "Erreur lors de la déconnexion"
-      },
-      "deleteaccount": {
-        "success": "Compte supprimé avec succès",
-        "error": "Erreur lors de la suppression du compte"
+      "verifyregisterkey": {
+        "error": "Échec de l'enregistrement de la clé"
       }
     },
-    "usercontext": {
-      "languageupdated": "Langue mise à jour"
+    "changeverificationemail": {
+      "error": "Erreur lors du changement d'email",
+      "validemail": "Un email valide est requis"
+    },
+    "deleteaccount": {
+      "error": "Erreur lors de la suppression du compte",
+      "success": "Compte supprimé avec succès"
+    },
+    "forgotpassword": {
+      "error": "Erreur lors de l'envoi de l'email",
+      "validemail": "Un email valide est requis"
+    },
+    "login": {
+      "error": "Erreur lors de la connexion",
+      "fillallfields": "Veuillez remplir tous les champs",
+      "notverifiederror": "Cliquez sur 'renvoyer un mail' pour recevoir un nouveau code",
+      "notverifiedsuccess": "Un code vous a été envoyé pour vérifier votre adresse mail",
+      "validemail": "Un email valide est requis"
+    },
+    "logout": {
+      "error": "Erreur lors de la déconnexion",
+      "success": "Déconnecté avec succès"
+    },
+    "register": {
+      "error": "Erreur lors de l'inscription",
+      "passwordmismatch": "Les mots de passe ne correspondent pas",
+      "validemail": "Un email valide est requis",
+      "validfirstname": "Un prénom valide (2 caractères minimum) est requis",
+      "validlastname": "Un nom valide (2 caractères minimum) est requis",
+      "validpassword": "Un mot de passe valide (8 caractères minimum) est requis",
+      "validusername": "Un nom d'utilisateur valide (3-30 caractères alphanumériques) est requis"
+    },
+    "resendverificationcode": {
+      "error": "Erreur lors du renvoi du mail de vérification"
+    },
+    "resetpassword": {
+      "error": "Erreur lors de la réinitialisation du mot de passe",
+      "passwordmismatch": "Les mots de passe ne correspondent pas",
+      "validpassword": "Un mot de passe valide (8 caractères minimum) est requis",
+      "validtoken": "Lien invalide ou expiré"
+    },
+    "verifyemail": {
+      "error": "Erreur lors de la vérification de l'email",
+      "validcode": "Veuillez entrer le code complet à 6 chiffres"
     }
+  },
+  "back": "Retour",
+  "cancel": "Annuler",
+  "contact-support": "Contacter le support",
+  "delete": "Supprimer",
+  "download": "Télécharger",
+  "email": "Adresse email",
+  "error": "Une erreur s'est produite",
+  "header": {
+    "about": "À propos",
+    "challenges": "Défis",
+    "close": "Fermer le menu",
+    "dashboard": "Tableau de bord",
+    "friends": "Amis",
+    "leaderboard": "Classement",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "rewards": "Récompenses",
+    "settings": "Réglages",
+    "steps": "Mes pas",
+    "theme": "Thème",
+    "title1": "NAVIGATION",
+    "title2": "GÉNÉRAL"
+  },
+  "manage": "Gérer",
+  "notfound": {
+    "home": "Accueil",
+    "message": "Oups ! La page que vous recherchez semble s'être égarée dans sa propre aventure.",
+    "search": "Ou essayez de chercher autre chose :",
+    "searchplaceholder": "Rechercher...",
+    "suggestions": "Vous êtes peut-être à la recherche de :",
+    "title": "Page introuvable"
+  },
+  "password": "Mot de passe",
+  "usercontext": {
+    "languageupdated": "Langue mise à jour"
   }
 }

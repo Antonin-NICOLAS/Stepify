@@ -1,55 +1,120 @@
 {
-  "common": {
-    "error": "Es ist ein Fehler aufgetreten",
-    "authcontext": {
-      "register": {
-        "validfirstname": "Ein gültiger Vorname (minimal 2 Zeichen) ist erforderlich",
-        "validlastname": "Ein gültiger Name (minimal 2 Zeichen) ist erforderlich",
-        "validemail": "Eine gültige E -Mail ist erforderlich",
-        "validusername": "Ein gültiger Benutzername (3-30 alphanumerische Zeichen) ist erforderlich",
-        "validpassword": "Ein gültiges Passwort (Minimum von 8 Zeichen) ist erforderlich",
-        "passwordmismatch": "Passwörter stimmen nicht überein",
-        "error": "Fehler bei der Registrierung"
+  "activityTypes": {
+    "steps": "Nicht"
+  },
+  "authcontext": {
+    "2fa": {
+      "backup": {
+        "error": "Fehler während der Wiederherstellung durch Sicherungscode"
+      },
+      "disable": {
+        "error": "Fehler beim Deaktivieren der Doppelauthentifizierung"
+      },
+      "enable": {
+        "error": "Fehler beim Aktivieren der Doppelauthentifizierung mit der Anwendung"
+      },
+      "enableemail": {
+        "error": "Fehler beim Aktivieren der Doppelauthentifizierung per E -Mail"
+      },
+      "generatekey": {
+        "error": "Fehler während der WebAuthn -Konfiguration"
       },
       "login": {
-        "fillallfields": "Bitte füllen Sie alle Felder aus",
-        "validemail": "Eine gültige E -Mail ist erforderlich",
-        "notverifiedsuccess": "Ein Code wurde an Sie gesendet, um Ihre E -Mail -Adresse zu überprüfen",
-        "notverifiederror": "Klicken Sie auf \"Eine E -Mail zurückgeben\", um einen neuen Code zu erhalten",
-        "error": "Fehler bei der Verbindung"
+        "error": "Fehler während der Authentifizierung der Doppelfaktor"
       },
-      "forgotpassword": {
-        "validemail": "Eine gültige E -Mail ist erforderlich",
-        "error": "Fehler beim Senden der E -Mail"
+      "status": {
+        "error": "Fehler beim Wiederherstellen aktiver Doppelauthentifizierungsmethoden"
       },
-      "resetpassword": {
-        "validtoken": "Ungültiger oder abgelaufener Link",
-        "validpassword": "Ein gültiges Passwort (Minimum von 8 Zeichen) ist erforderlich",
-        "passwordmismatch": "Passwörter stimmen nicht überein",
-        "error": "Fehler beim Zurücksetzen des Passworts"
+      "verify": {
+        "error": "Fehler beim Überprüfen der Doppelauthentifizierung mit der Anwendung"
       },
       "verifyemail": {
-        "validcode": "Bitte geben Sie den vollständigen 6 -Digit -Code ein",
-        "error": "Fehler beim Überprüfen der E -Mail"
+        "error": "Fehler beim Überprüfen der Doppelauthentifizierung per E -Mail"
       },
-      "resendverificationcode": {
-        "error": "Fehler beim Überweisen der Überprüfungs -E -Mail"
-      },
-      "changeverificationemail": {
-        "validemail": "Eine gültige E -Mail ist erforderlich",
-        "error": "Fehler beim Ändern der E -Mail"
-      },
-      "logout": {
-        "success": "Erfolgreich getrennt",
-        "error": "Fehler während der Trennung"
-      },
-      "deleteaccount": {
-        "success": "Erfolg erfolgreich gelöscht",
-        "error": "Fehler beim Löschen des Kontos"
+      "verifyregisterkey": {
+        "error": "Versäumnis, den Schlüssel aufzunehmen"
       }
     },
-    "usercontext": {
-      "languageupdated": "Sprache aktualisieren"
+    "changeverificationemail": {
+      "error": "Fehler beim Ändern der E -Mail",
+      "validemail": "Eine gültige E -Mail ist erforderlich"
+    },
+    "deleteaccount": {
+      "error": "Fehler beim Löschen des Kontos",
+      "success": "Erfolg erfolgreich gelöscht"
+    },
+    "forgotpassword": {
+      "error": "Fehler beim Senden der E -Mail",
+      "validemail": "Eine gültige E -Mail ist erforderlich"
+    },
+    "login": {
+      "error": "Fehler bei der Verbindung",
+      "fillallfields": "Bitte füllen Sie alle Felder aus",
+      "notverifiederror": "Klicken Sie auf \"Eine E -Mail zurückgeben\", um einen neuen Code zu erhalten",
+      "notverifiedsuccess": "Ein Code wurde an Sie gesendet, um Ihre E -Mail -Adresse zu überprüfen",
+      "validemail": "Eine gültige E -Mail ist erforderlich"
+    },
+    "logout": {
+      "error": "Fehler während der Trennung",
+      "success": "Erfolgreich getrennt"
+    },
+    "register": {
+      "error": "Fehler bei der Registrierung",
+      "passwordmismatch": "Passwörter stimmen nicht überein",
+      "validemail": "Eine gültige E -Mail ist erforderlich",
+      "validfirstname": "Ein gültiger Vorname (minimal 2 Zeichen) ist erforderlich",
+      "validlastname": "Ein gültiger Name (minimal 2 Zeichen) ist erforderlich",
+      "validpassword": "Ein gültiges Passwort (Minimum von 8 Zeichen) ist erforderlich",
+      "validusername": "Ein gültiger Benutzername (3-30 alphanumerische Zeichen) ist erforderlich"
+    },
+    "resendverificationcode": {
+      "error": "Fehler beim Überweisen der Überprüfungs -E -Mail"
+    },
+    "resetpassword": {
+      "error": "Fehler beim Zurücksetzen des Passworts",
+      "passwordmismatch": "Passwörter stimmen nicht überein",
+      "validpassword": "Ein gültiges Passwort (Minimum von 8 Zeichen) ist erforderlich",
+      "validtoken": "Ungültiger oder abgelaufener Link"
+    },
+    "verifyemail": {
+      "error": "Fehler beim Überprüfen der E -Mail",
+      "validcode": "Bitte geben Sie den vollständigen 6 -Digit -Code ein"
     }
+  },
+  "back": "Zurück",
+  "cancel": "Stornieren",
+  "contact-support": "Wenden Sie sich an den Support",
+  "delete": "LÖSCHEN",
+  "download": "Herunterladen",
+  "email": "E-Mail-Adresse",
+  "error": "Es ist ein Fehler aufgetreten",
+  "header": {
+    "about": "Um",
+    "challenges": "Herausforderung",
+    "close": "Besteigen die Speisekarte",
+    "dashboard": "Armaturenbrett",
+    "friends": "Freunde",
+    "leaderboard": "Einstufung",
+    "login": "Verbindung",
+    "logout": "Trennung",
+    "rewards": "Auszeichnungen",
+    "settings": "Einstellungen",
+    "steps": "Meine Schritte",
+    "theme": "Thema",
+    "title1": "NAVIGATION",
+    "title2": "ALLGEMEIN"
+  },
+  "manage": "Verwalten",
+  "notfound": {
+    "home": "Willkommen",
+    "message": "Hoppla! Die Seite, nach der Sie suchen, scheint sein eigenes Abenteuer verloren zu haben.",
+    "search": "Oder versuchen Sie, nach etwas anderem zu suchen:",
+    "searchplaceholder": "Zu recherchieren ...",
+    "suggestions": "Möglicherweise suchen Sie nach:",
+    "title": "Hexenseite"
+  },
+  "password": "Passwort",
+  "usercontext": {
+    "languageupdated": "Sprache aktualisieren"
   }
 }

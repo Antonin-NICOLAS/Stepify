@@ -46,24 +46,8 @@ import "./Leaderboard.css";
 Chart.register(...registerables);
 
 const Leaderboard = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const { getUserProfile } = useUser();
-  const {
-    users,
-    friendsData,
-    challengesData,
-    rewardsData,
-    fetchLeaderboardData,
-    fetchFriendsLeaderboard,
-    fetchChallengesLeaderboard,
-    fetchRewardsLeaderboard,
-  } = useLeaderboard(user?._id);
-
-  const { joinChallenge } = useChallenge(user?._id);
-  const { sendFriendRequest, addComment, sendMessage } = useNotifications(
-    user?._id
-  );
-  const { searchUsers } = useFriends(user?._id);
 
   // State for leaderboard type
   const [leaderboardType, setLeaderboardType] = useState("xp");
@@ -84,8 +68,29 @@ const Leaderboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [friends, setFriends] = useState([]);
 
+  const {
+    users,
+    friendsData,
+    challengesData,
+    rewardsData,
+    fetchLeaderboardData,
+    fetchFriendsLeaderboard,
+    fetchChallengesLeaderboard,
+    fetchRewardsLeaderboard,
+  } = useLeaderboard(user?._id);
+
+  const { joinChallenge } = useChallenge(user?._id);
+  const { sendFriendRequest, addComment, sendMessage } = useNotifications(
+    user?._id,
+  );
+  const { searchUsers } = useFriends(user?._id);
+
   // Handle filter changes
   useEffect(() => {
+    const fetchUserData = async () => {
+      const additionalData = await getUserProfile(user._id);
+      setUser(additionalData);
+    };
     if (user?._id) {
       const filters = {
         type: leaderboardType,
@@ -94,6 +99,7 @@ const Leaderboard = () => {
         filterFriends,
         searchQuery,
       };
+      fetchUserData();
       fetchLeaderboardData(filters);
     }
   }, [
@@ -162,7 +168,7 @@ const Leaderboard = () => {
         (user) =>
           user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+          user.lastName.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
 
@@ -171,7 +177,7 @@ const Leaderboard = () => {
       filtered = filtered.filter(
         (user) =>
           user?.friends.some((friend) => friend.userId === user._id) ||
-          user._id === user?._id
+          user._id === user?._id,
       );
     }
 
@@ -190,54 +196,54 @@ const Leaderboard = () => {
             timeFrame === "today"
               ? a.dailyXP
               : timeFrame === "week"
-              ? a.weeklyXP
-              : timeFrame === "month"
-              ? a.monthlyXP
-              : a.totalXP;
+                ? a.weeklyXP
+                : timeFrame === "month"
+                  ? a.monthlyXP
+                  : a.totalXP;
           bValue =
             timeFrame === "today"
               ? b.dailyXP
               : timeFrame === "week"
-              ? b.weeklyXP
-              : timeFrame === "month"
-              ? b.monthlyXP
-              : b.totalXP;
+                ? b.weeklyXP
+                : timeFrame === "month"
+                  ? b.monthlyXP
+                  : b.totalXP;
           break;
         case "steps":
           aValue =
             timeFrame === "today"
               ? a.dailySteps
               : timeFrame === "week"
-              ? a.weeklySteps
-              : timeFrame === "month"
-              ? a.monthlySteps
-              : a.totalSteps;
+                ? a.weeklySteps
+                : timeFrame === "month"
+                  ? a.monthlySteps
+                  : a.totalSteps;
           bValue =
             timeFrame === "today"
               ? b.dailySteps
               : timeFrame === "week"
-              ? b.weeklySteps
-              : timeFrame === "month"
-              ? b.monthlySteps
-              : b.totalSteps;
+                ? b.weeklySteps
+                : timeFrame === "month"
+                  ? b.monthlySteps
+                  : b.totalSteps;
           break;
         case "distance":
           aValue =
             timeFrame === "today"
               ? a.dailyDistance
               : timeFrame === "week"
-              ? a.weeklyDistance
-              : timeFrame === "month"
-              ? a.monthlyDistance
-              : a.totalDistance;
+                ? a.weeklyDistance
+                : timeFrame === "month"
+                  ? a.monthlyDistance
+                  : a.totalDistance;
           bValue =
             timeFrame === "today"
               ? b.dailyDistance
               : timeFrame === "week"
-              ? b.weeklyDistance
-              : timeFrame === "month"
-              ? b.monthlyDistance
-              : b.totalDistance;
+                ? b.weeklyDistance
+                : timeFrame === "month"
+                  ? b.monthlyDistance
+                  : b.totalDistance;
           break;
         case "challenges":
           aValue = a.totalChallengesCompleted;
@@ -331,26 +337,26 @@ const Leaderboard = () => {
         return timeFrame === "today"
           ? user.dailyXP
           : timeFrame === "week"
-          ? user.weeklyXP
-          : timeFrame === "month"
-          ? user.monthlyXP
-          : user.totalXP;
+            ? user.weeklyXP
+            : timeFrame === "month"
+              ? user.monthlyXP
+              : user.totalXP;
       case "steps":
         return timeFrame === "today"
           ? user.dailySteps
           : timeFrame === "week"
-          ? user.weeklySteps
-          : timeFrame === "month"
-          ? user.monthlySteps
-          : user.totalSteps;
+            ? user.weeklySteps
+            : timeFrame === "month"
+              ? user.monthlySteps
+              : user.totalSteps;
       case "distance":
         return timeFrame === "today"
           ? user.dailyDistance
           : timeFrame === "week"
-          ? user.weeklyDistance
-          : timeFrame === "month"
-          ? user.monthlyDistance
-          : user.totalDistance;
+            ? user.weeklyDistance
+            : timeFrame === "month"
+              ? user.monthlyDistance
+              : user.totalDistance;
       case "challenges":
         return user.totalChallengesCompleted;
       case "streak":
@@ -363,13 +369,18 @@ const Leaderboard = () => {
   };
 
   const formatMetricValue = (value, type) => {
+    if (value === undefined || value === null) {
+      return "0";
+    }
+    const numValue = typeof value === "string" ? parseFloat(value) : value;
+
     switch (type) {
       case "distance":
-        return `${value.toFixed(1)} km`;
+        return `${numValue.toFixed(1)} km`;
       case "goal-completion":
-        return `${value}%`;
+        return `${numValue}%`;
       default:
-        return value.toLocaleString("fr-FR");
+        return Number(numValue).toLocaleString("fr-FR");
     }
   };
 
@@ -444,7 +455,7 @@ const Leaderboard = () => {
 
     // Generate random data based on user's average activity
     const stepsData = labels.map(() =>
-      Math.floor(user.dailySteps * (0.7 + Math.random() * 0.6))
+      Math.floor(user.dailySteps * (0.7 + Math.random() * 0.6)),
     );
 
     return {
@@ -605,8 +616,8 @@ const Leaderboard = () => {
       backgroundColor: state.isSelected
         ? "var(--Couleur1)"
         : state.isFocused
-        ? "var(--Couleur2)"
-        : "transparent",
+          ? "var(--Couleur2)"
+          : "transparent",
       color: state.isSelected ? "white" : "var(--Noir)",
       "&:hover": {
         backgroundColor: "var(--Couleur2)",
@@ -702,7 +713,7 @@ const Leaderboard = () => {
                       <span>
                         {formatMetricValue(
                           getMetricValue(user3),
-                          leaderboardType
+                          leaderboardType,
                         )}
                       </span>
                     </div>
@@ -722,7 +733,7 @@ const Leaderboard = () => {
                     {user && user3._id !== user._id && (
                       <>
                         {!user.friends.some(
-                          (f) => f.userId._id === user3._id
+                          (f) => f.userId._id === user3._id,
                         ) && (
                           <button
                             className="action-icon-button"
@@ -780,7 +791,7 @@ const Leaderboard = () => {
                       <span>
                         {formatMetricValue(
                           getMetricValue(users),
-                          leaderboardType
+                          leaderboardType,
                         )}
                       </span>
                     </div>
@@ -800,7 +811,7 @@ const Leaderboard = () => {
                     {user && users._id !== user?._id && (
                       <>
                         {!user.friends.some(
-                          (f) => f.userId._id === users._id
+                          (f) => f.userId._id === users._id,
                         ) && (
                           <button
                             className="action-icon-button"
@@ -867,7 +878,7 @@ const Leaderboard = () => {
                           <span>
                             {formatMetricValue(
                               getMetricValue(users),
-                              leaderboardType
+                              leaderboardType,
                             )}
                           </span>
                         </div>
@@ -956,7 +967,7 @@ const Leaderboard = () => {
                       ))}
                     </div>
                     {challenge.participants.includes(
-                      (p) => p.user._id !== user?._id
+                      (p) => p.user._id !== user?._id,
                     ) && (
                       <button
                         className="join-challenge-button"
@@ -1017,7 +1028,7 @@ const Leaderboard = () => {
                                 <span className="holder-date">
                                   Obtenu le{" "}
                                   {new Date(holder.date).toLocaleDateString(
-                                    "fr-FR"
+                                    "fr-FR",
                                   )}
                                 </span>
                               </div>
@@ -1043,7 +1054,7 @@ const Leaderboard = () => {
                                 <span className="holder-date">
                                   Obtenu le{" "}
                                   {new Date(holder.date).toLocaleDateString(
-                                    "fr-FR"
+                                    "fr-FR",
                                   )}
                                 </span>
                               </div>
@@ -1116,7 +1127,7 @@ const Leaderboard = () => {
                 </div>
                 <div className="stat-content">
                   <span className="stat-value">
-                    {user.totalXP.toLocaleString("fr-FR")}
+                    {formatMetricValue(user.totalXP, "XP") || user?.totalXP}
                   </span>
                   <span className="stat-label">XP total</span>
                 </div>
@@ -1127,7 +1138,8 @@ const Leaderboard = () => {
                 </div>
                 <div className="stat-content">
                   <span className="stat-value">
-                    {user.totalSteps.toLocaleString("fr-FR")}
+                    {formatMetricValue(user.totalSteps, "totalSteps") ||
+                      user?.totalSteps}
                   </span>
                   <span className="stat-label">Pas totaux</span>
                 </div>
@@ -1137,7 +1149,7 @@ const Leaderboard = () => {
                   <Zap size={24} />
                 </div>
                 <div className="stat-content">
-                  <span className="stat-value">{user.streak.current}</span>
+                  <span className="stat-value">{user?.streak?.current}</span>
                   <span className="stat-label">Streak actuelle</span>
                 </div>
               </div>
@@ -1426,7 +1438,7 @@ const Leaderboard = () => {
                             {
                               year: "numeric",
                               month: "long",
-                            }
+                            },
                           )}
                         </span>
                       </p>
@@ -1436,7 +1448,7 @@ const Leaderboard = () => {
                       {user && selectedUser._id !== user._id && (
                         <>
                           {!friends.some(
-                            (f) => f.userId._id === selectedUser._id
+                            (f) => f.userId._id === selectedUser._id,
                           ) && (
                             <button
                               className="action-button"

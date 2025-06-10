@@ -24,7 +24,7 @@ export const useRewards = (userId) => {
     } catch (err) {
       console.error("Fetch error:", err);
       toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur"
+        err.response?.data?.error || "Erreur de connexion au serveur",
       );
     }
   }, []);
@@ -43,7 +43,7 @@ export const useRewards = (userId) => {
     } catch (err) {
       console.error("Fetch error:", err);
       toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur"
+        err.response?.data?.error || "Erreur de connexion au serveur",
       );
     }
   }, []);
@@ -62,7 +62,7 @@ export const useRewards = (userId) => {
     } catch (err) {
       console.error("Fetch error:", err);
       toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur"
+        err.response?.data?.error || "Erreur de connexion au serveur",
       );
     }
   }, []);
@@ -71,7 +71,7 @@ export const useRewards = (userId) => {
     try {
       const { data } = await axios.post(
         `${API_REWARDS}/${userId}/${rewardId}/setinvitrine`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       if (data.success) {
         toast.success(data.message || "La vitrine a bien été changée");

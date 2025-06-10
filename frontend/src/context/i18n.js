@@ -25,10 +25,11 @@ i18n
       escapeValue: false,
     },
     detection: {
-      order: ["localStorage", "navigator", "htmlTag"],
+      order: ["cookie", "localStorage", "navigator", "htmlTag"],
       caches: ["localStorage"],
     },
     defaultNS: "common",
+    nsSeparator: ".",
     ns: [
       "common",
       "account",
@@ -37,7 +38,6 @@ i18n
       "leaderboard",
       "rewards",
       "friends",
-      "settings",
       "about",
     ],
     resources: {

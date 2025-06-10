@@ -24,7 +24,7 @@ export const useChallenge = (userId) => {
     } catch (err) {
       console.error("Fetch error:", err);
       toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur"
+        err.response?.data?.error || "Erreur de connexion au serveur",
       );
     }
   }, []);
@@ -33,7 +33,7 @@ export const useChallenge = (userId) => {
     try {
       const { data } = await axios.get(
         `${API_CHALLENGE}/${userId}/mychallenges`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -45,7 +45,7 @@ export const useChallenge = (userId) => {
     } catch (err) {
       console.error("Fetch error:", err);
       toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur"
+        err.response?.data?.error || "Erreur de connexion au serveur",
       );
     }
   }, [userId]);
@@ -55,7 +55,7 @@ export const useChallenge = (userId) => {
       const { data } = await axios.post(
         `${API_CHALLENGE}/${userId}/new`,
         challengeData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -69,7 +69,8 @@ export const useChallenge = (userId) => {
     } catch (error) {
       console.error("Error creating challenge:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors de la création du challenge"
+        error.response?.data?.error ||
+          "Erreur lors de la création du challenge",
       );
       return false;
     }
@@ -91,7 +92,7 @@ export const useChallenge = (userId) => {
       console.error("Details error:", error);
       toast.error(
         error.response?.data?.error ||
-          "Erreur lors de la récupération des détails"
+          "Erreur lors de la récupération des détails",
       );
       return false;
     }
@@ -104,7 +105,7 @@ export const useChallenge = (userId) => {
         updates,
         {
           withCredentials: true,
-        }
+        },
       );
 
       if (data.success) {
@@ -119,7 +120,7 @@ export const useChallenge = (userId) => {
     } catch (error) {
       console.error("Update error:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors de la modification"
+        error.response?.data?.error || "Erreur lors de la modification",
       );
       return false;
     }
@@ -130,7 +131,7 @@ export const useChallenge = (userId) => {
       const { data } = await axios.put(
         `${API_CHALLENGE}/${userId}/join`,
         { accessCode, challengeId },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -145,7 +146,8 @@ export const useChallenge = (userId) => {
     } catch (error) {
       console.error("Join error:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors de l'ajout de l'utilisateur"
+        error.response?.data?.error ||
+          "Erreur lors de l'ajout de l'utilisateur",
       );
       return false;
     }
@@ -155,7 +157,7 @@ export const useChallenge = (userId) => {
     try {
       const { data } = await axios.put(
         `${API_CHALLENGE}/${userId}/${challengeId}/leave`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -165,7 +167,7 @@ export const useChallenge = (userId) => {
         return true;
       } else {
         toast.error(
-          data.error || "Erreur lors de la suppression de l'utilisateur"
+          data.error || "Erreur lors de la suppression de l'utilisateur",
         );
         return false;
       }
@@ -173,7 +175,7 @@ export const useChallenge = (userId) => {
       console.error("Join error:", error);
       toast.error(
         error.response?.data?.error ||
-          "Erreur lors de la suppression de l'utilisateur"
+          "Erreur lors de la suppression de l'utilisateur",
       );
       return false;
     }
@@ -183,7 +185,7 @@ export const useChallenge = (userId) => {
     try {
       const { data } = await axios.delete(
         `${API_CHALLENGE}/${userId}/${challengeId}/delete`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (data.success) {
@@ -198,7 +200,7 @@ export const useChallenge = (userId) => {
     } catch (error) {
       console.error("Delete error:", error);
       toast.error(
-        error.response?.data?.error || "Erreur lors de la suppression"
+        error.response?.data?.error || "Erreur lors de la suppression",
       );
       return false;
     }

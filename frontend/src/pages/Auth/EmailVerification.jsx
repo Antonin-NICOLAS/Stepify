@@ -33,7 +33,7 @@ function EmailVerification() {
   //add toast notification if redirected
   useEffect(() => {
     if (location.state?.showToast) {
-      toast("Veuillez vérifier votre adresse email pour continuer.");
+      toast(t("auth.emailverification.redirect"));
       navigate(location.pathname, { replace: true });
     }
   }, [location.state, location.pathname, navigate]);
@@ -117,6 +117,8 @@ function EmailVerification() {
           navigate("/dashboard");
         }, 3000);
       });
+    } catch (error) {
+      console.error("Error during email verification:", error);
     } finally {
       setIsLoading(false);
     }
@@ -125,21 +127,27 @@ function EmailVerification() {
   // Handle resend code
   const handleResend = async () => {
     if (resendDisabled) return;
-
-    resendVerificationCode(
-      // onError
-      () => {
-        setResendDisabled(true);
-        setCountdown(60);
-        setOtp(["", "", "", "", "", ""]);
-      },
-      // onSuccess
-      () => {
-        setResendDisabled(false);
-        setCountdown(0);
-        setOtp(["", "", "", "", "", ""]);
-      }
-    );
+    setIsLoading(true);
+    try {
+      await resendVerificationCode(
+        // onError
+        () => {
+          setResendDisabled(true);
+          setCountdown(60);
+          setOtp(["", "", "", "", "", ""]);
+        },
+        // onSuccess
+        () => {
+          setResendDisabled(false);
+          setCountdown(0);
+          setOtp(["", "", "", "", "", ""]);
+        },
+      );
+    } catch (error) {
+      console.error("Error during resend verification code:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isVerified) {
@@ -154,16 +162,22 @@ function EmailVerification() {
               </div>
               <div className="auth-stats">
                 <div className="auth-stat-item">
-                  <h3>Vérification réussie!</h3>
-                  <p>Votre compte est maintenant vérifié</p>
+                  <h3>{t("auth.emailverification.success.visual.title")}</h3>
+                  <p>
+                    {t("auth.emailverification.success.visual.description")}
+                  </p>
                 </div>
                 <div className="auth-stat-item">
                   <div className="auth-stat-icon success">
                     <CheckCircle2 />
                   </div>
                   <div className="auth-stat-info">
-                    <h4>Email vérifié</h4>
-                    <p>Votre adresse email a été confirmée</p>
+                    <h4>{t("auth.emailverification.success.visual.step1")}</h4>
+                    <p>
+                      {t(
+                        "auth.emailverification.success.visual.step1description",
+                      )}
+                    </p>
                   </div>
                 </div>
                 <div className="auth-stat-item">
@@ -171,8 +185,12 @@ function EmailVerification() {
                     <CheckCircle2 />
                   </div>
                   <div className="auth-stat-info">
-                    <h4>Compte activé</h4>
-                    <p>Votre compte est maintenant actif</p>
+                    <h4>{t("auth.emailverification.success.visual.step2")}</h4>
+                    <p>
+                      {t(
+                        "auth.emailverification.success.visual.step2description",
+                      )}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -187,15 +205,15 @@ function EmailVerification() {
                     <CheckCircle2 />
                   </div>
                 </div>
-                <h2>Email Vérifié ! 🎉</h2>
+                <h2>{t("auth.emailverification.success.content.title")}</h2>
                 <p className="auth-subtitle">
-                  Votre adresse email a été confirmée avec succès
+                  {t("auth.emailverification.success.content.description")}
                 </p>
               </div>
 
               <div className="auth-form-content">
                 <div className="success-message">
-                  <p>Vous allez être redirigé vers votre tableau de bord...</p>
+                  <p>{t("auth.emailverification.success.content.redirect")}</p>
                 </div>
               </div>
             </div>
@@ -219,16 +237,20 @@ function EmailVerification() {
                 className="auth-stat-item"
                 style={{ flexDirection: "column" }}
               >
-                <h3>Vérification</h3>
-                <p>Nous prenons la sécurité de votre compte au sérieux</p>
+                <h3>{t("auth.emailverification.process.visual.title")}</h3>
+                <p>{t("auth.emailverification.process.visual.description")}</p>
               </div>
               <div className="auth-stat-item">
                 <div className="auth-stat-icon">
                   <Mail />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>Code envoyé</h4>
-                  <p>Vérifiez votre boîte de réception</p>
+                  <h4>{t("auth.emailverification.process.visual.step1")}</h4>
+                  <p>
+                    {t(
+                      "auth.emailverification.process.visual.step1description",
+                    )}
+                  </p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -236,8 +258,12 @@ function EmailVerification() {
                   <AlertCircle />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>Pas reçu ?</h4>
-                  <p>Vous pouvez demander un nouveau code</p>
+                  <h4>{t("auth.emailsent.visual.step2")}</h4>
+                  <p>
+                    {t(
+                      "auth.emailverification.process.visual.step2description",
+                    )}
+                  </p>
                 </div>
               </div>
             </div>
@@ -253,19 +279,17 @@ function EmailVerification() {
                     <MailCheck />
                   </div>
                 </div>
-                <h2>Vérifiez votre email</h2>
+                <h2>{t("auth.emailverification.process.form.title")}</h2>
                 <p className="auth-subtitle">
-                  Nous avons envoyé un code à{" "}
-                  {user?.email || "votre adresse email"}
+                  {t("auth.emailverification.process.form.description")}{" "}
+                  {user?.email ||
+                    t("auth.emailverification.process.form.descrption2")}
                 </p>
               </div>
 
               <div className="auth-form-content">
                 <div className="verification-message">
-                  <p>
-                    Veuillez entrer le code à 6 chiffres envoyé à votre adresse
-                    email pour vérifier votre compte.
-                  </p>
+                  <p>{t("auth.emailverification.process.form.message")}</p>
                 </div>
 
                 <div className="otp-container">
@@ -292,11 +316,15 @@ function EmailVerification() {
                   disabled={isLoading || otp.join("").length !== 6}
                 >
                   <ShieldCheck />
-                  <span>{isLoading ? "Vérification..." : "Vérifier"}</span>
+                  <span>
+                    {isLoading
+                      ? t("auth.login.form.accesskey.verification")
+                      : t("auth.emailverification.process.form.verify")}
+                  </span>
                 </button>
 
                 <div className="resend-container">
-                  <p>Vous n'avez pas reçu de code ?</p>
+                  <p>{t("auth.emailverification.process.form.resend")}</p>
                   <button
                     type="button"
                     className={`resend-btn ${resendDisabled ? "disabled" : ""}`}
@@ -306,12 +334,17 @@ function EmailVerification() {
                     {resendDisabled ? (
                       <>
                         <ClockFading />
-                        <span>Renvoyer dans {countdown}s</span>
+                        <span>
+                          {t("auth.emailverification.process.form.countdown")}{" "}
+                          {countdown}s
+                        </span>
                       </>
                     ) : (
                       <>
                         <RefreshCcw />
-                        <span>Renvoyer le code</span>
+                        <span>
+                          {t("auth.emailverification.process.form.button")}
+                        </span>
                       </>
                     )}
                   </button>
@@ -319,8 +352,12 @@ function EmailVerification() {
               </div>
 
               <div className="auth-form-footer">
-                <span>Mauvaise adresse email ?</span>
-                <Link to="/change-email">Changer d'email</Link>
+                <span>
+                  {t("auth.emailverification.process.footer.question")}
+                </span>
+                <Link to="/change-email">
+                  t("auth.changeemail.visual.title')
+                </Link>
               </div>
             </form>
           </div>

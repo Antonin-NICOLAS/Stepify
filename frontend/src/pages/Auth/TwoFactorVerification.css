@@ -1,0 +1,451 @@
+/* =================== TWO FACTOR VERIFICATION STYLES =================== */
+.twofactor-verification-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--background);
+  padding: 1rem;
+}
+
+.twofactor-verification-page .auth-container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 600px;
+  background-color: var(--body-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+/* =================== VISUAL SECTION =================== */
+.twofactor-verification-page .auth-visual-section {
+  flex: 1;
+  background: linear-gradient(135deg, var(--Couleur1), var(--bleu));
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.twofactor-verification-page .auth-visual-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("/placeholder.svg?height=600&width=600") center / cover
+    no-repeat;
+  opacity: 0.1;
+}
+
+.twofactor-verification-page .auth-visual-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.twofactor-verification-page .auth-logo {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.twofactor-verification-page .auth-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.twofactor-verification-page .auth-stat-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.twofactor-verification-page .auth-stat-item h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.twofactor-verification-page .auth-stat-item h4 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.twofactor-verification-page .auth-stat-item p {
+  opacity: 0.8;
+  font-size: 0.9rem;
+}
+
+.twofactor-verification-page .auth-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.twofactor-verification-page .auth-stat-icon.success {
+  background-color: rgba(190, 211, 195, 0.3);
+}
+
+.twofactor-verification-page .auth-stat-info {
+  flex: 1;
+}
+
+/* =================== FORM SECTION =================== */
+.twofactor-verification-page .auth-form-section {
+  width: 50%;
+  background-color: var(--body-color);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.twofactor-verification-page .auth-form-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.twofactor-verification-page .auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.twofactor-verification-page .auth-form-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.twofactor-verification-page .auth-icon-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.twofactor-verification-page .auth-icon-container.success .auth-icon {
+  background: linear-gradient(135deg, var(--Couleur2), var(--turquoise));
+}
+
+.twofactor-verification-page .auth-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--Couleur1), var(--bleu));
+  color: white;
+}
+
+.twofactor-verification-page .auth-icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.twofactor-verification-page .auth-form-header h2 {
+  font-size: 1.75rem;
+  color: var(--Couleur);
+  margin-bottom: 0.5rem;
+}
+
+.twofactor-verification-page .auth-subtitle {
+  font-size: 1rem;
+  color: var(--Gris);
+}
+
+.twofactor-verification-page .auth-form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.twofactor-verification-page .verification-message {
+  line-height: 1.6;
+  color: var(--Noir);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.twofactor-verification-page .otp-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.twofactor-verification-page .otp-input {
+  width: 45px;
+  height: 55px;
+  border: 1px solid var(--Couleur2);
+  border-radius: var(--radius);
+  background-color: var(--background);
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--Noir);
+  transition: var(--transition);
+}
+
+.twofactor-verification-page .otp-input:focus {
+  outline: none;
+  border-color: var(--Couleur1);
+  box-shadow: 0 0 0 2px rgba(74, 145, 158, 0.2);
+  transform: scale(1.05);
+}
+
+.twofactor-verification-page .otp-input::-webkit-inner-spin-button,
+.twofactor-verification-page .otp-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.twofactor-verification-page .auth-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.twofactor-verification-page .auth-input-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--Couleur);
+}
+
+.twofactor-verification-page .auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.twofactor-verification-page .auth-input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--Gris);
+  width: 18px;
+  height: 18px;
+}
+
+.twofactor-verification-page .auth-input-wrapper input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid var(--Couleur2);
+  border-radius: var(--radius);
+  background-color: var(--background);
+  color: var(--Noir);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.twofactor-verification-page .auth-input-wrapper input:focus {
+  outline: none;
+  border-color: var(--Couleur1);
+  box-shadow: 0 0 0 2px rgba(74, 145, 158, 0.2);
+}
+
+.twofactor-verification-page .auth-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  border: none;
+  font-size: 1rem;
+}
+
+.twofactor-verification-page .auth-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.twofactor-verification-page .auth-button-primary {
+  background: linear-gradient(135deg, var(--Couleur1), var(--bleu));
+  color: white;
+}
+
+.twofactor-verification-page .auth-button-primary:hover {
+  background: linear-gradient(135deg, var(--bleu), var(--Couleur1));
+  transform: translateY(-2px);
+}
+
+.twofactor-verification-page .auth-button-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.twofactor-verification-page .auth-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.twofactor-verification-page .toggle-backup-btn {
+  background: none;
+  border: none;
+  color: var(--turquoise);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.twofactor-verification-page .toggle-backup-btn:hover {
+  background-color: rgba(20, 184, 166, 0.1);
+}
+
+.twofactor-verification-page .resend-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.twofactor-verification-page .resend-container p {
+  color: var(--Gris);
+  font-size: 0.9rem;
+}
+
+.twofactor-verification-page .resend-btn {
+  background: none;
+  border: none;
+  color: var(--turquoise);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.twofactor-verification-page .resend-btn:hover {
+  background-color: rgba(20, 184, 166, 0.1);
+}
+
+.twofactor-verification-page .resend-btn.disabled {
+  color: var(--Gris);
+  cursor: not-allowed;
+}
+
+.twofactor-verification-page .resend-btn.disabled:hover {
+  background-color: transparent;
+}
+
+.twofactor-verification-page .auth-form-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--Gris);
+}
+
+.twofactor-verification-page .auth-form-footer a {
+  color: var(--turquoise);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.twofactor-verification-page .auth-form-footer a:hover {
+  text-decoration: underline;
+}
+
+.twofactor-verification-page .success-message {
+  text-align: center;
+  color: var(--Noir);
+  line-height: 1.6;
+}
+
+/* =================== RESPONSIVE STYLES =================== */
+@media (max-width: 900px) {
+  .twofactor-verification-page .auth-container {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .twofactor-verification-page .auth-visual-section {
+    display: none;
+  }
+
+  .twofactor-verification-page .auth-form-section {
+    width: 100%;
+  }
+
+  .twofactor-verification-page .otp-container {
+    margin: 0;
+  }
+}
+
+@media (max-width: 500px) {
+  .twofactor-verification-page .auth-container {
+    width: 95%;
+  }
+
+  .twofactor-verification-page .auth-form-section {
+    padding: 1.5rem;
+  }
+
+  .twofactor-verification-page .auth-form {
+    gap: 0.75rem;
+  }
+
+  .twofactor-verification-page .auth-form-content {
+    gap: 0.75rem;
+  }
+
+  .twofactor-verification-page .auth-form-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .twofactor-verification-page .otp-container {
+    gap: 0.35rem;
+  }
+
+  .twofactor-verification-page .otp-input {
+    width: 40px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .twofactor-verification-page .otp-input {
+    width: 35px;
+    height: 45px;
+    font-size: 1.1rem;
+  }
+}

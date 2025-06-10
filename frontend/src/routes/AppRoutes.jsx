@@ -12,12 +12,13 @@ import {
 // Pages
 import Home from "../pages/Home.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
-import Challenges from "../pages/Challenges.jsx";
+import Challenges from "../pages/Challenges/Challenges.jsx";
 import Steps from "../pages/Steps.jsx";
 import Leaderboard from "../pages/Leaderboard.jsx";
 import Rewards from "../pages/Rewards.jsx";
 import Friends from "../pages/Friends.jsx";
-import Settings from "../pages/Settings.jsx";
+import Profile from "../pages/Profile.jsx";
+import Settings from "../pages/Settings/Settings.jsx";
 import About from "../pages/About.jsx";
 //terms of services
 import TermsOfService from "../pages/Documents/TermsOfService.jsx";
@@ -28,6 +29,8 @@ import ChangeVerificationEmail from "../pages/Auth/ChangeEmail.jsx";
 import ForgotPassword from "../pages/Auth/Forgot-pwd.jsx";
 import EmailSent from "../pages/Auth/EmailSent.jsx";
 import ResetPassword from "../pages/Auth/Reset-pwd.jsx";
+import TwoFactorVerification from "../pages/Auth/TwoFactorVerification.jsx";
+import TwoFactorSetup from "../pages/Settings/TwoFactorSetup.jsx";
 //OTHERS
 import NotFound from "../components/NotFound.jsx";
 
@@ -103,6 +106,16 @@ export default function AppRoutes() {
           }
         />
         <Route
+          path="/profile"
+          element={
+            <ProtectRoute>
+              <RequireEmailVerification>
+                <Profile />
+              </RequireEmailVerification>
+            </ProtectRoute>
+          }
+        />
+        <Route
           path="/about"
           element={
             <RequireEmailVerification>
@@ -170,6 +183,24 @@ export default function AppRoutes() {
           <RequireEmailVerification>
             <ResetPassword />
           </RequireEmailVerification>
+        }
+      />
+      <Route
+        path="/settings/2fa"
+        element={
+          <ProtectRoute>
+            <RequireEmailVerification>
+              <TwoFactorSetup />
+            </RequireEmailVerification>
+          </ProtectRoute>
+        }
+      />
+      <Route
+        path="/2fa-verification"
+        element={
+          <AuthenticatedUserRoute>
+            <TwoFactorVerification />
+          </AuthenticatedUserRoute>
         }
       />
       {/* TODO : <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}

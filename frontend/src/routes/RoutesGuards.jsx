@@ -5,16 +5,7 @@ import GlobalLoader from "../utils/GlobalLoader";
 
 // Protected route for authenticated users
 export const ProtectRoute = ({ children }) => {
-  const { isAuthenticated, checkAuth } = useAuth();
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      await checkAuth();
-      setIsCheckingAuth(false);
-    };
-    verifyAuth();
-  }, [checkAuth]);
+  const { isAuthenticated, isCheckingAuth } = useAuth();
 
   if (isCheckingAuth) return <GlobalLoader />;
   return isAuthenticated ? children : <Navigate to="/login" replace />;
@@ -22,18 +13,9 @@ export const ProtectRoute = ({ children }) => {
 
 // Route for already authenticated users (login/register pages)
 export const AuthenticatedUserRoute = ({ children }) => {
-  const { isAuthenticated, user, checkAuth } = useAuth();
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const { isAuthenticated, user, isCheckingAuth } = useAuth();
 
   const isAdmin = user?.role === "admin";
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      await checkAuth();
-      setIsCheckingAuth(false);
-    };
-    verifyAuth();
-  }, [checkAuth]);
 
   if (isCheckingAuth) return <GlobalLoader />;
   return !isAdmin && isAuthenticated && user ? (
@@ -45,18 +27,9 @@ export const AuthenticatedUserRoute = ({ children }) => {
 
 // Route that requires email verification
 export const RequireEmailVerification = ({ children }) => {
-  const { user, checkAuth } = useAuth();
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const { user, isCheckingAuth } = useAuth();
   const isOnVerificationPage =
     window.location.pathname === "/email-verification";
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      await checkAuth();
-      setIsCheckingAuth(false);
-    };
-    verifyAuth();
-  }, [checkAuth]);
 
   if (isCheckingAuth) return <GlobalLoader />;
   if (!isOnVerificationPage && user && !user.isVerified) {
@@ -69,16 +42,7 @@ export const RequireEmailVerification = ({ children }) => {
 
 // Admin-only route
 export const RequireAdmin = ({ children }) => {
-  const { user, checkAuth } = useAuth();
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-
-  useEffect(() => {
-    const verifyAuth = async () => {
-      await checkAuth();
-      setIsCheckingAuth(false);
-    };
-    verifyAuth();
-  }, [checkAuth]);
+  const { user, isCheckingAuth } = useAuth();
 
   if (isCheckingAuth) return <GlobalLoader />;
   return user?.role === "admin" ? (

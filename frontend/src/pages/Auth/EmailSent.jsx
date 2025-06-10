@@ -12,7 +12,7 @@ import {
 import "./EmailSent.css";
 
 function EmailSent() {
-  const { t } = useTranslation(["auth"]);
+  const { t } = useTranslation();
   return (
     <div className="email-sent-page">
       <div className="auth-container">
@@ -26,16 +26,16 @@ function EmailSent() {
                 className="auth-stat-item"
                 style={{ flexDirection: "column" }}
               >
-                <h3>{t("auth:auth.emailsent.visual.title")}</h3>
-                <p>{t("auth:auth.emailsent.visual.description")}</p>
+                <h3>{t("auth.emailsent.visual.title")}</h3>
+                <p>{t("auth.emailsent.visual.description")}</p>
               </div>
               <div className="auth-stat-item">
                 <div className="auth-stat-icon">
                   <Mail />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth:auth.emailsent.visual.step1")}</h4>
-                  <p>{t("auth:auth.emailsent.visual.step1description")}</p>
+                  <h4>{t("auth.emailsent.visual.step1")}</h4>
+                  <p>{t("auth.emailsent.visual.step1description")}</p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -43,8 +43,8 @@ function EmailSent() {
                   <AlertCircle />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth:auth.emailsent.visual.step2")}</h4>
-                  <p>{t("auth:auth.emailsent.visual.step2description")}</p>
+                  <h4>{t("auth.emailsent.visual.step2")}</h4>
+                  <p>{t("auth.emailsent.visual.step2description")}</p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -52,8 +52,8 @@ function EmailSent() {
                   <CheckCircle2 />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth:auth.emailsent.visual.step3")}</h4>
-                  <p>{t("auth:auth.emailsent.visual.step3description")}</p>
+                  <h4>{t("auth.emailsent.visual.step3")}</h4>
+                  <p>{t("auth.emailsent.visual.step3description")}</p>
                 </div>
               </div>
             </div>
@@ -68,25 +68,23 @@ function EmailSent() {
                   <MailCheck />
                 </div>
               </div>
-              <h2>{t("auth:auth.emailsent.content.title")}</h2>
-              <p className="auth-subtitle">{t("auth:auth.emailsent.content.description")}</p>
+              <h2>{t("auth.emailsent.content.title")}</h2>
+              <p className="auth-subtitle">
+                {t("auth.emailsent.content.description")}
+              </p>
             </div>
 
             <div className="auth-form-content">
               <div className="email-sent-message">
-                <p>
-                  {t("auth:auth.emailsent.content.message1")}
-                </p>
-                <p>
-                  {t("auth:auth.emailsent.content.message2")}
-                </p>
+                <p>{t("auth.emailsent.content.message1")}</p>
+                <p>{t("auth.emailsent.content.message2")}</p>
               </div>
 
               <div className="email-sent-info">
-                <p>{t("auth:auth.emailsent.content.infotitle")}</p>
+                <p>{t("auth.emailsent.content.infotitle")}</p>
                 <ul>
-                  <li>{t("auth:auth.emailsent.content.infodescription")}</li>
-                  <li>{t("auth:auth.emailsent.content.correctemail")}</li>
+                  <li>{t("auth.emailsent.content.infodescription")}</li>
+                  <li>{t("auth.emailsent.content.correctemail")}</li>
                 </ul>
               </div>
 
@@ -95,13 +93,15 @@ function EmailSent() {
                 className="auth-button auth-button-secondary"
               >
                 <CornerDownLeft />
-                <span>{t("auth:auth.emailsent.content.return")}</span>
+                <span>{t("common.back")}</span>
               </Link>
             </div>
 
             <div className="auth-form-footer">
-              <span>{t("auth:auth.emailsent.footer.question")}</span>
-              <a href="mailto:stepify.contact@gmail.com">{t("auth:auth.emailsent.footer.button")}</a>
+              <span>{t("auth.emailsent.footer.question")}</span>
+              <a href="mailto:stepify.contact@gmail.com">
+                {t("auth.emailsent.footer.button")}
+              </a>
             </div>
           </div>
         </div>

@@ -108,7 +108,7 @@ const Steps = () => {
     stepEntries,
     viewMode,
     selectedDate,
-    dateRange
+    dateRange,
   );
 
   const stats = useStepsStats(filteredEntries);
@@ -214,11 +214,11 @@ const Steps = () => {
 
   // State for select
   const [selectedMode, setSelectedMode] = useState(
-    ModeOptions.find((opt) => opt.value === (currentEntry?.mode || "walk"))
+    ModeOptions.find((opt) => opt.value === (currentEntry?.mode || "walk")),
   );
 
   const [selectedFilterMode, setSelectedFilterMode] = useState(
-    FilterModeOptions[0]
+    FilterModeOptions[0],
   );
   const [selectedVerified, setSelectedVerified] = useState(VerifiedOptions[0]);
   const [selectedFavorite, setSelectedFavorite] = useState(FavoriteOptions[0]);
@@ -244,8 +244,8 @@ const Steps = () => {
       backgroundColor: state.isSelected
         ? "var(--Couleur1)"
         : state.isFocused
-        ? "var(--Couleur2)"
-        : "transparent",
+          ? "var(--Couleur2)"
+          : "transparent",
       color: state.isSelected ? "white" : "var(--Noir)",
       "&:hover": {
         backgroundColor: "var(--Couleur2)",
@@ -301,7 +301,7 @@ const Steps = () => {
       filtered = filtered.filter((entry) =>
         tableFilters.verified === "verified"
           ? entry.isVerified
-          : !entry.isVerified
+          : !entry.isVerified,
       );
     }
 
@@ -310,7 +310,7 @@ const Steps = () => {
       filtered = filtered.filter((entry) =>
         tableFilters.favorite === "favorite"
           ? entry.isFavorite
-          : !entry.isFavorite
+          : !entry.isFavorite,
       );
     }
 
@@ -581,7 +581,7 @@ const Steps = () => {
         const updatedEntry = {
           ...currentEntry,
           hourlyData: currentEntry.hourlyData.map((hd) =>
-            hd.hour === hour ? entryData.hourlyData[0] : hd
+            hd.hour === hour ? entryData.hourlyData[0] : hd,
           ),
         };
         success = await updateStepEntry(currentEntry._id, updatedEntry);
@@ -603,7 +603,7 @@ const Steps = () => {
   const handleHourNavigation = (direction) => {
     const hours = currentEntry.hourlyData.map((h) => h.hour);
     const currentIndex = hours.indexOf(
-      currentEntry.hourlyData[selectedHourIndex].hour
+      currentEntry.hourlyData[selectedHourIndex].hour,
     );
     const newIndex = currentIndex + direction;
 
@@ -617,7 +617,7 @@ const Steps = () => {
     try {
       await FavoriteEntry(entryId);
     } catch (error) {
-      console.log("error:", error);
+      console.error("error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -629,7 +629,7 @@ const Steps = () => {
       try {
         await deleteStepEntry(entryId);
       } catch (error) {
-        console.log("error:", error);
+        console.error("error:", error);
       } finally {
         setIsLoading(false);
       }
@@ -646,7 +646,7 @@ const Steps = () => {
       setImportFile(null);
       setImportSource(null);
     } catch (error) {
-      console.log("error:", error);
+      console.error("error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -1014,7 +1014,7 @@ const Steps = () => {
             <div className="metric-selector">
               <Select
                 value={MetricOptions.find(
-                  (option) => option.value === chartMetric
+                  (option) => option.value === chartMetric,
                 )}
                 onChange={(selected) => setChartMetric(selected.value)}
                 options={MetricOptions}
@@ -1047,7 +1047,7 @@ const Steps = () => {
             <div className="mode-filter">
               <Select
                 value={ModeOptionsChart.find(
-                  (option) => option.value === filters.mode
+                  (option) => option.value === filters.mode,
                 )}
                 onChange={(selected) =>
                   setFilters({ ...filters, mode: selected.value })

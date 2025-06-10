@@ -451,7 +451,7 @@
       width: 95%;
     }
 
-        .auth-form {
+    .auth-form {
       gap: 0.75rem;
     }
     .auth-form-content {
@@ -482,7 +482,6 @@
 
 @media (max-width: 400px) {
   .verification-page {
-
     .otp-input {
       width: 35px;
       height: 45px;

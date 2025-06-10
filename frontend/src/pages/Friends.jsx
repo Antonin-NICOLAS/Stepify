@@ -150,7 +150,7 @@ const Friends = () => {
         return sorted.sort((a, b) => a.fullName.localeCompare(b.fullName));
       case "activity":
         return sorted.sort(
-          (a, b) => new Date(b.lastActivity) - new Date(a.lastActivity)
+          (a, b) => new Date(b.lastActivity) - new Date(a.lastActivity),
         );
       case "added":
         return sorted.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
@@ -209,7 +209,7 @@ const Friends = () => {
     });
 
     const stepsData = labels.map(() =>
-      Math.floor((friend.dailySteps || 5000) * (0.7 + Math.random() * 0.6))
+      Math.floor((friend.dailySteps || 5000) * (0.7 + Math.random() * 0.6)),
     );
 
     return {
@@ -260,7 +260,7 @@ const Friends = () => {
                   <span>
                     {
                       friends.filter(
-                        (f) => getActivityStatus(f.userId).status === "online"
+                        (f) => getActivityStatus(f.userId).status === "online",
                       ).length
                     }{" "}
                     en ligne
@@ -352,7 +352,7 @@ const Friends = () => {
                             <Footprints size={12} />
                             <span>
                               {(friend.userId.totalSteps || 0).toLocaleString(
-                                "fr-FR"
+                                "fr-FR",
                               )}
                             </span>
                           </div>
@@ -585,7 +585,7 @@ const Friends = () => {
                             <Footprints size={12} />
                             <span>
                               {(searchUser.totalSteps || 0).toLocaleString(
-                                "fr-FR"
+                                "fr-FR",
                               )}
                             </span>
                           </div>
@@ -597,14 +597,14 @@ const Friends = () => {
                       </div>
                       <div className="result-actions">
                         {friends.some(
-                          (f) => f.userId._id === searchUser._id
+                          (f) => f.userId._id === searchUser._id,
                         ) ? (
                           <button className="action-button disabled">
                             <Check size={16} />
                             <span>Déjà ami</span>
                           </button>
                         ) : sentRequests.some(
-                            (r) => r.recipient._id === searchUser._id
+                            (r) => r.recipient._id === searchUser._id,
                           ) ? (
                           <button className="action-button disabled">
                             <Clock size={16} />

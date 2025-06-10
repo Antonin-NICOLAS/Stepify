@@ -31,6 +31,7 @@ const {
   sendWelcomeEmail,
   sendResetPasswordEmail,
   sendResetPasswordSuccessfulEmail,
+  sendTwoFactorEmailCode,
 } = require("../utils/SendMail");
 // .env
 require("dotenv").config();
@@ -420,6 +421,47 @@ const loginUser = async (req, res) => {
       return sendLocalizedError(res, 401, "errors.auth.password_incorrect");
     }
 
+    // Si la 2FA est activée, renvoyer une réponse spéciale
+    if (
+      user.twoFactorAuth?.appEnabled ||
+      user.twoFactorAuth?.emailEnabled ||
+      user.twoFactorAuth?.webauthnEnabled
+    ) {
+      const preferredMethod = user.twoFactorAuth.preferredMethod;
+      const availableMethods = [];
+
+      if (user.twoFactorAuth.appEnabled) availableMethods.push("app");
+      if (user.twoFactorAuth.emailEnabled) availableMethods.push("email");
+      if (user.twoFactorAuth.webauthnEnabled) availableMethods.push("webauthn");
+
+      if (
+        user.twoFactorAuth.preferredMethod === "email" &&
+        availableMethods.includes("email")
+      ) {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        user.twoFactorAuth.emailCode = code;
+        user.twoFactorAuth.emailCodeExpires = new Date(
+          Date.now() + 10 * 60 * 1000
+        );
+        await user.save();
+        sendTwoFactorEmailCode(user.email, user.firstName, code);
+      }
+
+      return sendLocalizedSuccess(
+        res,
+        "success.auth.2fa_required",
+        {},
+        {
+          requiresTwoFactor: true,
+          email: user.email,
+          isVerified: user.isVerified,
+          stayLoggedIn: stayLoggedIn,
+          preferredMethod,
+          availableMethods,
+        }
+      );
+    }
+
     // Mettre à jour la dernière connexion
     user.lastLoginAt = Date.now();
     user.loginAttempts = 0;
@@ -472,7 +514,11 @@ const loginUser = async (req, res) => {
       res,
       "success.auth.successful_login",
       {},
-      { user: userResponse }
+      {
+        user: userResponse,
+        requiresTwoFactor: false,
+        isVerified: user.isVerified,
+      }
     );
   } catch (error) {
     console.error("Erreur lors de la connexion:", error);

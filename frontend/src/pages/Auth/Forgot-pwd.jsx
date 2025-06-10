@@ -18,7 +18,7 @@ import {
 import "./Forgot-pwd.css";
 
 function ForgotPassword() {
-  const { t } = useTranslation(["auth"]);
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { forgotPassword } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +29,8 @@ function ForgotPassword() {
     setIsLoading(true);
     try {
       await forgotPassword(email, () => navigate("/email-sent"));
+    } catch (error) {
+      console.error("Error during password reset:", error);
     } finally {
       setIsLoading(false);
     }
@@ -48,16 +50,16 @@ function ForgotPassword() {
                 className="auth-stat-item"
                 style={{ flexDirection: "column" }}
               >
-                <h3>{t("auth:auth.forgotpassword.visual.title")}</h3>
-                <p>{t("auth:auth.forgotpassword.visual.description")}</p>
+                <h3>{t("auth.forgotpassword.visual.title")}</h3>
+                <p>{t("auth.forgotpassword.visual.description")}</p>
               </div>
               <div className="auth-stat-item">
                 <div className="auth-stat-icon">
                   <Mail />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth:auth.forgotpassword.visual.step1")}</h4>
-                  <p>{t("auth:auth.forgotpassword.visual.step1description")}</p>
+                  <h4>{t("auth.forgotpassword.visual.step1")}</h4>
+                  <p>{t("auth.forgotpassword.visual.step1description")}</p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -65,8 +67,8 @@ function ForgotPassword() {
                   <KeyRound />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth:auth.forgotpassword.visual.step2")}</h4>
-                  <p>{t("auth:auth.forgotpassword.visual.step2description")}</p>
+                  <h4>{t("account.password.new")}</h4>
+                  <p>{t("auth.forgotpassword.visual.step2description")}</p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -74,8 +76,8 @@ function ForgotPassword() {
                   <HelpCircle />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth:auth.forgotpassword.visual.step3")}</h4>
-                  <p>{t("auth:auth.forgotpassword.visual.step3descrption")}</p>
+                  <h4>{t("auth.forgotpassword.visual.step3")}</h4>
+                  <p>{t("auth.forgotpassword.visual.step3description")}</p>
                 </div>
               </div>
             </div>
@@ -91,23 +93,22 @@ function ForgotPassword() {
                     <LockKeyhole />
                   </div>
                 </div>
-                <h2>{t("auth:auth.forgotpassword.form.title")}</h2>
+                <h2>{t("auth.forgotpassword.form.title")}</h2>
                 <p className="auth-subtitle">
-                  {t("auth:auth.forgotpassword.form.description")}
+                  {t("auth.forgotpassword.form.description")}
                 </p>
               </div>
 
               <div className="auth-form-content">
                 <div className="auth-input-group">
-                  <label htmlFor="email">
-                    {t("auth:auth.forgotpassword.form.email")}
-                  </label>
+                  <label htmlFor="email">{t("common.email")}</label>
                   <div className="auth-input-wrapper">
                     <Mail className="auth-input-icon" />
                     <input
                       id="email"
                       type="email"
-                      placeholder="Entrez votre email"
+                      autoComplete="email"
+                      placeholder={t("auth.forgotpassword.form.enteremail")}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -123,21 +124,21 @@ function ForgotPassword() {
                   <Send />
                   <span>
                     {isLoading
-                      ? t("auth:auth.forgotpassword.form.sendinprogress")
-                      : t("auth:auth.forgotpassword.form.send")}
+                      ? t("auth.forgotpassword.form.sendinprocess")
+                      : t("auth.forgotpassword.form.send")}
                   </span>
                 </button>
 
                 <Link to="/login" className="auth-button auth-button-secondary">
                   <ArrowLeft />
-                  <span>{t("auth:auth.forgotpassword.form.return")}</span>
+                  <span>{t("auth.forgotpassword.form.return")}</span>
                 </Link>
               </div>
 
               <div className="auth-form-footer">
-                <span>{t("auth:auth.forgotpassword.footer.question")}</span>
+                <span>{t("auth.forgotpassword.footer.question")}</span>
                 <Link to="/login">
-                  {t("auth:auth.forgotpassword.footer.button")}
+                  {t("auth.forgotpassword.footer.button")}
                 </Link>
               </div>
             </form>

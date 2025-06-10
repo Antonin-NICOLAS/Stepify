@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 //context
 import { useTheme } from "../context/ThemeContext";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 //images
 import Account from "../assets/account.png";
@@ -28,6 +29,7 @@ import "./Header.css";
 
 function Header() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user, isAuthenticated, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -81,7 +83,6 @@ function Header() {
         !sidebarRef.current.contains(event.target) &&
         !closeMenuRef.current.contains(event.target)
       ) {
-        console.log("sidebar fermée");
         setSidebarOpen(false);
       }
     };
@@ -127,10 +128,17 @@ function Header() {
                 <img src={Account} className="imgaccount" alt="profile" />
               )}
             </div>
-            <div className="sidebar__info">
-              <h3>{user ? `${user.fullName}` : "Guest"}</h3>
-              <span>{user && user.email}</span>
-            </div>
+            {user ? (
+              <NavLink to="/profile" className="sidebar__info">
+                <h3>{user ? `${user.fullName}` : "Guest"}</h3>
+                <span>{user && user.email}</span>
+              </NavLink>
+            ) : (
+              <div className="sidebar__info">
+                <h3>{user ? `${user.fullName}` : "Guest"}</h3>
+                <span>{user && user.email}</span>
+              </div>
+            )}
           </div>
           <div className="sidebar__close">
             <button
@@ -138,13 +146,15 @@ function Header() {
               onClick={toggleSidebar}
             >
               <ChevronsLeft />
-              <span>Fermer le menu</span>
+              <span>{t("common.header.close")}</span>
             </button>
           </div>
 
           <div className="sidebar__content">
             <div>
-              <h3 className="sidebar__title nav">NAVIGATION</h3>
+              <h3 className="sidebar__title nav">
+                {t("common.header.title1")}
+              </h3>
               <div className="sidebar__list">
                 <NavLink
                   to="/dashboard"
@@ -152,7 +162,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <LayoutDashboard />
-                  <span>Dashboard</span>
+                  <span>{t("common.header.dashboard")}</span>
                 </NavLink>
                 <NavLink
                   to="/steps"
@@ -160,7 +170,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <Footprints />
-                  <span>Mes pas</span>
+                  <span>{t("common.header.steps")}</span>
                 </NavLink>
                 <NavLink
                   to="/challenges"
@@ -168,7 +178,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <Dumbbell />
-                  <span>Défis</span>
+                  <span>{t("common.header.challenges")}</span>
                 </NavLink>
                 <NavLink
                   to="/rewards"
@@ -176,7 +186,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <Award />
-                  <span>Récompenses</span>
+                  <span>{t("common.header.rewards")}</span>
                 </NavLink>
                 <NavLink
                   to="/leaderboard"
@@ -184,7 +194,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <AlignStartVertical />
-                  <span>Classement</span>
+                  <span>{t("common.header.leaderboard")}</span>
                 </NavLink>
                 <NavLink
                   to="/friends"
@@ -192,13 +202,13 @@ function Header() {
                   className="sidebar__link"
                 >
                   <Users />
-                  <span>Amis</span>
+                  <span>{t("common.header.friends")}</span>
                 </NavLink>
               </div>
             </div>
 
             <div>
-              <h3 className="sidebar__title">GENERAL</h3>
+              <h3 className="sidebar__title">{t("common.header.title2")}</h3>
               <div className="sidebar__list">
                 {user && (
                   <NavLink
@@ -207,7 +217,7 @@ function Header() {
                     className="sidebar__link"
                   >
                     <Settings />
-                    <span>Settings</span>
+                    <span>{t("common.header.settings")}</span>
                   </NavLink>
                 )}
                 <NavLink
@@ -216,7 +226,7 @@ function Header() {
                   className="sidebar__link"
                 >
                   <Info />
-                  <span>About</span>
+                  <span>{t("common.header.about")}</span>
                 </NavLink>
               </div>
             </div>
@@ -228,12 +238,12 @@ function Header() {
               onClick={toggleTheme}
             >
               {theme === "dark" ? <Sun /> : <Moon />}
-              <span>Theme</span>
+              <span>{t("common.header.theme")}</span>
             </button>
             {isAuthenticated ? (
               <button className="sidebar__link" onClick={handleLogout}>
                 <LogOut />
-                <span>Log Out</span>
+                <span>{t("common.header.logout")}</span>
               </button>
             ) : (
               <NavLink
@@ -242,7 +252,7 @@ function Header() {
                 className="sidebar__link"
               >
                 <LogIn />
-                <span>Log In</span>
+                <span>{t("common.header.login")}</span>
               </NavLink>
             )}
           </div>

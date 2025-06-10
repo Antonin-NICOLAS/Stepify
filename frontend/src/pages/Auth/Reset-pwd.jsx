@@ -20,7 +20,7 @@ import "./Reset-pwd.css";
 import toast from "react-hot-toast";
 
 function ResetPassword() {
-  const { t } = useTranslation(["auth"]);
+  const { t } = useTranslation();
   const { resetPassword } = useAuth();
 
   const { token } = useParams();
@@ -41,7 +41,7 @@ function ResetPassword() {
         setIsSuccess(true);
       });
     } catch (error) {
-      toast.error(error);
+      console.error("Error during password reset:", error);
     } finally {
       setIsLoading(false);
     }
@@ -59,16 +59,18 @@ function ResetPassword() {
               </div>
               <div className="auth-stats">
                 <div className="auth-stat-item">
-                  <h3>{t("auth:auth.resetpassword.success.visualtitle")}</h3>
-                  <p>{t("auth:auth.resetpassword.success.visualdescription")}</p>
+                  <h3>{t("auth.resetpassword.success.visualtitle")}</h3>
+                  <p>{t("auth.resetpassword.success.visualdescription")}</p>
                 </div>
                 <div className="auth-stat-item">
                   <div className="auth-stat-icon success">
                     <Check />
                   </div>
                   <div className="auth-stat-info">
-                    <h4>{t("auth:auth.resetpassword.success.visualstep1")}</h4>
-                    <p>{t("auth:auth.resetpassword.success.step1description")}</p>
+                    <h4>{t("auth.resetpassword.success.visualstep1")}</h4>
+                    <p>
+                      {t("auth.resetpassword.success.visualstep1description")}
+                    </p>
                   </div>
                 </div>
                 <div className="auth-stat-item">
@@ -76,8 +78,10 @@ function ResetPassword() {
                     <ShieldCheck />
                   </div>
                   <div className="auth-stat-info">
-                    <h4>{t("auth:auth.resetpassword.success.visualstep2")}</h4>
-                    <p>{t("auth:auth.resetpassword.success.visualstep2description")}</p>
+                    <h4>{t("auth.resetpassword.success.visualstep2")}</h4>
+                    <p>
+                      {t("auth.resetpassword.success.visualstep2description")}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -92,20 +96,20 @@ function ResetPassword() {
                     <Check />
                   </div>
                 </div>
-                <h2>{t("auth:auth.resetpassword.success.title")}</h2>
+                <h2>{t("auth.resetpassword.success.title")}</h2>
                 <p className="auth-subtitle">
-                  {t("auth:auth.resetpassword.success.description")}
+                  {t("auth.resetpassword.success.description")}
                 </p>
               </div>
 
               <div className="auth-form-content">
                 <div className="success-message">
-                  <p>{t("auth:auth.resetpassword.success.message")}</p>
+                  <p>{t("auth.resetpassword.success.message")}</p>
                 </div>
 
                 <Link to="/login" className="auth-button auth-button-primary">
                   <LockKeyhole />
-                  <span>{t("auth:auth.resetpassword.success.button")}</span>
+                  <span>{t("auth.resetpassword.success.button")}</span>
                 </Link>
               </div>
             </div>
@@ -129,16 +133,16 @@ function ResetPassword() {
                 className="auth-stat-item"
                 style={{ flexDirection: "column" }}
               >
-                <h3>{t("auth:auth.resetpassword.visual.title")}</h3>
-                <p>{t("auth:auth.resetpassword.visual.description")}</p>
+                <h3>{t("auth.resetpassword.visual.title")}</h3>
+                <p>{t("auth.resetpassword.visual.description")}</p>
               </div>
               <div className="auth-stat-item">
                 <div className="auth-stat-icon">
                   <KeyRound />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth:auth.resetpassword.visual.step1")}</h4>
-                  <p>{t("auth:auth.resetpassword.visual.step1description")}</p>
+                  <h4>{t("account.password.new")}</h4>
+                  <p>{t("auth.resetpassword.visual.step1description")}</p>
                 </div>
               </div>
               <div className="auth-stat-item">
@@ -146,8 +150,8 @@ function ResetPassword() {
                   <ShieldCheck />
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t("auth:auth.resetpassword.visual.step2")}</h4>
-                  <p>{t("auth:auth.resetpassword.visual.step2description")}</p>
+                  <h4>{t("auth.resetpassword.visual.step2")}</h4>
+                  <p>{t("auth.resetpassword.visual.step2description")}</p>
                 </div>
               </div>
             </div>
@@ -163,9 +167,9 @@ function ResetPassword() {
                     <LockKeyhole />
                   </div>
                 </div>
-                <h2>{t("auth:auth.resetpassword.form.title")}</h2>
+                <h2>{t("auth.resetpassword.form.title")}</h2>
                 <p className="auth-subtitle">
-                  {t("auth:auth.resetpassword.form.subtitle")}
+                  {t("auth.resetpassword.form.subtitle")}
                 </p>
               </div>
 
@@ -173,22 +177,18 @@ function ResetPassword() {
                 {!token && (
                   <div className="auth-alert auth-alert-error">
                     <AlertCircle />
-                    <p>{t("auth:auth.resetpassword.form.invalidlink")}</p>
+                    <p>{t("auth.resetpassword.form.invalidlink")}</p>
                   </div>
                 )}
 
                 <div className="auth-input-group">
-                  <label htmlFor="password">
-                    {t("auth:auth.resetpassword.form.password")}
-                  </label>
+                  <label htmlFor="password">{t("account.password.new")}</label>
                   <div className="auth-input-wrapper">
                     <LockKeyhole className="auth-input-icon" />
                     <input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder={t(
-                        "auth:auth.resetpassword.form.enterpassword"
-                      )}
+                      placeholder={t("auth.resetpassword.form.enterpassword")}
                       autoComplete="new-password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -201,21 +201,21 @@ function ResetPassword() {
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={
                         showPassword
-                          ? t("auth:auth.resetpassword.form.hidepassword")
-                          : t("auth:auth.resetpassword.form.showpassword")
+                          ? t("auth.resetpassword.form.hidepassword")
+                          : t("auth.resetpassword.form.showpassword")
                       }
                     >
                       {showPassword ? <EyeOff /> : <Eye />}
                     </button>
                   </div>
                   <p className="password-hint">
-                    {t("auth:auth.resetpassword.form.passwordhint")}
+                    {t("auth.resetpassword.form.passwordhint")}
                   </p>
                 </div>
 
                 <div className="auth-input-group">
                   <label htmlFor="confirmPassword">
-                    {t("auth:auth.resetpassword.form.confirmpassword")}
+                    {t("auth.resetpassword.form.confirmpassword")}
                   </label>
                   <div className="auth-input-wrapper">
                     <LockKeyhole className="auth-input-icon" />
@@ -223,7 +223,7 @@ function ResetPassword() {
                       id="confirmPassword"
                       type={showConfirmPassword ? "text" : "password"}
                       placeholder={t(
-                        "auth:auth.resetpassword.form.confirmyourpassword"
+                        "auth.resetpassword.form.confirmyourpassword",
                       )}
                       autoComplete="new-password"
                       value={confirmPassword}
@@ -239,8 +239,8 @@ function ResetPassword() {
                       }
                       aria-label={
                         showConfirmPassword
-                          ? t("auth:auth.resetpassword.form.hidepassword")
-                          : t("auth:auth.resetpassword.form.showpassword")
+                          ? t("auth.resetpassword.form.hidepassword")
+                          : t("auth.resetpassword.form.showpassword")
                       }
                     >
                       {showConfirmPassword ? <EyeOff /> : <Eye />}
@@ -256,17 +256,15 @@ function ResetPassword() {
                   <LockKeyhole />
                   <span>
                     {isLoading
-                      ? t("auth:auth.resetpassword.form.loading")
-                      : t("auth:auth.resetpassword.form.submit")}
+                      ? t("auth.resetpassword.form.loading")
+                      : t("auth.resetpassword.form.submit")}
                   </span>
                 </button>
               </div>
 
               <div className="auth-form-footer">
-                <span>{t("auth:auth.resetpassword.footer.question")}</span>
-                <Link to="/login">
-                  {t("auth:auth.resetpassword.footer.button")}
-                </Link>
+                <span>{t("auth.resetpassword.footer.question")}</span>
+                <Link to="/login">{t("auth.resetpassword.footer.button")}</Link>
               </div>
             </form>
           </div>

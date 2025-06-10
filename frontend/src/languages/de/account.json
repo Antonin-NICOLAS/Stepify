@@ -1,78 +1,205 @@
 {
-  "account": {
-    "user": {
-      "membersince": "Mitglied seit",
-      "email": "Adres e-mail",
-      "status": {
-        "dnd": "Niet storen",
-        "gym": "In de sportschool",
-        "busy": "Bezet",
-        "custom": "Gepersonaliseerde",
-        "default": "Salut, ik gebruik Stepify!",
-        "running": "Racen",
-        "available": "Beschikbaar"
-      },
-      "details": "Accountgegevens",
-      "lastName": "Nom",
-      "username": "Gebruikersnaam",
-      "firstName": "Voornaam",
-      "preferences": "Voorkeuren",
-      "custom_status_placeholder": "Schrijf je persoonlijke status"
+  "2fa-setup": {
+    "backup": {
+      "description": "Ihre zwei -Faktor -Authentifizierung ist jetzt aktiviert! Speichern Sie diese sicheren Wiederherstellungscodes.",
+      "download": "Laden Sie die Codes herunter",
+      "final-button": "Zu beenden",
+      "important": "Wichtig",
+      "keep": "Halten Sie diese Codes in Sicherheit",
+      "title": "Sicherungscodes",
+      "warning": "Verwenden Sie diese Codes, wenn Sie den Zugriff auf Ihr Telefon verlieren"
     },
-    "theme": {
-      "dark": "dunkles",
-      "light": "klares",
-      "title": "Thema",
-      "system": "Systeem"
+    "card": {
+      "active": "Aktiviert",
+      "appdescription": "Verwenden Sie Google Authenticator, Authy oder eine andere App",
+      "apptitle": "Authentifizierungsanwendung",
+      "desactive": "Deaktiviert",
+      "emaildescription": "Codes per E -Mail erhalten",
+      "mask-backupcodes": "Verstecken Sie die Sicherungscodes",
+      "show-backupcodes": "Siehe Backup -Codes",
+      "webauthndescription": "Verwenden Sie Ihr Gerät oder einen physischen Sicherheitsschlüssel",
+      "webauthntitle": "Sicherheitsschlüssel"
     },
-    "title": "Mijn account",
-    "avatar": {
-      "edit": "Avatar wijzigen",
-      "update": "Avatar bijwerken",
-      "dropHere": "Afbeelding hier uploaden"
+    "description": "Sichern Sie Ihr Konto mit zusätzlichem Schutz",
+    "disable-app": {
+      "title": "Geben Sie den Verifizierungscode ein, um die Deaktivierung zu bestätigen."
     },
-    "errors": {
-      "themeUpdate": "Fout bij het bijwerken van het thema",
-      "avatarUpload": "Fout bij het bijwerken van avatar",
-      "profileUpdate": "Fout bij het bijwerken van profiel",
-      "languageUpdate": "Fout bij taalupdate",
-      "nofileselected": "Geen bestand geselecteerd",
-      "passwordUpdate": "Fout bij het wijzigen van wachtwoord",
-      "dailyGoalUpdate": "Fout bij het bijwerken van het dagelijkse doel"
+    "disable-email": {
+      "description": "Geben Sie Ihr Passwort ein, um die Deaktivierung zu bestätigen.",
+      "title": "Doppelauthentifizierung deaktivieren"
     },
-    "upload": "Afbeelding URL",
-    "buttons": {
-      "edit": "wijzigen",
-      "save": "Registreer",
-      "cancel": "Annuleren",
-      "change": "Wisselaar",
-      "saveProfile": "Wijzigingen opslaan"
+    "main": {
+      "description": "Zwei -faktorische Authentifizierung fügt Ihrem Konto eine zusätzliche Sicherheitsschicht hinzu. Wählen Sie eine oder mehrere Überprüfungsmethoden."
     },
-    "activity": {
-      "steps": "Gesamtzahl an Schritten",
-      "title": "Uw bedrijf",
-      "streak": "Record (dagen)",
-      "distance": "Afstand (km)",
-      "challenges": "Uitdagingen voltooid"
+    "setup-app": {
+      "app-configured": "Ich habe die Anwendung konfiguriert",
+      "description": "Scannen Sie diesen QR -Code mit Ihrer Authentifizierungsanwendung (Google Authenticator, Authy usw.) oder geben Sie die Taste manuell ein.",
+      "manual-key": "Handbuch",
+      "qr-code-alt": "QR -Doppelauthentifizierungscode",
+      "title": "Konfiguration der Authentifizierungsanwendung"
     },
-    "language": {
-      "de": "Duits",
-      "en": "Engels",
-      "es": "Spaans",
-      "fr": "Frans",
-      "title": "Taal"
+    "setup-webauthn": {
+      "config-now": "Konfigurieren Sie jetzt",
+      "description": "Befolgen Sie die Anweisungen Ihres Browsers, um einen neuen Sicherheitsschlüssel oder ein neues Gerät aufzuzeichnen.",
+      "title": "Sicherheitsschlüsselkonfiguration"
     },
-    "password": {
-      "new": "Nieuw wachtwoord",
-      "save": "Wachtwoord opslaan",
-      "title": "Wachtwoord",
-      "confirm": "Wachtwoord bevestigen",
-      "current": "Huidig wachtwoord"
+    "success": {
+      "back-to-settings": "Zurück zu den Parametern",
+      "description": "Die Überprüfungscodes werden an Ihre E -Mail -Adresse gesendet.",
+      "title": "Doppelauthentifizierung erfolgreich aktiviert!"
     },
-    "dailyGoal": {
-      "edit": "Verander je dagelijkse doel",
-      "save": "Registreer lens",
-      "title": "Dagelijks doel"
+    "verify": {
+      "activate": "Überprüfen und aktivieren",
+      "app-entercode": "Geben Sie den von Ihrer Authentifizierungsanwendung generierten 6 -digit -Code ein.",
+      "email-entercode": "Geben Sie den 6 -Digit -Code ein, der an Ihre E -Mail -Adresse gesendet wurde.",
+      "label-code": "Bestätigungscode",
+      "title": "Codeüberprüfung"
     }
+  },
+  "activity": {
+    "challenges": "Uitdagingen voltooid",
+    "distance": "Afstand (km)",
+    "steps": "Gesamtzahl an Schritten",
+    "streak": "Record (dagen)",
+    "title": "Uw bedrijf"
+  },
+  "avatar": {
+    "dropHere": "Afbeelding hier uploaden",
+    "edit": "Avatar wijzigen",
+    "title": "Avatar",
+    "update": "Avatar bijwerken"
+  },
+  "buttons": {
+    "change": "Wisselaar",
+    "edit": "wijzigen",
+    "save": "Registreer",
+    "saveProfile": "Wijzigingen opslaan"
+  },
+  "dailyGoal": {
+    "edit": "Verander je dagelijkse doel",
+    "save": "Registreer lens",
+    "title": "Dagelijks doel"
+  },
+  "delete": {
+    "confirm": "Bestätigen Sie die Löschung",
+    "confirm-button": "Löschen",
+    "confirm-description": "Diese Aktion ist irreversibel. Alle Ihre Daten werden definitiv gelöscht.",
+    "confirm-placeholder": "LÖSCHEN",
+    "description": "Löschen Sie Ihr Konto dauerhaft und alle Ihre Daten",
+    "subtitle": "Konto löschen",
+    "title": "Gefahrenzone"
+  },
+  "errors": {
+    "avatarUpload": "Fout bij het bijwerken van avatar",
+    "dailyGoalUpdate": "Fout bij het bijwerken van het dagelijkse doel",
+    "languageUpdate": "Fout bij taalupdate",
+    "nofileselected": "Geen bestand geselecteerd",
+    "passwordUpdate": "Fout bij het wijzigen van wachtwoord",
+    "profileUpdate": "Fout bij het bijwerken van profiel",
+    "themeUpdate": "Fout bij het bijwerken van het thema"
+  },
+  "language": {
+    "de": "Duits",
+    "description": "Wählen Sie Ihre Lieblingssprache",
+    "en": "Engels",
+    "es": "Spaans",
+    "fr": "Frans",
+    "title": "Taal"
+  },
+  "notif": {
+    "activity-description": "Eine tägliche Zusammenfassung erhalten",
+    "activity-title": "Zusammenfassung der Aktivität",
+    "friend-activity-description": "Benachrichtigungen über die Aktivität Ihrer Freunde",
+    "friend-activity-title": "Freunde Aktivität",
+    "friend-request-description": "Benachrichtigungen für Anfragen von Freunden",
+    "goal-reached-description": "Benachrichtigungen, wenn Sie Ihre Ziele erreichen",
+    "goal-reached-title": "Ziele erreicht",
+    "new-challenge-description": "Benachrichtigungen für neue Herausforderungen",
+    "new-challenge-title": "Neue Herausforderungen",
+    "title": "Benachrichtigungen"
+  },
+  "password": {
+    "confirm": "Wachtwoord bevestigen",
+    "criterias": {
+      "len": "Mindestens 8 Zeichen",
+      "lowercase": "Ein winziger Brief",
+      "number": "Eine Figur",
+      "title": "Passwortanforderungen:",
+      "uppercase": "Ein Großbuchstaben"
+    },
+    "current": "Huidig wachtwoord",
+    "low": "Schwach",
+    "medium": "DURCHSCHNITT",
+    "modify": "Ändern Sie Ihr Passwort",
+    "new": "Nieuw wachtwoord",
+    "save": "Wachtwoord opslaan",
+    "strong": "Stark",
+    "very-low": "Sehr schwach",
+    "weak": "Das Passwort ist nicht stark genug"
+  },
+  "privacy": {
+    "challenge-setting-subtitle": "Erlauben Sie Einladungen zu Herausforderungen",
+    "challenge-setting-title": "Einladungen zu Herausforderungen",
+    "friend-request-setting-subtitle": "Anfragen der Freunde autorisieren",
+    "friend-request-setting-title": "Freunde",
+    "friend-setting-subtitle": "Erlauben Sie Freunden, Ihre Aktivitäten zu sehen",
+    "friend-setting-title": "Aktivität von Freunden sichtbar",
+    "last-login-setting-subtitle": "Zeigen Sie Ihre neueste Verbindung",
+    "last-login-setting-title": "Letzte sichtbare Verbindung",
+    "public-stats-setting-subtitle": "Machen Sie Ihre Statistik öffentlich",
+    "public-stats-setting-title": "Öffentliche Statistiken"
+  },
+  "security": {
+    "2fa": "Zwei -Faktor -Authentifizierung",
+    "2fa-disabled-description": "Deaktiviert - für mehr Sicherheit aktivieren",
+    "2fa-enabled-description": "Aktiviert - Ihr Konto ist geschützt",
+    "2fa_disable": "Deaktivieren",
+    "2fa_disabled": "Deaktiviert",
+    "2fa_enable": "Aktivieren",
+    "2fa_enabled": "Aktiviert",
+    "delete_confirmation": "Tippen Sie <1> LÖSCHEN </1> zur Bestätigung :",
+    "write-delete": "Bitte geben Sie 'Löschen' ein, um zu bestätigen"
+  },
+  "sessions": {
+    "description": "Verwalten Sie Ihre aktiven Verbindungen",
+    "loggedin": "Verbunden:",
+    "terminate-all": "Beenden Sie alle Sitzungen",
+    "title": "Aktive Sitzungen",
+    "unknown-device": "Unbekanntes Gerät"
+  },
+  "settings": {
+    "redirect": "Profil",
+    "title": "Parameter"
+  },
+  "status": {
+    "custom_status_placeholder": "Personalisierter Status ...",
+    "options": {
+      "available": "Verfügbar",
+      "busy": "Beschäftigt",
+      "custom": "Personalisiert",
+      "default": "Hallo, ich benutze Stepify!",
+      "dnd": "Nicht stören",
+      "gym": "Im Fitnessstudio",
+      "running": "Im Rennen"
+    }
+  },
+  "theme": {
+    "dark": "dunkles",
+    "description": "Wählen Sie das Erscheinungsbild der Anwendung",
+    "light": "klares",
+    "system": "Systeem",
+    "title": "Thema"
+  },
+  "title": "Mijn account",
+  "upload": "Afbeelding URL",
+  "user": {
+    "details": "Accountgegevens",
+    "email": "Adres e-mail",
+    "firstName": "Voornaam",
+    "lastName": "Nom",
+    "membersince": "Mitglied seit",
+    "preferences": "Voorkeuren",
+    "status": {},
+    "username": "Gebruikersnaam"
   }
 }

@@ -28,6 +28,17 @@ async function resetUserStats() {
       rankingHistory: [],
       activeSessions: [],
 
+      // Réinitialisation OTP
+      phoneNumber: null,
+      twoFactorAuth: {
+        appEnabled: false,
+        emailEnabled: false,
+        webauthnEnabled: false,
+        webauthnCredentials: [],
+        secret: null,
+        backupCodes: [],
+      },
+
       // Réinitialisation du streak
       streak: {
         current: 0,

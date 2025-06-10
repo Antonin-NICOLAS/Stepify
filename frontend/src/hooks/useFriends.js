@@ -28,7 +28,7 @@ export const useFriends = (userId) => {
     } catch (err) {
       console.error("Fetch friends error:", err);
       toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur"
+        err.response?.data?.error || "Erreur de connexion au serveur",
       );
     }
   }, [userId]);
@@ -50,7 +50,7 @@ export const useFriends = (userId) => {
     } catch (err) {
       console.error("Fetch requests error:", err);
       toast.error(
-        err.response?.data?.error || "Erreur de connexion au serveur"
+        err.response?.data?.error || "Erreur de connexion au serveur",
       );
     }
   }, [userId]);
@@ -91,7 +91,7 @@ export const useFriends = (userId) => {
       try {
         const { data } = await axios.post(
           `${API_FRIENDS}/${userId}/${friendId}/remove-friend`,
-          { withCredentials: true }
+          { withCredentials: true },
         );
 
         if (data.success) {
@@ -100,7 +100,7 @@ export const useFriends = (userId) => {
           return true;
         } else {
           toast.error(
-            data.error || "Erreur lors de l'annulation de la demande"
+            data.error || "Erreur lors de l'annulation de la demande",
           );
           return false;
         }
@@ -108,12 +108,12 @@ export const useFriends = (userId) => {
         console.error("Error cancelling friend request:", error);
         toast.error(
           error.response?.data?.error ||
-            "Erreur lors de l'annulation de la demande"
+            "Erreur lors de l'annulation de la demande",
         );
         return false;
       }
     },
-    [userId, fetchFriends]
+    [userId, fetchFriends],
   );
 
   return {

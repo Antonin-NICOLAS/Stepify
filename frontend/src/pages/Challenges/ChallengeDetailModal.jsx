@@ -159,7 +159,7 @@ const ChallengeDetailModal = ({
     const startDate = new Date(challenge.startDate);
     const days = Math.min(
       7,
-      Math.ceil((now - startDate) / (1000 * 60 * 60 * 24))
+      Math.ceil((now - startDate) / (1000 * 60 * 60 * 24)),
     );
 
     const labels = Array.from({ length: days }, (_, i) => {
@@ -170,7 +170,7 @@ const ChallengeDetailModal = ({
 
     // Progression linéaire jusqu'à la valeur actuelle
     const progressData = Array.from({ length: days }, (_, i) =>
-      Math.round((i / (days - 1)) * challenge.progress)
+      Math.round((i / (days - 1)) * challenge.progress),
     );
 
     return {
@@ -405,7 +405,7 @@ const ChallengeDetailModal = ({
                     className="progress-bar"
                     style={{
                       width: `${computeGlobalProgress(
-                        challenge.participants
+                        challenge.participants,
                       )}%`,
                     }}
                   ></div>
@@ -483,7 +483,7 @@ const ChallengeDetailModal = ({
                           <div className="participant-value">
                             {formatgoal(
                               participant.goal,
-                              challenge.activityType
+                              challenge.activityType,
                             )}
                           </div>
                           <div className="progress-container">

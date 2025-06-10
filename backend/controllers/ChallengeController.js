@@ -128,7 +128,7 @@ const createChallenge = async (req, res) => {
       !difficulty ||
       !timezone
     ) {
-      return sendLocalizedError(res, 400, "errors.challenges.fields_missing");
+      return sendLocalizedError(res, 400, "errors.generic.fields_missing");
     }
 
     // Convertir les dates en UTC

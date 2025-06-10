@@ -1,55 +1,120 @@
 {
-  "common": {
-    "error": "An error occurred",
-    "authcontext": {
-      "register": {
-        "validfirstname": "A valid first name (2 characters minimum) is required",
-        "validlastname": "A valid name (2 characters minimum) is required",
-        "validemail": "A valid email is required",
-        "validusername": "A valid username (3-30 alphanumeric characters) is required",
-        "validpassword": "A valid password (8 characters minimum) is required",
-        "passwordmismatch": "Passwords do not match",
-        "error": "Error when registering"
+  "activityTypes": {
+    "steps": "Not"
+  },
+  "authcontext": {
+    "2fa": {
+      "backup": {
+        "error": "Error during recovery by backup code"
+      },
+      "disable": {
+        "error": "Error when deactivating the double authentication"
+      },
+      "enable": {
+        "error": "Error when activating the double authentication by application"
+      },
+      "enableemail": {
+        "error": "Error when activating the double authentication by email"
+      },
+      "generatekey": {
+        "error": "Error during the Webauthn configuration"
       },
       "login": {
-        "fillallfields": "Please fill all fields",
-        "validemail": "A valid email is required",
-        "notverifiedsuccess": "A code has been sent to you to check your email address",
-        "notverifiederror": "Click on 'Return an email' to receive a new code",
-        "error": "Error when connection"
+        "error": "Error during double factor authentication"
       },
-      "forgotpassword": {
-        "validemail": "A valid email is required",
-        "error": "Error when sending the email"
+      "status": {
+        "error": "Error when recovering active double authentication methods"
       },
-      "resetpassword": {
-        "validtoken": "Invalid or expired link",
-        "validpassword": "A valid password (8 characters minimum) is required",
-        "passwordmismatch": "Passwords do not match",
-        "error": "Error when resetting the password"
+      "verify": {
+        "error": "Error when checking the double authentication by application"
       },
       "verifyemail": {
-        "validcode": "Please enter the full 6 -digit code",
-        "error": "Error when checking the email"
+        "error": "Error when checking the double authentication by email"
       },
-      "resendverificationcode": {
-        "error": "Error when referring the verification email"
-      },
-      "changeverificationemail": {
-        "validemail": "A valid email is required",
-        "error": "Error when changing email"
-      },
-      "logout": {
-        "success": "Successfully disconnected",
-        "error": "Error during disconnection"
-      },
-      "deleteaccount": {
-        "success": "Success deleted successfully",
-        "error": "Error when deleting the account"
+      "verifyregisterkey": {
+        "error": "Failure to recording the key"
       }
     },
-    "usercontext": {
-      "languageupdated": "Update language"
+    "changeverificationemail": {
+      "error": "Error when changing email",
+      "validemail": "A valid email is required"
+    },
+    "deleteaccount": {
+      "error": "Error when deleting the account",
+      "success": "Success deleted successfully"
+    },
+    "forgotpassword": {
+      "error": "Error when sending the email",
+      "validemail": "A valid email is required"
+    },
+    "login": {
+      "error": "Error when connection",
+      "fillallfields": "Please fill all fields",
+      "notverifiederror": "Click on 'Return an email' to receive a new code",
+      "notverifiedsuccess": "A code has been sent to you to check your email address",
+      "validemail": "A valid email is required"
+    },
+    "logout": {
+      "error": "Error during disconnection",
+      "success": "Successfully disconnected"
+    },
+    "register": {
+      "error": "Error when registering",
+      "passwordmismatch": "Passwords do not match",
+      "validemail": "A valid email is required",
+      "validfirstname": "A valid first name (2 characters minimum) is required",
+      "validlastname": "A valid name (2 characters minimum) is required",
+      "validpassword": "A valid password (8 characters minimum) is required",
+      "validusername": "A valid username (3-30 alphanumeric characters) is required"
+    },
+    "resendverificationcode": {
+      "error": "Error when referring the verification email"
+    },
+    "resetpassword": {
+      "error": "Error when resetting the password",
+      "passwordmismatch": "Passwords do not match",
+      "validpassword": "A valid password (8 characters minimum) is required",
+      "validtoken": "Invalid or expired link"
+    },
+    "verifyemail": {
+      "error": "Error when checking the email",
+      "validcode": "Please enter the full 6 -digit code"
     }
+  },
+  "back": "Back",
+  "cancel": "Cancel",
+  "contact-support": "Contact the support",
+  "delete": "DELETE",
+  "download": "Download",
+  "email": "E-mail address",
+  "error": "An error occurred",
+  "header": {
+    "about": "About",
+    "challenges": "Challenges",
+    "close": "Close the menu",
+    "dashboard": "Dashboard",
+    "friends": "Friends",
+    "leaderboard": "Classification",
+    "login": "Connection",
+    "logout": "Logout",
+    "rewards": "Rewards",
+    "settings": "Settings",
+    "steps": "My steps",
+    "theme": "Theme",
+    "title1": "NAVIGATION",
+    "title2": "GENERAL"
+  },
+  "manage": "Manage",
+  "notfound": {
+    "home": "Home",
+    "message": "Oops! The page you are looking for seems to have lost his own adventure.",
+    "search": "Or try to look for something else:",
+    "searchplaceholder": "Search...",
+    "suggestions": "You may be looking for:",
+    "title": "Not found"
+  },
+  "password": "Password",
+  "usercontext": {
+    "languageupdated": "Update language"
   }
 }

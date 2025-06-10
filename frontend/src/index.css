@@ -29,8 +29,8 @@
   --shadow-color: hsla(228, 80%, 4%, 0.1);
 
   --shadow: 0 4px 6px var(--shadow-color), 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 10px 15px -3px var(--shadow-color),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg:
+    0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --transition: all 0.3s ease;
   --radius: 8px;
   --radius-lg: 12px;
