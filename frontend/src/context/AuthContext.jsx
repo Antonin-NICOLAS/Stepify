@@ -729,6 +729,7 @@ export const AuthProvider = ({ children }) => {
       // 5. Verify with server
       await verifyWebAuthnRegistration(attestationResponse, deviceName)
       await TwoFactorStatus()
+      await checkAuth()
       return true
     } catch (error) {
       console.error('WebAuthn registration failed:', error)

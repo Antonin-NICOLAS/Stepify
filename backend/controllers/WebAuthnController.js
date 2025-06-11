@@ -16,7 +16,6 @@ const {
   getActiveCredentials,
   validateChallenge,
   clearChallenge,
-  normalizeCredentialId,
   findCredentialById,
   updateCredentialCounter,
 } = require('../helpers/WebAuthnHelpers')
@@ -144,7 +143,7 @@ const verifyRegistration = async (req, res) => {
         : 'platform'
 
       const newCredential = {
-        credentialId: normalizeCredentialId(credential.id),
+        credentialId: credential.id,
         publicKey: isoBase64URL.fromBuffer(credential.publicKey),
         counter: credential.counter || 0,
         transports: attestationResponse.transports || [],
@@ -264,7 +263,7 @@ const verifyAuthentication = async ({ responsekey, user, res }) => {
       return sendLocalizedError(res, 400, 'errors.webauthn.challenge_expired')
     }
 
-    const credentialId = normalizeCredentialId(responsekey.id)
+    const credentialId = responsekey.id
     const dbCredential = findCredentialById(user, credentialId)
 
     if (!dbCredential) {
@@ -287,7 +286,7 @@ const verifyAuthentication = async ({ responsekey, user, res }) => {
     try {
       verification = await verifyAuthenticationResponse({
         response: responsekey,
-        expectedChallenge,
+        expectedChallenge: user.twoFactorAuth.challenge,
         expectedOrigin: origin,
         expectedRPID: rpID,
         credential: authenticator,
@@ -366,8 +365,8 @@ const removeWebAuthnCredential = async (req, res) => {
         user.twoFactorAuth.preferredMethod = user.twoFactorAuth.appEnabled
           ? 'app'
           : user.twoFactorAuth.emailEnabled
-            ? 'email'
-            : undefined
+          ? 'email'
+          : undefined
       }
 
       if (!user.twoFactorAuth.appEnabled && !user.twoFactorAuth.emailEnabled) {
