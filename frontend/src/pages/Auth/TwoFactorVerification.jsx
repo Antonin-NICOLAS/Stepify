@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
+// Context
 import { useAuth } from '../../context/AuthContext'
+import { useTranslation } from 'react-i18next'
+// Icons
 import {
   Shield,
   ShieldCheck,
@@ -16,6 +19,9 @@ function TwoFactorVerification() {
   const navigate = useNavigate()
   const location = useLocation()
   const { verifyLoginTwoFactor } = useAuth()
+  const { t } = useTranslation()
+
+  // State variables
   const [isLoading, setIsLoading] = useState(false)
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [resendDisabled, setResendDisabled] = useState(false)
@@ -264,8 +270,8 @@ function TwoFactorVerification() {
                     {showBackupCode
                       ? t('auth.2fa.process.backup-message')
                       : method === 'email'
-                        ? t('auth.2fa.process.email-message')
-                        : t('auth.2fa.process.app-message')}
+                      ? t('auth.2fa.process.email-message')
+                      : t('auth.2fa.process.app-message')}
                   </p>
                 </div>
 
