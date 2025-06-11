@@ -159,7 +159,7 @@ const userSchema = new Schema(
       challenge: {
         type: String,
       },
-      challengeExpires: {
+      challengeExpiresAt: {
         type: Date,
         default: null,
       },
@@ -169,11 +169,19 @@ const userSchema = new Schema(
           publicKey: String,
           counter: Number,
           deviceType: String,
-          backedUp: Boolean,
+          deviceName: String,
           transports: [String],
+          lastUsed: {
+            type: Date,
+            default: Date.now,
+          },
           createdAt: {
             type: Date,
             default: Date.now,
+          },
+          revoked: {
+            type: Boolean,
+            default: false,
           },
         },
       ],

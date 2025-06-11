@@ -11,6 +11,12 @@ mongoose
 async function resetUserStats() {
   try {
     const resetStats = {
+      // Base
+      verificationToken: null,
+      verificationTokenExpiresAt: null,
+      resetPasswordToken: null,
+      resetPasswordTokenExpiresAt: null,
+
       // Réinitialisation des statistiques
       totalXP: 0,
       totalSteps: 0,
@@ -29,13 +35,17 @@ async function resetUserStats() {
       activeSessions: [],
 
       // Réinitialisation OTP
-      phoneNumber: null,
       twoFactorAuth: {
+        attempts: 0,
+        lastAttempt: null,
+        lastVerified: null,
         appEnabled: false,
+        secret: null,
         emailEnabled: false,
         webauthnEnabled: false,
+        challenge: null,
+        challengeExpiresAt: null,
         webauthnCredentials: [],
-        secret: null,
         backupCodes: [],
       },
 

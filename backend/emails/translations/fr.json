@@ -1,0 +1,52 @@
+{
+  "newlogin": {
+    "subject": "Nouvelle connexion à votre compte Stepify",
+    "title": "Nouvelle connection détectée",
+    "bloc1": {
+      "hello": "Bonjour ${firstName},",
+      "intro": "Nous vous informons qu’une connexion à votre compte Stepify a été détectée récemment.",
+      "activity_details": "Voici les détails de cette activité :",
+      "date": "Date et heure :",
+      "ip_address": "Adresse IP :",
+      "device": "Appareil / Navigateur :",
+      "localization": "Localisation approximative :",
+      "if_available": "(si disponible)"
+    },
+    "bloc2": {
+      "question": "Vous êtes bien à l’origine de cette connexion ?",
+      "answer": "Parfait ! Vous pouvez ignorer cet e-mail.",
+      "call": "Nous sommes ravis de vous retrouver sur Stepify ! Profitez de toutes vos fonctionnalités : suivez votre activité physique, participez à des défis, grimpez dans le classement et atteignez vos objectifs quotidiens 💪"
+    },
+    "bloc3": {
+      "unknown_activity": "Vous ne reconnaissez pas cette activité ?",
+      "security_recommendations": "Dans ce cas, il est possible qu’un tiers ait accédé à votre compte.",
+      "security_recommendations_details": "Pour des raisons de sécurité, nous vous recommandons vivement de :",
+      "change_password": "**Changer votre mot de passe immédiatement** depuis vos",
+      "security": "paramètres de sécurité",
+      "check_recent_logins": "**Consulter les connexions récentes** sur votre compte.",
+      "report_suspicious_activity": "Nous signaler toute activité suspecte à :"
+    },
+    "bloc4": {
+      "why_this_email": "Pourquoi recevez-vous cet e-mail ?",
+      "why_this_email_details": "Nous tenons à protéger votre compte. C’est pourquoi nous vous notifions à chaque nouvelle connexion, afin que vous puissiez agir rapidement en cas d’accès non autorisé."
+    },
+    "bloc5": {
+      "need_help": "Besoin d’aide ?",
+      "need_help_details": "Notre équipe est là pour vous accompagner à tout moment. N’hésitez pas à nous écrire pour toute question ou souci technique.",
+      "thank_you": "Merci de faire confiance à",
+      "continue_care": "Continuez à bouger, à progresser et à prendre soin de vous chaque jour.",
+      "see_you_soon": "À très bientôt sur Stepify !",
+      "team_signature": "L’équipe Stepify"
+    }
+  },
+  "footer": {
+    "bloc1": "Vous recevez cet email car vous avez créé un compte sur Stepify. Si vous pensez avoir reçu cet email par erreur, vous pouvez ignorer ce message ou nous contacter à l'adresse suivante :",
+    "bloc2_before": "Stepify s’engage à protéger vos données personnelles. Vous pouvez consulter notre ",
+    "bloc2_link": "politique de confidentialité",
+    "bloc2_after": " pour en savoir plus sur la manière dont vos informations sont utilisées et stockées.",
+    "bloc3": "Cet email est envoyé automatiquement, merci de ne pas y répondre directement.",
+    "bloc4_before": "Si vous ne souhaitez plus recevoir d’emails de notre part ou préférez modifier la fréquence de nos communications, vous pouvez ",
+    "bloc4_link": "gérer vos préférences de notification",
+    "bloc4_after": " à tout moment depuis votre compte."
+  }
+}

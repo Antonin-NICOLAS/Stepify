@@ -1,14 +1,18 @@
 const nodemailer = require('nodemailer')
 const {
-  NewLoginEmailTemplate,
-  WelcomeEmailTemplate,
-  EmailVerificationTokenTemplate,
-  EmailPasswordResetTemplate,
-  ResetPasswordSuccessfulTemplate,
   TwoFactorSetupEmailTemplate,
   BackupCodesEmailTemplate,
   TwoFactorEmailCodeTemplate,
-} = require('./EmailTemplates')
+} = require('../templates/EmailTemplates')
+const { NewLoginEmailTemplate } = require('../templates/NewLoginEmail')
+const {
+  EmailVerificationTokenTemplate,
+} = require('../templates/EmailVerification')
+const { WelcomeEmailTemplate } = require('../templates/Welcome')
+const { EmailPasswordResetTemplate } = require('../templates/PasswordReset')
+const { SucessfulResetTemplate } = require('../templates/SuccessfulReset')
+
+const { t, interpolate } = require('../services/i18n')
 // .env
 require('dotenv').config()
 
@@ -24,7 +28,7 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-const sendNewLoginEmail = async (user, ipAdress, deviceInfo, location) => {
+const sendNewLoginEmail = async (user, ipAddress, deviceInfo, location) => {
   const options = {
     weekday: 'long',
     year: 'numeric',
@@ -39,15 +43,16 @@ const sendNewLoginEmail = async (user, ipAdress, deviceInfo, location) => {
     options
   )
 
+  console.log('user.languagePreference', user.languagePreference)
+
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: user.email,
-    subject: 'Nouvelle connection détectée - Stepify',
-    html: NewLoginEmailTemplate.replace('{{user.firstName}}', user.firstName)
-      .replace('{{loginDate}}', loginDate)
-      .replace('{{ipAddress}}', ipAdress)
-      .replace('{{deviceInfo}}', deviceInfo)
-      .replace('{{location}}', location),
+    subject: t('newlogin.subject', user.languagePreference),
+    html: interpolate(
+      NewLoginEmailTemplate(user, loginDate, ipAddress, deviceInfo, location),
+      { firstName: user.firstName }
+    ),
   }
 
   try {
@@ -116,7 +121,7 @@ const sendResetPasswordSuccessfulEmail = async (email, prenom) => {
     from: process.env.EMAIL_USER,
     to: email,
     subject: '🔒 Ton mot de passe a été modifié',
-    html: ResetPasswordSuccessfulTemplate.replace('{User.Prenom}', prenom),
+    html: SucessfulResetTemplate.replace('{User.Prenom}', prenom),
   }
 
   try {

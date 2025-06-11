@@ -12,7 +12,7 @@ const {
 const {
   sendVerificationEmail,
   sendResetPasswordSuccessfulEmail,
-} = require('../utils/SendMail')
+} = require('../emails/services/SendMail')
 const {
   sendLocalizedError,
   sendLocalizedSuccess,

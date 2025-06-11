@@ -11,10 +11,20 @@ const {
   isoUint8Array,
 } = require('@simplewebauthn/server/helpers')
 const {
+  generateChallenge,
+  setChallenge,
+  getActiveCredentials,
+  validateChallenge,
+  clearChallenge,
+  normalizeCredentialId,
+  findCredentialById,
+  updateCredentialCounter,
+} = require('../helpers/WebAuthnHelpers')
+const {
   sendLocalizedError,
   sendLocalizedSuccess,
 } = require('../utils/ResponseHelper')
-const { sendTwoFactorBackupCodesEmail } = require('../utils/SendMail')
+const { sendTwoFactorBackupCodesEmail } = require('../emails/services/SendMail')
 
 // Configuration WebAuthn
 const rpName = 'Stepify'
@@ -33,7 +43,8 @@ const generateRegistrationOpt = async (req, res) => {
       return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
     }
 
-    const userPasskeys = user.twoFactorAuth.webauthnCredentials || []
+    const activeCredentials = getActiveCredentials(user)
+    const challenge = generateChallenge()
 
     const options = await generateRegistrationOptions({
       rpName,
@@ -41,8 +52,8 @@ const generateRegistrationOpt = async (req, res) => {
       userID: isoUint8Array.fromUTF8String(user._id.toString()),
       userName: user.email,
       attestationType: 'none',
-      excludeCredentials: userPasskeys.map((passkey) => ({
-        id: passkey.credentialId,
+      excludeCredentials: activeCredentials.map((passkey) => ({
+        id: isoBase64URL.toBuffer(passkey.credentialId),
         type: 'public-key',
         transports: passkey.transports || [],
       })),
@@ -50,13 +61,26 @@ const generateRegistrationOpt = async (req, res) => {
         userVerification: 'preferred',
         requireResidentKey: false,
       },
+      extensions: {
+        credProps: true,
+      },
     })
 
-    // Stocker le challenge temporairement
-    user.twoFactorAuth.challenge = options.challenge
+    // Stocker le challenge
+    setChallenge(user, challenge)
     await user.save()
 
-    return sendLocalizedSuccess(res, null, {}, { options })
+    return sendLocalizedSuccess(
+      res,
+      null,
+      {},
+      {
+        options: {
+          ...options,
+          challenge,
+        },
+      }
+    )
   } catch (error) {
     console.error('Erreur génération options enregistrement:', error)
     return sendLocalizedError(
@@ -70,7 +94,7 @@ const generateRegistrationOpt = async (req, res) => {
 // Vérifier la réponse d'enregistrement
 const verifyRegistration = async (req, res) => {
   try {
-    const { attestationResponse } = req.body
+    const { attestationResponse, deviceName } = req.body
     const user = await UserModel.findById(req.userId)
 
     if (!user) {
@@ -85,17 +109,22 @@ const verifyRegistration = async (req, res) => {
       return sendLocalizedError(res, 400, 'errors.webauthn.registration_error')
     }
 
-    const expectedChallenge = user.twoFactorAuth.challenge
-
-    if (!expectedChallenge) {
+    if (!validateChallenge(user, attestationResponse.challenge)) {
       return sendLocalizedError(res, 400, 'errors.webauthn.challenge_expired')
     }
+
+    console.log(
+      user.twoFactorAuth.challenge,
+      attestationResponse.challenge,
+      'Vérification du challenge:',
+      user.twoFactorAuth.challenge === attestationResponse.challenge
+    )
 
     let verification
     try {
       verification = await verifyRegistrationResponse({
         response: attestationResponse,
-        expectedChallenge,
+        expectedChallenge: user.twoFactorAuth.challenge,
         expectedOrigin: origin,
         expectedRPID: rpID,
       })
@@ -109,17 +138,26 @@ const verifyRegistration = async (req, res) => {
     if (verified && registrationInfo) {
       const { credential } = registrationInfo
 
+      // Ajouter le deviceType basé sur les extensions
+      const deviceType = attestationResponse.extensions?.credProps?.rk
+        ? 'security-key'
+        : 'platform'
+
       const newCredential = {
-        credentialId: credential.id,
-        publicKey: isoBase64URL.fromBuffer(credential.publicKey), // Stockage en base64
+        credentialId: normalizeCredentialId(credential.id),
+        publicKey: isoBase64URL.fromBuffer(credential.publicKey),
         counter: credential.counter || 0,
         transports: attestationResponse.transports || [],
+        deviceType,
+        deviceName: deviceName || 'Unknown Device',
         createdAt: new Date(),
+        lastUsed: null,
+        revoked: false,
       }
 
       user.twoFactorAuth.webauthnCredentials.push(newCredential)
 
-      user.twoFactorAuth.challenge = null
+      clearChallenge(user)
 
       user.twoFactorAuth.webauthnEnabled = true
 
@@ -195,8 +233,10 @@ const generateAuthenticationOpt = async (req, res) => {
     })
 
     // Stocker le challenge temporairement
-    user.twoFactorAuth.challenge = options.challenge
+    setChallenge(user, options.challenge)
+
     await user.save()
+    console.log('Challenge stocké:', user.twoFactorAuth.challenge)
 
     return sendLocalizedSuccess(res, null, {}, { options })
   } catch (error) {
@@ -216,14 +256,16 @@ const verifyAuthentication = async ({ responsekey, user, res }) => {
       return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
     }
 
-    const expectedChallenge = user.twoFactorAuth.challenge
-    if (!expectedChallenge) {
+    console.log("Réponse d'authentification reçue:", responsekey)
+    console.log(responsekey.challenge)
+
+    // Vérifier le challenge
+    if (!validateChallenge(user, responsekey.challenge)) {
       return sendLocalizedError(res, 400, 'errors.webauthn.challenge_expired')
     }
 
-    const dbCredential = user.twoFactorAuth.webauthnCredentials.find(
-      (cred) => cred.credentialId === responsekey.id
-    )
+    const credentialId = normalizeCredentialId(responsekey.id)
+    const dbCredential = findCredentialById(user, credentialId)
 
     if (!dbCredential) {
       return sendLocalizedError(
@@ -263,16 +305,27 @@ const verifyAuthentication = async ({ responsekey, user, res }) => {
     }
 
     if (verification.verified) {
-      const credIndex = user.twoFactorAuth.webauthnCredentials.findIndex(
-        (cred) => cred.credentialId === responsekey.id
-      )
-      user.twoFactorAuth.webauthnCredentials[credIndex].counter =
+      updateCredentialCounter(
+        user,
+        credentialId,
         verification.authenticationInfo.newCounter
-      user.twoFactorAuth.challenge = null
-      await user.save()
-    }
+      )
+      clearChallenge(user)
 
-    return verification
+      await user.save()
+
+      return {
+        verified: true,
+        credentialId,
+        deviceType: dbCredential.deviceType,
+      }
+    } else {
+      return sendLocalizedError(
+        res,
+        400,
+        'errors.webauthn.authentication_failed'
+      )
+    }
   } catch (error) {
     console.error('Erreur complète:', {
       message: error.message,
@@ -333,10 +386,35 @@ const removeWebAuthnCredential = async (req, res) => {
   }
 }
 
+const getWebAuthnDevices = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.userId)
+    if (!user) {
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
+    }
+
+    const devices = user.twoFactorAuth.webauthnCredentials
+      .filter((cred) => !cred.revoked)
+      .map((cred) => ({
+        id: cred.credentialId,
+        type: cred.deviceType,
+        name: cred.deviceName,
+        lastUsed: cred.lastUsed,
+        createdAt: cred.createdAt,
+      }))
+
+    return sendLocalizedSuccess(res, null, {}, { devices })
+  } catch (error) {
+    console.error('Erreur récupération appareils:', error)
+    return sendLocalizedError(res, 500, 'errors.webauthn.devices_error')
+  }
+}
+
 module.exports = {
   generateRegistrationOpt,
   verifyRegistration,
   generateAuthenticationOpt,
   verifyAuthentication,
   removeWebAuthnCredential,
+  getWebAuthnDevices,
 }

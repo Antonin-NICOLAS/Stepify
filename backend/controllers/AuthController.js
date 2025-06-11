@@ -32,7 +32,7 @@ const {
   sendResetPasswordEmail,
   sendResetPasswordSuccessfulEmail,
   sendTwoFactorEmailCode,
-} = require('../utils/SendMail')
+} = require('../emails/services/SendMail')
 // .env
 require('dotenv').config()
 

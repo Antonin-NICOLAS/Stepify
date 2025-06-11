@@ -1,43 +1,41 @@
 {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": false,
-    "prettier.useEditorConfig": false,
-    "prettier.useTabs": false,
-    "prettier.configPath": ".prettierrc.json",
-    "i18n-ally.localesPaths": [
-        "frontend/src/languages",
-        "./frontend/src/languages"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "prettier.useEditorConfig": false,
+  "prettier.useTabs": false,
+  "prettier.configPath": ".prettierrc.json",
+  "i18n-ally.localesPaths": [
+    "frontend/src/languages",
+    "./frontend/src/languages"
+  ],
+  "i18n-ally.pathMatcher": "{locale}/{namespace}.json",
+  "i18n-ally.enabledFrameworks": ["react", "react-i18next"],
+  "i18n-ally.sourceLanguage": "fr",
+  "i18n-ally.extract.autoDetect": true,
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.displayLanguage": "fr",
+  "i18n-ally.sortKeys": true,
+  "i18n-ally.namespace": true,
+  "i18n-ally.defaultNamespace": "",
+  "i18n-ally.extract.ignored": [
+    "Stepify",
+    "Backspace",
+    "noopener noreferrer",
+    "%\n                  "
+  ],
+  "i18n-ally.extract.ignoredByFiles": {
+    "frontend/src/pages/Auth/Login.jsx": ["\n          © "],
+    "frontend/src/context/AuthContext.jsx": [
+      "useAuth must be used within an AuthProvider"
     ],
-    "i18n-ally.pathMatcher": "{locale}/{namespace}.json",
-    "i18n-ally.enabledFrameworks": ["react", "react-i18next"],
-    "i18n-ally.sourceLanguage": "fr",
-    "i18n-ally.extract.autoDetect": true,
-    "i18n-ally.keystyle": "nested",
-    "i18n-ally.displayLanguage": "fr",
-    "i18n-ally.sortKeys": true,
-    "i18n-ally.namespace": true,
-    "i18n-ally.defaultNamespace": "",
-    "i18n-ally.extract.ignored": [
-        "Stepify",
-        "Backspace",
-        "noopener noreferrer",
-        "%\n                  "
-    ],
-    "i18n-ally.extract.ignoredByFiles": {
-        "frontend/src/pages/Auth/Login.jsx": ["\n          © "],
-        "frontend/src/context/AuthContext.jsx": [
-            "useAuth must be used within an AuthProvider"
-        ],
-        "frontend/src/pages/Auth/TwoFactorVerification.jsx": [
-            "Digit ${index + 1}"
-        ],
-        "frontend/src/pages/Auth/EmailVerification.jsx": ["Digit ${index + 1}"],
-        "frontend/src/pages/Profile.jsx": ["@"],
-        "frontend/src/routes/AppRoutes.jsx": ["*"],
-        "frontend/src/pages/Settings/Settings.jsx": [
-            "\n                    Tapez ",
-            " pour confirmer :\n                  "
-        ]
-    }
+    "frontend/src/pages/Auth/TwoFactorVerification.jsx": ["Digit ${index + 1}"],
+    "frontend/src/pages/Auth/EmailVerification.jsx": ["Digit ${index + 1}"],
+    "frontend/src/pages/Profile.jsx": ["@"],
+    "frontend/src/routes/AppRoutes.jsx": ["*"],
+    "frontend/src/pages/Settings/Settings.jsx": [
+      "\n                    Tapez ",
+      " pour confirmer :\n                  "
+    ]
+  }
 }

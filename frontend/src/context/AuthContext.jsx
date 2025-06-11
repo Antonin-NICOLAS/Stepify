@@ -502,6 +502,7 @@ export const AuthProvider = ({ children }) => {
         throw data.error
       } else {
         toast.success(data.message)
+        await TwoFactorStatus()
         return data.backupCodes
       }
     } catch (err) {
@@ -527,6 +528,7 @@ export const AuthProvider = ({ children }) => {
         throw data.error
       } else {
         toast.success(data.message)
+        await TwoFactorStatus()
         return data.backupCodes
       }
     } catch (err) {
@@ -554,6 +556,7 @@ export const AuthProvider = ({ children }) => {
         throw data.error
       } else {
         toast.success(data.message)
+        await TwoFactorStatus()
         return true
       }
     } catch (err) {
@@ -580,6 +583,7 @@ export const AuthProvider = ({ children }) => {
         throw data.error
       } else {
         toast.success(data.message)
+        await TwoFactorStatus()
         return true
       }
     } catch (err) {
@@ -663,11 +667,14 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const verifyWebAuthnRegistration = async (attestationResponse) => {
+  const verifyWebAuthnRegistration = async (
+    attestationResponse,
+    deviceName
+  ) => {
     try {
       const response = await axios.post(
         `${API_AUTH}/2fa/webauthn/verify-registration`,
-        { attestationResponse }
+        { attestationResponse, deviceName }
       )
       return response.data
     } catch (error) {
@@ -680,7 +687,7 @@ export const AuthProvider = ({ children }) => {
   }
 
   // Gestion de l'enregistrement WebAuthn
-  const registerWebAuthnCredential = async () => {
+  const registerWebAuthnCredential = async (deviceName = 'Mon appareil') => {
     try {
       // 1. Get registration options from server
       const data = await generateRegistrationKey()
@@ -709,6 +716,7 @@ export const AuthProvider = ({ children }) => {
       const attestationResponse = {
         id: credential.id,
         rawId: bufferToBase64URL(credential.rawId),
+        challenge: options.challenge,
         type: credential.type,
         response: {
           attestationObject: bufferToBase64URL(
@@ -719,7 +727,8 @@ export const AuthProvider = ({ children }) => {
       }
 
       // 5. Verify with server
-      await verifyWebAuthnRegistration(attestationResponse)
+      await verifyWebAuthnRegistration(attestationResponse, deviceName)
+      await TwoFactorStatus()
       return true
     } catch (error) {
       console.error('WebAuthn registration failed:', error)
@@ -771,6 +780,7 @@ export const AuthProvider = ({ children }) => {
       const assertionResponse = {
         id: credential.id,
         rawId: bufferToBase64URL(credential.rawId),
+        challenge: options.challenge,
         type: credential.type,
         response: {
           authenticatorData: bufferToBase64URL(

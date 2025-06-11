@@ -1,0 +1,52 @@
+{
+  "newlogin": {
+    "subject": "Neue Verbindung zu Ihrem Stepify -Konto",
+    "title": "Neue Verbindung erkannt",
+    "bloc1": {
+      "hello": "Hallo ${firstName},",
+      "intro": "Wir informieren Sie darüber, dass kürzlich eine Verbindung zu Ihrem Stepify -Konto festgestellt wurde.",
+      "activity_details": "Hier sind die Details dieser Aktivität:",
+      "date": "Datum und Uhrzeit:",
+      "ip_address": "Adresse IP:",
+      "device": "Gerät / Browser:",
+      "localization": "Ungefährer Ort:",
+      "if_available": "(Ja verfügbar)"
+    },
+    "bloc2": {
+      "question": "Bist du weit hinter dieser Verbindung?",
+      "answer": "Perfekt ! Sie können diese E -Mail ignorieren.",
+      "call": "Wir freuen uns, Sie auf Stepify zu treffen! Nutzen Sie alle Ihre Funktionen: Befolgen Sie Ihre körperliche Aktivität, nehmen Sie an Herausforderungen teil, klettern Sie im Ranking und erreichen Sie Ihre täglichen Ziele."
+    },
+    "bloc3": {
+      "unknown_activity": "Erkennst du diese Aktivität nicht?",
+      "security_recommendations": "In diesem Fall hat möglicherweise ein Dritter auf Ihr Konto zugegriffen.",
+      "security_recommendations_details": "Aus Sicherheitsgründen empfehlen wir sehr:",
+      "change_password": "**Ändern Sie Ihr Passwort sofort** von Ihrem",
+      "security": "Sicherheitsparameter",
+      "check_recent_logins": "**Wenden Sie sich an die jüngsten Verbindungen** in Ihrem Konto.",
+      "report_suspicious_activity": "Wir weisen auf eine verdächtige Aktivität hin::"
+    },
+    "bloc4": {
+      "why_this_email": "Warum erhalten Sie diese E -Mail?",
+      "why_this_email_details": "Wir wollen Ihr Konto schützen. Aus diesem Grund benachrichtigen wir Sie mit jeder neuen Verbindung, damit Sie im Falle eines nicht autorisierten Zugriffs schnell handeln können."
+    },
+    "bloc5": {
+      "need_help": "Benötigen Sie Hilfe?",
+      "need_help_details": "Unser Team ist da, um Sie jederzeit zu begleiten. Zögern Sie nicht, uns für technische Fragen oder Bedenken zu schreiben.",
+      "thank_you": "Bitte vertrauen Sie",
+      "continue_care": "Bewegen Sie sich weiter, Fortschritte und kümmern Sie sich jeden Tag auf sich selbst.",
+      "see_you_soon": "Wir sehen uns bald auf Stepify!",
+      "team_signature": "Das Stepify -Team"
+    }
+  },
+  "footer": {
+    "bloc1": "Sie erhalten diese E -Mail, da Sie ein Konto bei Stepify erstellt haben. Wenn Sie der Meinung sind, dass Sie diese E -Mail formuliert haben, können Sie diese Nachricht ignorieren oder uns unter der folgenden Adresse kontaktieren:",
+    "bloc2_before": "Stepify verpflichtet sich, Ihre persönlichen Daten zu schützen. Sie können unsere konsultieren",
+    "bloc2_link": "Datenschutzrichtlinie",
+    "bloc2_after": "Um mehr darüber zu erfahren, wie Ihre Informationen verwendet und gespeichert werden.",
+    "bloc3": "Diese E -Mail wird automatisch gesendet. Bitte beantworten Sie sie nicht direkt.",
+    "bloc4_before": "Wenn Sie keine E -Mails mehr von uns erhalten oder die Häufigkeit unserer Kommunikation bevorzugen, können Sie es können",
+    "bloc4_link": "Verwalten Sie Ihre Benachrichtigungseinstellungen",
+    "bloc4_after": "jederzeit aus Ihrem Konto."
+  }
+}

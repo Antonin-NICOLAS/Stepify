@@ -1,0 +1,52 @@
+{
+  "newlogin": {
+    "subject": "New connection to your Stepify account",
+    "title": "New connection detected",
+    "bloc1": {
+      "hello": "Hello ${firstName},",
+      "intro": "We inform you that a connection to your Stepify account has been recently detected.",
+      "activity_details": "Here are the details of this activity:",
+      "date": "Date and time:",
+      "ip_address": "Address IP:",
+      "device": "Device / browser:",
+      "localization": "Approximate location:",
+      "if_available": "(Yes Available)"
+    },
+    "bloc2": {
+      "question": "Are you well behind this connection?",
+      "answer": "Perfect ! You can ignore this email.",
+      "call": "We are delighted to meet you on Stepify! Take advantage of all your features: Follow your physical activity, participate in challenges, climb in the ranking and reach your daily objectives 💪"
+    },
+    "bloc3": {
+      "unknown_activity": "Don't you recognize this activity?",
+      "security_recommendations": "In this case, a third party may have accessed your account.",
+      "security_recommendations_details": "For security reasons, we highly recommend:",
+      "change_password": "**Change your password immediately** from your",
+      "security": "Safety parameters",
+      "check_recent_logins": "**Consult recent connections** on your account.",
+      "report_suspicious_activity": "We point out any suspicious activity to:"
+    },
+    "bloc4": {
+      "why_this_email": "Why do you receive this email?",
+      "why_this_email_details": "We want to protect your account. This is why we notify you with each new connection, so that you can act quickly in the event of unauthorized access."
+    },
+    "bloc5": {
+      "need_help": "Need help?",
+      "need_help_details": "Our team is there to accompany you at any time. Do not hesitate to write to us for any technical questions or concerns.",
+      "thank_you": "Please trust",
+      "continue_care": "Continue to move, progress and take care of yourself every day.",
+      "see_you_soon": "See you soon on Stepify!",
+      "team_signature": "The Stepify team"
+    }
+  },
+  "footer": {
+    "bloc1": "You receive this email because you have created an account on Stepify. If you think you have received this email in mistake, you can ignore this message or contact us at the following address:",
+    "bloc2_before": "Stepify undertakes to protect your personal data. You can consult our",
+    "bloc2_link": "Privacy Policy",
+    "bloc2_after": "To find out more about how your information is used and stored.",
+    "bloc3": "This email is sent automatically, please do not answer it directly.",
+    "bloc4_before": "If you no longer wish to receive emails from us or prefer to modify the frequency of our communications, you can",
+    "bloc4_link": "Manage your notification preferences",
+    "bloc4_after": "at any time from your account."
+  }
+}

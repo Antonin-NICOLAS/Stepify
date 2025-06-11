@@ -25,7 +25,7 @@ const {
   sendTwoFactorSetupEmail,
   sendTwoFactorBackupCodesEmail,
   sendTwoFactorEmailCode,
-} = require('../utils/SendMail')
+} = require('../emails/services/SendMail')
 const { verifyAuthentication } = require('./WebAuthnController')
 // .env
 require('dotenv').config()
@@ -303,12 +303,26 @@ const verifyLoginTwoFactor = async (req, res) => {
           new Date(user.twoFactorAuth.emailCodeExpires) > new Date()
         break
       case 'webauthn':
-        const verification = await verifyAuthentication({
-          responsekey: token,
-          user,
-          res,
-        })
-        isValid = verification.verified || false
+        try {
+          const verification = await verifyAuthentication({
+            responsekey: token,
+            user,
+            res,
+          })
+          isValid = verification.verified || false
+
+          // Ajouter des informations sur l'appareil utilisé
+          req.deviceType = verification.deviceType
+        } catch (error) {
+          isValid = false
+
+          // Gestion des tentatives échouées
+          user.twoFactorAuth.attempts += 1
+          if (user.twoFactorAuth.attempts >= 5) {
+            user.twoFactorAuth.lockUntil = new Date(Date.now() + 15 * 60 * 1000)
+          }
+          await user.save()
+        }
         break
     }
 

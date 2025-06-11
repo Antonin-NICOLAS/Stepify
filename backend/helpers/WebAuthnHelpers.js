@@ -6,23 +6,23 @@ const generateChallenge = () => {
 
 const setChallenge = (user, challenge) => {
   user.twoFactorAuth.challenge = challenge
-  user.twoFactorAuth.challengeExpires = new Date(Date.now() + 5 * 60 * 1000) // 5 min expiration
+  user.twoFactorAuth.challengeExpiresAt = new Date(Date.now() + 5 * 60 * 1000) // 5 min expiration
 }
 
 const validateChallenge = (user, challenge) => {
-  if (!user.twoFactorAuth.challenge || !user.twoFactorAuth.challengeExpires) {
+  if (!user.twoFactorAuth.challenge || !user.twoFactorAuth.challengeExpiresAt) {
     return false
   }
 
   return (
     user.twoFactorAuth.challenge === challenge &&
-    new Date(user.twoFactorAuth.challengeExpires) > new Date()
+    new Date(user.twoFactorAuth.challengeExpiresAt) > new Date()
   )
 }
 
 const clearChallenge = (user) => {
   user.twoFactorAuth.challenge = null
-  user.twoFactorAuth.challengeExpires = null
+  user.twoFactorAuth.challengeExpiresAt = null
 }
 
 const findCredentialById = (user, credentialId) => {
@@ -44,6 +44,12 @@ const updateCredentialCounter = (user, credentialId, newCounter) => {
 }
 
 const getActiveCredentials = (user) => {
+  if (
+    !user.twoFactorAuth ||
+    user.twoFactorAuth.webauthnCredentials.length === 0
+  ) {
+    return []
+  }
   return user.twoFactorAuth.webauthnCredentials.filter((cred) => !cred.revoked)
 }
 
