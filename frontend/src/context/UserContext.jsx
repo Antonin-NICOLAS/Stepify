@@ -61,7 +61,7 @@ export const UserProvider = ({ children }) => {
         toast.error(
           error.response?.data?.error ||
             error.message ||
-            'Erreur lors de la mise à jour',
+            t('common.usercontext.generalerrors.profileUpdate'),
         )
         throw error
       }
@@ -91,7 +91,9 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour',
+          error.response?.data?.error ||
+            error.message ||
+            t('common.usercontext.generalerrors.avatarUpload'),
         )
         throw error
       }
@@ -124,7 +126,9 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour',
+          error.response?.data?.error ||
+            error.message ||
+            t('common.usercontext.generalerrors.passwordUpdate'),
         )
         throw error
       }
@@ -153,7 +157,9 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour',
+          error.response?.data?.error ||
+            error.message ||
+            t('common.usercontext.generalerrors.emailUpdate'),
         )
         throw error
       }
@@ -179,7 +185,9 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour',
+          error.response?.data?.error ||
+            error.message ||
+            t('common.usercontext.generalerrors.statusUpdate'),
         )
         throw error
       }
@@ -208,7 +216,9 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour',
+          error.response?.data?.error ||
+            error.message ||
+            t('common.usercontext.generalerrors.dailyGoalUpdate'),
         )
         throw error
       }
@@ -234,7 +244,9 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour',
+          error.response?.data?.error ||
+            error.message ||
+            t('common.usercontext.generalerrors.themeUpdate'),
         )
         throw error
       }
@@ -266,9 +278,10 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour',
+          error.response?.data?.error ||
+            error.message ||
+            t('common.usercontext.generalerrors.languageUpdate'),
         )
-        throw error
       }
     },
     [updateUserField],

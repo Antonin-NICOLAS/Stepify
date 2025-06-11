@@ -5,9 +5,7 @@ const {
   TwoFactorEmailCodeTemplate,
 } = require('../templates/EmailTemplates')
 const { NewLoginEmailTemplate } = require('../templates/NewLoginEmail')
-const {
-  EmailVerificationTokenTemplate,
-} = require('../templates/EmailVerification')
+const { EmailVerificationTemplate } = require('../templates/EmailVerification')
 const { WelcomeEmailTemplate } = require('../templates/Welcome')
 const { EmailPasswordResetTemplate } = require('../templates/PasswordReset')
 const { SucessfulResetTemplate } = require('../templates/SuccessfulReset')
@@ -43,8 +41,6 @@ const sendNewLoginEmail = async (user, ipAddress, deviceInfo, location) => {
     options,
   )
 
-  console.log('user.languagePreference', user.languagePreference)
-
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: user.email,
@@ -63,15 +59,12 @@ const sendNewLoginEmail = async (user, ipAddress, deviceInfo, location) => {
   }
 }
 
-const sendVerificationEmail = async (email, verificationCode) => {
+const sendVerificationEmail = async (user, verificationCode) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: email,
-    subject: 'Vérification de votre email - Stepify',
-    html: EmailVerificationTokenTemplate.replace(
-      '{verificationCode}',
-      verificationCode,
-    ),
+    to: user.email,
+    subject: t('emailverification.subject', user.languagePreference),
+    html: EmailVerificationTemplate(user, verificationCode),
   }
 
   try {
@@ -98,12 +91,12 @@ const sendWelcomeEmail = async (email, prenom) => {
   }
 }
 
-const sendResetPasswordEmail = async (email, resetUrl) => {
+const sendResetPasswordEmail = async (user, resetUrl) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: email,
-    subject: 'Réinitialisation de votre mot de passe Stepify',
-    html: EmailPasswordResetTemplate.replace('{resetUrl}', resetUrl),
+    to: user.email,
+    subject: t('passwordreset.subject', user.languagePreference),
+    html: EmailPasswordResetTemplate(user, resetUrl),
   }
 
   try {
@@ -116,12 +109,14 @@ const sendResetPasswordEmail = async (email, resetUrl) => {
   }
 }
 
-const sendResetPasswordSuccessfulEmail = async (email, prenom) => {
+const sendResetPasswordSuccessfulEmail = async (user) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: email,
-    subject: '🔒 Ton mot de passe a été modifié',
-    html: SucessfulResetTemplate.replace('{User.Prenom}', prenom),
+    to: user.email,
+    subject: t('successfulreset.subject', user.languagePreference),
+    html: interpolate(SucessfulResetTemplate(user), {
+      firstName: user.firstName,
+    }),
   }
 
   try {

@@ -26,6 +26,9 @@
         "error": "Error when deleting the access key",
         "success": "The access key has been deleted"
       },
+      "setpreferredmethod": {
+        "error": "An error occurred when changing the favorite double authentication method"
+      },
       "status": {
         "error": "Error when recovering active double authentication methods"
       },
@@ -119,6 +122,16 @@
   },
   "password": "Password",
   "usercontext": {
+    "generalerrors": {
+      "avatarUpload": "Error when updating the avatar",
+      "dailyGoalUpdate": "Error when updating the daily objective",
+      "emailUpdate": "Error when updating the email",
+      "languageUpdate": "Error when updating the language",
+      "passwordUpdate": "Error when changing password",
+      "profileUpdate": "Error when updating the profile",
+      "statusUpdate": "Error when updating the status",
+      "themeUpdate": "Error when updating the theme"
+    },
     "languageupdated": "Update language"
   }
 }

@@ -11,7 +11,6 @@ const {
   isoUint8Array,
 } = require('@simplewebauthn/server/helpers')
 const {
-  generateChallenge,
   setChallenge,
   getActiveCredentials,
   validateChallenge,
@@ -43,7 +42,6 @@ const generateRegistrationOpt = async (req, res) => {
     }
 
     const activeCredentials = getActiveCredentials(user)
-    const challenge = generateChallenge()
 
     const options = await generateRegistrationOptions({
       rpName,
@@ -66,20 +64,10 @@ const generateRegistrationOpt = async (req, res) => {
     })
 
     // Stocker le challenge
-    setChallenge(user, challenge)
+    setChallenge(user, options.challenge)
     await user.save()
 
-    return sendLocalizedSuccess(
-      res,
-      null,
-      {},
-      {
-        options: {
-          ...options,
-          challenge,
-        },
-      },
-    )
+    return sendLocalizedSuccess(res, null, {}, { options })
   } catch (error) {
     console.error('Erreur génération options enregistrement:', error)
     return sendLocalizedError(

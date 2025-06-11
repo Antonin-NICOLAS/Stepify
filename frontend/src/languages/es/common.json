@@ -26,6 +26,9 @@
         "error": "Error al eliminar la clave de acceso",
         "success": "La tecla de acceso se ha eliminado"
       },
+      "setpreferredmethod": {
+        "error": "Se produjo un error al cambiar el método de autenticación doble favorito"
+      },
       "status": {
         "error": "Error al recuperar métodos activos de autenticación doble"
       },
@@ -119,6 +122,16 @@
   },
   "password": "Contraseña",
   "usercontext": {
+    "generalerrors": {
+      "avatarUpload": "Error al actualizar el avatar",
+      "dailyGoalUpdate": "Error al actualizar el objetivo diario",
+      "emailUpdate": "Error al actualizar el correo electrónico",
+      "languageUpdate": "Error al actualizar el idioma",
+      "passwordUpdate": "Error al cambiar la contraseña",
+      "profileUpdate": "Error al actualizar el perfil",
+      "statusUpdate": "Error al actualizar el estado",
+      "themeUpdate": "Error al actualizar el tema"
+    },
     "languageupdated": "Idioma de actualización"
   }
 }

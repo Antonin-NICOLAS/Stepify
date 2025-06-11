@@ -1,12 +1,23 @@
 {
   "2fa-setup": {
     "backup": {
-      "description": "Votre authentification à deux facteurs est maintenant activée ! Sauvegardez ces codes de récupération en sécurité.",
       "download": "Télécharger les codes",
+      "file": {
+        "end": "Conservez ces codes en sécurité.",
+        "start": "Codes de sauvegarde de double authentification"
+      },
       "final-button": "Terminer",
       "important": "Important",
       "keep": "Conservez ces codes en sécurité",
       "title": "Codes de sauvegarde",
+      "visual": {
+        "description": "Conservez ces codes en lieu sûr pour ne pas perdre l'accès à votre compte",
+        "step1": "Télécharger les codes",
+        "step1description": "Enregistrez ces codes sur votre appareil ou imprimez-les",
+        "step2": "Stockage sécurisé",
+        "step2description": "Conservez ces codes dans un endroit sûr comme un gestionnaire de mots de passe",
+        "title": "Sauvegarde des codes"
+      },
       "warning": "Utilisez ces codes si vous perdez l'accès à votre téléphone"
     },
     "card": {
@@ -15,45 +26,73 @@
       "apptitle": "Application d'authentification",
       "desactive": "Désactivé",
       "emaildescription": "Recevez des codes par email",
-      "mask-backupcodes": "Masquer les codes de sauvegarde",
+      "hide-backupcodes": "Masquer les codes de sauvegarde",
       "show-backupcodes": "Voir les codes de sauvegarde",
       "webauthndescription": "Utilisez votre appareil ou une clé de sécurité physique",
       "webauthntitle": "Clé de sécurité"
     },
-    "description": "Sécurisez votre compte avec une protection supplémentaire",
-    "disable-app": {
-      "title": "Entrez le code de vérification pour confirmer la désactivation."
-    },
-    "disable-email": {
-      "description": "Entrez votre mot de passe pour confirmer la désactivation.",
-      "title": "Désactiver la double authentification"
-    },
     "main": {
-      "description": "L'authentification à deux facteurs ajoute une couche de sécurité supplémentaire à votre compte. Choisissez une ou plusieurs méthodes de vérification."
+      "description": "Ajoutez une couche de sécurité supplémentaire à votre compte en activant la double authentification. Choisissez entre une application d'authentification, des codes par email ou une clé de sécurité physique.",
+      "title": "Configuration de la double authentification",
+      "visual": {
+        "method-active": "méthode activée",
+        "methods-active": "méthodes activées",
+        "methods-description": "Si vous perdez l'accès à une de vos méthodes, vous pouvez toujours utiliser les autres pour vous connecter.",
+        "multiple-options": "Plusieurs options",
+        "options-description": "Vous pouvez activer plusieurs méthodes de double authentification pour plus de sécurité.",
+        "preferred-method": "Méthode préférée",
+        "preferred-method-description": "Si vous avez activé plusieurs méthodes, votre méthode préférée sera utilisée par défaut pour les connexions."
+      }
     },
+    "preferred": "Votre méthode préférée",
+    "preferred-method-updated": "Votre méthode de double authentification préférée a été mise à jour",
+    "set-preferred": "Changer de méthode préférée",
     "setup-app": {
       "app-configured": "J'ai configuré l'application",
       "description": "Scannez ce QR code avec votre application d'authentification (Google Authenticator, Authy, etc.) ou entrez la clé manuellement.",
       "manual-key": "Clé manuelle",
       "qr-code-alt": "QR code de double Authentification",
-      "title": "Configuration de l'application d'authentification"
+      "title": "Configuration de l'application d'authentification",
+      "visual": {
+        "step1": "Installer une application",
+        "step1description": "Téléchargez Google Authenticator, Authy ou une autre application d'authentification",
+        "step2": "Scanner le QR code",
+        "step2description": "Ouvrez l'application et scannez le code QR ou entrez la clé manuellement"
+      }
     },
     "setup-webauthn": {
       "config-now": "Configurer maintenant",
-      "description": "Suivez les instructions de votre navigateur pour enregistrer une nouvelle clé de sécurité ou appareil.",
-      "title": "Configuration de la clé de sécurité"
+      "copy-key": "Clé copiée dans le presse-papiers !",
+      "visual": {
+        "description": "Ajoutez une méthode d'authentification biométrique ou une clé physique",
+        "step1": "Choisissez votre méthode",
+        "step1description": "Utilisez votre empreinte digitale, reconnaissance faciale ou une clé USB",
+        "step2": "Confirmez l'activation",
+        "step2description": "Suivez les instructions de votre navigateur pour finaliser la configuration",
+        "title": "Configuration de la clé de sécurité"
+      }
     },
-    "success": {
-      "back-to-settings": "Retour aux paramètres",
-      "description": "Les codes de vérification seront envoyés à votre adresse email.",
-      "title": "Double authentification activée avec succès !"
-    },
+    "success": {},
     "verify": {
       "activate": "Vérifier et activer",
-      "app-entercode": "Entrez le code à 6 chiffres généré par votre application d'authentification.",
-      "email-entercode": "Entrez le code à 6 chiffres envoyé à votre adresse email.",
       "label-code": "Code de vérification",
-      "title": "Vérification du code"
+      "visual": {
+        "app-step1": "Ouvrez votre application",
+        "app-step1description": "Ouvrez votre application d'authentification pour obtenir le code",
+        "description": "Entrez le code à 6 chiffres pour finaliser l'activation",
+        "email-step1": "Vérifiez votre email",
+        "email-step1description": "Consultez votre boîte mail pour trouver le code de vérification",
+        "step2": "Entrez le code",
+        "step2description": "Saisissez le code à 6 chiffres pour confirmer l'activation",
+        "title": "Vérification du code"
+      }
+    },
+    "webauthn": {
+      "device-name": "Nom de l'appareil que vous voulez ajouter",
+      "device-name-placeholder": "Mon iPhone",
+      "devices": "Vos appareils enregistrés",
+      "no-devices": "Aucun appareil n'a de clé enregistréé",
+      "unknown-device": "Appareil inconnu"
     }
   },
   "activity": {
@@ -70,7 +109,6 @@
     "update": "Mettre à jour l'avatar"
   },
   "buttons": {
-    "change": "Changer",
     "edit": "Modifier",
     "save": "Enregistrer",
     "saveProfile": "Enregistrer les modifications"
@@ -90,13 +128,7 @@
     "title": "Zone de danger"
   },
   "errors": {
-    "avatarUpload": "Erreur lors de la mise à jour de l'avatar",
-    "dailyGoalUpdate": "Erreur lors de la mise à jour de l'objectif quotidien",
-    "languageUpdate": "Erreur lors de la mise à jour de la langue",
-    "nofileselected": "Aucun fichier sélectionné",
-    "passwordUpdate": "Erreur lors du changement de mot de passe",
-    "profileUpdate": "Erreur lors de la mise à jour du profil",
-    "themeUpdate": "Erreur lors de la mise à jour du thème"
+    "nofileselected": "Aucun fichier sélectionné"
   },
   "language": {
     "de": "Allemand",
@@ -132,7 +164,6 @@
     "medium": "Moyen",
     "modify": "Modifiez votre mot de passe",
     "new": "Nouveau mot de passe",
-    "save": "Enregistrer le mot de passe",
     "strong": "Fort",
     "very-low": "Très faible",
     "weak": "Le mot de passe n'est pas assez fort"
@@ -154,9 +185,7 @@
     "2fa-disabled-description": "Désactivée - Activez pour plus de sécurité",
     "2fa-enabled-description": "Activée - Votre compte est protégé",
     "2fa_disable": "Désactiver",
-    "2fa_disabled": "Désactivée",
     "2fa_enable": "Activer",
-    "2fa_enabled": "Activée",
     "delete_confirmation": "Tapez <1> SUPPRIMER </1> pour confirmer :",
     "write-delete": "Veuillez taper 'SUPPRIMER' pour confirmer"
   },
@@ -193,12 +222,9 @@
   "title": "Mon Compte",
   "upload": "URL de l'image",
   "user": {
-    "details": "Détails du compte",
-    "email": "Adresse email",
     "firstName": "Prénom",
     "lastName": "Nom",
     "membersince": "Membre depuis le",
-    "preferences": "Préférences",
-    "username": "Nom d'utilisateur"
+    "preferences": "Préférences"
   }
 }

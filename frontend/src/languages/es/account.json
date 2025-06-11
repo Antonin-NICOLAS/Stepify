@@ -1,12 +1,23 @@
 {
   "2fa-setup": {
     "backup": {
-      "description": "¡Su autenticación de dos factores ahora está activada! Guarde estos códigos de recuperación seguros.",
       "download": "Descargar los códigos",
+      "file": {
+        "end": "Mantenga estos códigos en seguridad.",
+        "start": "Códigos de copia de seguridad de doble autenticación"
+      },
       "final-button": "Para terminar",
       "important": "Importante",
       "keep": "Mantenga estos códigos en seguridad",
       "title": "Códigos de respaldo",
+      "visual": {
+        "description": "Mantenga estos códigos en un lugar seguro para no perder acceso a su cuenta",
+        "step1": "Descargar los códigos",
+        "step1description": "Guarde estos códigos en su dispositivo o imprima los",
+        "step2": "Almacenamiento seguro",
+        "step2description": "Mantenga estos códigos en un lugar seguro como administrador de contraseñas",
+        "title": "Copia de seguridad de códigos"
+      },
       "warning": "Use estos códigos si pierde acceso a su teléfono"
     },
     "card": {
@@ -15,45 +26,76 @@
       "apptitle": "Aplicación de autenticación",
       "desactive": "Desactivado",
       "emaildescription": "Recibir códigos por correo electrónico",
-      "mask-backupcodes": "Ocultar los códigos de copia de seguridad",
+      "hide-backupcodes": "Ocultar los códigos de copia de seguridad",
       "show-backupcodes": "Ver códigos de copia de seguridad",
       "webauthndescription": "Use su dispositivo o una llave de seguridad física",
       "webauthntitle": "Llave de seguridad"
     },
-    "description": "Asegure su cuenta con protección adicional",
-    "disable-app": {
-      "title": "Ingrese el código de verificación para confirmar la desactivación."
-    },
-    "disable-email": {
-      "description": "Ingrese su contraseña para confirmar la desactivación.",
-      "title": "Deshabilitar la doble autenticación"
-    },
+    "disable-app": {},
+    "disable-email": {},
+    "disable-webauthn": {},
     "main": {
-      "description": "La autenticación de dos fábricas agrega una capa de seguridad adicional a su cuenta. Elija uno o más métodos de verificación."
+      "description": "La autenticación de dos fábricas agrega una capa de seguridad adicional a su cuenta. Elija uno o más métodos de verificación.",
+      "title": "Configuración de la doble autenticación",
+      "visual": {
+        "method-active": "método activado",
+        "methods-active": "métodos activados",
+        "methods-description": "Si pierde acceso a uno de sus métodos, siempre puede usar los otros para conectarse.",
+        "multiple-options": "Varias opciones",
+        "options-description": "Puede activar varios métodos de autenticación doble para más seguridad.",
+        "preferred-method": "Método favorito",
+        "preferred-method-description": "Si ha activado varios métodos, su método favorito se utilizará de forma predeterminada para las conexiones."
+      }
     },
+    "preferred": "Tu método favorito",
+    "preferred-method-updated": "Su método de autenticación doble favorito se ha actualizado",
+    "set-preferred": "Cambia tu método favorito",
     "setup-app": {
       "app-configured": "Configuré la aplicación",
       "description": "Escanee este código QR con su aplicación de autenticación (Google Authenticator, Authy, etc.) o ingrese la clave manualmente.",
       "manual-key": "Llave manual",
       "qr-code-alt": "Código de autenticación doble QR",
-      "title": "Configuración de la aplicación de autenticación"
+      "title": "Configuración de la aplicación de autenticación",
+      "visual": {
+        "step1": "Instalar una aplicación",
+        "step1description": "Descargar Google Authenticator, Authy u otra aplicación de autenticación",
+        "step2": "Escanear el código QR",
+        "step2description": "Abra la aplicación y escanee el código QR o ingrese la clave manualmente"
+      }
     },
     "setup-webauthn": {
       "config-now": "Configurar ahora",
-      "description": "Siga las instrucciones de su navegador para registrar una nueva clave o dispositivo de seguridad.",
-      "title": "Configuración de clave de seguridad"
+      "copy-key": "Clave copiada en el portapapeles!",
+      "visual": {
+        "description": "Agregue un método de autenticación biométrica o una clave física",
+        "step1": "Elija su método",
+        "step1description": "Use su huella digital, reconocimiento facial o clave USB",
+        "step2": "Confirmar la activación",
+        "step2description": "Siga las instrucciones de su navegador para finalizar la configuración",
+        "title": "Configuración de clave de seguridad"
+      }
     },
-    "success": {
-      "back-to-settings": "Volver a los parámetros",
-      "description": "Los códigos de verificación se enviarán a su dirección de correo electrónico.",
-      "title": "¡Doble autenticación activada con éxito!"
-    },
+    "success": {},
     "verify": {
       "activate": "Verificar y activar",
-      "app-entercode": "Ingrese el código de 6 dígitos generado por su aplicación de autenticación.",
-      "email-entercode": "Ingrese el código de 6 dígitos enviado a su dirección de correo electrónico.",
       "label-code": "Código de verificación",
-      "title": "Verificación de código"
+      "visual": {
+        "app-step1": "Abra su aplicación",
+        "app-step1description": "Abra su aplicación de autenticación para obtener el código",
+        "description": "Ingrese el código de 6 dígitos para finalizar la activación",
+        "email-step1": "Revise su correo electrónico",
+        "email-step1description": "Consulte su buzón para encontrar el código de verificación",
+        "step2": "Ingrese el código",
+        "step2description": "Ingrese el código de 6 -dígito para confirmar la activación",
+        "title": "Verificación de código"
+      }
+    },
+    "webauthn": {
+      "device-name": "Nombre del dispositivo que desea agregar",
+      "device-name-placeholder": "Mi iPhone",
+      "devices": "Sus dispositivos registrados",
+      "no-devices": "Ningún dispositivo tiene una clave grabada",
+      "unknown-device": "Dispositivo desconocido"
     }
   },
   "activity": {
@@ -70,7 +112,6 @@
     "update": "Actualizar avatar"
   },
   "buttons": {
-    "change": "Cambiador",
     "edit": "Modifique",
     "save": "Regístrese en",
     "saveProfile": "Guardar cambios"
@@ -90,13 +131,7 @@
     "title": "Zona de peligro"
   },
   "errors": {
-    "avatarUpload": "Error al actualizar el avatar",
-    "dailyGoalUpdate": "Error al actualizar el objetivo diario",
-    "languageUpdate": "Error de actualización de idioma",
-    "nofileselected": "Ningún fichero seleccionado",
-    "passwordUpdate": "Error al cambiar la contraseña",
-    "profileUpdate": "Error al actualizar el perfil",
-    "themeUpdate": "Error al actualizar el tema"
+    "nofileselected": "Ningún fichero seleccionado"
   },
   "language": {
     "de": "Alemán",
@@ -132,7 +167,6 @@
     "medium": "PROMEDIO",
     "modify": "Cambia tu contraseña",
     "new": "Nueva contraseña",
-    "save": "Guardar contraseña",
     "strong": "Fuerte",
     "very-low": "Muy débil",
     "weak": "La contraseña no es lo suficientemente fuerte"
@@ -154,9 +188,7 @@
     "2fa-disabled-description": "Desactivado: active para más seguridad",
     "2fa-enabled-description": "Activado: su cuenta está protegida",
     "2fa_disable": "Desactivar",
-    "2fa_disabled": "Desactivado",
     "2fa_enable": "Permitir",
-    "2fa_enabled": "Activado",
     "delete_confirmation": "Escriba <1>BORRAR</1> para confirmar:",
     "write-delete": "Escriba 'Eliminar' para confirmar"
   },
@@ -193,13 +225,10 @@
   "title": "Mi cuenta",
   "upload": "URL de la imagen",
   "user": {
-    "details": "Datos de la cuenta",
-    "email": "Dirección de correo electrónico",
     "firstName": "Nombre",
     "lastName": "Appellido",
     "membersince": "Miembro desde el",
     "preferences": "Preferencias",
-    "status": {},
-    "username": "Nombre de usuario"
+    "status": {}
   }
 }

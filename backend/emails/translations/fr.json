@@ -36,8 +36,36 @@
       "thank_you": "Merci de faire confiance à",
       "continue_care": "Continuez à bouger, à progresser et à prendre soin de vous chaque jour.",
       "see_you_soon": "À très bientôt sur Stepify !",
-      "team_signature": "L’équipe Stepify"
+      "team_signature": "L’équipe **Stepify**"
     }
+  },
+  "emailverification": {
+    "subject": "Vérification de votre email - Stepify",
+    "title": "Vérifie ton adresse mail",
+    "bloc1": "Veuillez cliquer sur le bouton ci-dessous pour confirmer votre adresse électronique et terminer la création de votre compte. Ce code est valable pendant 24 heures.",
+    "bloc2": {
+      "title": "Votre code de vérification",
+      "expiration": "Ce code expire dans 24 heures."
+    }
+  },
+  "passwordreset": {
+    "subject": "Réinitialisation de votre mot de passe - Stepify",
+    "title": "Vous avez oublié votre mot de passe ?",
+    "bloc1": "Quelqu'un a récemment demandé un changement de mot de passe pour votre compte Stepify. Si c'est votre cas, vous pouvez définir un nouveau mot de passe ici :",
+    "bloc2": "Ce lien n'est fonctionnel qu'une heure. Si vous dépassez, ce temps, veuillez faire une nouvelle demande de réinitialisation de mot de passe.",
+    "bloc3": "Si vous ne souhaitez pas modifier votre mot de passe ou si vous ne l'avez pas demandé, ignorez ce message et supprimez-le.",
+    "bloc4": "Pour garantir la sécurité de votre compte, ne transmettez ce message à personne."
+  },
+  "successfulreset": {
+    "subject": "🔒 Ton mot de passe a été modifié",
+    "title": "Votre mot de passe a été réinitialisé",
+    "hello": "Bonjour ${firstName},",
+    "bloc1": "Nous te confirmons que le mot de passe associé à ton compte **Stepify** a bien été modifié.",
+    "bloc2": "✅ Si tu es à l'origine de cette modification, aucun autre action n'est requise.",
+    "bloc3": "⚠️ Si tu es à l'origine de cette modification, aucun autre action n'est requise. Si tu n'es pas à l'origine de cette opération, nous te recommandons de **réinitialiser ton mot de passe immédiatement** et de nous contacter au plus vite à l'adresse suivante :",
+    "bloc4": "La sécurité de ton compte est notre priorité, nous sommes là pour t'aider en cas de besoin. Nous te remercions de ta confiance et restons à ta disposition pour toute question ou besoin d'assistance.",
+    "bye": "A très bientôt sur Stepify !",
+    "team_signature": "L'équipe **Stepify**"
   },
   "footer": {
     "bloc1": "Vous recevez cet email car vous avez créé un compte sur Stepify. Si vous pensez avoir reçu cet email par erreur, vous pouvez ignorer ce message ou nous contacter à l'adresse suivante :",

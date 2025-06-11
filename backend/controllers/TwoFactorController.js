@@ -124,7 +124,7 @@ const enableEmail2FA = async (req, res) => {
     }
 
     const code = Math.floor(100000 + Math.random() * 900000).toString()
-    user.twoFactorAuth.emailCode = hashEmailCode(code)
+    user.twoFactorAuth.emailCode = await hashEmailCode(code)
     user.twoFactorAuth.emailCodeExpires = new Date(Date.now() + 10 * 60 * 1000)
 
     await user.save()
@@ -225,8 +225,8 @@ const verifyAndEnableEmail2FA = async (req, res) => {
     if (new Date(user.twoFactorAuth.emailCodeExpires) < new Date()) {
       return sendLocalizedError(res, 400, 'errors.2fa.code_expired')
     }
-
-    if (!compareEmailCode(user.twoFactorAuth.emailCode, code)) {
+    const isMatch = await compareEmailCode(user.twoFactorAuth.emailCode, code)
+    if (!isMatch) {
       return sendLocalizedError(res, 400, 'errors.2fa.invalid_code')
     }
 
@@ -475,10 +475,8 @@ const disableTwoFactor = async (req, res) => {
       return sendLocalizedError(res, 400, 'errors.2fa.invalid_code')
     }
 
-    user.twoFactorAuth = {
-      appEnabled: false,
-      secret: null,
-    }
+    user.twoFactorAuth.appEnabled = false
+    user.twoFactorAuth.secret = null
 
     if (user.twoFactorAuth.preferredMethod === 'app') {
       user.twoFactorAuth.preferredMethod = user.twoFactorAuth.emailEnabled
@@ -531,6 +529,8 @@ const disableEmail2FA = async (req, res) => {
     }
 
     user.twoFactorAuth.emailEnabled = false
+    user.twoFactorAuth.emailCode = undefined
+    user.twoFactorAuth.emailCodeExpires = undefined
     if (user.twoFactorAuth.preferredMethod === 'email') {
       user.twoFactorAuth.preferredMethod = user.twoFactorAuth.appEnabled
         ? 'app'

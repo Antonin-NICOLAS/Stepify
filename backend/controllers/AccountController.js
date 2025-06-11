@@ -162,7 +162,7 @@ const updateEmail = async (req, res) => {
       }),
     })
 
-    await sendVerificationEmail(newEmail, user.verificationToken)
+    await sendVerificationEmail(user, user.verificationToken)
 
     // Générer un nouveau cookie avec le nouvel email
     GenerateAuthCookie(res, user, false)
@@ -214,7 +214,7 @@ const updatePassword = async (req, res) => {
     user.password = await bcrypt.hash(newPassword, 12)
     await user.save()
 
-    await sendResetPasswordSuccessfulEmail(user.email, user.firstName)
+    await sendResetPasswordSuccessfulEmail(user)
 
     return sendLocalizedSuccess(res, 'success.profile.password_updated')
   } catch (error) {

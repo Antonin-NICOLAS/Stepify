@@ -1,6 +1,8 @@
 const { t } = require('../services/i18n')
 
-const SucessfulResetTemplate = () => {
+const { footer } = require('./Footer')
+
+const SucessfulResetTemplate = (user) => {
   const template = `
 <!DOCTYPE html>
 <html
@@ -563,8 +565,10 @@ const SucessfulResetTemplate = () => {
                                     "
                                   >
                                     <strong
-                                      >Votre mot de passe a été
-                                      réinitialisé</strong
+                                      >${t(
+                                        'successfulreset.title',
+                                        user.languagePreference,
+                                      )}</strong
                                     >
                                   </h1>
                                 </td>
@@ -686,11 +690,17 @@ const SucessfulResetTemplate = () => {
                                       mso-line-height-alt: 25px;
                                     "
                                   >
+                                  <p style="margin: 0; margin-bottom: 16px">
+                                      <strong>${t(
+                                        'successfulreset.hello',
+                                        user.languagePreference,
+                                      )}</strong>
+                                    </p>
                                     <p style="margin: 0">
-                                      Nous te confirmons que le mot de passe
-                                      associé à ton compte
-                                      <strong>Stepify</strong> a bien été
-                                      modifié.
+                                    ${t(
+                                      'successfulreset.bloc1',
+                                      user.languagePreference,
+                                    )}
                                     </p>
                                   </div>
                                 </td>
@@ -848,18 +858,16 @@ const SucessfulResetTemplate = () => {
                                     "
                                   >
                                     <p style="margin: 0">
-                                      ✅ Si tu es à l’origine de cette
-                                      modification, aucun autre action n’est
-                                      requise.
+                                      ${t(
+                                        'successfulreset.bloc2',
+                                        user.languagePreference,
+                                      )}
                                     </p>
                                     <p style="margin: 0">
-                                      ⚠️ Si tu n’es pas à l’origine de cette
-                                      opération, nous te recommandons de
-                                      <strong
-                                        >réinitialiser ton mot de passe
-                                        immédiatement</strong
-                                      >
-                                      et de nous contacter au plus vite à
+                                    ${t(
+                                      'successfulreset.bloc3',
+                                      user.languagePreference,
+                                    )}
                                       <a
                                         href="mailto:stepify.contact@gmail.com?subject=Mon mot de passe a été changé et ce n'est pas moi"
                                         target="_blank"
@@ -915,16 +923,23 @@ const SucessfulResetTemplate = () => {
                                     </p>
                                     <p style="margin: 0">&nbsp;</p>
                                     <p style="margin: 0">
-                                      La sécurité de ton compte est notre
-                                      priorité, et nous sommes là pour t’aider
-                                      en cas de besoin.
+                                    ${t(
+                                      'successfulreset.bloc4',
+                                      user.languagePreference,
+                                    )}
                                     </p>
                                     <p style="margin: 0">&nbsp;</p>
                                     <p style="margin: 0">
-                                      À très bientôt sur Stepify !
+                                    ${t(
+                                      'successfulreset.bye',
+                                      user.languagePreference,
+                                    )}
                                     </p>
                                     <p style="margin: 0">
-                                      L’équipe <strong>Stepify</strong> 🚶‍♂️🚴‍♀️
+                                    ${t(
+                                      'successfulreset.team_signature',
+                                      user.languagePreference,
+                                    )} 🚶‍♂️🚴‍♀️
                                     </p>
                                   </div>
                                 </td>
@@ -1289,102 +1304,7 @@ const SucessfulResetTemplate = () => {
                                 </td>
                               </tr>
                             </table>
-                            <table
-                              class="paragraph_block block-4"
-                              width="100%"
-                              border="0"
-                              cellpadding="0"
-                              cellspacing="0"
-                              role="presentation"
-                              style="
-                                mso-table-lspace: 0pt;
-                                mso-table-rspace: 0pt;
-                                word-break: break-word;
-                              "
-                            >
-                              <tr>
-                                <td
-                                  class="pad"
-                                  style="
-                                    padding-bottom: 10px;
-                                    padding-left: 40px;
-                                    padding-right: 40px;
-                                    padding-top: 15px;
-                                  "
-                                >
-                                  <div
-                                    style="
-                                      color: #c7c7c7;
-                                      font-family: Arial, Helvetica Neue,
-                                        Helvetica, sans-serif;
-                                      font-size: 12px;
-                                      font-weight: 400;
-                                      line-height: 1.5;
-                                      text-align: left;
-                                      mso-line-height-alt: 18px;
-                                    "
-                                  >
-                                    <p style="margin: 0">
-                                      Vous recevez cet email car vous avez créé
-                                      un compte sur Stepify. Si vous pensez
-                                      avoir reçu cet email par erreur, vous
-                                      pouvez ignorer ce message ou nous
-                                      contacter à
-                                      <a
-                                        href="mailto:stepify.contact@gmail.com?subject=À propos de Stepify"
-                                        target="_blank"
-                                        title="stepify.contact@gmail.com"
-                                        style="
-                                          text-decoration: underline;
-                                          color: #00a2ff;
-                                        "
-                                        rel="noopener"
-                                        >stepify.contact@gmail.com</a
-                                      >.
-                                    </p>
-                                    <p style="margin: 0">
-                                      Stepify s’engage à protéger vos données
-                                      personnelles. Vous pouvez consulter notre
-                                      <a
-                                        href="https://step-ify.vercel.app/privacy-policy"
-                                        target="_self"
-                                        title="politique de confidentialité"
-                                        style="
-                                          text-decoration: underline;
-                                          color: #00a2ff;
-                                        "
-                                        >politique de confidentialité</a
-                                      >
-                                      pour en savoir plus sur la manière dont
-                                      vos informations sont utilisées et
-                                      stockées.
-                                    </p>
-                                    <p style="margin: 0">&nbsp;</p>
-                                    <p style="margin: 0">
-                                      Cet email est envoyé automatiquement,
-                                      merci de ne pas y répondre directement.
-                                    </p>
-                                    <p style="margin: 0">
-                                      Si vous ne souhaitez plus recevoir
-                                      d’emails de notre part ou préférez
-                                      modifier la fréquence de nos
-                                      communications, vous pouvez
-                                      <a
-                                        href="https://step-ify.vercel.app/settings"
-                                        target="_self"
-                                        style="
-                                          text-decoration: underline;
-                                          color: #00a2ff;
-                                        "
-                                        >gérer vos préférences de
-                                        notification</a
-                                      >
-                                      à tout moment depuis votre compte.
-                                    </p>
-                                  </div>
-                                </td>
-                              </tr>
-                            </table>
+                            ${footer(user.languagePreference)}
                             <div
                               class="spacer_block block-5"
                               style="

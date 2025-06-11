@@ -26,6 +26,9 @@
         "error": "Erreur lors de la suppression de la clé d'accès",
         "success": "La clé d'accès a été supprimée"
       },
+      "setpreferredmethod": {
+        "error": "Une erreur est survenue lors du changement de méthode de double authentification préférée"
+      },
       "status": {
         "error": "Erreur lors de la récupération des méthodes de double authentification actives"
       },
@@ -119,6 +122,16 @@
   },
   "password": "Mot de passe",
   "usercontext": {
-    "languageupdated": "Langue mise à jour"
+    "languageupdated": "Langue mise à jour",
+    "generalerrors": {
+      "avatarUpload": "Erreur lors de la mise à jour de l'avatar",
+      "emailUpdate": "Erreur lors de la mise à jour de l'email",
+      "statusUpdate": "Erreur lors de la mise à jour du statut",
+      "dailyGoalUpdate": "Erreur lors de la mise à jour de l'objectif quotidien",
+      "languageUpdate": "Erreur lors de la mise à jour de la langue",
+      "passwordUpdate": "Erreur lors du changement de mot de passe",
+      "profileUpdate": "Erreur lors de la mise à jour du profil",
+      "themeUpdate": "Erreur lors de la mise à jour du thème"
+    }
   }
 }

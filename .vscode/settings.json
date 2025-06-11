@@ -22,7 +22,8 @@
     "Stepify",
     "Backspace",
     "noopener noreferrer",
-    "%\n                  "
+    "%\n                  ",
+    "Digit ${idx + 1}"
   ],
   "i18n-ally.extract.ignoredByFiles": {
     "frontend/src/pages/Auth/Login.jsx": ["\n          © "],

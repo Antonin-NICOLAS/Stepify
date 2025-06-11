@@ -1,12 +1,23 @@
 {
   "2fa-setup": {
     "backup": {
-      "description": "Ihre zwei -Faktor -Authentifizierung ist jetzt aktiviert! Speichern Sie diese sicheren Wiederherstellungscodes.",
       "download": "Laden Sie die Codes herunter",
+      "file": {
+        "end": "Halten Sie diese Codes in Sicherheit.",
+        "start": "Doppelauthentifizierung Backup -Codes"
+      },
       "final-button": "Zu beenden",
       "important": "Wichtig",
       "keep": "Halten Sie diese Codes in Sicherheit",
       "title": "Sicherungscodes",
+      "visual": {
+        "description": "Halten Sie diese Codes an einem sicheren Ort, um den Zugang zu Ihrem Konto nicht zu verlieren",
+        "step1": "Laden Sie die Codes herunter",
+        "step1description": "Speichern Sie diese Codes auf Ihrem Gerät oder drucken Sie sie aus",
+        "step2": "Sicherungspeicher",
+        "step2description": "Halten Sie diese Codes an einem sicheren Ort als Passwortmanager",
+        "title": "Sicherung von Codes"
+      },
       "warning": "Verwenden Sie diese Codes, wenn Sie den Zugriff auf Ihr Telefon verlieren"
     },
     "card": {
@@ -15,45 +26,76 @@
       "apptitle": "Authentifizierungsanwendung",
       "desactive": "Deaktiviert",
       "emaildescription": "Codes per E -Mail erhalten",
-      "mask-backupcodes": "Verstecken Sie die Sicherungscodes",
+      "hide-backupcodes": "Verstecken Sie die Sicherungscodes",
       "show-backupcodes": "Siehe Backup -Codes",
       "webauthndescription": "Verwenden Sie Ihr Gerät oder einen physischen Sicherheitsschlüssel",
       "webauthntitle": "Sicherheitsschlüssel"
     },
-    "description": "Sichern Sie Ihr Konto mit zusätzlichem Schutz",
-    "disable-app": {
-      "title": "Geben Sie den Verifizierungscode ein, um die Deaktivierung zu bestätigen."
-    },
-    "disable-email": {
-      "description": "Geben Sie Ihr Passwort ein, um die Deaktivierung zu bestätigen.",
-      "title": "Doppelauthentifizierung deaktivieren"
-    },
+    "disable-app": {},
+    "disable-email": {},
+    "disable-webauthn": {},
     "main": {
-      "description": "Zwei -faktorische Authentifizierung fügt Ihrem Konto eine zusätzliche Sicherheitsschicht hinzu. Wählen Sie eine oder mehrere Überprüfungsmethoden."
+      "description": "Zwei -faktorische Authentifizierung fügt Ihrem Konto eine zusätzliche Sicherheitsschicht hinzu. Wählen Sie eine oder mehrere Überprüfungsmethoden.",
+      "title": "Konfiguration der Doppelauthentifizierung",
+      "visual": {
+        "method-active": "aktivierte Methode",
+        "methods-active": "Aktivierte Methoden",
+        "methods-description": "Wenn Sie den Zugang zu einer Ihrer Methoden verlieren, können Sie immer die anderen verwenden, um eine Verbindung herzustellen.",
+        "multiple-options": "Mehrere Optionen",
+        "options-description": "Sie können mehrere Doppelauthentifizierungsmethoden für mehr Sicherheit aktivieren.",
+        "preferred-method": "Lieblingsmethode",
+        "preferred-method-description": "Wenn Sie verschiedene Methoden aktiviert haben, wird Ihre bevorzugte Methode standardmäßig für Verbindungen verwendet."
+      }
     },
+    "preferred": "Ihre Lieblingsmethode",
+    "preferred-method-updated": "Ihre bevorzugte Doppelauthentifizierungsmethode wurde aktualisiert",
+    "set-preferred": "Ändern Sie Ihre Lieblingsmethode",
     "setup-app": {
       "app-configured": "Ich habe die Anwendung konfiguriert",
       "description": "Scannen Sie diesen QR -Code mit Ihrer Authentifizierungsanwendung (Google Authenticator, Authy usw.) oder geben Sie die Taste manuell ein.",
       "manual-key": "Handbuch",
       "qr-code-alt": "QR -Doppelauthentifizierungscode",
-      "title": "Konfiguration der Authentifizierungsanwendung"
+      "title": "Konfiguration der Authentifizierungsanwendung",
+      "visual": {
+        "step1": "Installieren Sie eine Anwendung",
+        "step1description": "Laden Sie den Google Authenticator, Authy oder eine andere Authentifizierungsanwendung herunter",
+        "step2": "Scannen Sie den QR -Code",
+        "step2description": "Öffnen Sie die Anwendung und scannen Sie den QR -Code oder geben Sie die Taste manuell ein"
+      }
     },
     "setup-webauthn": {
       "config-now": "Konfigurieren Sie jetzt",
-      "description": "Befolgen Sie die Anweisungen Ihres Browsers, um einen neuen Sicherheitsschlüssel oder ein neues Gerät aufzuzeichnen.",
-      "title": "Sicherheitsschlüsselkonfiguration"
+      "copy-key": "Schlüssel in der Zwischenablage kopiert!",
+      "visual": {
+        "description": "Fügen Sie eine biometrische Authentifizierungsmethode oder einen physischen Schlüssel hinzu",
+        "step1": "Wählen Sie Ihre Methode",
+        "step1description": "Verwenden Sie Ihren Fingerabdruck, Ihre Gesichtserkennung oder Ihren USB -Schlüssel",
+        "step2": "Aktivierung bestätigen",
+        "step2description": "Befolgen Sie die Anweisungen Ihres Browsers, um die Konfiguration abzuschließen",
+        "title": "Sicherheitsschlüsselkonfiguration"
+      }
     },
-    "success": {
-      "back-to-settings": "Zurück zu den Parametern",
-      "description": "Die Überprüfungscodes werden an Ihre E -Mail -Adresse gesendet.",
-      "title": "Doppelauthentifizierung erfolgreich aktiviert!"
-    },
+    "success": {},
     "verify": {
       "activate": "Überprüfen und aktivieren",
-      "app-entercode": "Geben Sie den von Ihrer Authentifizierungsanwendung generierten 6 -digit -Code ein.",
-      "email-entercode": "Geben Sie den 6 -Digit -Code ein, der an Ihre E -Mail -Adresse gesendet wurde.",
       "label-code": "Bestätigungscode",
-      "title": "Codeüberprüfung"
+      "visual": {
+        "app-step1": "Öffnen Sie Ihre Bewerbung",
+        "app-step1description": "Öffnen Sie Ihre Authentifizierungsanwendung, um den Code zu erhalten",
+        "description": "Geben Sie den 6 -Di -Codes ein, um die Aktivierung abzuschließen",
+        "email-step1": "Überprüfen Sie Ihre E -Mail",
+        "email-step1description": "Wenden Sie sich an Ihre Mailbox, um den Verifizierungscode zu finden",
+        "step2": "Code eingeben",
+        "step2description": "Geben Sie den Code mit 6 -dagit -Code ein, um die Aktivierung zu bestätigen",
+        "title": "Codeüberprüfung"
+      }
+    },
+    "webauthn": {
+      "device-name": "Geräten Namen, den Sie hinzufügen möchten",
+      "device-name-placeholder": "Mein iPhone",
+      "devices": "Ihre registrierten Geräte",
+      "no-devices": "Kein Gerät hat einen aufgezeichneten Schlüssel",
+      "unknown-device": "Unbekanntes Gerät"
     }
   },
   "activity": {
@@ -70,7 +112,6 @@
     "update": "Avatar bijwerken"
   },
   "buttons": {
-    "change": "Wisselaar",
     "edit": "wijzigen",
     "save": "Registreer",
     "saveProfile": "Wijzigingen opslaan"
@@ -90,13 +131,7 @@
     "title": "Gefahrenzone"
   },
   "errors": {
-    "avatarUpload": "Fout bij het bijwerken van avatar",
-    "dailyGoalUpdate": "Fout bij het bijwerken van het dagelijkse doel",
-    "languageUpdate": "Fout bij taalupdate",
-    "nofileselected": "Geen bestand geselecteerd",
-    "passwordUpdate": "Fout bij het wijzigen van wachtwoord",
-    "profileUpdate": "Fout bij het bijwerken van profiel",
-    "themeUpdate": "Fout bij het bijwerken van het thema"
+    "nofileselected": "Geen bestand geselecteerd"
   },
   "language": {
     "de": "Duits",
@@ -132,7 +167,6 @@
     "medium": "DURCHSCHNITT",
     "modify": "Ändern Sie Ihr Passwort",
     "new": "Nieuw wachtwoord",
-    "save": "Wachtwoord opslaan",
     "strong": "Stark",
     "very-low": "Sehr schwach",
     "weak": "Das Passwort ist nicht stark genug"
@@ -154,9 +188,7 @@
     "2fa-disabled-description": "Deaktiviert - für mehr Sicherheit aktivieren",
     "2fa-enabled-description": "Aktiviert - Ihr Konto ist geschützt",
     "2fa_disable": "Deaktivieren",
-    "2fa_disabled": "Deaktiviert",
     "2fa_enable": "Aktivieren",
-    "2fa_enabled": "Aktiviert",
     "delete_confirmation": "Tippen Sie <1> LÖSCHEN </1> zur Bestätigung :",
     "write-delete": "Bitte geben Sie 'Löschen' ein, um zu bestätigen"
   },
@@ -193,13 +225,10 @@
   "title": "Mijn account",
   "upload": "Afbeelding URL",
   "user": {
-    "details": "Accountgegevens",
-    "email": "Adres e-mail",
     "firstName": "Voornaam",
     "lastName": "Nom",
     "membersince": "Mitglied seit",
     "preferences": "Voorkeuren",
-    "status": {},
-    "username": "Gebruikersnaam"
+    "status": {}
   }
 }

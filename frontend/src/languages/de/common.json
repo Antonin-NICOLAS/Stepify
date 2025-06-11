@@ -26,6 +26,9 @@
         "error": "Fehler beim Löschen der Zugriffstaste",
         "success": "Der Zugangsschlüssel wurde gelöscht"
       },
+      "setpreferredmethod": {
+        "error": "Bei der Änderung der bevorzugten Doppelauthentifizierungsmethode trat ein Fehler auf"
+      },
       "status": {
         "error": "Fehler beim Wiederherstellen aktiver Doppelauthentifizierungsmethoden"
       },
@@ -119,6 +122,16 @@
   },
   "password": "Passwort",
   "usercontext": {
+    "generalerrors": {
+      "avatarUpload": "Fehler beim Aktualisieren des Avatars",
+      "dailyGoalUpdate": "Fehler beim Aktualisieren des täglichen Ziels",
+      "emailUpdate": "Fehler beim Aktualisieren der E -Mail",
+      "languageUpdate": "Fehler beim Aktualisieren der Sprache",
+      "passwordUpdate": "Fehler beim Passwort ändern",
+      "profileUpdate": "Fehler beim Aktualisieren des Profils",
+      "statusUpdate": "Fehler beim Aktualisieren des Status",
+      "themeUpdate": "Fehler beim Aktualisieren des Themas"
+    },
     "languageupdated": "Sprache aktualisieren"
   }
 }

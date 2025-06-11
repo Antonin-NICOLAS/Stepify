@@ -1,9 +1,3 @@
-const crypto = require('crypto')
-
-const generateChallenge = () => {
-  return crypto.randomBytes(32).toString('base64').replace(/[+/=]/g, '')
-}
-
 const setChallenge = (user, challenge) => {
   user.twoFactorAuth.challenge = challenge
   user.twoFactorAuth.challengeExpiresAt = new Date(Date.now() + 5 * 60 * 1000) // 5 min expiration
@@ -54,7 +48,6 @@ const getActiveCredentials = (user) => {
 }
 
 module.exports = {
-  generateChallenge,
   setChallenge,
   validateChallenge,
   clearChallenge,

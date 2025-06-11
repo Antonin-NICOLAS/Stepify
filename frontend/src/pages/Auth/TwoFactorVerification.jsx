@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 // Context
-import { useAuth } from '../../context/AuthContext'
+import { use2FA } from '../../context/2FA'
 import { useTranslation } from 'react-i18next'
 // Icons
 import {
@@ -18,7 +18,7 @@ import './TwoFactorVerification.css'
 function TwoFactorVerification() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { verifyLoginTwoFactor } = useAuth()
+  const { verifyLoginTwoFactor } = use2FA()
   const { t } = useTranslation()
 
   // State variables

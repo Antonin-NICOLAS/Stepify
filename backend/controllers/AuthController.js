@@ -102,7 +102,7 @@ const createUser = async (req, res) => {
       languagePreference: 'fr',
     })
 
-    await sendVerificationEmail(newUser.email, verificationCode)
+    await sendVerificationEmail(newUser, verificationCode)
     GenerateAuthCookie(res, newUser, stayLoggedIn)
 
     //save new session
@@ -233,7 +233,7 @@ const resendVerificationEmail = async (req, res) => {
       Date.now() + ms(process.env.VERIFICATION_TOKEN_EXPIRY)
     await user.save()
 
-    await sendVerificationEmail(user.email, user.verificationToken)
+    await sendVerificationEmail(user, user.verificationToken)
 
     return sendLocalizedSuccess(res, 'success.auth.verification_code_sent')
   } catch (error) {
@@ -288,7 +288,7 @@ const ChangeVerificationEmail = async (req, res) => {
       }),
     })
 
-    await sendVerificationEmail(user.email, user.verificationToken)
+    await sendVerificationEmail(user, user.verificationToken)
     GenerateAuthCookie(res, user, false)
 
     return sendLocalizedSuccess(res, 'success.auth.email_updated')
@@ -547,7 +547,7 @@ const forgotPassword = async (req, res) => {
     await user.save()
 
     const resetUrl = `${process.env.FRONTEND_SERVER}/reset-password/${resetToken}`
-    await sendResetPasswordEmail(user.email, resetUrl)
+    await sendResetPasswordEmail(user, resetUrl)
 
     return sendLocalizedSuccess(res, 'success.auth.reset_link_sent')
   } catch (error) {
@@ -584,7 +584,7 @@ const resetPassword = async (req, res) => {
     user.resetPasswordTokenExpiresAt = undefined
     await user.save()
 
-    await sendResetPasswordSuccessfulEmail(user.email, user.firstName)
+    await sendResetPasswordSuccessfulEmail(user)
 
     return sendLocalizedSuccess(res, 'success.auth.password_reset')
   } catch (error) {

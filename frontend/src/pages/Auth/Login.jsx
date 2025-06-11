@@ -5,6 +5,7 @@ import Spline from '@splinetool/react-spline'
 import GlobalLoader from '../../utils/GlobalLoader'
 //context
 import { useAuth } from '../../context/AuthContext'
+import { use2FA } from '../../context/2FA'
 import { useTranslation } from 'react-i18next'
 //icons
 import {
@@ -28,8 +29,8 @@ import './Login.css'
 function Auth() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { login, register, authenticateWithWebAuthn, resendVerificationCode } =
-    useAuth()
+  const { login, register, resendVerificationCode } = useAuth()
+  const { authenticateWithWebAuthn } = use2FA()
   const [isLoading, setIsLoading] = useState(false)
 
   const [loginData, setLoginData] = useState({

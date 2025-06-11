@@ -1,12 +1,14 @@
 const { t } = require('../services/i18n')
 
-const EmailVerificationTokenTemplate = () => {
+const { footer } = require('./Footer')
+
+const EmailVerificationTemplate = (user, code) => {
   const template = `
   <!DOCTYPE html>
 <html
   xmlns:v="urn:schemas-microsoft-com:vml"
   xmlns:o="urn:schemas-microsoft-com:office:office"
-  lang="en"
+  lang=${user.languagePreference || 'fr'}
 >
   <head>
     <title></title>
@@ -678,7 +680,10 @@ const EmailVerificationTokenTemplate = () => {
                                           color: #2b303a;
                                         "
                                         ><strong
-                                          >Vérifie ton adresse mail</strong
+                                          >${t(
+                                            'emailverification.title',
+                                            user.languagePreference,
+                                          )}</strong
                                         ></span
                                       >
                                     </p>
@@ -724,10 +729,10 @@ const EmailVerificationTokenTemplate = () => {
                                     <p
                                       style="margin: 0; word-break: break-word"
                                     >
-                                      Veuillez cliquer sur le bouton ci-dessous
-                                      pour confirmer votre adresse électronique
-                                      et terminer la création de votre compte.
-                                      Ce code est valable pendant 24 heures.
+                                    ${t(
+                                      'emailverification.bloc1',
+                                      user.languagePreference,
+                                    )}
                                     </p>
                                   </div>
                                 </td>
@@ -913,7 +918,10 @@ const EmailVerificationTokenTemplate = () => {
                                         <h3
                                           style="color: #2b303a; margin-top: 0"
                                         >
-                                          Votre code de vérification
+                                        ${t(
+                                          'emailverification.bloc2.title',
+                                          user.languagePreference,
+                                        )}
                                         </h3>
                                         <div
                                           style="
@@ -924,7 +932,7 @@ const EmailVerificationTokenTemplate = () => {
                                             margin: 15px 0;
                                           "
                                         >
-                                          {verificationCode}
+                                          ${code}
                                         </div>
                                         <p
                                           style="
@@ -933,7 +941,10 @@ const EmailVerificationTokenTemplate = () => {
                                             margin-bottom: 0;
                                           "
                                         >
-                                          Ce code expire dans 24 heures
+                                        ${t(
+                                          'emailverification.bloc2.expiration',
+                                          user.languagePreference,
+                                        )}
                                         </p>
                                       </div>
                                     </div>
@@ -1234,103 +1245,7 @@ const EmailVerificationTokenTemplate = () => {
                                 </td>
                               </tr>
                             </table>
-                            <table
-                              class="paragraph_block block-4"
-                              width="100%"
-                              border="0"
-                              cellpadding="0"
-                              cellspacing="0"
-                              role="presentation"
-                              style="
-                                mso-table-lspace: 0pt;
-                                mso-table-rspace: 0pt;
-                                word-break: break-word;
-                              "
-                            >
-                              <tr>
-                                <td
-                                  class="pad"
-                                  style="
-                                    padding-bottom: 10px;
-                                    padding-left: 40px;
-                                    padding-right: 40px;
-                                    padding-top: 15px;
-                                  "
-                                >
-                                  <div
-                                    style="
-                                      color: #c7c7c7;
-                                      font-family: Montserrat, Trebuchet MS,
-                                        Lucida Grande, Lucida Sans Unicode,
-                                        Lucida Sans, Tahoma, sans-serif;
-                                      font-size: 12px;
-                                      font-weight: 400;
-                                      line-height: 1.5;
-                                      text-align: left;
-                                      mso-line-height-alt: 18px;
-                                    "
-                                  >
-                                    <p style="margin: 0">
-                                      Vous recevez cet email car vous avez créé
-                                      un compte sur Stepify. Si vous pensez
-                                      avoir reçu cet email par erreur, vous
-                                      pouvez ignorer ce message ou nous
-                                      contacter à
-                                      <a
-                                        href="mailto:stepify.contact@gmail.com?subject=À propos de Stepify"
-                                        target="_blank"
-                                        title="stepify.contact@gmail.com"
-                                        style="
-                                          text-decoration: underline;
-                                          color: #00a2ff;
-                                        "
-                                        rel="noopener"
-                                        >stepify.contact@gmail.com</a
-                                      >.
-                                    </p>
-                                    <p style="margin: 0">
-                                      Stepify s’engage à protéger vos données
-                                      personnelles. Vous pouvez consulter notre
-                                      <a
-                                        href="https://step-ify.vercel.app/privacy-policy"
-                                        target="_self"
-                                        title="politique de confidentialité"
-                                        style="
-                                          text-decoration: underline;
-                                          color: #00a2ff;
-                                        "
-                                        >politique de confidentialité</a
-                                      >
-                                      pour en savoir plus sur la manière dont
-                                      vos informations sont utilisées et
-                                      stockées.
-                                    </p>
-                                    <p style="margin: 0">&nbsp;</p>
-                                    <p style="margin: 0">
-                                      Cet email est envoyé automatiquement,
-                                      merci de ne pas y répondre directement.
-                                    </p>
-                                    <p style="margin: 0">
-                                      Si vous ne souhaitez plus recevoir
-                                      d’emails de notre part ou préférez
-                                      modifier la fréquence de nos
-                                      communications, vous pouvez
-                                      <a
-                                        href="https://step-ify.vercel.app/settings"
-                                        target="_self"
-                                        style="
-                                          text-decoration: underline;
-                                          color: #00a2ff;
-                                        "
-                                        >gérer vos préférences de
-                                        notification</a
-                                      >
-                                      à tout moment depuis votre compte.
-                                    </p>
-                                  </div>
-                                </td>
-                              </tr>
-                            </table>
+                            ${footer(user.languagePreference)}
                             <div
                               class="spacer_block block-5"
                               style="
@@ -1408,5 +1323,5 @@ const EmailVerificationTokenTemplate = () => {
 }
 
 module.exports = {
-  EmailVerificationTokenTemplate,
+  EmailVerificationTemplate,
 }

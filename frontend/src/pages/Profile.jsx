@@ -700,7 +700,7 @@ const Profile = () => {
                     {t('common.cancel')}
                   </button>
                   <button type="submit" className="save-btn">
-                    {t('account.buttons.save')}
+                    {t('account.dailyGoal.save')}
                   </button>
                 </div>
               </form>
