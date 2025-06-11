@@ -21,7 +21,7 @@ const GenerateAuthCookie = (res, user, stayLoggedIn) => {
     {
       expiresIn: expiration,
       algorithm: 'HS256',
-    }
+    },
   )
 
   const options = {
@@ -66,7 +66,7 @@ const findLocation = async (user, ipAddress) => {
   let location = 'Localisation inconnue'
   try {
     const geoRes = await fetch(
-      `http://ip-api.com/json/${ipAddress}?fields=status,country,regionName,city,zip,lat,lon&lang=${user.languagePreference}`
+      `http://ip-api.com/json/${ipAddress}?fields=status,country,regionName,city,zip,lat,lon&lang=${user.languagePreference}`,
     )
     const geoData = await geoRes.json()
     if (geoData.status === 'success') {

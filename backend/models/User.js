@@ -469,7 +469,7 @@ const userSchema = new Schema(
     toObject: {
       virtuals: true,
     },
-  }
+  },
 )
 
 // Virtual pour le nom complet

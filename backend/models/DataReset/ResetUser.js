@@ -64,13 +64,13 @@ async function resetUserStats() {
       {
         $set: resetStats,
       },
-      { multi: true }
+      { multi: true },
     )
 
     console.log(
       '[RESET] Statistiques réinitialisées pour',
       result.modifiedCount,
-      'utilisateurs'
+      'utilisateurs',
     )
 
     // Vérification
@@ -93,7 +93,7 @@ async function resetUserStats() {
 
 // Demande de confirmation avant l'exécution
 console.log(
-  '\n⚠️  ATTENTION: Cette opération va réinitialiser toutes les statistiques des utilisateurs'
+  '\n⚠️  ATTENTION: Cette opération va réinitialiser toutes les statistiques des utilisateurs',
 )
 console.log('Les données suivantes seront conservées:')
 console.log('- Informations de compte (email, mot de passe, etc.)')
@@ -117,5 +117,5 @@ readline.question(
       process.exit(0)
     }
     readline.close()
-  }
+  },
 )

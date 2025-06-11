@@ -270,8 +270,8 @@ function TwoFactorVerification() {
                     {showBackupCode
                       ? t('auth.2fa.process.backup-message')
                       : method === 'email'
-                      ? t('auth.2fa.process.email-message')
-                      : t('auth.2fa.process.app-message')}
+                        ? t('auth.2fa.process.email-message')
+                        : t('auth.2fa.process.app-message')}
                   </p>
                 </div>
 

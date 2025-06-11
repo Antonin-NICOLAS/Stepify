@@ -53,7 +53,7 @@ const updateUserStatsAfterImport = async (userId, newEntries) => {
       day: prevStr,
     }).then(
       (entries) =>
-        entries.reduce((sum, e) => sum + e.totalSteps, 0) >= dailyGoal
+        entries.reduce((sum, e) => sum + e.totalSteps, 0) >= dailyGoal,
     )
 
     if (!wasPrevAchieved) {

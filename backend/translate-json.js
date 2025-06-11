@@ -22,7 +22,7 @@ const translateObject = async (obj, lang) => {
     const translated = await translateObject(fr, lang)
     fs.writeFileSync(
       `./emails/translations/${lang}.json`,
-      JSON.stringify(translated, null, 2)
+      JSON.stringify(translated, null, 2),
     )
     console.log(`✅ ${lang}.json généré`)
   }

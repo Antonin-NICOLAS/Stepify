@@ -9,7 +9,7 @@ const translateToAllLanguages = async (text) => {
     const sourceLang = detectionResult.from?.language?.iso || 'en'
 
     const targetLanguages = ['fr', 'en', 'es', 'de'].filter(
-      (lang) => lang !== sourceLang
+      (lang) => lang !== sourceLang,
     )
 
     const translations = {

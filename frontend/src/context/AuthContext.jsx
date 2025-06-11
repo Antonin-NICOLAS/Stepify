@@ -105,7 +105,7 @@ export const AuthProvider = ({ children }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-        }
+        },
       )
 
       const data = res.data
@@ -115,7 +115,7 @@ export const AuthProvider = ({ children }) => {
           (data.errors.username && data.errors.email) ||
             data.errors.username ||
             data.errors.email ||
-            t('common.error')
+            t('common.error'),
         )
       } else {
         setUser(data.user)
@@ -130,7 +130,7 @@ export const AuthProvider = ({ children }) => {
           err.response?.data?.errors?.email) ||
           err.response?.data?.errors?.username ||
           err.response?.data?.errors?.email ||
-          t('common.authcontext.register.error')
+          t('common.authcontext.register.error'),
       )
       throw err
     }
@@ -161,7 +161,7 @@ export const AuthProvider = ({ children }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-        }
+        },
       )
 
       const data = res.data
@@ -177,7 +177,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || t('common.authcontext.login.error')
+        err.response?.data?.error || t('common.authcontext.login.error'),
       )
       throw err
     }
@@ -200,7 +200,7 @@ export const AuthProvider = ({ children }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-        }
+        },
       )
       const data = res.data
       if (data.error) {
@@ -213,7 +213,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error(
         err.response?.data?.error ||
-          t('common.authcontext.forgotpassword.error')
+          t('common.authcontext.forgotpassword.error'),
       )
       throw err
     }
@@ -226,7 +226,7 @@ export const AuthProvider = ({ children }) => {
         return toast.error(t('common.authcontext.resetpassword.validtoken'))
       if (password !== confirmPassword)
         return toast.error(
-          t('common.authcontext.resetpassword.passwordmismatch')
+          t('common.authcontext.resetpassword.passwordmismatch'),
         )
       if (password.length < 8)
         return toast.error(t('common.authcontext.resetpassword.validpassword'))
@@ -241,7 +241,7 @@ export const AuthProvider = ({ children }) => {
             headers: {
               'Content-Type': 'application/json',
             },
-          }
+          },
         )
 
         const data = res.data
@@ -258,12 +258,12 @@ export const AuthProvider = ({ children }) => {
       } catch (err) {
         toast.error(
           err.response?.data?.error ||
-            t('common.authcontext.resetpassword.error')
+            t('common.authcontext.resetpassword.error'),
         )
         throw err
       }
     },
-    []
+    [],
   )
 
   // --- Verify Email ---
@@ -280,7 +280,7 @@ export const AuthProvider = ({ children }) => {
         },
         {
           withCredentials: true,
-        }
+        },
       )
 
       const data = res.data
@@ -297,7 +297,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || t('common.authcontext.verifyemail.error')
+        err.response?.data?.error || t('common.authcontext.verifyemail.error'),
       )
       throw err
     }
@@ -311,7 +311,7 @@ export const AuthProvider = ({ children }) => {
         {},
         {
           withCredentials: true,
-        }
+        },
       )
 
       const data = res.data
@@ -330,7 +330,7 @@ export const AuthProvider = ({ children }) => {
       OnError()
       toast.error(
         err.response?.data?.error ||
-          t('common.authcontext.resendverificationcode.error')
+          t('common.authcontext.resendverificationcode.error'),
       )
       throw err
     }
@@ -340,7 +340,7 @@ export const AuthProvider = ({ children }) => {
   const changeVerificationEmail = useCallback(async (newEmail, onSuccess) => {
     if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
       return toast.error(
-        t('common.authcontext.changeverificationemail.validemail')
+        t('common.authcontext.changeverificationemail.validemail'),
       )
     }
     try {
@@ -354,7 +354,7 @@ export const AuthProvider = ({ children }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-        }
+        },
       )
       const data = res.data
       if (data.error) {
@@ -368,7 +368,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error(
         err.response?.data?.error ||
-          t('common.authcontext.changeverificationemail.error')
+          t('common.authcontext.changeverificationemail.error'),
       )
       throw err
     }
@@ -380,7 +380,7 @@ export const AuthProvider = ({ children }) => {
       const res = await axios.post(
         `${API_AUTH}/logout`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       )
       setIsAuthenticated(false)
       setUser(null)
@@ -399,12 +399,12 @@ export const AuthProvider = ({ children }) => {
       const res = await axios.post(
         `${API_AUTH}/${userId}/logout`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       )
       setIsAuthenticated(false)
       setUser(null)
       toast.success(
-        res.data.message || t('common.authcontext.deleteaccount.success')
+        res.data.message || t('common.authcontext.deleteaccount.success'),
       )
     } catch (err) {
       toast.error(t('common.authcontext.deleteaccount.error'))
@@ -420,7 +420,7 @@ export const AuthProvider = ({ children }) => {
         {},
         {
           withCredentials: true,
-        }
+        },
       )
 
       const data = res.data
@@ -432,7 +432,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || t('common.authcontext.2fa.status.error')
+        err.response?.data?.error || t('common.authcontext.2fa.status.error'),
       )
       throw err
     }
@@ -445,7 +445,7 @@ export const AuthProvider = ({ children }) => {
         {},
         {
           withCredentials: true,
-        }
+        },
       )
 
       const data = res.data
@@ -458,7 +458,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || t('common.authcontext.2fa.enable.error')
+        err.response?.data?.error || t('common.authcontext.2fa.enable.error'),
       )
       throw err
     }
@@ -480,7 +480,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error(
         err.response?.data?.error ||
-          t('common.authcontext.2fa.enableemail.error')
+          t('common.authcontext.2fa.enableemail.error'),
       )
       throw err
     }
@@ -493,7 +493,7 @@ export const AuthProvider = ({ children }) => {
         { token },
         {
           withCredentials: true,
-        }
+        },
       )
 
       const data = res.data
@@ -507,7 +507,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || t('common.authcontext.2fa.verify.error')
+        err.response?.data?.error || t('common.authcontext.2fa.verify.error'),
       )
       throw err
     }
@@ -520,7 +520,7 @@ export const AuthProvider = ({ children }) => {
         { code },
         {
           withCredentials: true,
-        }
+        },
       )
       const data = res.data
       if (data.error) {
@@ -534,7 +534,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       toast.error(
         err.response?.data?.error ||
-          t('common.authcontext.2fa.verifyemail.error')
+          t('common.authcontext.2fa.verifyemail.error'),
       )
       throw err
     }
@@ -547,7 +547,7 @@ export const AuthProvider = ({ children }) => {
         { token },
         {
           withCredentials: true,
-        }
+        },
       )
 
       const data = res.data
@@ -561,7 +561,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || t('common.authcontext.2fa.disable.error')
+        err.response?.data?.error || t('common.authcontext.2fa.disable.error'),
       )
       throw err
     }
@@ -574,7 +574,7 @@ export const AuthProvider = ({ children }) => {
         { password },
         {
           withCredentials: true,
-        }
+        },
       )
 
       const data = res.data
@@ -588,7 +588,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       toast.error(
-        err.response?.data?.error || t('common.authcontext.2fa.disable.error')
+        err.response?.data?.error || t('common.authcontext.2fa.disable.error'),
       )
       throw err
     }
@@ -602,7 +602,7 @@ export const AuthProvider = ({ children }) => {
           { email, stayLoggedIn, token },
           {
             withCredentials: true,
-          }
+          },
         )
 
         const data = res.data
@@ -616,72 +616,45 @@ export const AuthProvider = ({ children }) => {
         return data
       } catch (err) {
         toast.error(
-          err.response?.data?.error || t('common.authcontext.2fa.login.error')
+          err.response?.data?.error || t('common.authcontext.2fa.login.error'),
         )
         throw err
       }
     },
-    []
+    [],
   )
-
-  const useBackupCode = useCallback(async (email, backupCode, onSuccess) => {
-    try {
-      const res = await axios.post(
-        `${API_AUTH}/2fa/backup-code`,
-        { email, backupCode },
-        {
-          withCredentials: true,
-        }
-      )
-
-      const data = res.data
-      if (data.error) {
-        toast.error(data.error || t('common.error'))
-        throw data.error
-      }
-      setUser(data.user)
-      setIsAuthenticated(true)
-      onSuccess()
-      return data
-    } catch (err) {
-      toast.error(
-        err.response?.data?.error || t('common.authcontext.2fa.backup.error')
-      )
-      throw err
-    }
-  }, [])
 
   // WebAuthn functions
   const generateRegistrationKey = async () => {
     try {
       const response = await axios.post(
-        `${API_AUTH}/2fa/webauthn/generate-registration`
+        `${API_AUTH}/2fa/webauthn/generate-registration`,
       )
       return response.data
     } catch (error) {
       console.error('Registration options error:', error)
       throw new Error(
         error.response?.data?.message ||
-          t('common.authcontext.2fa.generatekey.error')
+          t('common.authcontext.2fa.generatekey.error'),
       )
     }
   }
 
   const verifyWebAuthnRegistration = async (
     attestationResponse,
-    deviceName
+    deviceName,
   ) => {
     try {
       const response = await axios.post(
         `${API_AUTH}/2fa/webauthn/verify-registration`,
-        { attestationResponse, deviceName }
+        { attestationResponse, deviceName },
       )
       return response.data
     } catch (error) {
       console.error('Registration verification error:', error)
       throw new Error(
         error.response?.data?.message ||
-          t('common.authcontext.2fa.verifyregisterkey.error')
+          t('common.authcontext.2fa.verifyregisterkey.error'),
       )
     }
   }
@@ -720,7 +693,7 @@ export const AuthProvider = ({ children }) => {
         type: credential.type,
         response: {
           attestationObject: bufferToBase64URL(
-            credential.response.attestationObject
+            credential.response.attestationObject,
           ),
           clientDataJSON: bufferToBase64URL(credential.response.clientDataJSON),
         },
@@ -733,6 +706,10 @@ export const AuthProvider = ({ children }) => {
       return true
     } catch (error) {
       console.error('WebAuthn registration failed:', error)
+      toast.error(
+        error.response?.data?.message ||
+          t('common.authcontext.2fa.verifyregisterkey.error'),
+      )
       throw error
     }
   }
@@ -741,14 +718,14 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(
         `${API_AUTH}/2fa/webauthn/generate-authentication`,
-        { email }
+        { email },
       )
       return response.data
     } catch (error) {
       console.error('Authentication options error:', error)
       throw new Error(
         error.response?.data?.message ||
-          t('common.authcontext.2fa.generatekey.error')
+          t('common.authcontext.2fa.generatekey.error'),
       )
     }
   }
@@ -785,7 +762,7 @@ export const AuthProvider = ({ children }) => {
         type: credential.type,
         response: {
           authenticatorData: bufferToBase64URL(
-            credential.response.authenticatorData
+            credential.response.authenticatorData,
           ),
           clientDataJSON: bufferToBase64URL(credential.response.clientDataJSON),
           signature: bufferToBase64URL(credential.response.signature),
@@ -808,13 +785,17 @@ export const AuthProvider = ({ children }) => {
           setTimeout(() => {
             navigate('/dashboard')
           }, 2000)
-        }
+        },
       )
 
       console.log(login)
       return login
     } catch (error) {
       console.error('WebAuthn authentication failed:', error)
+      toast.error(
+        error.response?.data?.message ||
+          t('common.authcontext.2fa.login.error'),
+      )
       throw error
     }
   }
@@ -841,6 +822,60 @@ export const AuthProvider = ({ children }) => {
     const base64 = btoa(binary)
     return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
   }
+
+  // --- Delete a webauthn credential ---
+  const removeWebAuthnCredential = useCallback(async (credentialId) => {
+    try {
+      const { data } = await axios.delete(
+        `${API_AUTH}/2fa/webauthn/remove/${credentialId}`,
+        {},
+      )
+      if (data.error) {
+        toast.error(data.error || t('common.error'))
+        throw data.error
+      } else {
+        toast.success(
+          data.message || t('common.authcontext.2fa.removecredential.success'),
+        )
+        return data
+      }
+    } catch (error) {
+      console.error('Remove WebAuthn credential error:', error)
+      toast.error(
+        error.response?.data?.message ||
+          t('common.authcontext.2fa.removecredential.error'),
+      )
+      throw error
+    }
+  }, [])
+
+  // --- Use backup code ---
+  const useBackupCode = useCallback(async (email, backupCode, onSuccess) => {
+    try {
+      const res = await axios.post(
+        `${API_AUTH}/2fa/backup-code`,
+        { email, backupCode },
+        {
+          withCredentials: true,
+        },
+      )
+
+      const data = res.data
+      if (data.error) {
+        toast.error(data.error || t('common.error'))
+        throw data.error
+      }
+      setUser(data.user)
+      setIsAuthenticated(true)
+      onSuccess()
+      return data
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || t('common.authcontext.2fa.backup.error'),
+      )
+      throw err
+    }
+  }, [])
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -874,12 +909,12 @@ export const AuthProvider = ({ children }) => {
         registerWebAuthnCredential,
         verifyTwoFactor,
         verifyEmail2FA,
-        verifyWebAuthnRegistration,
         disableTwoFactor,
         disableEmail2FA,
         useBackupCode,
         verifyLoginTwoFactor,
         authenticateWithWebAuthn,
+        removeWebAuthnCredential,
       }}
     >
       {isCheckingAuth && <GlobalLoader />}

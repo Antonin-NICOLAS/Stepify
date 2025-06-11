@@ -53,7 +53,7 @@ const DeleteExpiredNotificationsInternal = async () => {
   } catch (error) {
     console.error(
       '[CRON] Erreur lors de la suppression des notifications expirées:',
-      error
+      error,
     )
   }
 }
@@ -102,7 +102,7 @@ const RewardUpdatesInternal = async () => {
           } catch (error) {
             console.error(`Error updating rewards for user ${user._id}:`, error)
           }
-        })
+        }),
       )
     }
 
@@ -112,7 +112,7 @@ const RewardUpdatesInternal = async () => {
   } catch (error) {
     console.error(
       '[CRON] Erreur mise à jour des récompenses quotidiennes:',
-      error
+      error,
     )
   }
 }
@@ -191,7 +191,7 @@ const DeleteExpiredSessionsInternal = async () => {
 
       // Filtrer pour ne garder que les sessions non expirées
       user.activeSessions = user.activeSessions.filter(
-        (session) => session.expiresAt > currentDate
+        (session) => session.expiresAt > currentDate,
       )
 
       // Si des sessions ont été supprimées
@@ -203,12 +203,12 @@ const DeleteExpiredSessionsInternal = async () => {
     }
 
     console.log(
-      `[CRON] ${totalSessionsDeleted} sessions expirées supprimées pour ${users.length} utilisateurs`
+      `[CRON] ${totalSessionsDeleted} sessions expirées supprimées pour ${users.length} utilisateurs`,
     )
   } catch (error) {
     console.error(
       '[CRON] Erreur lors de la suppression des sessions expirées:',
-      error
+      error,
     )
   }
 }

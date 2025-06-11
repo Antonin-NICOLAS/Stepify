@@ -141,7 +141,7 @@ function EmailVerification() {
           setResendDisabled(false)
           setCountdown(0)
           setOtp(['', '', '', '', '', ''])
-        }
+        },
       )
     } catch (error) {
       console.error('Error during resend verification code:', error)
@@ -175,7 +175,7 @@ function EmailVerification() {
                     <h4>{t('auth.emailverification.success.visual.step1')}</h4>
                     <p>
                       {t(
-                        'auth.emailverification.success.visual.step1description'
+                        'auth.emailverification.success.visual.step1description',
                       )}
                     </p>
                   </div>
@@ -188,7 +188,7 @@ function EmailVerification() {
                     <h4>{t('auth.emailverification.success.visual.step2')}</h4>
                     <p>
                       {t(
-                        'auth.emailverification.success.visual.step2description'
+                        'auth.emailverification.success.visual.step2description',
                       )}
                     </p>
                   </div>
@@ -248,7 +248,7 @@ function EmailVerification() {
                   <h4>{t('auth.emailverification.process.visual.step1')}</h4>
                   <p>
                     {t(
-                      'auth.emailverification.process.visual.step1description'
+                      'auth.emailverification.process.visual.step1description',
                     )}
                   </p>
                 </div>
@@ -261,7 +261,7 @@ function EmailVerification() {
                   <h4>{t('auth.emailsent.visual.step2')}</h4>
                   <p>
                     {t(
-                      'auth.emailverification.process.visual.step2description'
+                      'auth.emailverification.process.visual.step2description',
                     )}
                   </p>
                 </div>

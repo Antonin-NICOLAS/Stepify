@@ -4,7 +4,7 @@ export const useStepsFilters = (
   stepEntries,
   viewMode,
   selectedDate,
-  dateRange
+  dateRange,
 ) => {
   const [filters, setFilters] = useState({
     mode: 'all',
@@ -58,7 +58,7 @@ export const useStepsFilters = (
     filtered = filtered.filter(
       (entry) =>
         entry.totalSteps >= filters.minSteps &&
-        entry.totalSteps <= filters.maxSteps
+        entry.totalSteps <= filters.maxSteps,
     )
 
     // Sort by date (newest first)

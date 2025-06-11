@@ -15,7 +15,7 @@ const getFriends = async (req, res) => {
   try {
     const user = await UserModel.findById(userId).populate(
       'friends.userId',
-      'username avatarUrl firstName lastName status totalSteps totalDistance totalXP'
+      'username avatarUrl firstName lastName status totalSteps totalDistance totalXP',
     )
     if (!user) {
       return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
@@ -55,14 +55,14 @@ const getFriendRequests = async (req, res) => {
       res,
       null,
       {},
-      { requests: user.friendRequests, sent: sentRequests }
+      { requests: user.friendRequests, sent: sentRequests },
     )
   } catch (error) {
     console.error('Error fetching pending friend requests:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.notifications.pending_requests_error'
+      'errors.notifications.pending_requests_error',
     )
   }
 }
@@ -78,7 +78,7 @@ const searchUsers = async (req, res) => {
     return sendLocalizedError(
       res,
       400,
-      'errors.notifications.search_query_required'
+      'errors.notifications.search_query_required',
     )
   }
 
@@ -98,10 +98,10 @@ const searchUsers = async (req, res) => {
     const currentUser = await UserModel.findById(userId)
     const results = users.map((user) => {
       const isFriend = currentUser.friends.some(
-        (f) => f.userId.toString() === user._id.toString()
+        (f) => f.userId.toString() === user._id.toString(),
       )
       const hasPendingRequest = currentUser.friendRequests.some(
-        (r) => r.userId.toString() === user._id.toString()
+        (r) => r.userId.toString() === user._id.toString(),
       )
 
       return {
@@ -137,13 +137,13 @@ const removeFriend = async (req, res) => {
 
     user.friends = user.friends.filter((f) => f.userId.toString() !== friendId)
     friend.friends = friend.friends.filter(
-      (f) => f.userId.toString() !== userId
+      (f) => f.userId.toString() !== userId,
     )
     user.friendRequests = user.friendRequests.filter(
-      (r) => r.userId.toString() !== friendId
+      (r) => r.userId.toString() !== friendId,
     )
     friend.friendRequests = friend.friendRequests.filter(
-      (r) => r.userId.toString() !== userId
+      (r) => r.userId.toString() !== userId,
     )
 
     await user.save()
@@ -155,7 +155,7 @@ const removeFriend = async (req, res) => {
     return sendLocalizedError(
       res,
       500,
-      'errors.notifications.friend_remove_error'
+      'errors.notifications.friend_remove_error',
     )
   }
 }

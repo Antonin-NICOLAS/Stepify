@@ -13,7 +13,7 @@ const getGlobalRanking = async (req, res) => {
     const users = await User.find({})
       .sort({ totalSteps: -1 })
       .select(
-        'firstName lastName username avatarUrl totalSteps totalDistance totalCalories totalXP level dailyGoal'
+        'firstName lastName username avatarUrl totalSteps totalDistance totalCalories totalXP level dailyGoal',
       )
 
     // Ajoute le rang à chaque utilisateur
@@ -54,7 +54,7 @@ const getFriendsRanking = async (req, res) => {
     // Récupère l'utilisateur avec ses amis
     const user = await User.findById(userId).populate(
       'friends.userId',
-      'firstName lastName username avatarUrl totalSteps totalDistance totalCalories totalXP level dailyGoal'
+      'firstName lastName username avatarUrl totalSteps totalDistance totalCalories totalXP level dailyGoal',
     )
 
     if (!user) {
@@ -109,7 +109,7 @@ const getChallengesRanking = async (req, res) => {
       $or: [{ creator: userId }, { 'participants.user': userId }],
     }).populate(
       'participants.user',
-      'firstName lastName fullName username avatarUrl dailyGoal'
+      'firstName lastName fullName username avatarUrl dailyGoal',
     )
 
     if (!challenges || challenges.length === 0) {
@@ -142,7 +142,7 @@ const getChallengesRanking = async (req, res) => {
           rank: index + 1,
           joinedAt: participant.joinedAt,
           completed: participant.completed,
-        })
+        }),
       )
 
       return {
@@ -174,14 +174,14 @@ const getRewardsRanking = async (req, res) => {
       'earnedBy.0': { $exists: true },
     }).populate(
       'earnedBy.user',
-      'firstName lastName fullName username avatarUrl dailyGoal'
+      'firstName lastName fullName username avatarUrl dailyGoal',
     )
 
     // Récupère tous les utilisateurs qui ont des récompenses (débloquées ou en cours)
     const usersWithRewards = await User.find({
       'rewardsUnlocked.rewardId': { $exists: true },
     }).select(
-      '_id firstName lastName fullName username avatarUrl rewardsUnlocked'
+      '_id firstName lastName fullName username avatarUrl rewardsUnlocked',
     )
 
     if (!rewards || rewards.length === 0) {
@@ -195,12 +195,12 @@ const getRewardsRanking = async (req, res) => {
         .filter((u) =>
           u.rewardsUnlocked.some(
             (r) =>
-              r.rewardId.toString() === reward._id.toString() && !r.unlockedAt
-          )
+              r.rewardId.toString() === reward._id.toString() && !r.unlockedAt,
+          ),
         )
         .map((u) => {
           const rewardProgress = u.rewardsUnlocked.find(
-            (r) => r.rewardId.toString() === reward._id.toString()
+            (r) => r.rewardId.toString() === reward._id.toString(),
           )
           return {
             user: {
@@ -316,7 +316,7 @@ const saveRankInternal = async () => {
       }
 
       const existingEntryIndex = user.rankingHistory.findIndex(
-        (entry) => entry.globalRank === currentRank && !entry.challengeRank
+        (entry) => entry.globalRank === currentRank && !entry.challengeRank,
       )
 
       if (existingEntryIndex >= 0) {
@@ -339,7 +339,7 @@ const saveRankInternal = async () => {
     for (const challenge of activeChallenges) {
       // Trie les participants par progression
       const sortedParticipants = [...challenge.participants].sort(
-        (a, b) => b.progress - a.progress
+        (a, b) => b.progress - a.progress,
       )
 
       // Gestion des égalités pour chaque défi
@@ -369,7 +369,7 @@ const saveRankInternal = async () => {
         const existingEntryIndex = user.rankingHistory.findIndex(
           (entry) =>
             entry.challengeRank?.equals(challenge._id) &&
-            entry.globalRank === currentRank
+            entry.globalRank === currentRank,
         )
 
         if (existingEntryIndex >= 0) {

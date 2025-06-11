@@ -63,7 +63,7 @@ const calculateUserProgress = async (userId, challenge) => {
     if (challenge.time) {
       elapsedDays = Math.min(
         Math.ceil((now - challengeStart) / (1000 * 60 * 60 * 24)),
-        challenge.time
+        challenge.time,
       )
     }
 
@@ -122,7 +122,7 @@ const calculateUserProgress = async (userId, challenge) => {
         userValue = user.totalXP || 0
         // Pour les challenges XP, on soustrait la valeur initiale
         const participant = challenge.participants.find(
-          (p) => p.user.toString() === userId
+          (p) => p.user.toString() === userId,
         )
         const initialXP = participant?.initialXP || userValue
         userValue -= initialXP
@@ -198,7 +198,7 @@ const calculateUserProgress = async (userId, challenge) => {
         challenge,
         dailyGoal,
         startDate,
-        endDate
+        endDate,
       )
       progress = Math.min(100, (achievedDays / challenge.time) * 100)
       completed = achievedDays >= challenge.time
@@ -239,7 +239,7 @@ const updateSingleChallengeProgress = async (userId, challengeId) => {
     if (!challenge) return
 
     const participant = challenge.participants.find(
-      (p) => p.user._id.toString() === userId
+      (p) => p.user._id.toString() === userId,
     )
     if (!participant) return
 
@@ -279,7 +279,7 @@ const calculateAchievedDays = async (
   challenge,
   dailyGoal,
   startDate,
-  endDate
+  endDate,
 ) => {
   // Pour les challenges de type 'xp-time', on utilise les données utilisateur
   if (challenge.activityType === 'xp-time') {

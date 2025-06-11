@@ -23,7 +23,7 @@ const addCustomGoal = async (req, res) => {
   // Validate activity type specific requirements
   if (
     ['steps-time', 'distance-time', 'calories-time', 'xp-time'].includes(
-      type
+      type,
     ) &&
     !time
   ) {
@@ -42,7 +42,7 @@ const addCustomGoal = async (req, res) => {
       {},
       {
         goal: user.customGoals[user.customGoals.length - 1],
-      }
+      },
     )
   } catch (error) {
     console.error('Error adding custom goal:', error)
@@ -68,7 +68,7 @@ const updateCustomGoal = async (req, res) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.goals.future_deadline_required'
+        'errors.goals.future_deadline_required',
       )
     }
 
@@ -119,7 +119,7 @@ const addCustomGoalFromReward = async (req, res) => {
     // Vérifier si l'utilisateur n'a pas déjà cette récompense
     const user = await UserModel.findById(userId)
     const hasReward = user.rewardsUnlocked.some((r) =>
-      r.rewardId.equals(rewardId)
+      r.rewardId.equals(rewardId),
     )
     if (hasReward) {
       return sendLocalizedError(res, 400, 'errors.rewards.already_unlocked')
@@ -167,7 +167,7 @@ const addCustomGoalFromReward = async (req, res) => {
       res,
       'success.goals.created_from_reward',
       {},
-      { customGoal: newCustomGoal }
+      { customGoal: newCustomGoal },
     )
   } catch (error) {
     console.error('Error adding custom goal from reward:', error)

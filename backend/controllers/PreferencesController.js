@@ -20,7 +20,7 @@ const updateThemePreference = async (req, res) => {
     const user = await UserModel.findByIdAndUpdate(
       userId,
       { themePreference },
-      { new: true }
+      { new: true },
     ).select('-password -verificationToken')
 
     return sendLocalizedSuccess(
@@ -29,7 +29,7 @@ const updateThemePreference = async (req, res) => {
       {},
       {
         themePreference: user.themePreference,
-      }
+      },
     )
   } catch (error) {
     console.error('Error updating theme preference:', error)
@@ -50,14 +50,14 @@ const updateLanguagePreference = async (req, res) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.preferences.unsupported_language'
+        'errors.preferences.unsupported_language',
       )
     }
 
     const user = await UserModel.findByIdAndUpdate(
       userId,
       { languagePreference },
-      { new: true }
+      { new: true },
     ).select('-password -verificationToken')
 
     return sendLocalizedSuccess(
@@ -66,14 +66,14 @@ const updateLanguagePreference = async (req, res) => {
       {},
       {
         languagePreference: user.languagePreference,
-      }
+      },
     )
   } catch (error) {
     console.error('Error updating language preference:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.preferences.language_update_error'
+      'errors.preferences.language_update_error',
     )
   }
 }
@@ -105,14 +105,14 @@ const updatePrivacySettings = async (req, res) => {
       {},
       {
         privacySettings: user.privacySettings,
-      }
+      },
     )
   } catch (error) {
     console.error('Error updating privacy settings:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.preferences.privacy_update_error'
+      'errors.preferences.privacy_update_error',
     )
   }
 }
@@ -144,14 +144,14 @@ const updateNotificationPreferences = async (req, res) => {
       {},
       {
         notificationPreferences: user.notificationPreferences,
-      }
+      },
     )
   } catch (error) {
     console.error('Error updating notification preferences:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.preferences.notifications_update_error'
+      'errors.preferences.notifications_update_error',
     )
   }
 }

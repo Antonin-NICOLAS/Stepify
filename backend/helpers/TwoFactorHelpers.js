@@ -63,7 +63,7 @@ const generateBackupCodes = (count = 8) => {
 // Vérifier un code de secours
 const verifyBackupCode = (user, code) => {
   const backupCode = user.twoFactorAuth.backupCodes.find(
-    (bc) => bc.code === code && !bc.used
+    (bc) => bc.code === code && !bc.used,
   )
 
   if (backupCode) {

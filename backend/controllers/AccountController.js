@@ -53,7 +53,7 @@ const updateAvatar = async (req, res) => {
           return sendLocalizedError(
             res,
             500,
-            'errors.profile.avatar_update_error'
+            'errors.profile.avatar_update_error',
           )
 
         user.avatarUrl = result.secure_url
@@ -63,9 +63,9 @@ const updateAvatar = async (req, res) => {
           res,
           'success.profile.updated',
           {},
-          { avatarUrl: result.secure_url }
+          { avatarUrl: result.secure_url },
         )
-      }
+      },
     )
 
     // Envoie le fichier à cloudinary
@@ -174,7 +174,7 @@ const updateEmail = async (req, res) => {
       {
         email: user.email,
         isVerified: user.isVerified,
-      }
+      },
     )
   } catch (error) {
     console.error('Error in updateEmail:', error)
@@ -234,13 +234,13 @@ const updateStatus = async (req, res) => {
     const user = await UserModel.findByIdAndUpdate(
       userId,
       { status: statusTranslations },
-      { new: true }
+      { new: true },
     )
     return sendLocalizedSuccess(
       res,
       'success.profile.status_updated',
       {},
-      { status: user.status }
+      { status: user.status },
     )
   } catch (error) {
     console.error('Error in updateStatus:', error)
@@ -262,20 +262,20 @@ const updateDailyGoal = async (req, res) => {
     const user = await UserModel.findByIdAndUpdate(
       userId,
       { dailyGoal },
-      { new: true }
+      { new: true },
     )
     return sendLocalizedSuccess(
       res,
       'success.profile.daily_goal_updated',
       {},
-      { dailyGoal: user.dailyGoal }
+      { dailyGoal: user.dailyGoal },
     )
   } catch (error) {
     console.error('Error in updateDailyGoal:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.profile.daily_goal_update_error'
+      'errors.profile.daily_goal_update_error',
     )
   }
 }
@@ -335,7 +335,7 @@ const getActiveSessions = async (req, res) => {
     }
 
     const currentSessions = user.activeSessions.filter(
-      (session) => new Date(session.expiresAt) > new Date()
+      (session) => new Date(session.expiresAt) > new Date(),
     )
     return sendLocalizedSuccess(res, null, {}, { sessions: currentSessions })
   } catch (error) {
@@ -356,7 +356,7 @@ const revokeSession = async (req, res) => {
     }
 
     user.activeSessions = user.activeSessions.filter(
-      (session) => session._id.toString() !== sessionId
+      (session) => session._id.toString() !== sessionId,
     )
     await user.save()
 
@@ -364,7 +364,7 @@ const revokeSession = async (req, res) => {
       res,
       'success.profile.session_revoked',
       {},
-      { sessions: user.activeSessions }
+      { sessions: user.activeSessions },
     )
   } catch (error) {
     console.error('Error in revokeSession:', error)
@@ -386,7 +386,7 @@ const revokeAllSessions = async (req, res) => {
     const currentSession = user.activeSessions.find(
       (session) =>
         session.fingerprint === req.fingerprint &&
-        new Date(session.expiresAt) > new Date()
+        new Date(session.expiresAt) > new Date(),
     )
 
     user.activeSessions = currentSession ? [currentSession] : []
@@ -398,7 +398,7 @@ const revokeAllSessions = async (req, res) => {
     return sendLocalizedError(
       res,
       500,
-      'errors.profile.revoke_all_sessions_error'
+      'errors.profile.revoke_all_sessions_error',
     )
   }
 }

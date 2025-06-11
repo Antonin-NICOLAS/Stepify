@@ -13,7 +13,7 @@ const sendLocalizedResponse = (
   success,
   messagePath,
   params = {},
-  additionalData = {}
+  additionalData = {},
 ) => {
   const response = {
     success,
@@ -43,7 +43,7 @@ const sendLocalizedError = (
   statusCode,
   errorPath,
   params = {},
-  additionalData = {}
+  additionalData = {},
 ) => {
   sendLocalizedResponse(
     res,
@@ -51,7 +51,7 @@ const sendLocalizedError = (
     false,
     errorPath,
     params,
-    additionalData
+    additionalData,
   )
 }
 
@@ -66,7 +66,7 @@ const sendLocalizedSuccess = (
   res,
   successPath,
   params = {},
-  additionalData = {}
+  additionalData = {},
 ) => {
   sendLocalizedResponse(res, 200, true, successPath, params, additionalData)
 }

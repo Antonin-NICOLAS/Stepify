@@ -78,14 +78,14 @@ const generateRegistrationOpt = async (req, res) => {
           ...options,
           challenge,
         },
-      }
+      },
     )
   } catch (error) {
     console.error('Erreur génération options enregistrement:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.webauthn.registration_options_error'
+      'errors.webauthn.registration_options_error',
     )
   }
 }
@@ -116,7 +116,7 @@ const verifyRegistration = async (req, res) => {
       user.twoFactorAuth.challenge,
       attestationResponse.challenge,
       'Vérification du challenge:',
-      user.twoFactorAuth.challenge === attestationResponse.challenge
+      user.twoFactorAuth.challenge === attestationResponse.challenge,
     )
 
     let verification
@@ -171,7 +171,7 @@ const verifyRegistration = async (req, res) => {
         await sendTwoFactorBackupCodesEmail(
           user.email,
           user.firstName,
-          backupCodes
+          backupCodes,
         )
       }
 
@@ -193,7 +193,7 @@ const verifyRegistration = async (req, res) => {
           {},
           {
             backupCodes: user.twoFactorAuth.backupCodes,
-          }
+          },
         )
       }
     } else {
@@ -243,7 +243,7 @@ const generateAuthenticationOpt = async (req, res) => {
     return sendLocalizedError(
       res,
       500,
-      'errors.webauthn.authentication_options_error'
+      'errors.webauthn.authentication_options_error',
     )
   }
 }
@@ -270,7 +270,7 @@ const verifyAuthentication = async ({ responsekey, user, res }) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.webauthn.credential_not_found'
+        'errors.webauthn.credential_not_found',
       )
     }
 
@@ -299,7 +299,7 @@ const verifyAuthentication = async ({ responsekey, user, res }) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.webauthn.authentication_failed'
+        'errors.webauthn.authentication_failed',
       )
     }
 
@@ -307,7 +307,7 @@ const verifyAuthentication = async ({ responsekey, user, res }) => {
       updateCredentialCounter(
         user,
         credentialId,
-        verification.authenticationInfo.newCounter
+        verification.authenticationInfo.newCounter,
       )
       clearChallenge(user)
 
@@ -322,7 +322,7 @@ const verifyAuthentication = async ({ responsekey, user, res }) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.webauthn.authentication_failed'
+        'errors.webauthn.authentication_failed',
       )
     }
   } catch (error) {
@@ -346,14 +346,14 @@ const removeWebAuthnCredential = async (req, res) => {
     }
 
     const credentialIndex = user.twoFactorAuth.webauthnCredentials.findIndex(
-      (cred) => cred.credentialId === credentialId
+      (cred) => cred.id === credentialId,
     )
 
     if (credentialIndex === -1) {
       return sendLocalizedError(
         res,
         404,
-        'errors.webauthn.credential_not_found'
+        'errors.webauthn.credential_not_found',
       )
     }
 
@@ -365,8 +365,8 @@ const removeWebAuthnCredential = async (req, res) => {
         user.twoFactorAuth.preferredMethod = user.twoFactorAuth.appEnabled
           ? 'app'
           : user.twoFactorAuth.emailEnabled
-          ? 'email'
-          : undefined
+            ? 'email'
+            : undefined
       }
 
       if (!user.twoFactorAuth.appEnabled && !user.twoFactorAuth.emailEnabled) {

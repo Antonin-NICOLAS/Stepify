@@ -40,7 +40,7 @@ const sendNewLoginEmail = async (user, ipAddress, deviceInfo, location) => {
 
   const loginDate = new Date().toLocaleDateString(
     user.languagePreference,
-    options
+    options,
   )
 
   console.log('user.languagePreference', user.languagePreference)
@@ -51,7 +51,7 @@ const sendNewLoginEmail = async (user, ipAddress, deviceInfo, location) => {
     subject: t('newlogin.subject', user.languagePreference),
     html: interpolate(
       NewLoginEmailTemplate(user, loginDate, ipAddress, deviceInfo, location),
-      { firstName: user.firstName }
+      { firstName: user.firstName },
     ),
   }
 
@@ -70,7 +70,7 @@ const sendVerificationEmail = async (email, verificationCode) => {
     subject: 'Vérification de votre email - Stepify',
     html: EmailVerificationTokenTemplate.replace(
       '{verificationCode}',
-      verificationCode
+      verificationCode,
     ),
   }
 
@@ -111,7 +111,7 @@ const sendResetPasswordEmail = async (email, resetUrl) => {
   } catch (error) {
     console.error("Erreur lors de l'envoi de l'email :", error)
     throw new Error(
-      "Échec de l'envoi de l'email de réinitialisation de mot de passe"
+      "Échec de l'envoi de l'email de réinitialisation de mot de passe",
     )
   }
 }
@@ -129,7 +129,7 @@ const sendResetPasswordSuccessfulEmail = async (email, prenom) => {
   } catch (error) {
     console.error("Erreur lors de l'envoi de l'email :", error)
     throw new Error(
-      "Échec de l'envoi de l'email du succès de réinitialisation de mot de passe"
+      "Échec de l'envoi de l'email du succès de réinitialisation de mot de passe",
     )
   }
 }
@@ -148,7 +148,7 @@ const sendTwoFactorSetupEmail = async (email, firstName) => {
   } catch (error) {
     console.error("Erreur lors de l'envoi de l'email :", error)
     throw new Error(
-      "Échec de l'envoi de l'email pour la configuration de l'authentification à deux facteurs"
+      "Échec de l'envoi de l'email pour la configuration de l'authentification à deux facteurs",
     )
   }
 }
@@ -167,7 +167,7 @@ const sendTwoFactorBackupCodesEmail = async (email, firstName, backupCodes) => {
   } catch (error) {
     console.error("Erreur lors de l'envoi de l'email :", error)
     throw new Error(
-      "Échec de l'envoi de l'email des codes de secours pour l'authentification à deux facteurs"
+      "Échec de l'envoi de l'email des codes de secours pour l'authentification à deux facteurs",
     )
   }
 }

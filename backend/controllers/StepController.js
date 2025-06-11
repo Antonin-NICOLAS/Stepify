@@ -96,7 +96,7 @@ const createStepEntry = async (req, res) => {
 
     if (existingEntry) {
       const hourExists = existingEntry.hourlyData.some(
-        (data) => data.hour === hour
+        (data) => data.hour === hour,
       )
       if (hourExists) {
         return sendLocalizedError(res, 409, 'errors.steps.existing_entry', {
@@ -123,7 +123,7 @@ const createStepEntry = async (req, res) => {
         res,
         'success.steps.updated',
         {},
-        { entry: existingEntry }
+        { entry: existingEntry },
       )
     } else {
       const newEntry = await StepEntry.create({
@@ -148,7 +148,7 @@ const createStepEntry = async (req, res) => {
         res,
         'success.steps.created',
         {},
-        { entry: newEntry }
+        { entry: newEntry },
       )
     }
   } catch (error) {
@@ -295,7 +295,7 @@ const importHealthData = async (req, res) => {
     }
 
     const filteredEntries = entries.filter(
-      (entry) => new Date(entry.date) >= new Date('2025-05-01T00:00:00Z')
+      (entry) => new Date(entry.date) >= new Date('2025-05-01T00:00:00Z'),
     )
 
     // Sauvegarder en base
@@ -309,7 +309,7 @@ const importHealthData = async (req, res) => {
       res,
       'success.steps.created',
       {},
-      { entries: filteredEntries }
+      { entries: filteredEntries },
     )
   } catch (error) {
     console.error('Error importing health data:', error)

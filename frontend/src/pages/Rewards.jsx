@@ -64,7 +64,7 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
-  Title
+  Title,
 )
 
 const Rewards = () => {
@@ -340,7 +340,7 @@ const Rewards = () => {
     // Get all rewards with their unlock status
     const allUserRewards = rewards.map((reward) => {
       const myReward = myRewards.find(
-        (r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id)
+        (r) => (r.rewardId._id || r.rewardId.id) === (reward._id || reward.id),
       )
 
       return {
@@ -435,7 +435,7 @@ const Rewards = () => {
         })
       case 'rarity':
         return filtered.sort(
-          (a, b) => a.unlockedPercentage - b.unlockedPercentage
+          (a, b) => a.unlockedPercentage - b.unlockedPercentage,
         )
       default:
         return filtered
@@ -790,7 +790,7 @@ const Rewards = () => {
                   <div
                     key={index}
                     className={`reward-preview-card ${getTierColorClass(
-                      reward.tier
+                      reward.tier,
                     )}`}
                   >
                     <div className="reward-preview-icon">
@@ -892,13 +892,13 @@ const Rewards = () => {
     // Chart data for criteria summary
     const criteriaChartData = {
       labels: Object.entries(rewardStats.byType).map(([criteria]) =>
-        getCriteriaLabel(criteria)
+        getCriteriaLabel(criteria),
       ),
       datasets: [
         {
           label: 'Récompenses',
           data: Object.entries(rewardStats.byType).map(
-            ([, stats]) => stats.unlocked
+            ([, stats]) => stats.unlocked,
           ),
           backgroundColor: [
             'rgba(255, 99, 132, 0.6)',
@@ -916,13 +916,13 @@ const Rewards = () => {
     // Chart data for tier summary
     const tierChartData = {
       labels: Object.entries(rewardStats.byTier).map(([tier]) =>
-        getTierLabel(tier)
+        getTierLabel(tier),
       ),
       datasets: [
         {
           label: 'Récompenses',
           data: Object.entries(rewardStats.byTier).map(
-            ([, stats]) => stats.unlocked
+            ([, stats]) => stats.unlocked,
           ),
           backgroundColor: [
             'rgba(255, 99, 132, 0.6)',
@@ -997,7 +997,7 @@ const Rewards = () => {
                           className="progress-bar"
                           style={{
                             width: `${Math.round(
-                              (stats.unlocked / stats.total) * 100
+                              (stats.unlocked / stats.total) * 100,
                             )}%`,
                           }}
                         ></div>
@@ -1028,7 +1028,7 @@ const Rewards = () => {
                           className="progress-bar"
                           style={{
                             width: `${Math.round(
-                              (stats.unlocked / stats.total) * 100
+                              (stats.unlocked / stats.total) * 100,
                             )}%`,
                           }}
                         ></div>
@@ -1084,7 +1084,7 @@ const Rewards = () => {
                   <div className="highlight-meta">
                     <span
                       className={`highlight-tier ${getTierColorClass(
-                        rewardStats.recentlyUnlocked.tier
+                        rewardStats.recentlyUnlocked.tier,
                       )}`}
                     >
                       {getTierLabel(rewardStats.recentlyUnlocked.tier)}
@@ -1142,7 +1142,7 @@ const Rewards = () => {
                   <div className="highlight-meta">
                     <span
                       className={`highlight-tier ${getTierColorClass(
-                        rewardStats.nextToUnlock.tier
+                        rewardStats.nextToUnlock.tier,
                       )}`}
                     >
                       {getTierLabel(rewardStats.nextToUnlock.tier)}
@@ -1186,7 +1186,7 @@ const Rewards = () => {
                       {
                         data: Object.keys(rewardStats.byType)
                           .filter(
-                            (type) => rewardStats.byType[type].unlocked > 0
+                            (type) => rewardStats.byType[type].unlocked > 0,
                           )
                           .map((type) => rewardStats.byType[type].unlocked),
                         backgroundColor: [
@@ -1231,7 +1231,7 @@ const Rewards = () => {
                             const value = context.raw || 0
                             const total = context.dataset.data.reduce(
                               (a, b) => a + b,
-                              0
+                              0,
                             )
                             const percentage = Math.round((value / total) * 100)
                             return `${label}: ${value} (${percentage}%)`
@@ -1253,7 +1253,7 @@ const Rewards = () => {
                         (r) =>
                           r.progress === 100 &&
                           new Date(r.unlockedAt) >
-                            new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+                            new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
                       ).length
                     }
                   </span>
@@ -1265,7 +1265,7 @@ const Rewards = () => {
                   <span className="stats-value">
                     {
                       filteredRewards().filter(
-                        (r) => r.unlocked && r.unlockedPercentage < 10
+                        (r) => r.unlocked && r.unlockedPercentage < 10,
                       ).length
                     }
                   </span>
@@ -1279,8 +1279,8 @@ const Rewards = () => {
                         .reduce((sum, r) => sum + r.progress, 0) /
                         Math.max(
                           1,
-                          filteredRewards().filter((r) => !r.unlocked).length
-                        )
+                          filteredRewards().filter((r) => !r.unlocked).length,
+                        ),
                     )}
                     %
                   </span>
@@ -1484,7 +1484,7 @@ const Rewards = () => {
                       vitrine.some(
                         (r) =>
                           (r.rewardId._id || r.rewardId.id) ===
-                          (reward._id || reward.id)
+                          (reward._id || reward.id),
                       )
                         ? 'active'
                         : ''
@@ -1497,7 +1497,7 @@ const Rewards = () => {
                       vitrine.some(
                         (r) =>
                           (r.rewardId._id || r.rewardId.id) ===
-                          (reward._id || reward.id)
+                          (reward._id || reward.id),
                       )
                         ? 'Retirer de la vitrine'
                         : 'Ajouter à la vitrine'
@@ -1506,7 +1506,7 @@ const Rewards = () => {
                     {vitrine.some(
                       (r) =>
                         (r.rewardId._id || r.rewardId.id) ===
-                        (reward._id || reward.id)
+                        (reward._id || reward.id),
                     ) ? (
                       <Bookmark size={16} />
                     ) : (
@@ -1550,7 +1550,7 @@ const Rewards = () => {
               <div
                 key={reward._id || reward.id}
                 className={`featured-reward ${getTierColorClass(
-                  reward.rewardId.tier
+                  reward.rewardId.tier,
                 )}`}
                 onClick={() => handleRewardClick(reward.rewardId)}
               >
@@ -1657,7 +1657,7 @@ const Rewards = () => {
                   {!vitrine.some(
                     (r) =>
                       (r.rewardId._id || r.rewardId.id) ===
-                      (reward._id || reward.id)
+                      (reward._id || reward.id),
                   ) && (
                     <button
                       className="add-to-showcase"
@@ -1716,12 +1716,12 @@ const Rewards = () => {
     // Chart data for criteria distribution
     const criteriaDistributionData = {
       labels: Object.entries(rewardStats.byType).map(([criteria]) =>
-        getCriteriaLabel(criteria)
+        getCriteriaLabel(criteria),
       ),
       datasets: [
         {
           data: Object.entries(rewardStats.byType).map(
-            ([, stats]) => stats.total
+            ([, stats]) => stats.total,
           ),
           backgroundColor: [
             'rgba(255, 99, 132, 0.6)',
@@ -1738,12 +1738,12 @@ const Rewards = () => {
     // Chart data for tier distribution
     const tierDistributionData = {
       labels: Object.entries(rewardStats.byTier).map(([tier]) =>
-        getTierLabel(tier)
+        getTierLabel(tier),
       ),
       datasets: [
         {
           data: Object.entries(rewardStats.byTier).map(
-            ([, stats]) => stats.total
+            ([, stats]) => stats.total,
           ),
           backgroundColor: [
             'rgba(255, 99, 132, 0.6)',
@@ -1863,7 +1863,7 @@ const Rewards = () => {
                         .map(
                           (tier) =>
                             rewardStats.byTier[tier].total -
-                            rewardStats.byTier[tier].unlocked
+                            rewardStats.byTier[tier].unlocked,
                         ),
                       backgroundColor: 'rgba(190, 211, 195, 0.7)',
                       borderColor: 'rgba(190, 211, 195, 1)',
@@ -1980,7 +1980,7 @@ const Rewards = () => {
                 {filteredRewards()
                   .filter((r) => r.unlocked)
                   .sort(
-                    (a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt)
+                    (a, b) => new Date(b.unlockedAt) - new Date(a.unlockedAt),
                   )
                   .slice(0, 10)
                   .map((reward) => (
@@ -2012,7 +2012,7 @@ const Rewards = () => {
                       <td>
                         <span
                           className={`table-tier ${getTierColorClass(
-                            reward.tier
+                            reward.tier,
                           )}`}
                         >
                           {getTierLabel(reward.tier)}
@@ -2062,7 +2062,7 @@ const Rewards = () => {
                     {(() => {
                       // Find the category with the highest unlock percentage
                       const categories = Object.entries(
-                        rewardStats.byType
+                        rewardStats.byType,
                       ).filter(([_, stats]) => stats.total > 0)
                       if (categories.length === 0) return 'Pas quotidiens'
 
@@ -2073,7 +2073,7 @@ const Rewards = () => {
                           const currPercentage =
                             curr[1].unlocked / curr[1].total
                           return prevPercentage > currPercentage ? prev : curr
-                        }
+                        },
                       )
 
                       return getCriteriaLabel(highestCategory[0])
@@ -2186,7 +2186,7 @@ const Rewards = () => {
             <div className="reward-modal-content">
               <div
                 className={`reward-modal-icon ${getTierColorClass(
-                  selectedReward.tier
+                  selectedReward.tier,
                 )}`}
               >
                 <img
@@ -2226,7 +2226,7 @@ const Rewards = () => {
                     <span className="meta-label">Niveau</span>
                     <span
                       className={`meta-value tier-badge ${getTierColorClass(
-                        selectedReward.tier
+                        selectedReward.tier,
                       )}`}
                     >
                       {getTierLabel(selectedReward.tier)}
@@ -2282,7 +2282,7 @@ const Rewards = () => {
                       {selectedReward.progress > 0
                         ? `Continuez vos efforts ! Vous êtes sur la bonne voie pour débloquer cette récompense.`
                         : `Commencez à accumuler des ${getCriteriaLabel(
-                            selectedReward.criteria
+                            selectedReward.criteria,
                           ).toLowerCase()} pour progresser vers cette récompense.`}
                     </p>
                   </div>
@@ -2296,7 +2296,7 @@ const Rewards = () => {
                           vitrine.some(
                             (r) =>
                               (r.rewardId._id || r.rewardId.id) ===
-                              (selectedReward._id || selectedReward.id)
+                              (selectedReward._id || selectedReward.id),
                           )
                             ? 'active'
                             : ''
@@ -2307,14 +2307,14 @@ const Rewards = () => {
                           !vitrine.some(
                             (r) =>
                               (r.rewardId._id || r.rewardId.id) ===
-                              (selectedReward._id || selectedReward.id)
+                              (selectedReward._id || selectedReward.id),
                           )
                         }
                       >
                         {vitrine.some(
                           (r) =>
                             (r.rewardId._id || r.rewardId.id) ===
-                            (selectedReward._id || selectedReward.id)
+                            (selectedReward._id || selectedReward.id),
                         ) ? (
                           <>
                             <Bookmark size={16} />
@@ -2348,7 +2348,7 @@ const Rewards = () => {
                 <h4>Qui d'autre a débloqué cette récompense ?</h4>
                 {(() => {
                   const otherOwners = selectedReward.earnedBy.filter(
-                    (owner) => owner.user._id !== user?._id
+                    (owner) => owner.user._id !== user?._id,
                   )
                   const displayedOwners = showAllUsers
                     ? otherOwners

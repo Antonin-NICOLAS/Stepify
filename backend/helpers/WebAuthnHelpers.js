@@ -27,7 +27,7 @@ const clearChallenge = (user) => {
 
 const findCredentialById = (user, credentialId) => {
   return user.twoFactorAuth.webauthnCredentials.find(
-    (cred) => cred.credentialId === credentialId
+    (cred) => cred.credentialId === credentialId,
   )
 }
 

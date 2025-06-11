@@ -27,7 +27,7 @@ router.use(
     credentials: true,
     origin: process.env.FRONTEND_SERVER,
   }),
-  localization
+  localization,
 )
 
 router.get('/challenges', getPublicChallenges)

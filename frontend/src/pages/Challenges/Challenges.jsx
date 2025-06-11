@@ -94,7 +94,7 @@ const Challenges = () => {
   } = useChallenge(user?._id)
 
   const { challengeNotifications, respondToChallengeInvite } = useNotifications(
-    user?._id
+    user?._id,
   )
 
   const {
@@ -195,14 +195,14 @@ const Challenges = () => {
 
   const [selectedActivity, setSelectedActivity] = useState(
     ActivityOptions.find(
-      (opt) => opt.value === (newChallenge?.activityType || 'walk')
-    )
+      (opt) => opt.value === (newChallenge?.activityType || 'walk'),
+    ),
   )
 
   const [selectedDifficulty, setSelectedDifficulty] = useState(
     DifficultyOptions.find(
-      (opt) => opt.value === (newChallenge?.difficulty || 'easy')
-    )
+      (opt) => opt.value === (newChallenge?.difficulty || 'easy'),
+    ),
   )
 
   // Custom select styles
@@ -436,7 +436,7 @@ const Challenges = () => {
   const handleDeleteChallenge = async (challengeId) => {
     if (
       window.confirm(
-        'Êtes-vous sûr de vouloir supprimer ce défi ? Tous les participants seront également supprimés.'
+        'Êtes-vous sûr de vouloir supprimer ce défi ? Tous les participants seront également supprimés.',
       )
     ) {
       setIsLoading(true)
@@ -595,7 +595,7 @@ const Challenges = () => {
                           className="progress-bar"
                           style={{
                             width: `${computeGlobalProgress(
-                              challenge.participants
+                              challenge.participants,
                             )}%`,
                           }}
                         ></div>
@@ -608,7 +608,7 @@ const Challenges = () => {
                         <span>
                           {getDaysRemaining(challenge.endDate) > 0
                             ? `${getDaysRemaining(
-                                challenge.endDate
+                                challenge.endDate,
                               )} jours restants`
                             : 'Dernier jour !'}
                         </span>
@@ -771,7 +771,7 @@ const Challenges = () => {
 
                     <div className="challenge-actions">
                       {challenge.participants.includes(
-                        (p) => p.user._id !== user?._id
+                        (p) => p.user._id !== user?._id,
                       ) && (
                         <button
                           className="action-button primary"
@@ -1159,7 +1159,7 @@ const Challenges = () => {
                                 type="checkbox"
                                 id={`friend-${friend.userId._id}`}
                                 checked={newChallenge.participants.includes(
-                                  friend.userId._id
+                                  friend.userId._id,
                                 )}
                                 onChange={(e) => {
                                   if (e.target.checked) {
@@ -1175,7 +1175,7 @@ const Challenges = () => {
                                       ...newChallenge,
                                       participants:
                                         newChallenge.participants.filter(
-                                          (id) => id !== friend.userId._id
+                                          (id) => id !== friend.userId._id,
                                         ),
                                     })
                                   }
@@ -1646,7 +1646,7 @@ const Challenges = () => {
                                 type="checkbox"
                                 id={`friend-${friend.userId._id}`}
                                 checked={newChallenge.participants.includes(
-                                  friend.userId._id
+                                  friend.userId._id,
                                 )}
                                 onChange={(e) => {
                                   if (e.target.checked) {
@@ -1662,7 +1662,7 @@ const Challenges = () => {
                                       ...newChallenge,
                                       participants:
                                         newChallenge.participants.filter(
-                                          (id) => id !== friend.userId._id
+                                          (id) => id !== friend.userId._id,
                                         ),
                                     })
                                   }

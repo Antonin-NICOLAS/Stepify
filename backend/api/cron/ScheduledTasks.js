@@ -89,10 +89,10 @@ const scheduleDailyRewardUpdates = () => {
             } catch (error) {
               console.error(
                 `Error updating rewards for user ${user._id}:`,
-                error
+                error,
               )
             }
-          })
+          }),
         )
       }
 
@@ -103,7 +103,7 @@ const scheduleDailyRewardUpdates = () => {
       console.error('[CRON] Error in daily reward updates:', error)
       Logger.error(
         'Erreur lors de la mise à jour des récompenses quotidiennes',
-        { error }
+        { error },
       )
     }
   })

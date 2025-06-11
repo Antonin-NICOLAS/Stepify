@@ -38,6 +38,15 @@ const getStatus = async (req, res) => {
       return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
     }
 
+    // Do not select credenital id and public key for security reasons
+    const webauthnCredentials = user.twoFactorAuth.webauthnCredentials.map(
+      (cred) => ({
+        id: cred.id,
+        deviceName: cred.deviceName,
+        createdAt: cred.createdAt,
+      }),
+    )
+
     return sendLocalizedSuccess(
       res,
       null,
@@ -47,9 +56,10 @@ const getStatus = async (req, res) => {
         appEnabled: user.twoFactorAuth.appEnabled,
         emailEnabled: user.twoFactorAuth.emailEnabled,
         webauthnEnabled: user.twoFactorAuth.webauthnEnabled,
+        webauthnCredentials: webauthnCredentials || [],
         backupCodes: user.twoFactorAuth.backupCodes,
         lastVerified: user.twoFactorAuth.lastVerified,
-      }
+      },
     )
   } catch (error) {
     console.error('Erreur lors de la récupération du statut de la 2FA:', error)
@@ -85,7 +95,7 @@ const enableTwoFactor = async (req, res) => {
       {
         qrCode,
         secret: secret.base32,
-      }
+      },
     )
   } catch (error) {
     console.error("Erreur lors de l'activation de la 2FA:", error)
@@ -105,7 +115,7 @@ const enableEmail2FA = async (req, res) => {
       return sendLocalizedError(
         res,
         403,
-        'errors.2fa.email_verification_required'
+        'errors.2fa.email_verification_required',
       )
     }
 
@@ -163,7 +173,7 @@ const verifyAndEnableTwoFactor = async (req, res) => {
       await sendTwoFactorBackupCodesEmail(
         user.email,
         user.firstName,
-        backupCodes
+        backupCodes,
       )
     }
 
@@ -185,7 +195,7 @@ const verifyAndEnableTwoFactor = async (req, res) => {
         {},
         {
           backupCodes: user.twoFactorAuth.backupCodes,
-        }
+        },
       )
     }
   } catch (error) {
@@ -237,7 +247,7 @@ const verifyAndEnableEmail2FA = async (req, res) => {
       await sendTwoFactorBackupCodesEmail(
         user.email,
         user.firstName,
-        backupCodes
+        backupCodes,
       )
     }
 
@@ -259,7 +269,7 @@ const verifyAndEnableEmail2FA = async (req, res) => {
         {},
         {
           backupCodes: user.twoFactorAuth.backupCodes,
-        }
+        },
       )
     }
   } catch (error) {
@@ -354,7 +364,7 @@ const verifyLoginTwoFactor = async (req, res) => {
 
     //vérification des sessions expirées
     user.activeSessions = user.activeSessions.filter(
-      (session) => session.expiresAt > Date.now()
+      (session) => session.expiresAt > Date.now(),
     )
 
     await user.save()
@@ -394,7 +404,7 @@ const verifyLoginTwoFactor = async (req, res) => {
       res,
       'success.auth.successful_login',
       {},
-      { user: userResponse, isVerified: user.isVerified }
+      { user: userResponse, isVerified: user.isVerified },
     )
   } catch (error) {
     console.error('Erreur lors de la vérification de la 2FA:', error)
@@ -434,7 +444,7 @@ const setPreferredMethod = async (req, res) => {
   } catch (error) {
     console.error(
       'Erreur lors de la mise à jour de la méthode préférée:',
-      error
+      error,
     )
     return sendLocalizedError(res, 500, 'errors.2fa.preferred_method_error')
   }

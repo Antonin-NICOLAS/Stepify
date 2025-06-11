@@ -226,15 +226,15 @@ const Dashboard = () => {
       message = 'Bravo ! Tu as atteint ton objectif quotidien ! 🎉'
     } else if (progress >= 75) {
       message = `Super ! Tu as atteint ${Math.round(
-        progress
+        progress,
       )}% de ton objectif 👟`
     } else if (progress >= 50) {
       message = `Continue comme ça ! Tu es à ${Math.round(
-        progress
+        progress,
       )}% de ton objectif 🚶`
     } else if (progress >= 25) {
       message = `Bon début ! Tu as fait ${Math.round(
-        progress
+        progress,
       )}% de ton objectif 👣`
     } else {
       message = "C'est parti pour une nouvelle journée active ! 💪"
@@ -567,9 +567,9 @@ const Dashboard = () => {
                       Math.round(
                         chartData.reduce(
                           (sum, day) => sum + day[chartType],
-                          0
-                        ) / chartData.length
-                      )
+                          0,
+                        ) / chartData.length,
+                      ),
                     )
                   : (
                       chartData.reduce((sum, day) => sum + day[chartType], 0) /
@@ -587,10 +587,10 @@ const Dashboard = () => {
               <div className="summary-value">
                 {chartType === 'steps'
                   ? formatNumber(
-                      Math.max(...chartData.map((day) => day[chartType]))
+                      Math.max(...chartData.map((day) => day[chartType])),
                     )
                   : Math.max(...chartData.map((day) => day[chartType])).toFixed(
-                      1
+                      1,
                     )}
                 {chartType === 'steps'
                   ? ' pas'
@@ -604,7 +604,7 @@ const Dashboard = () => {
               <div className="summary-value">
                 {chartType === 'steps'
                   ? formatNumber(
-                      chartData.reduce((sum, day) => sum + day[chartType], 0)
+                      chartData.reduce((sum, day) => sum + day[chartType], 0),
                     )
                   : chartData
                       .reduce((sum, day) => sum + day[chartType], 0)
@@ -740,7 +740,7 @@ const Dashboard = () => {
                         style={{
                           width: `${Math.min(
                             100,
-                            (goal.current / goal.target) * 100
+                            (goal.current / goal.target) * 100,
                           )}%`,
                         }}
                       ></div>
@@ -757,13 +757,13 @@ const Dashboard = () => {
                     <div className="goal-current">
                       {goal.type === 'steps'
                         ? `${formatNumber(goal.current)} / ${formatNumber(
-                            goal.target
+                            goal.target,
                           )} pas`
                         : goal.type === 'distance'
                           ? `${goal.current} / ${goal.target} km`
                           : goal.type === 'calories'
                             ? `${formatNumber(goal.current)} / ${formatNumber(
-                                goal.target
+                                goal.target,
                               )} calories`
                             : `${goal.current} / ${goal.target} minutes`}
                     </div>
@@ -772,13 +772,13 @@ const Dashboard = () => {
                         <>
                           {goal.type === 'steps'
                             ? `${formatNumber(
-                                goal.target - goal.current
+                                goal.target - goal.current,
                               )} pas restants`
                             : goal.type === 'distance'
                               ? `${goal.target - goal.current} km restants`
                               : goal.type === 'calories'
                                 ? `${formatNumber(
-                                    goal.target - goal.current
+                                    goal.target - goal.current,
                                   )} calories restantes`
                                 : `${goal.target - goal.current} minutes restantes`}
                         </>
@@ -870,14 +870,15 @@ const Dashboard = () => {
                         style={{
                           width: `${Math.min(
                             100,
-                            (challenge.currentSteps / challenge.goalSteps) * 100
+                            (challenge.currentSteps / challenge.goalSteps) *
+                              100,
                           )}%`,
                         }}
                       ></div>
                     </div>
                     <div className="challenge-progress-text">
                       {Math.round(
-                        (challenge.currentSteps / challenge.goalSteps) * 100
+                        (challenge.currentSteps / challenge.goalSteps) * 100,
                       )}
                       %
                     </div>

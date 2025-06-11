@@ -22,6 +22,10 @@
       "login": {
         "error": "Error durante la autenticación de doble factor"
       },
+      "removecredential": {
+        "error": "Error al eliminar la clave de acceso",
+        "success": "La tecla de acceso se ha eliminado"
+      },
       "status": {
         "error": "Error al recuperar métodos activos de autenticación doble"
       },
@@ -32,7 +36,7 @@
         "error": "Error al verificar la doble autenticación por correo electrónico"
       },
       "verifyregisterkey": {
-        "error": "No registrar la clave"
+        "error": "Error al grabar la clave"
       }
     },
     "changeverificationemail": {

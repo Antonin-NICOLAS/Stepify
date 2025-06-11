@@ -87,7 +87,7 @@ export const useFriends = (userId) => {
       try {
         const { data } = await axios.post(
           `${API_FRIENDS}/${userId}/${friendId}/remove-friend`,
-          { withCredentials: true }
+          { withCredentials: true },
         )
 
         if (data.success) {
@@ -102,12 +102,12 @@ export const useFriends = (userId) => {
         console.error('Error cancelling friend request:', error)
         toast.error(
           error.response?.data?.error ||
-            "Erreur lors de l'annulation de la demande"
+            "Erreur lors de l'annulation de la demande",
         )
         return false
       }
     },
-    [userId, fetchFriends]
+    [userId, fetchFriends],
   )
 
   return {

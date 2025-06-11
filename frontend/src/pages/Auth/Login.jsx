@@ -113,7 +113,7 @@ function Auth() {
           },
           () => {
             toast.success(t('common.authcontext.login.notverifiedsuccess'))
-          }
+          },
         )
         navigate('/email-verification')
         return
@@ -402,7 +402,7 @@ function Auth() {
                         id="register-firstname"
                         type="text"
                         placeholder={t(
-                          'auth.login.form.register.enterfirstname'
+                          'auth.login.form.register.enterfirstname',
                         )}
                         autoComplete="given-name"
                         value={registerData.firstName}
@@ -427,7 +427,7 @@ function Auth() {
                         id="register-lastname"
                         type="text"
                         placeholder={t(
-                          'auth.login.form.register.enterlastname'
+                          'auth.login.form.register.enterlastname',
                         )}
                         autoComplete="family-name"
                         value={registerData.lastName}
@@ -533,7 +533,7 @@ function Auth() {
                       id="register-confirm-password"
                       type={showConfirmPassword ? 'text' : 'password'}
                       placeholder={t(
-                        'auth.login.form.register.confirmyourpassword'
+                        'auth.login.form.register.confirmyourpassword',
                       )}
                       autoComplete="new-password"
                       value={registerData.confirmPassword}

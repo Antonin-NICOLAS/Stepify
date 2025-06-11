@@ -48,7 +48,7 @@ router.use(
     credentials: true,
     origin: process.env.FRONTEND_SERVER,
   }),
-  localization
+  localization,
 )
 
 //routes
@@ -81,10 +81,7 @@ router.post('/2fa/email/disable', disableEmail2FA)
 // WebAuthn
 router.post('/2fa/webauthn/generate-registration', generateRegistrationOpt)
 router.post('/2fa/webauthn/verify-registration', verifyRegistration)
-router.delete(
-  '/2fa/webauthn/credentials/:credentialId',
-  removeWebAuthnCredential
-)
+router.delete('/2fa/webauthn/remove/:credentialId', removeWebAuthnCredential)
 
 // Méthode préférée
 router.post('/2fa/set-preferred-method', setPreferredMethod)

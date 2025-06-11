@@ -129,7 +129,7 @@ const createUser = async (req, res) => {
       res,
       'success.auth.account_created',
       {},
-      { user: userResponse }
+      { user: userResponse },
     )
   } catch (error) {
     console.error('Erreur lors de la création du compte:', error)
@@ -147,7 +147,7 @@ const verifyEmail = async (req, res) => {
       return sendLocalizedError(
         res,
         401,
-        'errors.generic.authentication_required'
+        'errors.generic.authentication_required',
       )
     }
 
@@ -166,7 +166,7 @@ const verifyEmail = async (req, res) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.auth.invalid_verification_code'
+        'errors.auth.invalid_verification_code',
       )
     }
 
@@ -174,7 +174,7 @@ const verifyEmail = async (req, res) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.auth.verification_code_expired'
+        'errors.auth.verification_code_expired',
       )
     }
 
@@ -192,7 +192,7 @@ const verifyEmail = async (req, res) => {
       res,
       'success.auth.email_verified',
       {},
-      { user: userResponse }
+      { user: userResponse },
     )
   } catch (error) {
     console.error("Erreur lors de la vérification de l'email:", error)
@@ -212,7 +212,7 @@ const resendVerificationEmail = async (req, res) => {
       return sendLocalizedError(
         res,
         401,
-        'errors.generic.authentication_required'
+        'errors.generic.authentication_required',
       )
     }
 
@@ -239,7 +239,7 @@ const resendVerificationEmail = async (req, res) => {
   } catch (error) {
     console.error(
       'Erreur lors de la demande de renvoi du code de vérification:',
-      error
+      error,
     )
     return sendLocalizedError(res, 500, 'errors.auth.email_resent_error')
   }
@@ -326,7 +326,7 @@ const deleteUser = async (req, res) => {
     // 2. Supprimer les participations à des challenges
     await ChallengeModel.updateMany(
       {},
-      { $pull: { participants: { user: userId } } }
+      { $pull: { participants: { user: userId } } },
     )
 
     // 3. Supprimer les entrées de pas (StepEntry)
@@ -343,7 +343,7 @@ const deleteUser = async (req, res) => {
     // 6. Supprimer les demandes d'amis (envoyées ou reçues)
     await UserModel.updateMany(
       {},
-      { $pull: { friendRequests: { userId: userId } } }
+      { $pull: { friendRequests: { userId: userId } } },
     )
 
     // 7. Supprimer l'avatar de l'utilisateur
@@ -389,7 +389,7 @@ const loginUser = async (req, res) => {
 
     if (user.lockUntil && user.lockUntil > Date.now()) {
       const remainingTime = Math.ceil(
-        (user.lockUntil - Date.now()) / (1000 * 60)
+        (user.lockUntil - Date.now()) / (1000 * 60),
       )
       return sendLocalizedError(
         res,
@@ -398,7 +398,7 @@ const loginUser = async (req, res) => {
         { remainingTime },
         {
           retryAfter: remainingTime * 60, // en secondes
-        }
+        },
       )
     }
 
@@ -437,7 +437,7 @@ const loginUser = async (req, res) => {
         const code = Math.floor(100000 + Math.random() * 900000).toString()
         user.twoFactorAuth.emailCode = code
         user.twoFactorAuth.emailCodeExpires = new Date(
-          Date.now() + 10 * 60 * 1000
+          Date.now() + 10 * 60 * 1000,
         )
         await user.save()
         sendTwoFactorEmailCode(user.email, user.firstName, code)
@@ -454,7 +454,7 @@ const loginUser = async (req, res) => {
           stayLoggedIn: stayLoggedIn,
           preferredMethod,
           availableMethods,
-        }
+        },
       )
     }
 
@@ -472,7 +472,7 @@ const loginUser = async (req, res) => {
 
     //vérification des sessions expirées
     user.activeSessions = user.activeSessions.filter(
-      (session) => session.expiresAt > Date.now()
+      (session) => session.expiresAt > Date.now(),
     )
 
     // pas plus de 5 sessions en mm temps
@@ -514,7 +514,7 @@ const loginUser = async (req, res) => {
         user: userResponse,
         requiresTwoFactor: false,
         isVerified: user.isVerified,
-      }
+      },
     )
   } catch (error) {
     console.error('Erreur lors de la connexion:', error)
@@ -537,7 +537,7 @@ const forgotPassword = async (req, res) => {
     }
 
     const randomPart = CryptoJS.lib.WordArray.random(32).toString(
-      CryptoJS.enc.Hex
+      CryptoJS.enc.Hex,
     )
     const timestampPart = Date.now().toString(36)
     const resetToken = randomPart + timestampPart
@@ -553,7 +553,7 @@ const forgotPassword = async (req, res) => {
   } catch (error) {
     console.error(
       'Erreur lors de la demande de réinitialisation de mot de passe:',
-      error
+      error,
     )
     return sendLocalizedError(res, 500, 'errors.auth.reset_request_error')
   }
@@ -612,7 +612,7 @@ const logoutUser = async (req, res) => {
           (session) =>
             !(
               session.ipAddress === ipAddress && session.userAgent === userAgent
-            )
+            ),
         )
         await user.save()
       }
@@ -641,7 +641,7 @@ const checkAuth = async (req, res) => {
   try {
     const user = await UserModel.findById(req.userId).populate(
       'friends.userId',
-      'avatarUrl firstName lastName username'
+      'avatarUrl firstName lastName username',
     )
 
     if (!user) {
@@ -652,7 +652,7 @@ const checkAuth = async (req, res) => {
     const currentSession = user.activeSessions.find(
       (session) =>
         session.fingerprint === currentFingerprint &&
-        new Date(session.expiresAt) > new Date()
+        new Date(session.expiresAt) > new Date(),
     )
 
     if (!currentSession) {
@@ -672,7 +672,7 @@ const checkAuth = async (req, res) => {
   } catch (error) {
     console.error(
       "Erreur lors de la vérification de l'authentification:",
-      error
+      error,
     )
     if (error.name === 'JsonWebTokenError') {
       return sendLocalizedError(res, 401, 'errors.auth.invalid_token')

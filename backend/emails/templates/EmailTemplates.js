@@ -14,7 +14,7 @@ const BackupCodesEmailTemplate = (firstName, backupCodes) => `
         ${backupCodes
           .map(
             (code) =>
-              `<div style="font-family: monospace; margin: 5px 0;">${code.code}</div>`
+              `<div style="font-family: monospace; margin: 5px 0;">${code.code}</div>`,
           )
           .join('')}
       </div>

@@ -39,14 +39,14 @@ const getPublicChallenges = async (req, res) => {
         total,
         limit: parseInt(limit),
         skip: parseInt(skip),
-      }
+      },
     )
   } catch (error) {
     console.error('Error fetching challenges:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.challenges.get_challenges_error'
+      'errors.challenges.get_challenges_error',
     )
   }
 }
@@ -71,7 +71,7 @@ const getMyChallenges = async (req, res) => {
     // Extract user-specific progress from each challenge
     const userProgress = challenges.map((challenge) => {
       const participant = challenge.participants.find(
-        (p) => p.user._id.toString() === userId
+        (p) => p.user._id.toString() === userId,
       )
       return {
         challengeId: challenge._id,
@@ -90,7 +90,7 @@ const getMyChallenges = async (req, res) => {
     return sendLocalizedError(
       res,
       500,
-      'errors.challenges.get_challenges_error'
+      'errors.challenges.get_challenges_error',
     )
   }
 }
@@ -144,7 +144,7 @@ const createChallenge = async (req, res) => {
     // Validate activity type specific requirements
     if (
       ['steps-time', 'distance-time', 'calories-time', 'xp-time'].includes(
-        activityType
+        activityType,
       ) &&
       !time
     ) {
@@ -223,7 +223,7 @@ const createChallenge = async (req, res) => {
       res,
       'success.challenges.created',
       {},
-      { challenge: newChallenge }
+      { challenge: newChallenge },
     )
   } catch (error) {
     console.error('Error creating challenge:', error)
@@ -249,7 +249,7 @@ const updateChallenge = async (req, res) => {
       return sendLocalizedError(
         res,
         403,
-        'errors.challenges.creator_modify_only'
+        'errors.challenges.creator_modify_only',
       )
     }
 
@@ -282,7 +282,7 @@ const updateChallenge = async (req, res) => {
         return sendLocalizedError(
           res,
           400,
-          'errors.challenges.access_code_required'
+          'errors.challenges.access_code_required',
         )
       }
       if (!updates.isPrivate && challenge.accessCode) {
@@ -300,7 +300,7 @@ const updateChallenge = async (req, res) => {
       res,
       'success.challenges.updated',
       {},
-      { challenge: updatedChallenge }
+      { challenge: updatedChallenge },
     )
   } catch (error) {
     console.error('Error updating challenge:', error)
@@ -331,19 +331,19 @@ const joinChallenge = async (req, res) => {
       return sendLocalizedError(
         res,
         403,
-        'errors.challenges.access_code_required'
+        'errors.challenges.access_code_required',
       )
     }
 
     // Check if user is already a participant
     const isParticipant = challenge.participants.some(
-      (p) => p.user.toString() === userId
+      (p) => p.user.toString() === userId,
     )
     if (isParticipant) {
       return sendLocalizedError(
         res,
         400,
-        'errors.challenges.already_participating'
+        'errors.challenges.already_participating',
       )
     }
 
@@ -363,14 +363,14 @@ const joinChallenge = async (req, res) => {
     await updateSingleChallengeProgress(userId, challenge._id)
 
     const populatedChallenge = await Challenge.findById(challengeId).populate(
-      'creator participants.user'
+      'creator participants.user',
     )
 
     return sendLocalizedSuccess(
       res,
       'success.challenges.joined',
       {},
-      { challenge: populatedChallenge }
+      { challenge: populatedChallenge },
     )
   } catch (error) {
     console.error('Error joining challenge:', error)
@@ -392,7 +392,7 @@ const leaveChallenge = async (req, res) => {
 
     // Check if user is a participant
     const participantIndex = challenge.participants.findIndex(
-      (p) => p.user.toString() === userId
+      (p) => p.user.toString() === userId,
     )
     if (participantIndex === -1) {
       return sendLocalizedError(res, 400, 'errors.challenges.not_participating')
@@ -403,7 +403,7 @@ const leaveChallenge = async (req, res) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.challenges.creator_cannot_leave'
+        'errors.challenges.creator_cannot_leave',
       )
     }
 
@@ -433,7 +433,7 @@ const deleteChallenge = async (req, res) => {
       return sendLocalizedError(
         res,
         403,
-        'errors.challenges.creator_delete_only'
+        'errors.challenges.creator_delete_only',
       )
     }
 
@@ -465,7 +465,7 @@ const regenerateAccessCode = async (req, res) => {
       return sendLocalizedError(
         res,
         403,
-        'errors.challenges.creator_regenerate_only'
+        'errors.challenges.creator_regenerate_only',
       )
     }
 
@@ -481,7 +481,7 @@ const regenerateAccessCode = async (req, res) => {
       res,
       'success.challenges.regenerated',
       {},
-      { accessCode: newAccessCode }
+      { accessCode: newAccessCode },
     )
   } catch (error) {
     console.error('Error regenerating access code:', error)
@@ -525,7 +525,7 @@ const ChallengeStatusUpdatesInternal = async () => {
       await Challenge.updateOne(
         { _id: challenge._id },
         { $set: { status: 'active' } },
-        { validateBeforeSave: false }
+        { validateBeforeSave: false },
       )
       console.log(`[CRON] Challenge ${challenge._id} status updated to active`)
     }
@@ -540,10 +540,10 @@ const ChallengeStatusUpdatesInternal = async () => {
       await Challenge.updateOne(
         { _id: challenge._id },
         { $set: { status: 'completed' } },
-        { validateBeforeSave: false }
+        { validateBeforeSave: false },
       )
       console.log(
-        `[CRON] Challenge ${challenge._id} status updated to completed`
+        `[CRON] Challenge ${challenge._id} status updated to completed`,
       )
     }
 
@@ -551,7 +551,7 @@ const ChallengeStatusUpdatesInternal = async () => {
   } catch (error) {
     console.error(
       '[CRON] Erreur lors de la mise à jour des statuts des défis',
-      error
+      error,
     )
   }
 }
@@ -570,7 +570,7 @@ const updateChallengeProgress = async (userId) => {
 
     for (const challenge of userChallenges) {
       const participant = challenge.participants.find(
-        (p) => p.user._id.toString() === userId
+        (p) => p.user._id.toString() === userId,
       )
       if (!participant) continue
 
@@ -623,7 +623,7 @@ const getChallengeLeaderboard = async (req, res) => {
     const challenge = await Challenge.findById(challengeId)
       .populate(
         'participants.user',
-        'username avatarUrl firstName lastName totalXP'
+        'username avatarUrl firstName lastName totalXP',
       )
       .select('participants status activityType')
 
@@ -663,14 +663,14 @@ const getChallengeLeaderboard = async (req, res) => {
         total: challenge.participants.length,
         challengeStatus: challenge.status,
         activityType: challenge.activityType,
-      }
+      },
     )
   } catch (error) {
     console.error('Error getting challenge leaderboard:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.challenges.get_leaderboard_error'
+      'errors.challenges.get_leaderboard_error',
     )
   }
 }

@@ -290,7 +290,7 @@ const parseSamsungHealthData = (csvData, userId) => {
   const finalEntries = Object.entries(entriesByDay).map(([dateKey, data]) => {
     // Filtrer les heures avec des données (steps > 0 ou activeTime > 0)
     const hourlyData = data.hourlyData.filter(
-      (hour) => hour.steps > 0 || hour.activeTime > 0
+      (hour) => hour.steps > 0 || hour.activeTime > 0,
     )
 
     return {

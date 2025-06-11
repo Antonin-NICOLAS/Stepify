@@ -22,6 +22,10 @@
       "login": {
         "error": "Erreur lors de l'authentification à double facteur"
       },
+      "removecredential": {
+        "error": "Erreur lors de la suppression de la clé d'accès",
+        "success": "La clé d'accès a été supprimée"
+      },
       "status": {
         "error": "Erreur lors de la récupération des méthodes de double authentification actives"
       },
@@ -32,7 +36,7 @@
         "error": "Erreur lors de la vérification de la double authentification par email"
       },
       "verifyregisterkey": {
-        "error": "Échec de l'enregistrement de la clé"
+        "error": "Erreur lors de l'enregistrement de la clé"
       }
     },
     "changeverificationemail": {

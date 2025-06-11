@@ -8,7 +8,7 @@ const authLimiter = rateLimit({
     const message = getLocalizedMessage(
       req.locale || 'fr',
       'errors.auth.limit_reached',
-      { remainingTime: 15 }
+      { remainingTime: 15 },
     )
     res.status(429).json({
       success: false,

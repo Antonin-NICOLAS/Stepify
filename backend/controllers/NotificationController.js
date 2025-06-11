@@ -30,7 +30,7 @@ const sendFriendRequest = async (req, res) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.notifications.request_already_sent'
+        'errors.notifications.request_already_sent',
       )
     }
 
@@ -38,7 +38,7 @@ const sendFriendRequest = async (req, res) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.notifications.already_friends'
+        'errors.notifications.already_friends',
       )
     }
 
@@ -61,14 +61,14 @@ const sendFriendRequest = async (req, res) => {
 
     return sendLocalizedSuccess(
       res,
-      'success.notifications.friend_request_sent'
+      'success.notifications.friend_request_sent',
     )
   } catch (error) {
     console.error('Error sending friend request:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.notifications.friend_request_error'
+      'errors.notifications.friend_request_error',
     )
   }
 }
@@ -89,7 +89,7 @@ const acceptFriendRequest = async (req, res) => {
       return sendLocalizedError(
         res,
         404,
-        'errors.notifications.request_not_found'
+        'errors.notifications.request_not_found',
       )
     }
 
@@ -100,7 +100,7 @@ const acceptFriendRequest = async (req, res) => {
       return sendLocalizedError(
         res,
         403,
-        'errors.notifications.invalid_request'
+        'errors.notifications.invalid_request',
       )
     }
 
@@ -109,7 +109,7 @@ const acceptFriendRequest = async (req, res) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.notifications.already_friends'
+        'errors.notifications.already_friends',
       )
     }
 
@@ -118,7 +118,7 @@ const acceptFriendRequest = async (req, res) => {
 
     // Supprime la demande de la liste
     user.friendRequests = user.friendRequests.filter(
-      (f) => f.notificationId.toString() !== notificationId
+      (f) => f.notificationId.toString() !== notificationId,
     )
     await user.save()
     await requester.save()
@@ -141,14 +141,14 @@ const acceptFriendRequest = async (req, res) => {
 
     return sendLocalizedSuccess(
       res,
-      'success.notifications.friend_request_accepted'
+      'success.notifications.friend_request_accepted',
     )
   } catch (error) {
     console.error('Error accepting friend request:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.notifications.friend_request_accept_error'
+      'errors.notifications.friend_request_accept_error',
     )
   }
 }
@@ -169,13 +169,13 @@ const cancelFriendRequest = async (req, res) => {
       return sendLocalizedError(
         res,
         404,
-        'errors.notifications.request_not_found'
+        'errors.notifications.request_not_found',
       )
     }
 
     const recipient = await UserModel.findById(notification.recipient)
     recipient.friendRequests = recipient.friendRequests.filter(
-      (r) => r.notificationId.toString() !== notificationId
+      (r) => r.notificationId.toString() !== notificationId,
     )
     await recipient.save()
 
@@ -183,14 +183,14 @@ const cancelFriendRequest = async (req, res) => {
 
     return sendLocalizedSuccess(
       res,
-      'success.notifications.friend_request_cancelled'
+      'success.notifications.friend_request_cancelled',
     )
   } catch (error) {
     console.error('Error cancelling friend request:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.notifications.friend_request_cancel_error'
+      'errors.notifications.friend_request_cancel_error',
     )
   }
 }
@@ -211,13 +211,13 @@ const declineFriendRequest = async (req, res) => {
       return sendLocalizedError(
         res,
         404,
-        'errors.notifications.request_not_found'
+        'errors.notifications.request_not_found',
       )
     }
 
     const user = await UserModel.findById(userId)
     user.friendRequests = user.friendRequests.filter(
-      (r) => r.notificationId.toString() !== notificationId
+      (r) => r.notificationId.toString() !== notificationId,
     )
     await user.save()
 
@@ -240,14 +240,14 @@ const declineFriendRequest = async (req, res) => {
 
     return sendLocalizedSuccess(
       res,
-      'success.notifications.friend_request_declined'
+      'success.notifications.friend_request_declined',
     )
   } catch (error) {
     console.error('Error declining friend request:', error)
     return sendLocalizedError(
       res,
       500,
-      'errors.notifications.friend_request_decline_error'
+      'errors.notifications.friend_request_decline_error',
     )
   }
 }
@@ -281,7 +281,7 @@ const markAllNotificationsAsRead = async (req, res) => {
   try {
     await Notification.updateMany(
       { recipient: userId, status: 'unread' },
-      { $set: { status: 'read' } }
+      { $set: { status: 'read' } },
     )
     return sendLocalizedSuccess(res, 'success.notifications.all_marked_read')
   } catch (error) {
@@ -303,7 +303,7 @@ const respondToChallengeInvite = async (req, res) => {
       return sendLocalizedError(
         res,
         404,
-        'errors.notifications.invitation_not_found'
+        'errors.notifications.invitation_not_found',
       )
     }
 
@@ -311,7 +311,7 @@ const respondToChallengeInvite = async (req, res) => {
       return sendLocalizedError(
         res,
         403,
-        'errors.notifications.unauthorized_invitation'
+        'errors.notifications.unauthorized_invitation',
       )
     }
 
@@ -320,7 +320,7 @@ const respondToChallengeInvite = async (req, res) => {
       return sendLocalizedError(
         res,
         400,
-        'errors.notifications.invitation_already_handled'
+        'errors.notifications.invitation_already_handled',
       )
     }
 
@@ -332,14 +332,14 @@ const respondToChallengeInvite = async (req, res) => {
     if (action === 'accept') {
       // Add user to challenge participants
       const alreadyParticipant = challenge.participants.find(
-        (p) => p.user.toString() === userId
+        (p) => p.user.toString() === userId,
       )
       if (alreadyParticipant) {
         await Notification.findByIdAndDelete(notificationId)
         return sendLocalizedError(
           res,
           400,
-          'errors.challenges.already_participating'
+          'errors.challenges.already_participating',
         )
       }
 
@@ -378,7 +378,7 @@ const respondToChallengeInvite = async (req, res) => {
 
       return sendLocalizedSuccess(
         res,
-        'success.notifications.challenge_accepted'
+        'success.notifications.challenge_accepted',
       )
     } else if (action === 'decline') {
       invitation.status = 'declined'
@@ -404,7 +404,7 @@ const respondToChallengeInvite = async (req, res) => {
 
       return sendLocalizedSuccess(
         res,
-        'success.notifications.challenge_declined'
+        'success.notifications.challenge_declined',
       )
     } else {
       return sendLocalizedError(res, 400, 'errors.notifications.invalid_action')
@@ -414,7 +414,7 @@ const respondToChallengeInvite = async (req, res) => {
     return sendLocalizedError(
       res,
       500,
-      'errors.notifications.invitation_response_error'
+      'errors.notifications.invitation_response_error',
     )
   }
 }
@@ -442,7 +442,7 @@ const markNotificationAsRead = async (req, res) => {
       res,
       'success.notifications.marked_read',
       {},
-      { notification }
+      { notification },
     )
   } catch (error) {
     console.error('Error marking notification as read:', error)

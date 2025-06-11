@@ -25,7 +25,7 @@ i18n
       escapeValue: false,
     },
     detection: {
-      order: ['cookie', 'localStorage', 'navigator', 'htmlTag'],
+      order: ['cookie', 'navigator', 'localStorage', 'htmlTag'],
       caches: ['localStorage'],
     },
     defaultNS: 'common',

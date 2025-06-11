@@ -81,7 +81,7 @@ const Leaderboard = () => {
 
   const { joinChallenge } = useChallenge(user?._id)
   const { sendFriendRequest, addComment, sendMessage } = useNotifications(
-    user?._id
+    user?._id,
   )
   const { searchUsers } = useFriends(user?._id)
 
@@ -168,7 +168,7 @@ const Leaderboard = () => {
         (user) =>
           user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+          user.lastName.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     }
 
@@ -177,7 +177,7 @@ const Leaderboard = () => {
       filtered = filtered.filter(
         (user) =>
           user?.friends.some((friend) => friend.userId === user._id) ||
-          user._id === user?._id
+          user._id === user?._id,
       )
     }
 
@@ -455,7 +455,7 @@ const Leaderboard = () => {
 
     // Generate random data based on user's average activity
     const stepsData = labels.map(() =>
-      Math.floor(user.dailySteps * (0.7 + Math.random() * 0.6))
+      Math.floor(user.dailySteps * (0.7 + Math.random() * 0.6)),
     )
 
     return {
@@ -713,7 +713,7 @@ const Leaderboard = () => {
                       <span>
                         {formatMetricValue(
                           getMetricValue(user3),
-                          leaderboardType
+                          leaderboardType,
                         )}
                       </span>
                     </div>
@@ -733,7 +733,7 @@ const Leaderboard = () => {
                     {user && user3._id !== user._id && (
                       <>
                         {!user.friends.some(
-                          (f) => f.userId._id === user3._id
+                          (f) => f.userId._id === user3._id,
                         ) && (
                           <button
                             className="action-icon-button"
@@ -791,7 +791,7 @@ const Leaderboard = () => {
                       <span>
                         {formatMetricValue(
                           getMetricValue(users),
-                          leaderboardType
+                          leaderboardType,
                         )}
                       </span>
                     </div>
@@ -811,7 +811,7 @@ const Leaderboard = () => {
                     {user && users._id !== user?._id && (
                       <>
                         {!user.friends.some(
-                          (f) => f.userId._id === users._id
+                          (f) => f.userId._id === users._id,
                         ) && (
                           <button
                             className="action-icon-button"
@@ -878,7 +878,7 @@ const Leaderboard = () => {
                           <span>
                             {formatMetricValue(
                               getMetricValue(users),
-                              leaderboardType
+                              leaderboardType,
                             )}
                           </span>
                         </div>
@@ -967,7 +967,7 @@ const Leaderboard = () => {
                       ))}
                     </div>
                     {challenge.participants.includes(
-                      (p) => p.user._id !== user?._id
+                      (p) => p.user._id !== user?._id,
                     ) && (
                       <button
                         className="join-challenge-button"
@@ -1028,7 +1028,7 @@ const Leaderboard = () => {
                                 <span className="holder-date">
                                   Obtenu le{' '}
                                   {new Date(holder.date).toLocaleDateString(
-                                    'fr-FR'
+                                    'fr-FR',
                                   )}
                                 </span>
                               </div>
@@ -1054,7 +1054,7 @@ const Leaderboard = () => {
                                 <span className="holder-date">
                                   Obtenu le{' '}
                                   {new Date(holder.date).toLocaleDateString(
-                                    'fr-FR'
+                                    'fr-FR',
                                   )}
                                 </span>
                               </div>
@@ -1438,7 +1438,7 @@ const Leaderboard = () => {
                             {
                               year: 'numeric',
                               month: 'long',
-                            }
+                            },
                           )}
                         </span>
                       </p>
@@ -1448,7 +1448,7 @@ const Leaderboard = () => {
                       {user && selectedUser._id !== user._id && (
                         <>
                           {!friends.some(
-                            (f) => f.userId._id === selectedUser._id
+                            (f) => f.userId._id === selectedUser._id,
                           ) && (
                             <button
                               className="action-button"

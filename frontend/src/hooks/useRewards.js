@@ -65,7 +65,7 @@ export const useRewards = (userId) => {
     try {
       const { data } = await axios.post(
         `${API_REWARDS}/${userId}/${rewardId}/setinvitrine`,
-        { withCredentials: true }
+        { withCredentials: true },
       )
       if (data.success) {
         toast.success(data.message || 'La vitrine a bien été changée')

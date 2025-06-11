@@ -28,11 +28,10 @@ function TwoFactorSettings() {
     enableEmail2FA,
     verifyTwoFactor,
     verifyEmail2FA,
-    verifyWebAuthnRegistration,
+    registerWebAuthnCredential,
     disableTwoFactor,
     disableEmail2FA,
     removeWebAuthnCredential,
-    registerWebAuthnCredential,
   } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false)
@@ -67,7 +66,6 @@ function TwoFactorSettings() {
         }
       } catch (error) {
         console.error('Erreur lors de la vérification du statut 2FA:', error)
-        toast.error('Erreur lors de la vérification du statut 2FA')
         navigate('/settings')
       }
     }
@@ -90,21 +88,10 @@ function TwoFactorSettings() {
         await enableEmail2FA()
         setStep('verify-email')
       } else if (method === 'webauthn') {
-        try {
-          await registerWebAuthnCredential()
-          setStep('success')
-          setTwoFactorStatus((prev) => ({
-            ...prev,
-            webauthn: true,
-          }))
-          toast.success('Clé de sécurité enregistrée avec succès')
-        } catch (error) {
-          setWebauthnError(error.message)
-          setStep('main')
-        }
+        setStep('setup-webauthn')
       }
     } catch (error) {
-      toast.error(error.message || "Erreur lors de l'activation de la 2FA")
+      console.error("Erreur lors de l'activation de la 2FA :", error)
     } finally {
       setIsLoading(false)
     }
@@ -120,15 +107,14 @@ function TwoFactorSettings() {
       let codes
       if (currentMethod === 'app') {
         codes = await verifyTwoFactor(verificationCode)
-        setBackupCodes(codes)
-        setStep('backup')
       } else if (currentMethod === 'email') {
-        await verifyEmail2FA(verificationCode)
-        setStep('success')
-      } else if (currentMethod === 'webauthn') {
-        await verifyWebAuthnRegistration(webauthnCredentials[0].credentialId)
-        setStep('success')
+        codes = await verifyEmail2FA(verificationCode)
       }
+
+      if (codes) {
+        setBackupCodes(codes)
+      }
+      setStep('backup')
 
       // Update status
       setTwoFactorStatus((prev) => ({
@@ -137,9 +123,8 @@ function TwoFactorSettings() {
       }))
 
       setVerificationCode('')
-      toast.success('2FA activée avec succès!')
     } catch (error) {
-      toast.error(error.message || 'Code de vérification incorrect')
+      console.error('Code de vérification incorrect :', error)
     } finally {
       setIsLoading(false)
     }
@@ -149,22 +134,10 @@ function TwoFactorSettings() {
     setCurrentMethod(method)
     if (method === 'app') {
       setStep('disable-app')
-    } else if (method === 'webauthn') {
-      try {
-        await removeWebAuthnCredential(webauthnCredentials[0].credentialId)
-        setTwoFactorStatus((prev) => ({
-          ...prev,
-          webauthn: false,
-        }))
-        setStep('main')
-        toast.success('Clé de sécurité supprimée avec succès')
-      } catch (error) {
-        toast.error(
-          error.message || 'Erreur lors de la suppression de la clé de sécurité'
-        )
-      }
-    } else {
+    } else if (method === 'email') {
       setStep('disable-email')
+    } else if (method === 'webauthn') {
+      setStep('disable-webauthn')
     }
   }
 
@@ -176,7 +149,7 @@ function TwoFactorSettings() {
       } else if (currentMethod === 'email') {
         await disableEmail2FA(password)
       } else if (currentMethod === 'webauthn') {
-        await removeWebAuthnCredential(webauthnCredentials[0].credentialId)
+        await removeWebAuthnCredential(webauthnCredentials[0].id)
       }
 
       setTwoFactorStatus((prev) => ({
@@ -192,9 +165,8 @@ function TwoFactorSettings() {
 
       setStep('main')
       setVerificationCode('')
-      toast.success('2FA désactivée avec succès')
     } catch (error) {
-      toast.error('Erreur lors de la désactivation')
+      console.error('Erreur lors de la désactivation :', error)
     } finally {
       setIsLoading(false)
     }
@@ -346,7 +318,6 @@ function TwoFactorSettings() {
                       ...prev,
                       webauthn: true,
                     }))
-                    toast.success('Clé de sécurité enregistrée avec succès')
                   } catch (error) {
                     setWebauthnError(error.message)
                   }
@@ -389,7 +360,7 @@ function TwoFactorSettings() {
                     value={verificationCode}
                     onChange={(e) =>
                       setVerificationCode(
-                        e.target.value.replace(/\D/g, '').slice(0, 6)
+                        e.target.value.replace(/\D/g, '').slice(0, 6),
                       )
                     }
                     placeholder="123456"
@@ -478,6 +449,7 @@ function TwoFactorSettings() {
         )
 
       case 'disable-email':
+      case 'disable-webauthn':
         return (
           <div className="disable-content">
             <div className="disable-header">
@@ -560,7 +532,7 @@ function TwoFactorSettings() {
                     value={verificationCode}
                     onChange={(e) =>
                       setVerificationCode(
-                        e.target.value.replace(/\D/g, '').slice(0, 6)
+                        e.target.value.replace(/\D/g, '').slice(0, 6),
                       )
                     }
                     maxLength={6}
@@ -604,7 +576,7 @@ function TwoFactorSettings() {
                 <Smartphone size={24} />,
                 t('account.2fa-setup.card.apptitle'),
                 t('account.2fa-setup.card.appdescription'),
-                twoFactorStatus.app
+                twoFactorStatus.app,
               )}
 
               {renderMethodCard(
@@ -612,7 +584,7 @@ function TwoFactorSettings() {
                 <Mail size={24} />,
                 t('common.email'),
                 t('account.2fa-setup.card.emaildescription'),
-                twoFactorStatus.email
+                twoFactorStatus.email,
               )}
 
               {renderMethodCard(
@@ -620,7 +592,7 @@ function TwoFactorSettings() {
                 <Fingerprint size={24} />,
                 t('account.2fa-setup.card.webauthntitle'),
                 t('account.2fa-setup.card.webauthndescription'),
-                twoFactorStatus.webauthn
+                twoFactorStatus.webauthn,
               )}
             </div>
 

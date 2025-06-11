@@ -87,7 +87,7 @@ const Settings = () => {
     if (user) {
       setPrivacySettings(user.privacySettings || privacySettings)
       setNotificationPreferences(
-        user.notificationPreferences || notificationPreferences
+        user.notificationPreferences || notificationPreferences,
       )
       loadActiveSessions()
     }
@@ -191,7 +191,7 @@ const Settings = () => {
     } catch (error) {
       console.error(
         'Erreur lors de la mise à jour des paramètres de confidentialité',
-        error
+        error,
       )
       setPrivacySettings(privacySettings) // Revert on error
     }
@@ -207,7 +207,7 @@ const Settings = () => {
     } catch (error) {
       console.error(
         'Erreur lors de la mise à jour des préférences de notification :',
-        error
+        error,
       )
       setNotificationPreferences(notificationPreferences) // Revert on error
     } finally {

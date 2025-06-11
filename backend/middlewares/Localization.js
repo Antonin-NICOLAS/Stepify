@@ -24,7 +24,7 @@ const getLocalizedMessage = (locale, path, params = {}) => {
     // Essayer avec la locale par défaut
     message = pathParts.reduce(
       (obj, part) => obj?.[part],
-      locales[defaultLocale]
+      locales[defaultLocale],
     )
     if (!message) {
       return path // Retourner le chemin si le message n'est pas trouvé
@@ -45,7 +45,7 @@ const localization = async (req, res, next) => {
     // Récupérer la langue préférée de l'utilisateur s'il est connecté
     if (req.userId) {
       const user = await UserModel.findById(req.userId).select(
-        'languagePreference'
+        'languagePreference',
       )
       if (user?.languagePreference) {
         req.locale = user.languagePreference

@@ -22,6 +22,10 @@
       "login": {
         "error": "Fehler während der Authentifizierung der Doppelfaktor"
       },
+      "removecredential": {
+        "error": "Fehler beim Löschen der Zugriffstaste",
+        "success": "Der Zugangsschlüssel wurde gelöscht"
+      },
       "status": {
         "error": "Fehler beim Wiederherstellen aktiver Doppelauthentifizierungsmethoden"
       },
@@ -32,7 +36,7 @@
         "error": "Fehler beim Überprüfen der Doppelauthentifizierung per E -Mail"
       },
       "verifyregisterkey": {
-        "error": "Versäumnis, den Schlüssel aufzunehmen"
+        "error": "Fehler beim Aufzeichnen des Schlüssels"
       }
     },
     "changeverificationemail": {

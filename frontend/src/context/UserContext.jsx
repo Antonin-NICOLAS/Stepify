@@ -21,7 +21,7 @@ export const UserProvider = ({ children }) => {
         if (updates.username && updates.username !== user.username) {
           if (!/^[a-zA-Z0-9_]{3,30}$/.test(updates.username)) {
             toast.error(
-              "Nom d'utilisateur invalide (3-30 caractères alphanumériques)"
+              "Nom d'utilisateur invalide (3-30 caractères alphanumériques)",
             )
             return
           }
@@ -49,7 +49,7 @@ export const UserProvider = ({ children }) => {
 
         const { data } = await axios.patch(
           `${API_USER}/${userId}/updateprofile`,
-          changes
+          changes,
         )
 
         if (data.success) {
@@ -61,12 +61,12 @@ export const UserProvider = ({ children }) => {
         toast.error(
           error.response?.data?.error ||
             error.message ||
-            'Erreur lors de la mise à jour'
+            'Erreur lors de la mise à jour',
         )
         throw error
       }
     },
-    [user, setUser]
+    [user, setUser],
   )
 
   // --- Avatar ---
@@ -81,7 +81,7 @@ export const UserProvider = ({ children }) => {
           formData,
           {
             headers: { 'Content-Type': 'multipart/form-data' },
-          }
+          },
         )
 
         if (data.success) {
@@ -91,12 +91,12 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour'
+          error.response?.data?.error || 'Erreur lors de la mise à jour',
         )
         throw error
       }
     },
-    [updateUserField]
+    [updateUserField],
   )
 
   // --- Password ---
@@ -104,7 +104,7 @@ export const UserProvider = ({ children }) => {
     async (
       userId,
       { currentPassword, newPassword, confirmPassword },
-      onSuccess
+      onSuccess,
     ) => {
       if (!currentPassword) return toast.error('Mot de passe actuel requis')
       if (newPassword.length < 8) return toast.error('8 caractères minimum')
@@ -124,12 +124,12 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour'
+          error.response?.data?.error || 'Erreur lors de la mise à jour',
         )
         throw error
       }
     },
-    []
+    [],
   )
 
   // --- Email ---
@@ -145,7 +145,7 @@ export const UserProvider = ({ children }) => {
 
         if (data.success) {
           toast.success(
-            data.message || 'Email mis à jour - Vérification requise'
+            data.message || 'Email mis à jour - Vérification requise',
           )
           updateUserField('email', data.email)
           updateUserField('isVerified', data.isVerified)
@@ -153,12 +153,12 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour'
+          error.response?.data?.error || 'Erreur lors de la mise à jour',
         )
         throw error
       }
     },
-    [setUser]
+    [setUser],
   )
 
   // --- Status ---
@@ -179,12 +179,12 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour'
+          error.response?.data?.error || 'Erreur lors de la mise à jour',
         )
         throw error
       }
     },
-    [updateUserField]
+    [updateUserField],
   )
 
   // --- Daily Goal ---
@@ -208,12 +208,12 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour'
+          error.response?.data?.error || 'Erreur lors de la mise à jour',
         )
         throw error
       }
     },
-    [updateUserField]
+    [updateUserField],
   )
 
   // --- Theme ---
@@ -234,12 +234,12 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour'
+          error.response?.data?.error || 'Erreur lors de la mise à jour',
         )
         throw error
       }
     },
-    [updateUserField]
+    [updateUserField],
   )
 
   // --- Language ---
@@ -266,12 +266,12 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour'
+          error.response?.data?.error || 'Erreur lors de la mise à jour',
         )
         throw error
       }
     },
-    [updateUserField]
+    [updateUserField],
   )
 
   // --- Privacy Settings ---
@@ -289,12 +289,12 @@ export const UserProvider = ({ children }) => {
         }
       } catch (error) {
         toast.error(
-          error.response?.data?.error || 'Erreur lors de la mise à jour'
+          error.response?.data?.error || 'Erreur lors de la mise à jour',
         )
         throw error
       }
     },
-    [updateUserField]
+    [updateUserField],
   )
 
   // --- Get User Profile ---
@@ -308,7 +308,7 @@ export const UserProvider = ({ children }) => {
       }
     } catch (error) {
       toast.error(
-        error.response?.data?.error || 'Erreur lors de la récupération'
+        error.response?.data?.error || 'Erreur lors de la récupération',
       )
       throw error
     }
@@ -325,7 +325,7 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(
         error.response?.data?.error ||
-          'Erreur lors de la récupération des sessions'
+          'Erreur lors de la récupération des sessions',
       )
       throw error
     }
@@ -335,7 +335,7 @@ export const UserProvider = ({ children }) => {
   const terminateSession = useCallback(async (userId, sessionId) => {
     try {
       const { data } = await axios.delete(
-        `${API_USER}/${userId}/sessions/${sessionId}`
+        `${API_USER}/${userId}/sessions/${sessionId}`,
       )
 
       if (data.success) {
@@ -345,7 +345,7 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(
         error.response?.data?.error ||
-          'Erreur lors de la terminaison de la session'
+          'Erreur lors de la terminaison de la session',
       )
       throw error
     }
@@ -363,7 +363,7 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       toast.error(
         error.response?.data?.error ||
-          'Erreur lors de la terminaison des sessions'
+          'Erreur lors de la terminaison des sessions',
       )
       throw error
     }

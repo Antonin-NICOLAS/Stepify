@@ -223,7 +223,7 @@ function ResetPassword() {
                       id="confirmPassword"
                       type={showConfirmPassword ? 'text' : 'password'}
                       placeholder={t(
-                        'auth.resetpassword.form.confirmyourpassword'
+                        'auth.resetpassword.form.confirmyourpassword',
                       )}
                       autoComplete="new-password"
                       value={confirmPassword}

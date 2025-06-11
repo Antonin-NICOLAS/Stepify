@@ -574,7 +574,7 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                     <strong
                                       >${t(
                                         'newlogin.title',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}</strong
                                     >
                                   </h1>
@@ -700,20 +700,20 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                       <strong
                                         >${t(
                                           'newlogin.bloc1.hello',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}</strong
                                       >
                                     </p>
                                     <p style="margin: 0">
                                       ${t(
                                         'newlogin.bloc1.intro',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                     </p>
                                     <p style="margin: 0">
                                       ${t(
                                         'newlogin.bloc1.activity_details',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                     </p>
                                   </div>
@@ -764,21 +764,21 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                       <li style="margin: 0 0 0 0">
                                         <strong>${t(
                                           'newlogin.bloc1.date',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}</strong>
                                         ${date}
                                       </li>
                                       <li style="margin: 0 0 0 0">
                                         <strong>${t(
                                           'newlogin.bloc1.ip_address',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}</strong>
                                         ${ipAddress}
                                       </li>
                                       <li style="margin: 0 0 0 0">
                                         <strong>${t(
                                           'newlogin.bloc1.device',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}</strong>
                                         ${deviceInfo}
                                       </li>
@@ -786,12 +786,12 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                         <strong
                                           >${t(
                                             'newlogin.bloc1.localization',
-                                            user.languagePreference
+                                            user.languagePreference,
                                           )}</strong
                                         >
                                         ${location} <em>${t(
                                           'newlogin.bloc1.if_available',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}</em>
                                       </li>
                                     </ul>
@@ -988,20 +988,20 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                       <strong
                                         >${t(
                                           'newlogin.bloc2.question',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}</strong
                                       >
                                     </p>
                                     <p style="margin: 0; margin-bottom: 5px">
                                       ${t(
                                         'newlogin.bloc2.answer',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                     </p>
                                     <p style="margin: 0">
                                     ${t(
                                       'newlogin.bloc2.call',
-                                      user.languagePreference
+                                      user.languagePreference,
                                     )}
                                     </p>
                                   </div>
@@ -1093,20 +1093,20 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                       <strong
                                         >${t(
                                           'newlogin.bloc3.unknown_activity',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}</strong
                                       >
                                     </p>
                                     <p style="margin: 0; margin-bottom: 16px">
                                     ${t(
                                       'newlogin.bloc3.security_recommendations',
-                                      user.languagePreference
+                                      user.languagePreference,
                                     )}
                                     </p>
                                     <p style="margin: 0; margin-bottom: 16px">
                                     ${t(
                                       'newlogin.bloc3.security_recommendations_details',
-                                      user.languagePreference
+                                      user.languagePreference,
                                     )}
                                     </p>
                                   </div>
@@ -1157,7 +1157,7 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                       <li style="margin: 0 0 0 0">
                                       ${t(
                                         'newlogin.bloc3.change_password',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                         <a
                                           href="https://step-ify.vercel.app/settings/"
@@ -1168,20 +1168,20 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                           "
                                           >                                    ${t(
                                             'newlogin.bloc3.security',
-                                            user.languagePreference
+                                            user.languagePreference,
                                           )}</a
                                         >.
                                       </li>
                                       <li style="margin: 0 0 0 0">
                                         ${t(
                                           'newlogin.bloc3.check_recent_logins',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}
                                       </li>
                                       <li style="margin: 0 0 0 0">
                                     ${t(
                                       'newlogin.bloc3.report_suspicious_activity',
-                                      user.languagePreference
+                                      user.languagePreference,
                                     )}
                                         <a
                                           href="mailto:stepify.contact@gmail.com?subject=Connection suspecte"
@@ -1284,14 +1284,14 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                       <strong
                                         >${t(
                                           'newlogin.bloc4.why_this_email',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}</strong
                                       >
                                     </p>
                                     <p style="margin: 0">
                                       ${t(
                                         'newlogin.bloc4.why_this_email_details',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                     </p>
                                   </div>
@@ -1375,38 +1375,38 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                     <p style="margin: 0; margin-bottom: 16px">
                                       <strong>${t(
                                         'newlogin.bloc5.need_help',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}</strong>
                                     </p>
                                     <p style="margin: 0; margin-bottom: 16px">
                                     ${t(
                                       'newlogin.bloc5.need_help_details',
-                                      user.languagePreference
+                                      user.languagePreference,
                                     )}
                                     </p>
                                     <p style="margin: 0; margin-bottom: 16px">
                                       ${t(
                                         'newlogin.bloc5.thank_you',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                       <strong>Stepify</strong>,
                                     </p>
                                     <p style="margin: 0; margin-bottom: 16px">
                                     ${t(
                                       'newlogin.bloc5.continue_care',
-                                      user.languagePreference
+                                      user.languagePreference,
                                     )}
                                     </p>
                                     <p style="margin: 0; margin-bottom: 16px">
                                       ${t(
                                         'newlogin.bloc5.see_you_soon',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                     </p>
                                     <p style="margin: 0">
                                       <strong>${t(
                                         'newlogin.bloc5.team_signature',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}</strong> 🚶‍♂️🚴‍♀️
                                     </p>
                                   </div>
@@ -1810,7 +1810,7 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                     <p style="margin: 0">
                                       ${t(
                                         'footer.bloc1',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                       <a
                                         href="mailto:stepify.contact@gmail.com?subject=À propos de Stepify"
@@ -1827,14 +1827,14 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                     <p style="margin: 0">
                                     ${t(
                                       'footer.bloc2_before',
-                                      user.languagePreference
+                                      user.languagePreference,
                                     )}
                                       <a
                                         href="https://step-ify.vercel.app/privacy-policy"
                                         target="_self"
                                         title="${t(
                                           'footer.bloc2_link',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}"
                                         style="
                                           text-decoration: underline;
@@ -1842,25 +1842,25 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                         "
                                         >${t(
                                           'footer.bloc2_link',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}</a
                                       >
                                       ${t(
                                         'footer.bloc2_after',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                     </p>
                                     <p style="margin: 0">&nbsp;</p>
                                     <p style="margin: 0">
                                     ${t(
                                       'footer.bloc3',
-                                      user.languagePreference
+                                      user.languagePreference,
                                     )}
                                     </p>
                                     <p style="margin: 0">
                                       ${t(
                                         'footer.bloc4_before',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                       <a
                                         href="https://step-ify.vercel.app/settings"
@@ -1871,12 +1871,12 @@ const NewLoginEmailTemplate = (user, date, ipAddress, deviceInfo, location) => {
                                         "
                                         >${t(
                                           'footer.bloc4_link',
-                                          user.languagePreference
+                                          user.languagePreference,
                                         )}</a
                                       >
                                       ${t(
                                         'footer.bloc4_after',
-                                        user.languagePreference
+                                        user.languagePreference,
                                       )}
                                     </p>
                                   </div>

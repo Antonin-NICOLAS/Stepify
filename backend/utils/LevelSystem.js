@@ -79,7 +79,7 @@ const calculateProgress = (totalXP, reward = null) => {
     return Math.min(Math.round((xpProgress / xpNeeded) * 100), 100)
   } else {
     const nextThreshold = levelThresholds.find(
-      (t) => t.level === currentLevel + 1
+      (t) => t.level === currentLevel + 1,
     )
     if (!nextThreshold) return 100
 
@@ -94,7 +94,7 @@ const calculateProgress = (totalXP, reward = null) => {
 
 const getXPForNextLevel = (currentLevel) => {
   const nextThreshold = levelThresholds.find(
-    (t) => t.level === currentLevel + 1
+    (t) => t.level === currentLevel + 1,
   )
   return nextThreshold ? nextThreshold.xp : null
 }

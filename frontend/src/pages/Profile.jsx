@@ -151,7 +151,7 @@ const Profile = () => {
     } catch (error) {
       console.error(
         "erreur lors de la mise à jour de l'avatar par url :",
-        error
+        error,
       )
     } finally {
       setIsLoading(false)
@@ -240,7 +240,7 @@ const Profile = () => {
     setIsLoading(true)
     try {
       await updateDailyGoal(user._id, profileData.dailyGoal, () =>
-        setIsEditingGoal(false)
+        setIsEditingGoal(false),
       )
     } catch (error) {
       console.error("erreur lors de la mise à jour de l'objectif quotidien")
@@ -259,7 +259,7 @@ const Profile = () => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' }
     return new Date(dateString).toLocaleDateString(
       i18n.language || 'fr-FR',
-      options
+      options,
     )
   }
 
@@ -425,7 +425,7 @@ const Profile = () => {
                       className="status-indicator"
                       style={{
                         backgroundColor: getStatusColor(
-                          user?.status[user?.languagePreference]
+                          user?.status[user?.languagePreference],
                         ),
                       }}
                     ></div>
@@ -447,7 +447,7 @@ const Profile = () => {
                               ? 'selected'
                               : ''
                           }`}
-                          onClick={() => handleStatusChange(status)}
+                          onClick={() => handleStatusChange(status.value)}
                         >
                           <div
                             className="status-indicator"
@@ -477,7 +477,7 @@ const Profile = () => {
                         type="text"
                         name="status"
                         placeholder={t(
-                          'account.status.custom_status_placeholder'
+                          'account.status.custom_status_placeholder',
                         )}
                         value={profileData.status}
                         onChange={handleProfileChange}
@@ -522,7 +522,7 @@ const Profile = () => {
                         type="text"
                         name="firstName"
                         placeholder={t(
-                          'auth.login.form.register.enterfirstname'
+                          'auth.login.form.register.enterfirstname',
                         )}
                         value={profileData.firstName}
                         onChange={handleProfileChange}
@@ -537,7 +537,7 @@ const Profile = () => {
                         type="text"
                         name="lastName"
                         placeholder={t(
-                          'auth.login.form.register.enterlastname'
+                          'auth.login.form.register.enterlastname',
                         )}
                         value={profileData.lastName}
                         onChange={handleProfileChange}
@@ -552,7 +552,7 @@ const Profile = () => {
                         type="text"
                         name="username"
                         placeholder={t(
-                          'auth.login.form.register.enterusername'
+                          'auth.login.form.register.enterusername',
                         )}
                         value={profileData.username}
                         onChange={handleProfileChange}

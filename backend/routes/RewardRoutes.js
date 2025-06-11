@@ -20,7 +20,7 @@ router.use(
   cors({
     credentials: true,
     origin: process.env.FRONTEND_SERVER,
-  })
+  }),
 )
 router.use(verifyToken, localization, requireAuth)
 

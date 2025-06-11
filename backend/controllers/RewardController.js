@@ -12,7 +12,7 @@ const getAllRewards = async (req, res) => {
   try {
     const rewards = await Reward.find().populate(
       'earnedBy.user',
-      'avatarUrl firstName lastName username'
+      'avatarUrl firstName lastName username',
     )
 
     if (!rewards) {
@@ -34,7 +34,7 @@ const getMyRewards = async (req, res) => {
   try {
     const user = await User.findById(userId).populate(
       'rewardsUnlocked.rewardId',
-      'name description iconUrl criteria tier time earnedBy minLevel isInVitrine isRepeatable target'
+      'name description iconUrl criteria tier time earnedBy minLevel isInVitrine isRepeatable target',
     )
 
     if (!user) {
@@ -45,7 +45,7 @@ const getMyRewards = async (req, res) => {
       res,
       null,
       {},
-      { rewards: user.rewardsUnlocked }
+      { rewards: user.rewardsUnlocked },
     )
   } catch (error) {
     console.error("Error fetching user's rewards:", error)
@@ -62,7 +62,7 @@ const getVitrineRewards = async (req, res) => {
     const user = await User.findById(userId)
       .populate(
         'rewardsUnlocked.rewardId',
-        'name description iconUrl criteria tier'
+        'name description iconUrl criteria tier',
       )
       .select('rewardsUnlocked')
 
@@ -93,7 +93,7 @@ const setInVitrine = async (req, res) => {
     }
 
     const reward = user.rewardsUnlocked.find(
-      (r) => r.rewardId._id.toString() === rewardId
+      (r) => r.rewardId._id.toString() === rewardId,
     )
     if (!reward) {
       return sendLocalizedError(res, 404, 'errors.rewards.not_found')
@@ -115,7 +115,7 @@ const setInVitrine = async (req, res) => {
 const updateUserRewards = async (userId) => {
   try {
     const user = await User.findById(userId).populate(
-      'rewardsUnlocked.rewardId'
+      'rewardsUnlocked.rewardId',
     )
     if (!user) {
       console.error('User not found')
@@ -139,7 +139,7 @@ const updateUserRewards = async (userId) => {
 
       // Check if user already has this reward (unless it's repeatable)
       const existingReward = user.rewardsUnlocked.find((r) =>
-        r.rewardId._id.equals(reward._id)
+        r.rewardId._id.equals(reward._id),
       )
       if (existingReward && !reward.isRepeatable) {
         continue
@@ -234,7 +234,7 @@ const updateUserRewards = async (userId) => {
 // Helper function to update user's reward status
 const updateUserRewardStatus = async (user, reward, shouldAward, progress) => {
   const existingRewardIndex = user.rewardsUnlocked.findIndex((r) =>
-    r.rewardId.equals(reward._id)
+    r.rewardId.equals(reward._id),
   )
 
   if (existingRewardIndex >= 0) {
@@ -245,7 +245,7 @@ const updateUserRewardStatus = async (user, reward, shouldAward, progress) => {
     } else {
       user.rewardsUnlocked[existingRewardIndex].progress = Math.max(
         user.rewardsUnlocked[existingRewardIndex].progress,
-        progress
+        progress,
       )
     }
   } else {
@@ -261,7 +261,7 @@ const updateUserRewardStatus = async (user, reward, shouldAward, progress) => {
   if (shouldAward) {
     const rewardToUpdate = await Reward.findById(reward._id)
     const earnedByEntry = rewardToUpdate.earnedBy.find((e) =>
-      e.user.equals(user._id)
+      e.user.equals(user._id),
     )
 
     if (earnedByEntry) {
@@ -285,7 +285,7 @@ const updateUserRewardStatus = async (user, reward, shouldAward, progress) => {
 const checkStepsReward = async (reward, allStepEntries) => {
   const maxStepsInDay = Math.max(
     ...allStepEntries.map((entry) => entry.totalSteps),
-    0
+    0,
   )
   return maxStepsInDay >= reward.target
 }
@@ -293,7 +293,7 @@ const checkStepsReward = async (reward, allStepEntries) => {
 const calculateStepsProgress = async (reward, allStepEntries) => {
   const maxStepsInDay = Math.max(
     ...allStepEntries.map((entry) => entry.totalSteps),
-    0
+    0,
   )
   return Math.min(Math.round((maxStepsInDay / reward.target) * 100), 100)
 }
@@ -340,7 +340,7 @@ const calculateStepsTimeProgress = async (reward, allStepEntries) => {
 const checkDistanceReward = async (reward, allStepEntries) => {
   const maxDistanceInDay = Math.max(
     ...allStepEntries.map((entry) => entry.totalDistance),
-    0
+    0,
   )
   return maxDistanceInDay >= reward.target
 }
@@ -348,7 +348,7 @@ const checkDistanceReward = async (reward, allStepEntries) => {
 const calculateDistanceProgress = async (reward, allStepEntries) => {
   const maxDistanceInDay = Math.max(
     ...allStepEntries.map((entry) => entry.totalDistance),
-    0
+    0,
   )
   return Math.min(Math.round((maxDistanceInDay / reward.target) * 100), 100)
 }
@@ -394,7 +394,7 @@ const calculateDistanceTimeProgress = async (reward, allStepEntries) => {
 const checkCaloriesReward = async (reward, allStepEntries) => {
   const maxCaloriesInDay = Math.max(
     ...allStepEntries.map((entry) => entry.totalCalories),
-    0
+    0,
   )
   return maxCaloriesInDay >= reward.target
 }
@@ -402,7 +402,7 @@ const checkCaloriesReward = async (reward, allStepEntries) => {
 const calculateCaloriesProgress = async (reward, allStepEntries) => {
   const maxCaloriesInDay = Math.max(
     ...allStepEntries.map((entry) => entry.totalCalories),
-    0
+    0,
   )
   return Math.min(Math.round((maxCaloriesInDay / reward.target) * 100), 100)
 }
@@ -461,7 +461,7 @@ const checkCustomGoalReward = async (user, reward) => {
 const calculateCustomGoalProgress = (user, reward) => {
   return Math.min(
     Math.round((user.totalCustomGoalsCompleted / reward.target) * 100),
-    100
+    100,
   )
 }
 
@@ -473,7 +473,7 @@ const checkChallengesReward = async (user, reward) => {
 const calculateChallengesProgress = (user, reward) => {
   return Math.min(
     Math.round((user.totalChallengesCompleted / reward.target) * 100),
-    100
+    100,
   )
 }
 
@@ -483,7 +483,7 @@ const checkChallengesTimeReward = async (user, reward) => {
   const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
 
   const completedChallenges = user.challenges.filter(
-    (c) => c.completed && c.lastUpdated >= dateThreshold
+    (c) => c.completed && c.lastUpdated >= dateThreshold,
   )
 
   return completedChallenges.length >= reward.target
@@ -494,12 +494,12 @@ const calculateChallengesTimeProgress = async (user, reward) => {
   const dateThreshold = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
 
   const completedChallenges = user.challenges.filter(
-    (c) => c.completed && c.lastUpdated >= dateThreshold
+    (c) => c.completed && c.lastUpdated >= dateThreshold,
   )
 
   return Math.min(
     Math.round((completedChallenges.length / reward.target) * 100),
-    100
+    100,
   )
 }
 
@@ -516,7 +516,7 @@ const calculateLevelProgress = (user, reward) => {
 const checkRankReward = async (user, reward) => {
   // Filtre les entrées de classement pour ce rang spécifique (sans challengeRank)
   const relevantEntries = user.rankingHistory.filter(
-    (entry) => entry.globalRank <= reward.target && !entry.challengeRank
+    (entry) => entry.globalRank <= reward.target && !entry.challengeRank,
   )
 
   if (relevantEntries.length === 0) return false
@@ -533,7 +533,7 @@ const checkRankReward = async (user, reward) => {
 const calculateRankProgress = (user, reward) => {
   // Filtre les entrées de classement pour ce rang spécifique (sans challengeRank)
   const relevantEntries = user.rankingHistory.filter(
-    (entry) => entry.globalRank <= reward.target && !entry.challengeRank
+    (entry) => entry.globalRank <= reward.target && !entry.challengeRank,
   )
 
   if (relevantEntries.length === 0) return 0

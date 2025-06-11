@@ -34,7 +34,7 @@ export const useLeaderboard = (userId) => {
         toast.error(errorMessage)
       }
     },
-    [userId]
+    [userId],
   )
 
   // Get friends leaderboard
@@ -48,14 +48,14 @@ export const useLeaderboard = (userId) => {
           {
             params: filters,
             withCredentials: true,
-          }
+          },
         )
 
         if (data.success) {
           setFriendsData(data.ranking || [])
         } else {
           toast.error(
-            data.error || 'Erreur lors du chargement du classement des amis'
+            data.error || 'Erreur lors du chargement du classement des amis',
           )
           return []
         }
@@ -63,12 +63,12 @@ export const useLeaderboard = (userId) => {
         console.error('Fetch friends leaderboard error:', err)
         toast.error(
           err.response?.data?.error ||
-            'Erreur lors du chargement du classement des amis'
+            'Erreur lors du chargement du classement des amis',
         )
         return []
       }
     },
-    [userId]
+    [userId],
   )
 
   // Get challenges leaderboard
@@ -80,7 +80,7 @@ export const useLeaderboard = (userId) => {
         `${API_LEADERBOARD}/${userId}/challenges`,
         {
           withCredentials: true, //TODO: by query
-        }
+        },
       )
 
       if (data.success) {
@@ -92,7 +92,7 @@ export const useLeaderboard = (userId) => {
     } catch (err) {
       console.error('Fetch challenges leaderboard error:', err)
       toast.error(
-        err.response?.data?.error || 'Erreur lors du chargement des défis'
+        err.response?.data?.error || 'Erreur lors du chargement des défis',
       )
       return []
     }
@@ -116,7 +116,8 @@ export const useLeaderboard = (userId) => {
     } catch (err) {
       console.error('Fetch achievements leaderboard error:', err)
       toast.error(
-        err.response?.data?.error || 'Erreur lors du chargement des récompenses'
+        err.response?.data?.error ||
+          'Erreur lors du chargement des récompenses',
       )
       return []
     }

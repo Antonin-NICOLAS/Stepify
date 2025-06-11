@@ -10,7 +10,7 @@ const hourlyDataSchema = new Schema(
     activeTime: { type: Number, min: 0, default: 0 }, // en minutes
     mode: { type: String, enum: ['walk', 'run', 'bike'], default: 'walk' },
   },
-  { _id: false }
+  { _id: false },
 )
 
 const stepEntrySchema = new Schema(
@@ -46,7 +46,7 @@ const stepEntrySchema = new Schema(
     isVerified: { type: Boolean, default: false, required: true },
     createdAt: { type: Date, default: Date.now },
   },
-  { timestamps: true }
+  { timestamps: true },
 )
 
 module.exports = mongoose.model('StepEntry', stepEntrySchema)

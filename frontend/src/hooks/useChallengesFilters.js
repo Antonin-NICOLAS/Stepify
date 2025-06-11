@@ -19,21 +19,21 @@ export const useChallengesFilters = (user, challenges, publicChallenges) => {
           (challenge.description &&
             challenge.description[user?.languagePreference]
               .toLowerCase()
-              .includes(searchQuery.toLowerCase()))
+              .includes(searchQuery.toLowerCase())),
       )
     }
 
     // Apply type filter
     if (filterType !== 'all') {
       filtered = filtered.filter(
-        (challenge) => challenge.activityType === filterType
+        (challenge) => challenge.activityType === filterType,
       )
     }
 
     // Apply status filter
     if (filterStatus !== 'all') {
       filtered = filtered.filter(
-        (challenge) => challenge.status === filterStatus
+        (challenge) => challenge.status === filterStatus,
       )
     }
 
@@ -70,21 +70,21 @@ export const useChallengesFilters = (user, challenges, publicChallenges) => {
             .includes(searchQuery.toLowerCase()) ||
           challenge.description[user?.languagePreference]
             .toLowerCase()
-            .includes(searchQuery.toLowerCase())
+            .includes(searchQuery.toLowerCase()),
       )
     }
 
     // Apply type filter
     if (filterType !== 'all') {
       filtered = filtered.filter(
-        (challenge) => challenge.activityType === filterType
+        (challenge) => challenge.activityType === filterType,
       )
     }
 
     // Apply status filter
     if (filterStatus !== 'all') {
       filtered = filtered.filter(
-        (challenge) => challenge.status === filterStatus
+        (challenge) => challenge.status === filterStatus,
       )
     }
 
