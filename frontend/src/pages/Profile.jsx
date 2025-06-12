@@ -16,8 +16,6 @@ import {
   Camera,
   Edit,
   Upload,
-  ChevronDown,
-  Check,
   Settings,
   Trophy,
   Target,

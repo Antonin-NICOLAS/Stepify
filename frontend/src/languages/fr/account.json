@@ -25,7 +25,7 @@
       "appdescription": "Utilisez Google Authenticator, Authy ou une autre app",
       "apptitle": "Application d'authentification",
       "desactive": "Désactivé",
-      "emaildescription": "Recevez des codes par email",
+      "emaildescription": "Recevez des codes temporaires sur votre boite mail",
       "hide-backupcodes": "Masquer les codes de sauvegarde",
       "show-backupcodes": "Voir les codes de sauvegarde",
       "webauthndescription": "Utilisez votre appareil ou une clé de sécurité physique",

@@ -7,6 +7,9 @@ import GlobalLoader from '../../utils/GlobalLoader'
 import { useAuth } from '../../context/AuthContext'
 import { use2FA } from '../../context/2FA'
 import { useTranslation } from 'react-i18next'
+// Components
+import PrimaryBtn from '../../components/buttons/primaryBtn'
+import DangerBtn from '../../components/buttons/dangerBtn'
 //icons
 import {
   Mail,
@@ -246,7 +249,7 @@ function Auth() {
           {showWebAuthnPrompt ? (
             <div className="webauthn-prompt">
               <div className="prompt-header">
-                <Fingerprint size={24} />
+                <Fingerprint size={30} color="#fff" />
                 <h3>{t('auth.login.form.accesskey.title')}</h3>
                 <p>{t('auth.login.form.accesskey.description')}</p>
               </div>
@@ -257,25 +260,19 @@ function Auth() {
                   {webauthnError}
                 </div>
               )}
-
-              <div className="prompt-actions">
-                <button
-                  className="primary-btn"
-                  onClick={handleWebAuthnAuth}
-                  disabled={isLoading}
-                >
-                  <Fingerprint size={16} />
-                  {isLoading
-                    ? t('auth.login.form.accesskey.verification')
-                    : t('auth.login.form.accesskey.usekey')}
-                </button>
-                <button
-                  className="secondary-btn"
-                  onClick={() => setShowWebAuthnPrompt(false)}
-                >
-                  {t('common.cancel')}
-                </button>
-              </div>
+              <PrimaryBtn
+                onClick={handleWebAuthnAuth}
+                style={{ marginBottom: '20px' }}
+                disabled={isLoading}
+              >
+                <Fingerprint size={16} />
+                {isLoading
+                  ? t('auth.login.form.accesskey.verification')
+                  : t('auth.login.form.accesskey.usekey')}
+              </PrimaryBtn>
+              <DangerBtn onClick={() => setShowWebAuthnPrompt(false)}>
+                {t('common.cancel')}
+              </DangerBtn>
             </div>
           ) : (
             <div

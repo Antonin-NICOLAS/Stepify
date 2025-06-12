@@ -25,15 +25,46 @@
       "appdescription": "Verwenden Sie Google Authenticator, Authy oder eine andere App",
       "apptitle": "Authentifizierungsanwendung",
       "desactive": "Deaktiviert",
-      "emaildescription": "Codes per E -Mail erhalten",
+      "emaildescription": "Erhalten Sie temporäre Codes auf Ihrer Mailbox",
       "hide-backupcodes": "Verstecken Sie die Sicherungscodes",
       "show-backupcodes": "Siehe Backup -Codes",
       "webauthndescription": "Verwenden Sie Ihr Gerät oder einen physischen Sicherheitsschlüssel",
       "webauthntitle": "Sicherheitsschlüssel"
     },
-    "disable-app": {},
-    "disable-email": {},
-    "disable-webauthn": {},
+    "disable-app": {
+      "visual": {
+        "description": "Sie benötigen die Authentifizierungsanwendung nicht mehr, um eine Verbindung herzustellen",
+        "step1": "Löschen einer Methode",
+        "step1description": "Stellen Sie sicher, dass Sie eine aktive Methode für die Sicherheit Ihres Kontos behalten",
+        "step2": "Deaktivierung bestätigen",
+        "step2description": "Geben Sie den Anwendungscode ein letztes Mal ein",
+        "step3": "Löschen Sie den Anwendungscode",
+        "step3description": "Löschen Sie in der Anwendung den temporären Code von Stepify",
+        "title": "Deaktivierung der Doppelauthentifizierung durch Anwendung"
+      }
+    },
+    "disable-email": {
+      "visual": {
+        "description": "Sie erhalten keine doppelten Authentifizierungscodes mehr per E -Mail",
+        "step1": "Löschen einer Methode",
+        "step1description": "Stellen Sie sicher, dass Sie eine aktive Methode für die Sicherheit Ihres Kontos behalten",
+        "step2": "Deaktivierung bestätigen",
+        "step2description": "Geben Sie Ihr Passwort ein, um die Deaktivierung zu bestätigen",
+        "title": "Deaktivieren der Doppelauthentifizierung per E -Mail"
+      }
+    },
+    "disable-webauthn": {
+      "visual": {
+        "description": "Sie müssen Ihren Sicherheitsschlüssel oder Ihr Gerät nicht mehr verwenden, um eine Verbindung herzustellen",
+        "step1": "Löschen einer Methode",
+        "step1description": "Stellen Sie sicher, dass Sie eine aktive Methode für die Sicherheit Ihres Kontos behalten",
+        "step2": "Deaktivierung bestätigen",
+        "step2description": "Geben Sie Ihr Passwort ein, um die Deaktivierung zu bestätigen",
+        "step3": "Löschen Sie den Sicherheitsschlüssel",
+        "step3description": "Löschen Sie auf Ihrem Gerät den Sicherheitsschlüssel oder den mit Stepify zugeordneten Fingerabdruck",
+        "title": "Deaktivieren Sie die Doppelauthentifizierung nach Sicherheitsschlüssel"
+      }
+    },
     "main": {
       "description": "Zwei -faktorische Authentifizierung fügt Ihrem Konto eine zusätzliche Sicherheitsschicht hinzu. Wählen Sie eine oder mehrere Überprüfungsmethoden.",
       "title": "Konfiguration der Doppelauthentifizierung",

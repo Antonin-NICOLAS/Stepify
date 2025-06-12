@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from './AuthContext'
 import axios from 'axios'
@@ -9,7 +10,8 @@ const API_2FA =
 
 export const use2FA = () => {
   const { t } = useTranslation()
-  const { setUser, setIsAuthenticated, checkAuth } = useAuth()
+  const navigate = useNavigate()
+  const { setIsAuthenticated, checkAuth } = useAuth()
 
   // --- Two Factor Authentication ---
   const TwoFactorStatus = useCallback(async () => {
@@ -102,7 +104,7 @@ export const use2FA = () => {
       } else {
         toast.success(data.message)
         await TwoFactorStatus()
-        return data.backupCodes
+        return data
       }
     } catch (err) {
       toast.error(
@@ -128,7 +130,7 @@ export const use2FA = () => {
       } else {
         toast.success(data.message)
         await TwoFactorStatus()
-        return data.backupCodes
+        return data
       }
     } catch (err) {
       toast.error(
@@ -205,8 +207,8 @@ export const use2FA = () => {
         )
 
         if (data.success) {
-          setUser(data.user)
           setIsAuthenticated(true)
+          checkAuth()
           onSuccess()
           return data
         } else {
@@ -472,8 +474,8 @@ export const use2FA = () => {
         toast.error(data.error || t('common.error'))
         throw data.error
       }
-      setUser(data.user)
       setIsAuthenticated(true)
+      checkAuth()
       onSuccess()
       return data
     } catch (err) {

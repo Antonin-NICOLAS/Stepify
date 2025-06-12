@@ -169,6 +169,16 @@ const verifyRegistration = async (req, res) => {
 
       await user.save()
 
+      const devices = user.twoFactorAuth.webauthnCredentials
+        .filter((cred) => !cred.revoked)
+        .map((cred) => ({
+          id: cred.credentialId,
+          deviceType: cred.deviceType,
+          deviceName: cred.deviceName,
+          lastUsed: cred.lastUsed,
+          createdAt: cred.createdAt,
+        }))
+
       if (
         user.twoFactorAuth.webauthnEnabled &&
         (user.twoFactorAuth.emailEnabled || user.twoFactorAuth.appEnabled)
@@ -179,6 +189,7 @@ const verifyRegistration = async (req, res) => {
           {},
           {
             preferredMethod: user.twoFactorAuth.preferredMethod,
+            webauthnCredentials: devices,
           },
         )
       } else {
@@ -189,6 +200,7 @@ const verifyRegistration = async (req, res) => {
           {
             backupCodes: user.twoFactorAuth.backupCodes,
             preferredMethod: user.twoFactorAuth.preferredMethod,
+            webauthnCredentials: devices,
           },
         )
       }
@@ -392,8 +404,8 @@ const getWebAuthnDevices = async (req, res) => {
       .filter((cred) => !cred.revoked)
       .map((cred) => ({
         id: cred.credentialId,
-        type: cred.deviceType,
-        name: cred.deviceName,
+        deviceType: cred.deviceType,
+        deviceName: cred.deviceName,
         lastUsed: cred.lastUsed,
         createdAt: cred.createdAt,
       }))

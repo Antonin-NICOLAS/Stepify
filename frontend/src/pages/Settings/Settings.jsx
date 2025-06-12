@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { UAParser } from 'ua-parser-js'
 // Context
 import { useAuth } from '../../context/AuthContext'
 import { useUser } from '../../context/UserContext'
@@ -17,14 +18,13 @@ import {
   Globe,
   Moon,
   Sun,
-  ChevronDown,
-  Check,
   SunMoon,
   Shield,
   Bell,
   Eye,
   Lock,
   Smartphone,
+  MonitorSmartphone,
   Monitor,
   User,
   Key,
@@ -32,7 +32,6 @@ import {
   Trash2,
   AlertTriangle,
   SunSnow,
-  X,
 } from 'lucide-react'
 import './Settings.css'
 
@@ -52,7 +51,6 @@ const Settings = () => {
   } = useUser()
 
   const [isLoading, setIsLoading] = useState(false)
-  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false)
   const [activeSessions, setActiveSessions] = useState([])
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
@@ -84,21 +82,6 @@ const Settings = () => {
     goalAchieved: false,
     friendActivity: false,
   })
-
-  // modal ref
-  const LanguageDropdownRef = useRef(null)
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (
-        LanguageDropdownRef.current &&
-        !LanguageDropdownRef.current.contains(e.target)
-      ) {
-        setIsLanguageDropdownOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-  }, [])
 
   // Options
   const languages = [
@@ -132,6 +115,45 @@ const Settings = () => {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const renderUserAgentInfo = (userAgent) => {
+    if (!userAgent) return t('account.sessions.unknown-device')
+
+    const parser = new UAParser(userAgent)
+    const { browser, os, device } = parser.getResult()
+
+    const browserName = browser.name || 'Navigateur inconnu'
+    const browserVersion = browser.version
+    const osName = os.name || 'OS inconnu'
+    const osVersion = os.version || ''
+    const deviceType = device.type || 'desktop'
+    const deviceVendor = device.vendor || ''
+    const deviceModel = device.model || ''
+
+    return (
+      <div className="session-device">
+        <div className="icon" style={{ minWidth: '16px' }}>
+          {' '}
+          {deviceType === 'mobile' ? (
+            <Smartphone size={16} />
+          ) : (
+            <Monitor size={16} />
+          )}
+        </div>
+        <div className="device-info">
+          <p>
+            Appareil utilisé : {deviceVendor} {deviceModel}
+          </p>
+          <p>
+            Version du software : {osName} {osVersion}
+          </p>
+          <p>
+            Navigateur utilisé : {browserName} {browserVersion}
+          </p>
+        </div>
+      </div>
+    )
   }
 
   // Password strength calculator
@@ -203,7 +225,6 @@ const Settings = () => {
     await i18n.changeLanguage(language)
     setIsLoading(true)
     try {
-      setIsLanguageDropdownOpen(false)
       await updateLanguagePreference(user._id, language)
     } catch (error) {
       console.error('Erreur lors de la mise à jour de la langue', error)
@@ -257,7 +278,9 @@ const Settings = () => {
   const handleTerminateAllSessions = async () => {
     try {
       await terminateAllSessions(user?._id)
-      logout()
+      logout(() => {
+        navigate('/login')
+      })
     } catch (error) {
       console.error('Erreur lors de la terminaison des sessions :', error)
     }
@@ -274,7 +297,9 @@ const Settings = () => {
       await deleteUser(user._id)
       setShowDeleteConfirm(false)
       setDeleteConfirmText('')
-      logout()
+      logout(() => {
+        navigate('/login')
+      })
     } catch (error) {
       console.error('Erreur lors de la suppression du compte :', error)
     } finally {
@@ -470,17 +495,14 @@ const Settings = () => {
               style={{ borderBottom: 'none', paddingBottom: '0' }}
             >
               <div className="setting-info">
-                <Monitor size={20} />
+                <MonitorSmartphone size={20} />
                 <div>
                   <h4>{t('account.sessions.title')}</h4>
                   <p>{t('account.sessions.description')}</p>
                 </div>
               </div>
               {activeSessions.length > 1 && (
-                <DangerBtn
-                  style={{ marginTop: '20px' }}
-                  onClick={handleTerminateAllSessions}
-                >
+                <DangerBtn onClick={handleTerminateAllSessions}>
                   {t('account.sessions.terminate-all')}
                 </DangerBtn>
               )}
@@ -489,13 +511,7 @@ const Settings = () => {
               {activeSessions.map((session, index) => (
                 <div key={session.id || index} className="session-item">
                   <div className="session-info">
-                    <div className="session-device">
-                      <Smartphone size={16} />
-                      <span>
-                        {session.userAgent ||
-                          t('account.sessions.unknown-device')}
-                      </span>
-                    </div>
+                    {renderUserAgentInfo(session.userAgent)}
                     <div className="session-details">
                       <span>IP: {session.ipAddress}</span>
                       <span>
@@ -736,7 +752,7 @@ const Settings = () => {
             </div>
             <Select
               options={languages}
-              selected={i18n.language}
+              selected={user?.languagePreference || i18n.language || 'fr'}
               onChange={handleLanguageChange}
               placeholder={t('account.language.select')}
             />

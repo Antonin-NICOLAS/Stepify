@@ -25,15 +25,46 @@
       "appdescription": "Use Google Authenticator, Authy u otra aplicación",
       "apptitle": "Aplicación de autenticación",
       "desactive": "Desactivado",
-      "emaildescription": "Recibir códigos por correo electrónico",
+      "emaildescription": "Recibir códigos temporales en su buzón",
       "hide-backupcodes": "Ocultar los códigos de copia de seguridad",
       "show-backupcodes": "Ver códigos de copia de seguridad",
       "webauthndescription": "Use su dispositivo o una llave de seguridad física",
       "webauthntitle": "Llave de seguridad"
     },
-    "disable-app": {},
-    "disable-email": {},
-    "disable-webauthn": {},
+    "disable-app": {
+      "visual": {
+        "description": "Ya no necesitará la aplicación de autenticación para conectarse",
+        "step1": "Eliminación de un método",
+        "step1description": "Asegúrese de mantener un método activo para la seguridad de su cuenta.",
+        "step2": "Confirmar la desactivación",
+        "step2description": "Ingrese el código de aplicación por última vez",
+        "step3": "Eliminar el código de aplicación",
+        "step3description": "En la aplicación, elimine el código temporal de Stepify",
+        "title": "Desactivación de doble autenticación por aplicación"
+      }
+    },
+    "disable-email": {
+      "visual": {
+        "description": "Ya no recibirá códigos de autenticación dobles por correo electrónico",
+        "step1": "Eliminación de un método",
+        "step1description": "Asegúrese de mantener un método activo para la seguridad de su cuenta.",
+        "step2": "Confirmar la desactivación",
+        "step2description": "Ingrese su contraseña para confirmar la desactivación",
+        "title": "Deshabilitar la doble autenticación por correo electrónico"
+      }
+    },
+    "disable-webauthn": {
+      "visual": {
+        "description": "Ya no tendrá que usar su clave de seguridad o su dispositivo para conectarse",
+        "step1": "Eliminación de un método",
+        "step1description": "Asegúrese de mantener un método activo para la seguridad de su cuenta.",
+        "step2": "Confirmar la desactivación",
+        "step2description": "Ingrese su contraseña para confirmar la desactivación",
+        "step3": "Eliminar la tecla de seguridad",
+        "step3description": "En su dispositivo, elimine la clave de seguridad o la huella digital asociada con Stepify",
+        "title": "Desactivar la doble autenticación por clave de seguridad"
+      }
+    },
     "main": {
       "description": "La autenticación de dos fábricas agrega una capa de seguridad adicional a su cuenta. Elija uno o más métodos de verificación.",
       "title": "Configuración de la doble autenticación",

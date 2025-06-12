@@ -142,8 +142,9 @@ function TwoFactorSettings() {
       } else if (currentMethod === 'email') {
         res = await verifyEmail2FA(verificationCode)
       }
+      console.log('Verification result:', res)
       if (res.backupCodes) {
-        setBackupCodes(codes.backupCodes)
+        setBackupCodes(res.backupCodes)
       }
       if (res.preferredMethod) {
         setTwoFactorStatus((prev) => ({
@@ -483,21 +484,22 @@ function TwoFactorSettings() {
           <div className="method-icon">{icon}</div>
           <div className="method-info">
             <h4>{title}</h4>
-            {activeMethods.length > 1 && isPreferred ? (
-              <span className="preferred-badge">
-                <Star size={14} fill="currentColor" />
-                {t('account.2fa-setup.preferred')}
-              </span>
-            ) : (
-              activeMethods.includes(method) && (
-                <button
-                  className="set-preferred-btn"
-                  onClick={() => handleSetPreferredMethod(method)}
-                >
-                  {t('account.2fa-setup.set-preferred')}
-                </button>
-              )
-            )}
+            {activeMethods.length > 1 &&
+              (isPreferred ? (
+                <span className="preferred-badge">
+                  <Star size={14} fill="currentColor" />
+                  {t('account.2fa-setup.preferred')}
+                </span>
+              ) : (
+                activeMethods.includes(method) && (
+                  <button
+                    className="set-preferred-btn"
+                    onClick={() => handleSetPreferredMethod(method)}
+                  >
+                    {t('account.2fa-setup.set-preferred')}
+                  </button>
+                )
+              ))}
             <p>{description}</p>
           </div>
         </div>
@@ -764,11 +766,14 @@ function TwoFactorSettings() {
               if (newcredential) {
                 setTwoFactorStatus((prev) => ({
                   ...prev,
-                  webauthn: newcredential.webauthnEnabled,
+                  webauthn: true,
                   preferredMethod: newcredential.preferredMethod,
                 }))
+                console.log(twoFactorStatus, newcredential)
                 setWebauthnCredentials(newcredential.webauthnCredentials || [])
-                setBackupCodes(newcredential.backupCodes || [])
+                if (newcredential.backupCodes) {
+                  setBackupCodes(newcredential.backupCodes)
+                }
                 setDeviceName('')
                 setWebauthnError(null)
                 setStep('backup')

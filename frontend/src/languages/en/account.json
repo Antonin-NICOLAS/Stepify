@@ -25,15 +25,46 @@
       "appdescription": "Use Google Authenticator, Authy or another app",
       "apptitle": "Authentication application",
       "desactive": "Disabled",
-      "emaildescription": "Receive codes by email",
+      "emaildescription": "Receive temporary codes on your mailbox",
       "hide-backupcodes": "Hide the backup codes",
       "show-backupcodes": "See backup codes",
       "webauthndescription": "Use your device or a physical safety key",
       "webauthntitle": "Safety key"
     },
-    "disable-app": {},
-    "disable-email": {},
-    "disable-webauthn": {},
+    "disable-app": {
+      "visual": {
+        "description": "You will no longer need the authentication application to connect",
+        "step1": "Deletion of a method",
+        "step1description": "Make sure you keep an active method for safety of your account",
+        "step2": "Confirm deactivation",
+        "step2description": "Enter the application code one last time",
+        "step3": "Delete the application code",
+        "step3description": "In the application, delete Stepify temporary code",
+        "title": "Deactivation of double authentication by application"
+      }
+    },
+    "disable-email": {
+      "visual": {
+        "description": "You will no longer receive double authentication codes by email",
+        "step1": "Deletion of a method",
+        "step1description": "Make sure you keep an active method for safety of your account",
+        "step2": "Confirm deactivation",
+        "step2description": "Enter your password to confirm the deactivation",
+        "title": "Disabling double authentication by email"
+      }
+    },
+    "disable-webauthn": {
+      "visual": {
+        "description": "You will no longer have to use your safety key or your device to connect",
+        "step1": "Deletion of a method",
+        "step1description": "Make sure you keep an active method for safety of your account",
+        "step2": "Confirm deactivation",
+        "step2description": "Enter your password to confirm the deactivation",
+        "step3": "Delete the safety key",
+        "step3description": "On your device, delete the safety key or the fingerprint associated with Stepify",
+        "title": "Disabling double authentication by safety key"
+      }
+    },
     "main": {
       "description": "Two -factory authentication adds an additional safety layer to your account. \nChoose one or more verification methods.",
       "title": "Configuration of double authentication",
