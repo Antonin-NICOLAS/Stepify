@@ -233,13 +233,10 @@ function Header() {
           </div>
 
           <div className="sidebar__actions">
-            <button
-              className="sidebar__link sidebar__theme"
-              onClick={toggleTheme}
-            >
+            <div className="sidebar__link sidebar__theme" onClick={toggleTheme}>
               {theme === 'dark' ? <Sun /> : <Moon />}
               <span>{t('common.header.theme')}</span>
-            </button>
+            </div>
             {isAuthenticated ? (
               <button className="sidebar__link" onClick={handleLogout}>
                 <LogOut />

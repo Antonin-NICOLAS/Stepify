@@ -2,7 +2,6 @@
   margin: 0 auto;
   padding: 2rem;
   background-color: var(--body-color);
-  min-height: 100vh;
 
   .profile-header {
     margin-bottom: 2rem;
@@ -21,20 +20,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-  }
-
-  .settings-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, var(--bleu), var(--turquoise));
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
   }
 
   .settings-btn:hover {
@@ -188,7 +173,10 @@
   .avatar-url-form button {
     background: var(--bleu);
     color: white;
-    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(30px + 5%);
     border: none;
     border-radius: 0 8px 8px 0;
     cursor: pointer;
@@ -232,66 +220,13 @@
   }
 
   .status-selector {
-    position: relative;
-    width: 100%;
-    max-width: 300px;
     margin: 0 auto;
-  }
-
-  .current-status {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    background: var(--blanc);
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-  }
-
-  .current-status:hover {
-    border-color: var(--bleu);
   }
 
   .status-indicator {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-  }
-
-  .status-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--blanc);
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    z-index: 10;
-    margin-top: 0.5rem;
-    max-height: 250px;
-    overflow-y: auto;
-  }
-
-  .status-option {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .status-option:hover,
-  .status-option.selected {
-    background: #f3f4f6;
-  }
-
-  .check-icon {
-    margin-left: auto;
-    color: #14b8a6;
   }
 
   .custom-status-form {
@@ -304,25 +239,6 @@
     border: 2px solid #e5e7eb;
     border-radius: 8px;
     margin-bottom: 1rem;
-  }
-
-  .edit-profile-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, var(--bleu), var(--turquoise));
-    color: white;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0 auto;
-  }
-
-  .edit-profile-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(74, 145, 226, 0.3);
   }
 
   .profile-edit-form {
@@ -364,35 +280,6 @@
     display: flex;
     gap: 1rem;
     justify-content: center;
-  }
-
-  .save-btn {
-    background: linear-gradient(135deg, var(--bleu), var(--turquoise));
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .save-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(74, 145, 226, 0.3);
-  }
-
-  .cancel-btn {
-    background: #6b7280;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .cancel-btn:hover {
-    background: #4b5563;
   }
 
   /* Stats Section */
@@ -498,9 +385,9 @@
   }
 
   .edit-btn {
+    display: flex;
     background: rgba(255, 255, 255, 0.2);
     color: white;
-    border: none;
     border-radius: 8px;
     padding: 0.5rem;
     cursor: pointer;

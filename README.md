@@ -31,6 +31,7 @@ Stepify est une application web de suivi d'activité physique ludique. Marchez, 
 - [x] ⏰ **Support des cron jobs Vercel** (actuellement fonctionne seulement en dev)
 - [x] 📈 **Fenêtre de confirmation** : Ajouter une fenêtre de confirmation lors de la suppression du compte
 - [x] 🎖️ **Gestion des récompenses de classement (1er, 2e, 3e...)**
+- [x] 🎨 **Mettre en rose les liens de footer de confidentialité**
 - [ ] 🔒 **Internationaliser les pages**
   - [x] Components (Header + NotFound)
   - [x] Authentification
@@ -49,7 +50,7 @@ Stepify est une application web de suivi d'activité physique ludique. Marchez, 
   - [x] Steps
   - [x] Friends
   - [ ] Settings & profile
-- [ ] Remplacer les select html5 par les react-Select avec un style universel
+- [ ] Remplacer les select html5 par les Select fait maison (cf components/Select)
 - [ ] Remplacer React Hot Toast par react toastify
 - [ ] 📊 **Remplacer les graphiques Highcharts** par Chart.js
 - [ ] 🚨 **Ajout de vérification de mot de passe côté frontend**: — — — — —
@@ -59,7 +60,6 @@ Stepify est une application web de suivi d'activité physique ludique. Marchez, 
 - [ ] Ajouter la méthode préférée en 2FA et adapter l'affichage en fonction des méthodes activées + mieux gérer les backup codes + vérifier fonction backup codes + vérifier fonction suppression de clé d'accès + faire les emails de 2FA au propre et dans les 4 langues
 - [ ] 📈 **Nouveau record** : informer l'utilisateur quand il bat son record personnel
 - [ ] ⏳ **Date réelle d’obtention des récompenses** (pas la date de vérification)
-- [ ] 🎨 **Mettre en rose les liens de footer de confidentialité**
 - [ ] 📊 **Fonction “Comparer” dans la page Récompenses**
 
 ---

@@ -23,20 +23,6 @@
     background-clip: text;
   }
 
-  .profile-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, var(--bleu), var(--turquoise));
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
   .profile-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(74, 145, 226, 0.3);
@@ -88,6 +74,7 @@
 
   .setting-item:last-child {
     border-bottom: none;
+    padding: 1rem 0 0 0;
   }
 
   .setting-info {
@@ -108,24 +95,6 @@
     font-size: 0.875rem;
     color: #6b7280;
     margin: 0;
-  }
-
-  .edit-btn,
-  .action-btn {
-    background: linear-gradient(135deg, var(--bleu), var(--turquoise));
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-  }
-
-  .edit-btn:hover,
-  .action-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(74, 145, 226, 0.3);
   }
 
   /* Password Editor */
@@ -228,37 +197,6 @@
     justify-content: flex-end;
   }
 
-  .save-btn {
-    background: linear-gradient(135deg, var(--bleu), var(--turquoise));
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-  }
-
-  .save-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(74, 145, 226, 0.3);
-  }
-
-  .cancel-btn {
-    background: #6b7280;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-  }
-
-  .cancel-btn:hover {
-    background: #4b5563;
-  }
-
   /* Toggle Switch */
   .toggle-switch {
     position: relative;
@@ -306,62 +244,6 @@
   }
 
   /* Language Selector */
-  .language-selector {
-    position: relative;
-  }
-
-  .selected-language {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--body-color);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    min-width: 150px;
-  }
-
-  .selected-language:hover {
-    border-color: var(--Couleur2);
-  }
-
-  .selected-language svg.rotated {
-    transform: rotate(180deg);
-  }
-
-  .language-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: var(--background);
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    width: 200px;
-    z-index: 10;
-    margin-top: 0.5rem;
-    max-height: 250px;
-    overflow-y: auto;
-  }
-
-  .language-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .language-option:hover,
-  .language-option.selected {
-    background: var(--blanc);
-  }
-
-  .check-icon {
-    color: var(--turquoise);
-  }
 
   /* Theme Selector */
   .theme-selector {
@@ -439,27 +321,6 @@
     transition: all 0.3s ease;
   }
 
-  .terminate-btn:hover {
-    background: #dc2626;
-  }
-
-  .terminate-all-btn {
-    width: -webkit-fill-available;
-    width: fill-available;
-    background: #ef4444;
-    color: white;
-    border: none;
-    padding: 0.75rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 0.5rem;
-  }
-
-  .terminate-all-btn:hover {
-    background: #dc2626;
-  }
-
   /* Danger Zone */
   .danger-zone {
     border: 2px solid #dc2626;
@@ -471,61 +332,29 @@
     border-bottom-color: #dc2626;
   }
 
-  .danger-btn {
-    background: #ef4444;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-  }
-
-  .danger-btn:hover {
-    background: #dc2626;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-  }
-
-  .danger-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-
   /* Delete Confirmation Modal */
-  .delete-confirm-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+  .modal {
+    border: 2px solid #dc2626;
   }
 
-  .modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 16px;
-    max-width: 400px;
-    width: 90%;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  .modal-header {
+    border-bottom: 2px solid #dc2626;
   }
 
-  .modal-content h4 {
+  .modal-header h3 {
     color: #dc2626;
-    margin-bottom: 1rem;
   }
 
-  .modal-content p {
-    margin-bottom: 1rem;
-    color: #374151;
+  .close-button {
+    background: none;
+    border: none;
+    color: var(--Gris);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .close-button:hover {
+    color: var(--Couleur4);
   }
 
   .modal-content input {
@@ -533,7 +362,6 @@
     padding: 0.75rem 1rem;
     border: 2px solid #e5e7eb;
     border-radius: 8px;
-    margin-bottom: 1.5rem;
   }
 
   .modal-actions {

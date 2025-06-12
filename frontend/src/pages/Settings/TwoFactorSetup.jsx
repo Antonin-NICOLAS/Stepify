@@ -7,6 +7,7 @@ import {
   Shield,
   ShieldCheck,
   ShieldX,
+  Binary,
   Copy,
   Download,
   Key,
@@ -135,24 +136,27 @@ function TwoFactorSettings() {
     setIsLoading(true)
 
     try {
-      let codes
+      let res
       if (currentMethod === 'app') {
-        codes = await verifyTwoFactor(verificationCode)
+        res = await verifyTwoFactor(verificationCode)
       } else if (currentMethod === 'email') {
-        codes = await verifyEmail2FA(verificationCode)
+        res = await verifyEmail2FA(verificationCode)
       }
-
-      if (codes) {
-        setBackupCodes(codes)
+      if (res.backupCodes) {
+        setBackupCodes(codes.backupCodes)
       }
-      setStep('backup')
-
+      if (res.preferredMethod) {
+        setTwoFactorStatus((prev) => ({
+          ...prev,
+          preferredMethod: res.preferredMethod,
+        }))
+      }
       setTwoFactorStatus((prev) => ({
         ...prev,
         [currentMethod]: true,
       }))
-
       setVerificationCode('')
+      setStep('backup')
     } catch (error) {
       console.error('Code de vérification incorrect :', error)
     } finally {
@@ -278,6 +282,28 @@ function TwoFactorSettings() {
           ],
         }
 
+      case 'setup-webauthn':
+        return {
+          title: t('account.2fa-setup.setup-webauthn.visual.title'),
+          description: t('account.2fa-setup.setup-webauthn.visual.description'),
+          steps: [
+            {
+              icon: <Fingerprint />,
+              title: t('account.2fa-setup.setup-webauthn.visual.step1'),
+              description: t(
+                'account.2fa-setup.setup-webauthn.visual.step1description',
+              ),
+            },
+            {
+              icon: <Shield />,
+              title: t('account.2fa-setup.setup-webauthn.visual.step2'),
+              description: t(
+                'account.2fa-setup.setup-webauthn.visual.step2description',
+              ),
+            },
+          ],
+        }
+
       case 'verify-app':
       case 'verify-email':
         return {
@@ -304,6 +330,87 @@ function TwoFactorSettings() {
             },
           ],
         }
+      case 'disable-email':
+        return {
+          title: t('account.2fa-setup.disable-email.visual.title'),
+          description: t('account.2fa-setup.disable-email.visual.description'),
+          steps: [
+            {
+              icon: <Key />,
+              title: t('account.2fa-setup.disable-email.visual.step1'),
+              description: t(
+                'account.2fa-setup.disable-email.visual.step1description',
+              ),
+            },
+            {
+              icon: <ShieldX />,
+              title: t('account.2fa-setup.disable-email.visual.step2'),
+              description: t(
+                'account.2fa-setup.disable-email.visual.step2description',
+              ),
+            },
+          ],
+        }
+
+      case 'disable-app':
+        return {
+          title: t('account.2fa-setup.disable-app.visual.title'),
+          description: t('account.2fa-setup.disable-app.visual.description'),
+          steps: [
+            {
+              icon: <Key />,
+              title: t('account.2fa-setup.disable-app.visual.step1'),
+              description: t(
+                'account.2fa-setup.disable-app.visual.step1description',
+              ),
+            },
+            {
+              icon: <ShieldX />,
+              title: t('account.2fa-setup.disable-app.visual.step2'),
+              description: t(
+                'account.2fa-setup.disable-app.visual.step2description',
+              ),
+            },
+            {
+              icon: <Binary />,
+              title: t('account.2fa-setup.disable-app.visual.step3'),
+              description: t(
+                'account.2fa-setup.disable-app.visual.step3description',
+              ),
+            },
+          ],
+        }
+
+      case 'disable-webauthn':
+        return {
+          title: t('account.2fa-setup.disable-webauthn.visual.title'),
+          description: t(
+            'account.2fa-setup.disable-webauthn.visual.description',
+          ),
+          steps: [
+            {
+              icon: <Key />,
+              title: t('account.2fa-setup.disable-webauthn.visual.step1'),
+              description: t(
+                'account.2fa-setup.disable-webauthn.visual.step1description',
+              ),
+            },
+            {
+              icon: <ShieldX />,
+              title: t('account.2fa-setup.disable-webauthn.visual.step2'),
+              description: t(
+                'account.2fa-setup.disable-webauthn.visual.step2description',
+              ),
+            },
+            {
+              icon: <Binary />,
+              title: t('account.2fa-setup.disable-webauthn.visual.step3'),
+              description: t(
+                'account.2fa-setup.disable-webauthn.visual.step3description',
+              ),
+            },
+          ],
+        }
 
       case 'backup':
         return {
@@ -322,28 +429,6 @@ function TwoFactorSettings() {
               title: t('account.2fa-setup.backup.visual.step2'),
               description: t(
                 'account.2fa-setup.backup.visual.step2description',
-              ),
-            },
-          ],
-        }
-
-      case 'setup-webauthn':
-        return {
-          title: t('account.2fa-setup.setup-webauthn.visual.title'),
-          description: t('account.2fa-setup.setup-webauthn.visual.description'),
-          steps: [
-            {
-              icon: <Fingerprint />,
-              title: t('account.2fa-setup.setup-webauthn.visual.step1'),
-              description: t(
-                'account.2fa-setup.setup-webauthn.visual.step1description',
-              ),
-            },
-            {
-              icon: <Shield />,
-              title: t('account.2fa-setup.setup-webauthn.visual.step2'),
-              description: t(
-                'account.2fa-setup.setup-webauthn.visual.step2description',
               ),
             },
           ],
@@ -677,21 +762,20 @@ function TwoFactorSettings() {
             try {
               const newcredential = await registerWebAuthnCredential(deviceName)
               if (newcredential) {
-                const status = await TwoFactorStatus()
-                setTwoFactorStatus({
-                  app: status.appEnabled || false,
-                  email: status.emailEnabled || false,
-                  webauthn: status.webauthnEnabled || false,
-                  preferredMethod: status.preferredMethod || null,
-                })
-                setWebauthnCredentials(status.webauthnCredentials || [])
-                setBackupCodes(status.backupCodes || [])
+                setTwoFactorStatus((prev) => ({
+                  ...prev,
+                  webauthn: newcredential.webauthnEnabled,
+                  preferredMethod: newcredential.preferredMethod,
+                }))
+                setWebauthnCredentials(newcredential.webauthnCredentials || [])
+                setBackupCodes(newcredential.backupCodes || [])
                 setDeviceName('')
                 setWebauthnError(null)
                 setStep('backup')
               } else {
                 setStep('main')
                 setWebauthnCredentials([])
+                setWebauthnError(newcredential.error || t('common.error'))
               }
             } catch (error) {
               setWebauthnError(error.message)
@@ -714,7 +798,7 @@ function TwoFactorSettings() {
   const renderVerification = () => (
     <form onSubmit={handleVerify2FA} className="auth-form-content">
       <div className="auth-input-group">
-        <label htmlFor="verificationCode">
+        <label htmlFor="disable-otp-1">
           {t('account.2fa-setup.verify.label-code')}
         </label>
         <div className="otp-container">
@@ -888,7 +972,7 @@ function TwoFactorSettings() {
       className="auth-form-content"
     >
       <div className="auth-input-group">
-        <label htmlFor="verificationCode">
+        <label htmlFor="disable-otp-1">
           {t('account.2fa-setup.verify.label-code')}
         </label>
         <div className="otp-container">

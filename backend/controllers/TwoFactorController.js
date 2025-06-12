@@ -195,6 +195,7 @@ const verifyAndEnableTwoFactor = async (req, res) => {
         {},
         {
           backupCodes: user.twoFactorAuth.backupCodes,
+          preferredMethod: user.twoFactorAuth.preferredMethod,
         },
       )
     }
@@ -269,6 +270,7 @@ const verifyAndEnableEmail2FA = async (req, res) => {
         {},
         {
           backupCodes: user.twoFactorAuth.backupCodes,
+          preferredMethod: user.twoFactorAuth.preferredMethod,
         },
       )
     }

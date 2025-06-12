@@ -1,0 +1,19 @@
+button.button.blue-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: calc(8px + 0.6vh) calc(8px + 0.6vw);
+  background: transparent;
+  border: 2px solid var(--bleu);
+  color: var(--bleu);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: calc(10px + 0.5vh + 0.3vw);
+}
+
+button.button.blue-btn:hover {
+  background: var(--bleu);
+  color: white;
+}

@@ -1,0 +1,28 @@
+.danger-btn {
+  background: linear-gradient(135deg, var(--Couleur4), #dc2626);
+  padding: calc(8px + 0.6vh) calc(8px + 0.6vw);
+  color: white;
+}
+
+.danger-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626, var(--Couleur4));
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.danger-btn:active:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626, var(--Couleur4));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.danger-btn:focus:not(:disabled) {
+  outline: 2px solid var(--Couleur4);
+  outline-offset: 2px;
+}
+
+.danger-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}

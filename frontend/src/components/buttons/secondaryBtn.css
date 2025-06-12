@@ -1,0 +1,29 @@
+.auth-button-secondary {
+  background-color: transparent;
+  padding: calc(4px + 0.6vh) calc(4px + 0.6vw);
+  border: 3px solid var(--Couleur2);
+  color: var(--Couleur);
+}
+
+.auth-button-secondary:hover:not(:disabled) {
+  background-color: var(--Couleur2);
+  transform: translateY(-1px);
+  color: var(--Noir);
+}
+
+.auth-button-secondary:active:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.auth-button-secondary:focus:not(:disabled) {
+  outline: 2px solid var(--Couleur2);
+  outline-offset: 2px;
+}
+
+.auth-button-secondary:disabled {
+  background-color: var(--Couleur2);
+  color: var(--Noir);
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}

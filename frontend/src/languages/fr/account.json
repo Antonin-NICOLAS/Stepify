@@ -31,6 +31,40 @@
       "webauthndescription": "Utilisez votre appareil ou une clé de sécurité physique",
       "webauthntitle": "Clé de sécurité"
     },
+    "disable-app": {
+      "visual": {
+        "description": "Vous n'aurez plus besoin de l'application d'authentification pour vous connecter",
+        "step1": "Suppression d'une méthode",
+        "step1description": "Assurez vous de conserver une méthode active pour la sécurité de votre compte",
+        "step2": "Confirmer la désactivation",
+        "step2description": "Entrez une dernière fois le code de l'application",
+        "step3": "Supprimer le code de l'application",
+        "step3description": "Dans l'application, supprimez le code temporaire de Stepify",
+        "title": "Désactivation de la double authentification par application"
+      }
+    },
+    "disable-email": {
+      "visual": {
+        "description": "Vous ne recevrez plus de codes de double authentification par email",
+        "step1": "Suppression d'une méthode",
+        "step1description": "Assurez vous de conserver une méthode active pour la sécurité de votre compte",
+        "step2": "Confirmer la désactivation",
+        "step2description": "Entrez votre mot de passe pour confirmer la désactivation",
+        "title": "Désactivation de la double authentification par email"
+      }
+    },
+    "disable-webauthn": {
+      "visual": {
+        "description": "Vous n'aurez plus à utiliser votre clé de sécurité ou votre appareil pour vous connecter",
+        "step1": "Suppression d'une méthode",
+        "step1description": "Assurez vous de conserver une méthode active pour la sécurité de votre compte",
+        "step2": "Confirmer la désactivation",
+        "step2description": "Entrez votre mot de passe pour confirmer la désactivation",
+        "step3": "Supprimer la clé de sécurité",
+        "step3description": "Sur votre appareil, supprimez la clé de sécurité ou l'empreinte digitale associée à Stepify",
+        "title": "Désactivation de la double authentification par clé de sécurité"
+      }
+    },
     "main": {
       "description": "Ajoutez une couche de sécurité supplémentaire à votre compte en activant la double authentification. Choisissez entre une application d'authentification, des codes par email ou une clé de sécurité physique.",
       "title": "Configuration de la double authentification",
@@ -136,6 +170,7 @@
     "en": "Anglais",
     "es": "Espagnol",
     "fr": "Français",
+    "select": "Sélectionnez une langue",
     "title": "Langue"
   },
   "notif": {

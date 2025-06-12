@@ -1,10 +1,17 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+// Contexts
 import { useAuth } from '../context/AuthContext'
 import { useUser } from '../context/UserContext'
-import { toast } from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+// Components
+import PrimaryBtn from '../components/buttons/primaryBtn'
+import DangerBtn from '../components/buttons/dangerBtn'
+import BlueBtn from '../components/buttons/blueBtn'
+import Select from '../components/Selector'
+import { toast } from 'react-hot-toast'
 import GlobalLoader from '../utils/GlobalLoader'
+// Icons
 import {
   Camera,
   Edit,
@@ -19,6 +26,7 @@ import {
   Award,
   Zap,
 } from 'lucide-react'
+// CSS
 import './Profile.css'
 
 const Profile = () => {
@@ -39,7 +47,6 @@ const Profile = () => {
   const [isEditingUrlAvatar, setIsEditingUrlAvatar] = useState(false)
   const [isEditingAvatar, setIsEditingAvatar] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false)
   const [isCustomStatus, setIsCustomStatus] = useState(false)
   const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [Image, setImage] = useState('')
@@ -99,15 +106,54 @@ const Profile = () => {
     return statusColorMap[statusKey] || '#6c757d'
   }
 
+  const getIndicator = (code) => {
+    return (
+      <div
+        className="status-indicator"
+        style={{
+          backgroundColor: getStatusColor(code),
+        }}
+      ></div>
+    )
+  }
+
   // Options
   const statusOptions = [
-    { label: 'available', value: t('account.status.options.available') },
-    { label: 'busy', value: t('account.status.options.busy') },
-    { label: 'gym', value: t('account.status.options.gym') },
-    { label: 'dnd', value: t('account.status.options.dnd') },
-    { label: 'custom', value: t('account.status.options.custom') },
-    { label: 'running', value: t('account.status.options.running') },
-    { label: 'base', value: t('account.status.options.default') },
+    {
+      code: 'available',
+      value: t('account.status.options.available'),
+      label: t('account.status.options.available'),
+    },
+    {
+      code: 'busy',
+      value: t('account.status.options.busy'),
+      label: t('account.status.options.busy'),
+    },
+    {
+      code: 'gym',
+      value: t('account.status.options.gym'),
+      label: t('account.status.options.gym'),
+    },
+    {
+      code: 'dnd',
+      value: t('account.status.options.dnd'),
+      label: t('account.status.options.dnd'),
+    },
+    {
+      code: 'custom',
+      value: t('account.status.options.custom'),
+      label: t('account.status.options.custom'),
+    },
+    {
+      code: 'running',
+      value: t('account.status.options.running'),
+      label: t('account.status.options.running'),
+    },
+    {
+      code: 'base',
+      value: t('account.status.options.default'),
+      label: t('account.status.options.default'),
+    },
   ]
 
   // Avatar Handlers
@@ -215,16 +261,13 @@ const Profile = () => {
   const handleStatusChange = async (status) => {
     if (status === t('account.status.options.custom')) {
       setIsCustomStatus(true)
-      setIsStatusDropdownOpen(false)
       return
     }
     setIsCustomStatus(false)
-    setIsStatusDropdownOpen(false)
     if (status !== user.status[user?.languagePreference]) {
       setIsLoading(true)
       try {
         setIsCustomStatus(false)
-        setIsStatusDropdownOpen(false)
         await updateStatus(user._id, status)
       } catch (error) {
         console.error('erreur lors de la mise à jour du statut :', error)
@@ -270,13 +313,10 @@ const Profile = () => {
       <div className="profile-header">
         <div className="header-content">
           <h1>{t('account.title')}</h1>
-          <button
-            className="settings-btn"
-            onClick={() => navigate('/settings')}
-          >
+          <PrimaryBtn onClick={() => navigate('/settings')}>
             <Settings size={20} />
             {t('account.settings.title')}
-          </button>
+          </PrimaryBtn>
         </div>
       </div>
 
@@ -356,29 +396,34 @@ const Profile = () => {
                     style={{ display: 'none' }}
                   />
                   <div className="form-actions">
-                    <button
+                    <DangerBtn
                       type="button"
-                      className="cancel-btn"
                       onClick={() => setIsEditingAvatar(false)}
                     >
                       {t('common.cancel')}
-                    </button>
-                    <button className="save-btn" type="submit">
+                    </DangerBtn>
+                    <PrimaryBtn type="submit">
                       {t('account.buttons.save')}
-                    </button>
+                    </PrimaryBtn>
                   </div>
                 </form>
               )}
 
-              {!isEditingAvatar && (
-                <button
-                  className="change-avatar-btn"
-                  onClick={() => setIsEditingUrlAvatar(!isEditingUrlAvatar)}
+              {isEditingUrlAvatar && (
+                <DangerBtn
+                  style={{ marginTop: '1rem' }}
+                  onClick={() => setIsEditingUrlAvatar(false)}
                 >
-                  {isEditingUrlAvatar
-                    ? t('common.cancel')
-                    : t('account.avatar.edit')}
-                </button>
+                  {t('common.cancel')}
+                </DangerBtn>
+              )}
+              {!isEditingUrlAvatar && (
+                <BlueBtn
+                  style={{ marginTop: '1rem' }}
+                  onClick={() => setIsEditingUrlAvatar(true)}
+                >
+                  {t('account.avatar.edit')}
+                </BlueBtn>
               )}
 
               {isEditingUrlAvatar && (
@@ -413,100 +458,55 @@ const Profile = () => {
               </div>
 
               <div className="status-section">
-                <div className="status-selector">
-                  <div
-                    className="current-status"
-                    onClick={() =>
-                      setIsStatusDropdownOpen(!isStatusDropdownOpen)
-                    }
-                    aria-expanded={isStatusDropdownOpen}
+                <Select
+                  className="status-selector"
+                  options={statusOptions}
+                  selected={user?.status[user?.languagePreference]}
+                  onChange={handleStatusChange}
+                  placeholder={t('account.status.options.default')}
+                  thirdField={getIndicator}
+                  customizeOption={true}
+                />
+                {isCustomStatus && (
+                  <form
+                    className="custom-status-form"
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                      handleStatusChange(profileData.status)
+                    }}
                   >
-                    <div
-                      className="status-indicator"
-                      style={{
-                        backgroundColor: getStatusColor(
-                          user?.status[user?.languagePreference],
-                        ),
-                      }}
-                    ></div>
-                    <span>{user?.status[user?.languagePreference]}</span>
-                    <ChevronDown
-                      size={16}
-                      className={isStatusDropdownOpen ? 'rotated' : ''}
+                    <input
+                      type="text"
+                      name="status"
+                      placeholder={t(
+                        'account.status.custom_status_placeholder',
+                      )}
+                      value={profileData.status}
+                      onChange={handleProfileChange}
                     />
-                  </div>
-
-                  {isStatusDropdownOpen && (
-                    <div className="status-dropdown">
-                      {statusOptions.map((status) => (
-                        <div
-                          key={status.label}
-                          className={`status-option ${
-                            user?.status[user?.languagePreference] ===
-                            status.value
-                              ? 'selected'
-                              : ''
-                          }`}
-                          onClick={() => handleStatusChange(status.value)}
-                        >
-                          <div
-                            className="status-indicator"
-                            style={{
-                              backgroundColor: getStatusColor(status.label),
-                            }}
-                          ></div>
-                          <span>{status.value}</span>
-                          {user?.status[user?.languagePreference] ===
-                            status.value && (
-                            <Check size={16} className="check-icon" />
-                          )}
-                        </div>
-                      ))}
+                    <div className="form-actions">
+                      <DangerBtn
+                        type="button"
+                        onClick={() => setIsCustomStatus(false)}
+                      >
+                        {t('common.cancel')}
+                      </DangerBtn>
+                      <PrimaryBtn type="submit">
+                        {t('account.buttons.save')}
+                      </PrimaryBtn>
                     </div>
-                  )}
-
-                  {isCustomStatus && (
-                    <form
-                      className="custom-status-form"
-                      onSubmit={(e) => {
-                        e.preventDefault()
-                        handleStatusChange(profileData.status)
-                      }}
-                    >
-                      <input
-                        type="text"
-                        name="status"
-                        placeholder={t(
-                          'account.status.custom_status_placeholder',
-                        )}
-                        value={profileData.status}
-                        onChange={handleProfileChange}
-                      />
-                      <div className="form-actions">
-                        <button
-                          type="button"
-                          className="cancel-btn"
-                          onClick={() => setIsCustomStatus(false)}
-                        >
-                          {t('common.cancel')}
-                        </button>
-                        <button className="save-btn" type="submit">
-                          {t('account.buttons.save')}
-                        </button>
-                      </div>
-                    </form>
-                  )}
-                </div>
+                  </form>
+                )}
               </div>
 
               {!isEditingProfile ? (
-                <button
-                  className="edit-profile-btn"
+                <PrimaryBtn
+                  style={{ margin: '0 auto' }}
                   onClick={() => setIsEditingProfile(true)}
                 >
                   <Edit size={16} />
                   {t('account.buttons.edit')}
-                </button>
+                </PrimaryBtn>
               ) : (
                 <form className="profile-edit-form" onSubmit={saveProfile}>
                   {errors.profile && (
@@ -570,16 +570,15 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="form-actions">
-                    <button
+                    <DangerBtn
                       type="button"
-                      className="cancel-btn"
                       onClick={() => setIsEditingProfile(false)}
                     >
                       {t('common.cancel')}
-                    </button>
-                    <button type="submit" className="save-btn">
+                    </DangerBtn>
+                    <PrimaryBtn type="submit">
                       {t('account.buttons.saveProfile')}
-                    </button>
+                    </PrimaryBtn>
                   </div>
                 </form>
               )}
@@ -692,16 +691,16 @@ const Profile = () => {
                   <span>{t('common.activityTypes.steps')}</span>
                 </div>
                 <div className="form-actions">
-                  <button
+                  <DangerBtn
                     type="button"
                     className="cancel-btn"
                     onClick={() => setIsEditingGoal(false)}
                   >
                     {t('common.cancel')}
-                  </button>
-                  <button type="submit" className="save-btn">
+                  </DangerBtn>
+                  <PrimaryBtn type="submit">
                     {t('account.dailyGoal.save')}
-                  </button>
+                  </PrimaryBtn>
                 </div>
               </form>
             )}

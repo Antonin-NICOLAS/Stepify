@@ -173,7 +173,14 @@ const verifyRegistration = async (req, res) => {
         user.twoFactorAuth.webauthnEnabled &&
         (user.twoFactorAuth.emailEnabled || user.twoFactorAuth.appEnabled)
       ) {
-        return sendLocalizedSuccess(res, 'success.2fa.new_method_enabled')
+        return sendLocalizedSuccess(
+          res,
+          'success.2fa.new_method_enabled',
+          {},
+          {
+            preferredMethod: user.twoFactorAuth.preferredMethod,
+          },
+        )
       } else {
         return sendLocalizedSuccess(
           res,
@@ -181,6 +188,7 @@ const verifyRegistration = async (req, res) => {
           {},
           {
             backupCodes: user.twoFactorAuth.backupCodes,
+            preferredMethod: user.twoFactorAuth.preferredMethod,
           },
         )
       }

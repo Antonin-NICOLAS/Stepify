@@ -306,7 +306,7 @@ export const use2FA = () => {
       console.log('WebAuthn registration response:', finaldata)
       if (finaldata.success) {
         await checkAuth()
-        return finaldata.success
+        return finaldata
       } else {
         toast.error(finaldata.error || t('common.error'))
         throw finaldata.error

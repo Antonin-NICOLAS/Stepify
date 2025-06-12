@@ -1,10 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+// Context
 import { useAuth } from '../../context/AuthContext'
 import { useUser } from '../../context/UserContext'
 import { toast } from 'react-hot-toast'
 import { useTranslation, Trans } from 'react-i18next'
+// Components
+import Select from '../../components/Selector'
+import Modal from '../../components/Modal'
+import PrimaryBtn from '../../components/buttons/primaryBtn'
+import SecondaryBtn from '../../components/buttons/secondaryBtn'
+import DangerBtn from '../../components/buttons/dangerBtn'
 import GlobalLoader from '../../utils/GlobalLoader'
+// Icons
 import {
   Globe,
   Moon,
@@ -24,6 +32,7 @@ import {
   Trash2,
   AlertTriangle,
   SunSnow,
+  X,
 } from 'lucide-react'
 import './Settings.css'
 
@@ -76,11 +85,27 @@ const Settings = () => {
     friendActivity: false,
   })
 
+  // modal ref
+  const LanguageDropdownRef = useRef(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        LanguageDropdownRef.current &&
+        !LanguageDropdownRef.current.contains(e.target)
+      ) {
+        setIsLanguageDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Options
   const languages = [
-    { code: 'en', name: t('account.language.en') },
-    { code: 'fr', name: t('account.language.fr') },
-    { code: 'es', name: t('account.language.es') },
-    { code: 'de', name: t('account.language.de') },
+    { value: 'en', label: t('account.language.en') },
+    { value: 'fr', label: t('account.language.fr') },
+    { value: 'es', label: t('account.language.es') },
+    { value: 'de', label: t('account.language.de') },
   ]
 
   useEffect(() => {
@@ -89,9 +114,13 @@ const Settings = () => {
       setNotificationPreferences(
         user.notificationPreferences || notificationPreferences,
       )
-      loadActiveSessions()
     }
   }, [user])
+  useEffect(() => {
+    if (user) {
+      loadActiveSessions()
+    }
+  }, [])
 
   const loadActiveSessions = async () => {
     setIsLoading(true)
@@ -169,12 +198,13 @@ const Settings = () => {
     }
   }
 
-  const handleLanguageChange = async (code) => {
-    if (code === user.languagePreference) return
+  const handleLanguageChange = async (language) => {
+    if (language === user.languagePreference) return
+    await i18n.changeLanguage(language)
     setIsLoading(true)
     try {
       setIsLanguageDropdownOpen(false)
-      await updateLanguagePreference(user._id, code)
+      await updateLanguagePreference(user._id, language)
     } catch (error) {
       console.error('Erreur lors de la mise à jour de la langue', error)
     } finally {
@@ -273,10 +303,10 @@ const Settings = () => {
       <div className="settings-header">
         <div className="header-content">
           <h1>{t('account.settings.title')}</h1>
-          <button className="profile-btn" onClick={() => navigate('/profile')}>
+          <PrimaryBtn onClick={() => navigate('/profile')}>
             <User size={20} />
             {t('account.settings.redirect')}
-          </button>
+          </PrimaryBtn>
         </div>
       </div>
 
@@ -298,12 +328,9 @@ const Settings = () => {
               </div>
             </div>
             {!isEditingPassword ? (
-              <button
-                className="edit-btn"
-                onClick={() => setIsEditingPassword(true)}
-              >
+              <PrimaryBtn onClick={() => setIsEditingPassword(true)}>
                 {t('account.buttons.edit')}
-              </button>
+              </PrimaryBtn>
             ) : (
               <div className="password-editor">
                 {errors.password && (
@@ -388,9 +415,8 @@ const Settings = () => {
                     </ul>
                   </div>
                   <div className="form-actions">
-                    <button
+                    <DangerBtn
                       type="button"
-                      className="cancel-btn"
                       onClick={() => {
                         setIsEditingPassword(false)
                         setPasswordData({
@@ -403,10 +429,10 @@ const Settings = () => {
                       }}
                     >
                       {t('common.cancel')}
-                    </button>
-                    <button type="submit" className="save-btn">
+                    </DangerBtn>
+                    <PrimaryBtn type="submit">
                       {t('account.buttons.save')}
-                    </button>
+                    </PrimaryBtn>
                   </div>
                 </form>
               </div>
@@ -428,26 +454,36 @@ const Settings = () => {
                 </p>
               </div>
             </div>
-            <button
-              className="action-btn"
-              onClick={() => navigate('/settings/2fa')}
-            >
+            <PrimaryBtn onClick={() => navigate('/settings/2fa')}>
               {user?.twoFactorAuth?.appEnabled ||
               user?.twoFactorAuth?.webauthnEnabled ||
               user?.twoFactorAuth?.emailEnabled
                 ? t('common.manage')
                 : t('account.security.2fa_enable')}
-            </button>
+            </PrimaryBtn>
           </div>
 
           {/* Active Sessions */}
           <div className="setting-item sessions-item">
-            <div className="setting-info">
-              <Monitor size={20} />
-              <div>
-                <h4>{t('account.sessions.title')}</h4>
-                <p>{t('account.sessions.description')}</p>
+            <div
+              className="setting-item"
+              style={{ borderBottom: 'none', paddingBottom: '0' }}
+            >
+              <div className="setting-info">
+                <Monitor size={20} />
+                <div>
+                  <h4>{t('account.sessions.title')}</h4>
+                  <p>{t('account.sessions.description')}</p>
+                </div>
               </div>
+              {activeSessions.length > 1 && (
+                <DangerBtn
+                  style={{ marginTop: '20px' }}
+                  onClick={handleTerminateAllSessions}
+                >
+                  {t('account.sessions.terminate-all')}
+                </DangerBtn>
+              )}
             </div>
             <div className="sessions-list">
               {activeSessions.map((session, index) => (
@@ -468,22 +504,11 @@ const Settings = () => {
                       </span>
                     </div>
                   </div>
-                  <button
-                    className="terminate-btn"
-                    onClick={() => handleTerminateSession(session.id)}
-                  >
+                  <DangerBtn onClick={() => handleTerminateSession(session.id)}>
                     <LogOut size={16} />
-                  </button>
+                  </DangerBtn>
                 </div>
               ))}
-              {activeSessions.length > 1 && (
-                <button
-                  className="terminate-all-btn"
-                  onClick={handleTerminateAllSessions}
-                >
-                  {t('account.sessions.terminate-all')}
-                </button>
-              )}
             </div>
           </div>
         </div>
@@ -709,44 +734,12 @@ const Settings = () => {
                 <p>{t('account.language.description')}</p>
               </div>
             </div>
-            <div className="language-selector">
-              <div
-                className="selected-language"
-                onClick={() =>
-                  setIsLanguageDropdownOpen(!isLanguageDropdownOpen)
-                }
-                aria-expanded={isLanguageDropdownOpen}
-              >
-                <span>
-                  {languages.find((l) => l.code === i18n.language)?.name ||
-                    t('account.language.fr')}
-                </span>
-                <ChevronDown
-                  size={16}
-                  className={isLanguageDropdownOpen ? 'rotated' : ''}
-                />
-              </div>
-              {isLanguageDropdownOpen && (
-                <div className="language-dropdown">
-                  {languages.map((language) => (
-                    <div
-                      key={language.code}
-                      className={`language-option ${
-                        user?.languagePreference === language.code
-                          ? 'selected'
-                          : ''
-                      }`}
-                      onClick={() => handleLanguageChange(language.code)}
-                    >
-                      {language.name}
-                      {user?.languagePreference === language.code && (
-                        <Check size={16} className="check-icon" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <Select
+              options={languages}
+              selected={i18n.language}
+              onChange={handleLanguageChange}
+              placeholder={t('account.language.select')}
+            />
           </div>
 
           <div className="setting-item">
@@ -804,53 +797,56 @@ const Settings = () => {
                 <p>{t('account.delete.description')}</p>
               </div>
             </div>
-            <button
-              className="danger-btn"
-              onClick={() => setShowDeleteConfirm(true)}
-            >
+            <DangerBtn onClick={() => setShowDeleteConfirm(true)}>
               {t('common.delete')}
-            </button>
+            </DangerBtn>
           </div>
-
-          {showDeleteConfirm && (
-            <div className="delete-confirm-modal">
-              <div className="modal-content">
-                <h4>{t('account.delete.confirm')}</h4>
-                <p>{t('account.delete.confirm-description')}</p>
-                <p>
-                  <Trans i18nKey="account.security.delete_confirmation">
-                    Tapez <strong>SUPPRIMER</strong> pour confirmer :
-                  </Trans>
-                </p>
-                <input
-                  type="text"
-                  value={deleteConfirmText}
-                  onChange={(e) => setDeleteConfirmText(e.target.value)}
-                  placeholder={t('account.delete.confirm-placeholder')}
-                />
-                <div className="modal-actions">
-                  <button
-                    className="cancel-btn"
-                    onClick={() => {
-                      setShowDeleteConfirm(false)
-                      setDeleteConfirmText('')
-                    }}
-                  >
-                    {t('common.cancel')}
-                  </button>
-                  <button
-                    className="danger-btn"
-                    onClick={handleDeleteAccount}
-                    disabled={deleteConfirmText !== 'SUPPRIMER'}
-                  >
-                    {t('account.delete.confirm-button')}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
+      <Modal
+        isOpen={showDeleteConfirm}
+        Close={() => {
+          setShowDeleteConfirm(false)
+          setDeleteConfirmText('')
+        }}
+        title={t('account.delete.confirm')}
+      >
+        <p>{t('account.delete.confirm-description')}</p>
+        <p>
+          <Trans i18nKey="account.security.delete_confirmation">
+            Tapez <strong>SUPPRIMER</strong> pour confirmer :
+          </Trans>
+        </p>
+        <input
+          type="text"
+          value={deleteConfirmText}
+          onChange={(e) => setDeleteConfirmText(e.target.value)}
+          placeholder={t('account.delete.confirm-placeholder')}
+        />
+        <div className="modal-actions">
+          <SecondaryBtn
+            type="button"
+            title={t('common.cancel')}
+            ariaLabel={t('common.cancel')}
+            onClick={() => {
+              setShowDeleteConfirm(false)
+              setDeleteConfirmText('')
+            }}
+          >
+            {t('common.cancel')}
+          </SecondaryBtn>
+          <DangerBtn
+            onClick={handleDeleteAccount}
+            title={t('account.delete.confirm-button')}
+            ariaLabel={t('account.delete.confirm-button')}
+            disabled={
+              deleteConfirmText !== t('account.delete.confirm-placeholder')
+            }
+          >
+            {t('account.delete.confirm-button')}
+          </DangerBtn>
+        </div>
+      </Modal>
     </div>
   )
 }
