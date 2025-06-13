@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 // Context & Hooks
-import { useAuth } from '../context/AuthContext'
-import { useFriends } from '../hooks/useFriends'
-import { useNotifications } from '../hooks/useNotifications'
-import { useUser } from '../context/UserContext'
-import GlobalLoader from '../utils/GlobalLoader'
+import { useAuth } from '../../context/AuthContext'
+import { useFriends } from '../../hooks/useFriends'
+import { useNotifications } from '../../hooks/useNotifications'
+import { useUser } from '../../context/UserContext'
+import GlobalLoader from '../../utils/GlobalLoader'
 // Icons
 import {
   Users,

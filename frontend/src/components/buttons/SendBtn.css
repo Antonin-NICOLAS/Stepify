@@ -1,0 +1,28 @@
+button.button.send-btn {
+  background: none;
+  border: none;
+  color: var(--turquoise);
+  font-weight: 600;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: calc(8px + 0.6vh) calc(8px + 0.6vw);
+  border-radius: var(--radius);
+  transition: var(--transition);
+  font-size: calc(10px + 0.5vh + 0.3vw);
+  display: flex;
+}
+
+button.button.send-btn:not(:disabled):hover {
+  background-color: rgba(74, 145, 158, 0.1);
+}
+
+.resend-btn:disabled {
+  color: var(--Gris);
+  cursor: not-allowed;
+}
+
+.resend-btn:disabled:hover {
+  background-color: transparent;
+}

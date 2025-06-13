@@ -1,8 +1,4 @@
 /* =================== GLOBAL RESET STYLES =================== */
-:root {
-  --auth-form-width: 450px;
-  --auth-visual-width: 450px;
-}
 
 .forgot-password-page {
   display: flex;
@@ -111,7 +107,7 @@
 
   /* =================== FORM SECTION =================== */
   .auth-form-section {
-    min-width: 500px;
+    width: 50%;
     background-color: var(--body-color);
     padding: 2rem;
     display: flex;
@@ -180,162 +176,13 @@
     gap: 1.5rem;
   }
 
-  .auth-input-group {
+  .auth-form-footer {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .auth-input-group label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--Couleur);
-  }
-
-  .auth-input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .auth-input-icon {
-    position: absolute;
-    left: 1rem;
-    color: var(--Gris);
-    width: 18px;
-    height: 18px;
-  }
-
-  .auth-input-wrapper input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
-    border: 1px solid var(--Couleur2);
-    border-radius: var(--radius);
-    background-color: var(--background);
-    color: var(--Noir);
-    font-size: 1rem;
-    transition: var(--transition);
-  }
-
-  .auth-input-wrapper input:focus {
-    outline: none;
-    border-color: var(--Couleur1);
-    box-shadow: 0 0 0 2px rgba(74, 145, 158, 0.2);
-  }
-
-  .auth-input-action {
-    position: absolute;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: var(--Gris);
-    cursor: pointer;
-    display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .auth-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none;
-    border: none;
-    font-size: 1rem;
-  }
-
-  .auth-button svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .auth-button-primary {
-    background: linear-gradient(135deg, var(--Couleur1), var(--bleu));
-    color: white;
-  }
-
-  .auth-button-primary:hover {
-    background: linear-gradient(135deg, var(--bleu), var(--Couleur1));
-    transform: translateY(-2px);
-  }
-
-  .auth-button-primary:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .auth-button-secondary {
-    background-color: transparent;
-    border: 1px solid var(--Couleur2);
-    color: var(--Couleur);
-  }
-
-  .auth-button-secondary:hover {
-    background-color: var(--Couleur2);
-    color: var(--Noir);
-  }
-
-  .auth-form-footer {
-    margin-top: auto;
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    padding-top: 1.5rem;
+    gap: 1rem;
     font-size: 0.9rem;
-    color: var(--Gris);
-  }
-
-  .auth-form-footer a {
-    color: var(--turquoise);
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .auth-form-footer a:hover {
-    text-decoration: underline;
-  }
-
-  .auth-alert {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 1rem;
-    border-radius: var(--radius);
-    font-size: 0.9rem;
-  }
-
-  .auth-alert svg {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .auth-alert-error {
-    background-color: rgba(206, 106, 107, 0.1);
-    color: var(--Couleur4);
-  }
-
-  .auth-alert-success {
-    background-color: rgba(190, 211, 195, 0.2);
-    color: var(--Couleur2);
-  }
-
-  .success-message {
-    text-align: center;
-    color: var(--Noir);
-    line-height: 1.6;
-  }
-
-  .password-hint {
-    font-size: 0.8rem;
     color: var(--Gris);
   }
 }
@@ -345,7 +192,7 @@
   .forgot-password-page {
     .auth-container {
       flex-direction: column;
-      max-width: var(--auth-form-width);
+      max-width: 90%;
     }
 
     .auth-visual-section {
@@ -370,11 +217,4 @@
       gap: 0.5rem;
     }
   }
-}
-
-/* =================== FORGOT PASSWORD SPECIFIC STYLES =================== */
-.forgot-password-page .auth-form-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 }

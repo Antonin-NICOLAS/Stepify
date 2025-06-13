@@ -1,6 +1,6 @@
-import './primaryBtn.css'
+import './SendBtn.css'
 
-const PrimaryButton = ({
+const SendBtn = ({
   onClick,
   disabled,
   type,
@@ -9,21 +9,19 @@ const PrimaryButton = ({
   style,
   icon: Icon,
   children,
-  tabIndex,
 }) => (
   <button
-    className="auth-button auth-button-primary"
+    className="button send-btn"
     onClick={onClick}
     disabled={disabled}
     type={type}
     aria-label={ariaLabel}
     title={title}
     style={style}
-    tabIndex={tabIndex}
   >
     {Icon && <Icon size={16} />}
     {children}
   </button>
 )
 
-export default PrimaryButton
+export default SendBtn

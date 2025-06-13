@@ -1,5 +1,7 @@
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
+// Components
+import SecondaryBtn from '../../components/buttons/secondaryBtn'
 //icons
 import {
   MailCheck,
@@ -13,6 +15,7 @@ import './EmailSent.css'
 
 function EmailSent() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   return (
     <div className="email-sent-page">
       <div className="auth-container">
@@ -88,13 +91,10 @@ function EmailSent() {
                 </ul>
               </div>
 
-              <Link
-                to="/forgot-password"
-                className="auth-button auth-button-secondary"
-              >
+              <SecondaryBtn onClick={() => navigate('/forgot-password')}>
                 <CornerDownLeft />
                 <span>{t('common.back')}</span>
-              </Link>
+              </SecondaryBtn>
             </div>
 
             <div className="auth-form-footer">

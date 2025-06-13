@@ -5,16 +5,23 @@
   "authcontext": {
     "2fa": {
       "backup": {
-        "error": "Erreur lors de la récupération par code de sauvegarde"
+        "error": "Erreur lors de la récupération par code de sauvegarde",
+        "success": "Vous êtes connecté. De nouveaux codes de sauvegarde vont vous être envoyés"
       },
       "disable": {
-        "error": "Erreur lors de la désactivation de la double authentification"
+        "error": "Erreur lors de la désactivation de la double authentification",
+        "success": "La double authentification par app est désactivée"
+      },
+      "disableemail": {
+        "success": "La double authentification par email est désactivée"
       },
       "enable": {
-        "error": "Erreur lors de l'activation de la double authentification par application"
+        "error": "Erreur lors de l'activation de la double authentification par application",
+        "success": "La double authentification par app d'authentification est configurée. Suivez les étapes nécessaires pour l'activer"
       },
       "enableemail": {
-        "error": "Erreur lors de l'activation de la double authentification par email"
+        "error": "Erreur lors de l'activation de la double authentification par email",
+        "success": "La double authentification par email est configurée suivez les étapes nécessaires pour l'activer."
       },
       "generatekey": {
         "error": "Erreur lors de la configuration WebAuthn"
@@ -26,17 +33,24 @@
         "error": "Erreur lors de la suppression de la clé d'accès",
         "success": "La clé d'accès a été supprimée"
       },
+      "resendemail": {
+        "error": "Erreur lors de l'envoi d'un nouveau code d'authentification",
+        "success": "Un nouveau code a été envoyé à votre adresse mail"
+      },
       "setpreferredmethod": {
-        "error": "Une erreur est survenue lors du changement de méthode de double authentification préférée"
+        "error": "Une erreur est survenue lors du changement de méthode de double authentification préférée",
+        "success": "Votre méthode de double authentification préférée a été mise à jour"
       },
       "status": {
         "error": "Erreur lors de la récupération des méthodes de double authentification actives"
       },
       "verify": {
-        "error": "Erreur lors de la vérification de la double authentification par application"
+        "error": "Erreur lors de la vérification de la double authentification par application",
+        "success": "Vous pouvez maintenant utiliser votre application pour vous connecter"
       },
       "verifyemail": {
-        "error": "Erreur lors de la vérification de la double authentification par email"
+        "error": "Erreur lors de la vérification de la double authentification par email",
+        "success": "La double authentification par email est désormais activée"
       },
       "verifyregisterkey": {
         "error": "Erreur lors de l'enregistrement de la clé"
@@ -44,6 +58,7 @@
     },
     "changeverificationemail": {
       "error": "Erreur lors du changement d'email",
+      "success": "Vous avez changé d'email",
       "validemail": "Un email valide est requis"
     },
     "deleteaccount": {
@@ -52,6 +67,7 @@
     },
     "forgotpassword": {
       "error": "Erreur lors de l'envoi de l'email",
+      "success": "Un email de réinitialisation a été envoyé à votre adresse mail",
       "validemail": "Un email valide est requis"
     },
     "login": {
@@ -59,6 +75,7 @@
       "fillallfields": "Veuillez remplir tous les champs",
       "notverifiederror": "Cliquez sur 'renvoyer un mail' pour recevoir un nouveau code",
       "notverifiedsuccess": "Un code vous a été envoyé pour vérifier votre adresse mail",
+      "success": "Vous êtes connecté",
       "validemail": "Un email valide est requis"
     },
     "logout": {
@@ -68,6 +85,7 @@
     "register": {
       "error": "Erreur lors de l'inscription",
       "passwordmismatch": "Les mots de passe ne correspondent pas",
+      "success": "Votre compte a été créé",
       "validemail": "Un email valide est requis",
       "validfirstname": "Un prénom valide (2 caractères minimum) est requis",
       "validlastname": "Un nom valide (2 caractères minimum) est requis",
@@ -75,16 +93,21 @@
       "validusername": "Un nom d'utilisateur valide (3-30 caractères alphanumériques) est requis"
     },
     "resendverificationcode": {
-      "error": "Erreur lors du renvoi du mail de vérification"
+      "error": "Erreur lors du renvoi du mail de vérification",
+      "success": "Un nouvel email de vérification a été envoyé"
     },
     "resetpassword": {
       "error": "Erreur lors de la réinitialisation du mot de passe",
       "passwordmismatch": "Les mots de passe ne correspondent pas",
+      "success": "Votre mot de passe a été modifé ",
       "validpassword": "Un mot de passe valide (8 caractères minimum) est requis",
       "validtoken": "Lien invalide ou expiré"
     },
+    "setpreferredmethod": {
+    },
     "verifyemail": {
       "error": "Erreur lors de la vérification de l'email",
+      "success": "Votre email est vérifié",
       "validcode": "Veuillez entrer le code complet à 6 chiffres"
     }
   },
@@ -122,16 +145,16 @@
   },
   "password": "Mot de passe",
   "usercontext": {
-    "languageupdated": "Langue mise à jour",
     "generalerrors": {
       "avatarUpload": "Erreur lors de la mise à jour de l'avatar",
-      "emailUpdate": "Erreur lors de la mise à jour de l'email",
-      "statusUpdate": "Erreur lors de la mise à jour du statut",
       "dailyGoalUpdate": "Erreur lors de la mise à jour de l'objectif quotidien",
+      "emailUpdate": "Erreur lors de la mise à jour de l'email",
       "languageUpdate": "Erreur lors de la mise à jour de la langue",
       "passwordUpdate": "Erreur lors du changement de mot de passe",
       "profileUpdate": "Erreur lors de la mise à jour du profil",
+      "statusUpdate": "Erreur lors de la mise à jour du statut",
       "themeUpdate": "Erreur lors de la mise à jour du thème"
-    }
+    },
+    "languageupdated": "Langue mise à jour"
   }
 }

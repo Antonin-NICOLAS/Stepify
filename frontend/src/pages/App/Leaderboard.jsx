@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Select from 'react-select'
 // Context
-import { useChallenge } from '../hooks/useChallenges'
-import { useNotifications } from '../hooks/useNotifications'
-import { useLeaderboard } from '../hooks/useLeaderboard'
-import { useFriends } from '../hooks/useFriends'
-import { useAuth } from '../context/AuthContext'
-import { useUser } from '../context/UserContext'
-import GlobalLoader from '../utils/GlobalLoader'
+import { useChallenge } from '../../hooks/useChallenges'
+import { useNotifications } from '../../hooks/useNotifications'
+import { useLeaderboard } from '../../hooks/useLeaderboard'
+import { useFriends } from '../../hooks/useFriends'
+import { useAuth } from '../../context/AuthContext'
+import { useUser } from '../../context/UserContext'
+import GlobalLoader from '../../utils/GlobalLoader'
 // Icons
 import {
   Trophy,

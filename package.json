@@ -4,7 +4,9 @@
   "description": "Step tracker for the summer",
   "main": "index.js",
   "scripts": {
-    "format": "npx prettier --write ."
+    "prettier": "npx prettier --write .",
+    "server": "cd ./backend && npm run dev",
+    "client": "cd ./frontend && npm run dev"
   },
   "repository": {
     "type": "git",

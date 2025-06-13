@@ -216,8 +216,14 @@ const resendVerificationEmail = async (req, res) => {
       )
     }
 
-    const decoded = jwt.verify(jwtauth, process.env.JWT_SECRET)
-    const user = await UserModel.findById(decoded.id)
+    let decoded
+    try {
+      decoded = jwt.verify(jwtauth, process.env.JWT_SECRET)
+    } catch (error) {
+      return sendLocalizedError(res, 401, 'errors.auth.invalid_token')
+    }
+
+    const user = await UserModel.findById(decoded.id).exec()
 
     if (!user) {
       return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
@@ -440,7 +446,7 @@ const loginUser = async (req, res) => {
           Date.now() + 10 * 60 * 1000,
         )
         await user.save()
-        sendTwoFactorEmailCode(user.email, user.firstName, code)
+        sendTwoFactorEmailCode(user, code)
       }
 
       return sendLocalizedSuccess(

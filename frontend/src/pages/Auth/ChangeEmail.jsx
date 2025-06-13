@@ -1,12 +1,22 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-//loader
+// components
 import GlobalLoader from '../../utils/GlobalLoader'
+import InputField from '../../components/InputField'
+import PrimaryBtn from '../../components/buttons/primaryBtn'
+import SecondaryBtn from '../../components/buttons/secondaryBtn'
 //context
 import { useAuth } from '../../context/AuthContext'
 import { useTranslation } from 'react-i18next'
 //icons
-import { Mail, Send, ArrowLeft, AtSign, CheckCircle2 } from 'lucide-react'
+import {
+  Mail,
+  Send,
+  ArrowLeft,
+  AtSign,
+  CheckCircle2,
+  AlertCircle,
+} from 'lucide-react'
 //CSS
 import './ChangeEmail.css'
 
@@ -14,12 +24,17 @@ function ChangeEmail() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { changeVerificationEmail } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
-
+  const [formError, setFormError] = useState('')
   const [email, setEmail] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleChangeVerificationEmail = async (e) => {
     e.preventDefault()
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return setFormError(
+        t('common.authcontext.changeverificationemail.validemail'),
+      )
+    }
     setIsLoading(true)
     try {
       await changeVerificationEmail(email, () => {
@@ -91,41 +106,39 @@ function ChangeEmail() {
               </div>
 
               <div className="auth-form-content">
-                <div className="auth-input-group">
-                  <label htmlFor="email">{t('common.email')}</label>
-                  <div className="auth-input-wrapper">
-                    <Mail className="auth-input-icon" />
-                    <input
-                      id="email"
-                      type="email"
-                      placeholder={t('auth.changeemail.form.enteremail')}
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+                {formError && (
+                  <div className="form-error">
+                    <AlertCircle size={16} />
+                    <span>{formError}</span>
                   </div>
-                </div>
+                )}
+                <InputField
+                  id="email"
+                  type="email"
+                  className="without-margin"
+                  label={t('common.email')}
+                  placeholder={t('auth.login.form.login.enteremail')}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  icon={Mail}
+                  autoComplete="email"
+                  required={true}
+                  style={{ backgroundColor: 'transparent' }}
+                />
 
-                <button
-                  type="submit"
-                  className="auth-button auth-button-primary"
-                  disabled={isLoading}
-                >
+                <PrimaryBtn type="submit" disabled={isLoading}>
                   <Send />
                   <span>
                     {isLoading
                       ? t('auth.changeemail.form.sendinprocess')
                       : t('auth.changeemail.form.send')}
                   </span>
-                </button>
+                </PrimaryBtn>
 
-                <Link
-                  to="/email-verification"
-                  className="auth-button auth-button-secondary"
-                >
+                <SecondaryBtn onClick={() => navigate('/email-verification')}>
                   <ArrowLeft />
                   <span>{t('common.back')}</span>
-                </Link>
+                </SecondaryBtn>
               </div>
 
               <div className="auth-form-footer">

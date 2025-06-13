@@ -54,7 +54,9 @@ export const use2FA = () => {
         toast.error(data.error || t('common.error'))
         throw data.error
       } else {
-        toast.success(data.message)
+        toast.success(
+          data.message || t('common.authcontext.2fa.enable.success'),
+        )
         return data
       }
     } catch (err) {
@@ -75,7 +77,9 @@ export const use2FA = () => {
         toast.error(data.error || t('common.error'))
         throw data.error
       } else {
-        toast.success(data.message)
+        toast.success(
+          data.message || t('common.authcontext.2fa.enableemail.success'),
+        )
         return data
       }
     } catch (err) {
@@ -102,7 +106,9 @@ export const use2FA = () => {
         toast.error(data.error || t('common.error'))
         throw data.error
       } else {
-        toast.success(data.message)
+        toast.success(
+          data.message || t('common.authcontext.2fa.verify.success'),
+        )
         await TwoFactorStatus()
         return data
       }
@@ -128,7 +134,9 @@ export const use2FA = () => {
         toast.error(data.error || t('common.error'))
         throw data.error
       } else {
-        toast.success(data.message)
+        toast.success(
+          data.message || t('common.authcontext.2fa.verifyemail.success'),
+        )
         await TwoFactorStatus()
         return data
       }
@@ -156,7 +164,9 @@ export const use2FA = () => {
         toast.error(data.error || t('common.error'))
         throw data.error
       } else {
-        toast.success(data.message)
+        toast.success(
+          data.message || t('common.authcontext.2fa.disable.success'),
+        )
         await TwoFactorStatus()
         return true
       }
@@ -183,7 +193,9 @@ export const use2FA = () => {
         toast.error(data.error || t('common.error'))
         throw data.error
       } else {
-        toast.success(data.message)
+        toast.success(
+          data.message || t('common.authcontext.2fa.disableemail.success'),
+        )
         await TwoFactorStatus()
         return true
       }
@@ -196,24 +208,25 @@ export const use2FA = () => {
   }, [])
 
   const verifyLoginTwoFactor = useCallback(
-    async (email, stayLoggedIn, token, onSuccess) => {
+    async (email, stayLoggedIn, token, method, onSuccess) => {
       try {
         const { data } = await axios.post(
           `${API_2FA}/verify-login`,
-          { email, stayLoggedIn, token },
+          { email, stayLoggedIn, token, method },
           {
             withCredentials: true,
           },
         )
 
-        if (data.success) {
+        if (data.error) {
+          toast.error(data.error || t('common.error'))
+          throw data.error
+        } else {
+          toast.success(data.message || t('common.authcontext.login.success'))
           setIsAuthenticated(true)
           checkAuth()
           onSuccess()
           return data
-        } else {
-          toast.error(data.error || t('common.error'))
-          throw data.error
         }
       } catch (err) {
         toast.error(
@@ -224,6 +237,34 @@ export const use2FA = () => {
     },
     [],
   )
+
+  // Resend email 2FA code
+  const resendEmail2FACode = useCallback(async (email) => {
+    try {
+      const res = await axios.post(
+        `${API_2FA}/email/resend-code`,
+        { email },
+        {
+          withCredentials: true,
+        },
+      )
+      const data = res.data
+      if (data.error) {
+        toast.error(data.error || t('common.error'))
+        throw data.error
+      } else {
+        toast.success(
+          data.message || t('common.authcontext.2fa.resendemail.success'),
+        )
+      }
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error ||
+          t('common.authcontext.2fa.resendemail.error'),
+      )
+      throw err
+    }
+  }, [])
 
   // WebAuthn functions
   const generateRegistrationKey = async () => {
@@ -305,7 +346,6 @@ export const use2FA = () => {
         attestationResponse,
         deviceName,
       )
-      console.log('WebAuthn registration response:', finaldata)
       if (finaldata.success) {
         await checkAuth()
         return finaldata
@@ -361,8 +401,6 @@ export const use2FA = () => {
         publicKey,
       })
 
-      console.log('WebAuthn credential:', credential)
-
       // 4. Format for server
       const assertionResponse = {
         id: credential.id,
@@ -381,13 +419,12 @@ export const use2FA = () => {
         },
       }
 
-      console.log('WebAuthn assertion response:', assertionResponse)
-
       // 5. Verify with server
       const login = await verifyLoginTwoFactor(
         email,
         stayLoggedIn,
         assertionResponse,
+        'webauthn',
         () => {
           setIsAuthenticated(true)
           checkAuth()
@@ -396,8 +433,6 @@ export const use2FA = () => {
           }, 2000)
         },
       )
-
-      console.log(login)
       return login
     } catch (error) {
       console.error('WebAuthn authentication failed:', error)
@@ -459,32 +494,39 @@ export const use2FA = () => {
   }, [])
 
   // --- Use backup code ---
-  const useBackupCode = useCallback(async (email, backupCode, onSuccess) => {
-    try {
-      const res = await axios.post(
-        `${API_2FA}/backup-code`,
-        { email, backupCode },
-        {
-          withCredentials: true,
-        },
-      )
+  const useBackupCode = useCallback(
+    async (email, stayLoggedIn, backupCode, onSuccess) => {
+      try {
+        const res = await axios.post(
+          `${API_2FA}/use-backup`,
+          { email, stayLoggedIn, backupCode },
+          {
+            withCredentials: true,
+          },
+        )
 
-      const data = res.data
-      if (data.error) {
-        toast.error(data.error || t('common.error'))
-        throw data.error
+        const data = res.data
+        if (data.error) {
+          toast.error(data.error || t('common.error'))
+          throw data.error
+        } else {
+          toast.success(
+            data.message || t('common.authcontext.2fa.backup.success'),
+          )
+          setIsAuthenticated(true)
+          checkAuth()
+          onSuccess()
+          return data
+        }
+      } catch (err) {
+        toast.error(
+          err.response?.data?.error || t('common.authcontext.2fa.backup.error'),
+        )
+        throw err
       }
-      setIsAuthenticated(true)
-      checkAuth()
-      onSuccess()
-      return data
-    } catch (err) {
-      toast.error(
-        err.response?.data?.error || t('common.authcontext.2fa.backup.error'),
-      )
-      throw err
-    }
-  }, [])
+    },
+    [],
+  )
 
   // --- Set preferred method ---
   const setPreferredMethod = useCallback(async (method) => {
@@ -502,7 +544,8 @@ export const use2FA = () => {
         throw data.error
       } else {
         toast.success(
-          data.message || t('account.2fa-setup.preferred-method-updated'),
+          data.message ||
+            t('common.authcontext.2fa.setpreferredmethod.success'),
         )
         return data
       }
@@ -526,6 +569,7 @@ export const use2FA = () => {
     disableEmail2FA,
     useBackupCode,
     verifyLoginTwoFactor,
+    resendEmail2FACode,
     authenticateWithWebAuthn,
     removeWebAuthnCredential,
     setPreferredMethod,

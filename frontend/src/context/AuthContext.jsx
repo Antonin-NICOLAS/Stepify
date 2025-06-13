@@ -55,40 +55,8 @@ export const AuthProvider = ({ children }) => {
 
   // --- Register ---
   const register = useCallback(async (RformData, resetForm) => {
-    const {
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-      confirmPassword,
-      stayLoggedIn,
-    } = RformData
-
-    if (!firstName || firstName.length < 2) {
-      toast.error(t('common.authcontext.register.validfirstname'))
-      return
-    }
-    if (!lastName || lastName.length < 2) {
-      toast.error(t('common.authcontext.register.validlastname'))
-      return
-    }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error(t('common.authcontext.register.validemail'))
-      return
-    }
-    if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
-      toast.error(t('common.authcontext.register.validusername'))
-      return
-    }
-    if (password.length < 8) {
-      toast.error(t('common.authcontext.register.validpassword'))
-      return
-    }
-    if (password !== confirmPassword) {
-      toast.error(t('common.authcontext.register.passwordmismatch'))
-      return
-    }
+    const { firstName, lastName, username, email, password, stayLoggedIn } =
+      RformData
     try {
       const res = await axios.post(
         `${API_AUTH}/register`,
@@ -122,7 +90,7 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true)
         checkAuth()
         resetForm()
-        toast.success(data.message)
+        toast.success(data.message || t('common.authcontext.register.success'))
       }
     } catch (err) {
       toast.error(
@@ -139,14 +107,6 @@ export const AuthProvider = ({ children }) => {
   // --- Login ---
   const login = useCallback(async (LformData) => {
     const { email, password, stayLoggedIn } = LformData
-    if (!email || !password) {
-      toast.error(t('common.authcontext.login.fillallfields'))
-      return
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error(t('common.authcontext.login.validemail'))
-      return
-    }
 
     try {
       const res = await axios.post(
@@ -172,7 +132,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         setIsAuthenticated(true)
         checkAuth()
-        toast.success(data.message)
+        toast.success(data.message || t('common.authcontext.login.success'))
         return data
       }
     } catch (err) {
@@ -185,10 +145,6 @@ export const AuthProvider = ({ children }) => {
 
   // --- Forgot Password ---
   const forgotPassword = useCallback(async (email, onSuccess) => {
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      toast.error(t('common.authcontext.forgotpassword.validemail'))
-      return
-    }
     try {
       const res = await axios.post(
         `${API_AUTH}/forgot-password`,
@@ -208,7 +164,9 @@ export const AuthProvider = ({ children }) => {
         throw data.error
       } else {
         onSuccess()
-        toast.success(data.message)
+        toast.success(
+          data.message || t('common.authcontext.forgotpassword.success'),
+        )
       }
     } catch (err) {
       toast.error(
@@ -220,58 +178,44 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   // --- Reset Password ---
-  const resetPassword = useCallback(
-    async (token, password, confirmPassword, onSuccess) => {
-      if (!token)
-        return toast.error(t('common.authcontext.resetpassword.validtoken'))
-      if (password !== confirmPassword)
-        return toast.error(
-          t('common.authcontext.resetpassword.passwordmismatch'),
-        )
-      if (password.length < 8)
-        return toast.error(t('common.authcontext.resetpassword.validpassword'))
-
-      try {
-        const res = await axios.post(
-          `${API_AUTH}/reset-password/${token}`,
-          {
-            password,
+  const resetPassword = useCallback(async (token, password, onSuccess) => {
+    try {
+      const res = await axios.post(
+        `${API_AUTH}/reset-password/${token}`,
+        {
+          password,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
           },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
-        )
+        },
+      )
 
-        const data = res.data
+      const data = res.data
 
-        if (data.error) {
-          toast.error(data.error || t('common.error'))
-          throw data.error
-        } else {
-          onSuccess()
-          toast.success(data.message)
-          setUser(null)
-          setIsAuthenticated(false)
-        }
-      } catch (err) {
-        toast.error(
-          err.response?.data?.error ||
-            t('common.authcontext.resetpassword.error'),
+      if (data.error) {
+        toast.error(data.error || t('common.error'))
+        throw data.error
+      } else {
+        onSuccess()
+        toast.success(
+          data.message || t('common.authcontext.resetpassword.success'),
         )
-        throw err
+        setUser(null)
+        setIsAuthenticated(false)
       }
-    },
-    [],
-  )
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error ||
+          t('common.authcontext.resetpassword.error'),
+      )
+      throw err
+    }
+  }, [])
 
   // --- Verify Email ---
   const verifyEmail = useCallback(async (code, onSuccess) => {
-    if (code.length !== 6) {
-      toast.error(t('common.authcontext.verifyemail.validcode'))
-      throw new Error(t('common.authcontext.verifyemail.validcode'))
-    }
     try {
       const res = await axios.post(
         `${API_AUTH}/verify-email`,
@@ -293,7 +237,9 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true)
         checkAuth()
         onSuccess()
-        toast.success(data.message)
+        toast.success(
+          data.message || t('common.authcontext.verifyemail.success'),
+        )
       }
     } catch (err) {
       toast.error(
@@ -324,7 +270,10 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true)
         setUser(data.user)
         onSuccess()
-        toast.success(data.message)
+        toast.success(
+          data.message ||
+            t('common.authcontext.resendverificationcode.success'),
+        )
       }
     } catch (err) {
       OnError()
@@ -338,11 +287,6 @@ export const AuthProvider = ({ children }) => {
 
   // --- Change verification email ---
   const changeVerificationEmail = useCallback(async (newEmail, onSuccess) => {
-    if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
-      return toast.error(
-        t('common.authcontext.changeverificationemail.validemail'),
-      )
-    }
     try {
       const res = await axios.post(
         `${API_AUTH}/change-verification-email`,
@@ -363,7 +307,10 @@ export const AuthProvider = ({ children }) => {
       } else {
         setUser(data.user)
         onSuccess()
-        toast.success(data.message)
+        toast.success(
+          data.message ||
+            t('common.authcontext.changeverificationemail.success'),
+        )
       }
     } catch (err) {
       toast.error(

@@ -3,7 +3,7 @@
     "subject": "Nueva conexión a su cuenta de Stepify",
     "title": "Nueva conexión detectada",
     "bloc1": {
-      "hello": "Hola $ {FirstName},",
+      "hello": "Bonjour $ {FirstName},",
       "intro": "Le informamos que recientemente se ha detectado recientemente una conexión con su cuenta Stepify.",
       "activity_details": "Aquí están los detalles de esta actividad:",
       "date": "Fecha y hora:",
@@ -21,9 +21,9 @@
       "unknown_activity": "¿No reconoces esta actividad?",
       "security_recommendations": "En este caso, un tercero puede haber accedido a su cuenta.",
       "security_recommendations_details": "Por razones de seguridad, recomendamos encarecidamente:",
-      "change_password": "**Cambie su contraseña inmediatamente** desde su",
+      "change_password": "** Cambie su contraseña inmediatamente ** desde su",
       "security": "Parámetros de seguridad",
-      "check_recent_logins": "**Consulte las conexiones recientes** en su cuenta.",
+      "check_recent_logins": "** Consulte las conexiones recientes ** en su cuenta.",
       "report_suspicious_activity": "Señalamos cualquier actividad sospechosa para:"
     },
     "bloc4": {
@@ -36,8 +36,47 @@
       "thank_you": "Por favor confíe",
       "continue_care": "Continúa avanzando, progresa y cuidando todos los días.",
       "see_you_soon": "¡Nos vemos pronto en Stepify!",
-      "team_signature": "El equipo de Stepify"
+      "team_signature": "El equipo ** Stepify **"
     }
+  },
+  "emailverification": {
+    "subject": "Comprobando su correo electrónico - Stepify",
+    "title": "Verifique su dirección de correo electrónico",
+    "bloc1": "Haga clic en el botón a continuación para confirmar su dirección de correo electrónico y completar la creación de su cuenta. Este código es válido por 24 horas.",
+    "bloc2": {
+      "title": "Su código de verificación",
+      "expiration": "Este código expira en 24 horas."
+    }
+  },
+  "passwordreset": {
+    "subject": "Restablecer su contraseña - Stepify",
+    "title": "¿Has olvidado tu contraseña?",
+    "bloc1": "Recientemente, alguien solicitó un cambio de contraseña para su cuenta de Stepify. Si este es su caso, puede definir una nueva contraseña aquí:",
+    "bloc2": "Este enlace solo es funcional durante una hora. Si está excediendo, esta vez, haga una nueva solicitud para el reinicio de la contraseña.",
+    "bloc3": "Si no desea cambiar su contraseña o si no ha preguntado, ignore este mensaje y elimínelo.",
+    "bloc4": "Para garantizar la seguridad de su cuenta, no envíe este mensaje a nadie."
+  },
+  "successfulreset": {
+    "subject": "🔒 Su contraseña ha sido cambiado",
+    "title": "Su contraseña ha sido restablecida",
+    "hello": "Bonjour $ {FirstName},",
+    "bloc1": "Confirmamos que la contraseña asociada con su cuenta ** Stepify ** ha sido cambiada.",
+    "bloc2": "✅ Si está en el origen de esta modificación, no se requiere otra acción.",
+    "bloc3": "⚠️ Si está en el origen de esta modificación, no se requiere otra acción. Si no está en el origen de esta operación, le recomendamos que ** restablezca su contraseña inmediatamente ** y contáctenos lo antes posible a la siguiente dirección:",
+    "bloc4": "La seguridad de su cuenta es nuestra prioridad, estamos aquí para ayudarlo si es necesario. Le agradecemos su confianza y permanece a su disposición por cualquier pregunta o necesidad de ayuda.",
+    "bye": "¡Nos vemos pronto en Stepify!",
+    "team_signature": "El equipo ** Stepify **"
+  },
+  "email2FAcode": {
+    "title": "Su código de autenticación doble",
+    "hello": "Bonjour $ {FirstName},",
+    "intro": "Su código de verificación para la autenticación de dos factores es:",
+    "code": "Su código de verificación",
+    "expiration": "Este código expira en 10 minutos.",
+    "note": "No comparta este código con nadie. Está destinado a asegurar su cuenta de Stepify.",
+    "ignore": "Si no ha solicitado este código, ignore este correo electrónico.",
+    "bye": "¡Nos vemos pronto en Stepify!",
+    "team_signature": "El equipo ** Stepify **"
   },
   "footer": {
     "bloc1": "Recibe este correo electrónico porque ha creado una cuenta en Stepify. Si cree que ha recibido este correo electrónico por error, puede ignorar este mensaje o contactarnos en la siguiente dirección:",

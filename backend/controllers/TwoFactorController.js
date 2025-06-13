@@ -128,12 +128,41 @@ const enableEmail2FA = async (req, res) => {
     user.twoFactorAuth.emailCodeExpires = new Date(Date.now() + 10 * 60 * 1000)
 
     await user.save()
-    await sendTwoFactorEmailCode(user.email, user.firstName, code)
+    await sendTwoFactorEmailCode(user, code)
 
     return sendLocalizedSuccess(res, 'success.2fa.email_setup_initiated')
   } catch (error) {
     console.error("Erreur lors de l'activation de la 2FA par email:", error)
     return sendLocalizedError(res, 500, 'errors.2fa.enable_error')
+  }
+}
+
+// Renvoyer le code de vérification par email
+const resendEmailCode = async (req, res) => {
+  const { email } = req.body
+  try {
+    const user = await UserModel.findOne({ email })
+    if (!user) {
+      return sendLocalizedError(res, 404, 'errors.generic.user_not_found')
+    }
+    if (!user.twoFactorAuth.emailEnabled) {
+      return sendLocalizedError(res, 400, 'errors.2fa.email_not_enabled')
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString()
+    user.twoFactorAuth.emailCode = await hashEmailCode(code)
+    user.twoFactorAuth.emailCodeExpires = new Date(Date.now() + 10 * 60 * 1000)
+    console.log(code)
+
+    await user.save()
+
+    console.log(user.twoFactorAuth.emailCode)
+    await sendTwoFactorEmailCode(user, code)
+
+    return sendLocalizedSuccess(res, 'success.2fa.email_code_sent')
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'utilisateur:', error)
+    return sendLocalizedError(res, 500, 'errors.generic.enable_error')
   }
 }
 
@@ -283,10 +312,10 @@ const verifyAndEnableEmail2FA = async (req, res) => {
 // Vérifier le code 2FA lors de la connexion
 const verifyLoginTwoFactor = async (req, res) => {
   try {
-    const { email, stayLoggedIn, token } = req.body
+    const { email, stayLoggedIn, token, method } = req.body
 
     // Validate required fields
-    if (!email || !token) {
+    if (!email || !token || !method) {
       return sendLocalizedError(res, 400, 'errors.generic.missing_fields')
     }
 
@@ -303,18 +332,30 @@ const verifyLoginTwoFactor = async (req, res) => {
       return sendLocalizedError(res, 403, 'errors.2fa.temporarily_locked')
     }
 
-    // Verify based on preferred method
+    // Verify based on chosen method
     let isValid = false
-    switch (user.twoFactorAuth.preferredMethod) {
+    switch (method) {
       case 'app':
+        if (!user.twoFactorAuth.appEnabled) {
+          return sendLocalizedError(res, 400, 'errors.2fa.app_not_enabled')
+        }
         isValid = verifyTwoFactorCode(user.twoFactorAuth.secret, token)
         break
       case 'email':
+        if (!user.twoFactorAuth.emailEnabled) {
+          return sendLocalizedError(res, 400, 'errors.2fa.email_not_enabled')
+        }
+        const isMatch = await compareEmailCode(
+          user.twoFactorAuth.emailCode,
+          token,
+        )
         isValid =
-          user.twoFactorAuth.emailCode === token &&
-          new Date(user.twoFactorAuth.emailCodeExpires) > new Date()
+          isMatch && new Date(user.twoFactorAuth.emailCodeExpires) > new Date()
         break
       case 'webauthn':
+        if (!user.twoFactorAuth.webauthnEnabled) {
+          return sendLocalizedError(res, 400, 'errors.2fa.webauthn_not_enabled')
+        }
         try {
           const verification = await verifyAuthentication({
             responsekey: token,
@@ -336,6 +377,8 @@ const verifyLoginTwoFactor = async (req, res) => {
           await user.save()
         }
         break
+      default:
+        return sendLocalizedError(res, 400, 'errors.2fa.invalid_method')
     }
 
     if (!isValid) {
@@ -484,8 +527,8 @@ const disableTwoFactor = async (req, res) => {
       user.twoFactorAuth.preferredMethod = user.twoFactorAuth.emailEnabled
         ? 'email'
         : user.twoFactorAuth.webauthnEnabled
-          ? 'webauthn'
-          : undefined
+        ? 'webauthn'
+        : undefined
     }
 
     if (
@@ -537,8 +580,8 @@ const disableEmail2FA = async (req, res) => {
       user.twoFactorAuth.preferredMethod = user.twoFactorAuth.appEnabled
         ? 'app'
         : user.twoFactorAuth.webauthnEnabled
-          ? 'webauthn'
-          : undefined
+        ? 'webauthn'
+        : undefined
     }
 
     if (!user.twoFactorAuth.appEnabled && !user.twoFactorAuth.webauthnEnabled) {
@@ -560,7 +603,7 @@ const disableEmail2FA = async (req, res) => {
 // Utiliser un code de secours
 const useBackupCode = async (req, res) => {
   try {
-    const { email, backupCode } = req.body
+    const { email, stayLoggedIn, backupCode } = req.body
     const user = await UserModel.findOne({ email })
 
     if (!user) {
@@ -580,8 +623,68 @@ const useBackupCode = async (req, res) => {
       return sendLocalizedError(res, 400, 'errors.2fa.invalid_backup_code')
     }
 
+    // Reset attempts on success
+    user.twoFactorAuth.attempts = 0
+    user.twoFactorAuth.lockUntil = null
+
+    user.twoFactorAuth.lastVerified = new Date()
+    user.lastLoginAt = Date.now()
+    user.loginAttempts = 0
+    user.lockUntil = null
+
+    const userAgent = req.headers['user-agent'] || 'unknown'
+    const ipAddress =
+      req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress
+    const sessionDuration = stayLoggedIn
+      ? ms(process.env.SESSION_DURATION_LONG)
+      : ms(process.env.SESSION_DURATION_SHORT)
+
+    //vérification des sessions expirées
+    user.activeSessions = user.activeSessions.filter(
+      (session) => session.expiresAt > Date.now(),
+    )
+
     await user.save()
-    return sendLocalizedSuccess(res, 'success.2fa.backup_code_used')
+
+    // pas plus de 5 sessions en mm temps
+    if (user.activeSessions.length >= 5) {
+      user.activeSessions.sort((a, b) => a.expiresAt - b.expiresAt)
+      user.activeSessions.shift()
+    }
+
+    user.activeSessions.push({
+      ipAddress,
+      userAgent,
+      fingerprint: generateSessionFingerprint(req),
+      expiresAt: new Date(Date.now() + sessionDuration),
+    })
+
+    await user.save()
+
+    GenerateAuthCookie(res, user, stayLoggedIn)
+    const location = await findLocation(user, ipAddress)
+
+    const parser = new UAParser(userAgent)
+    const device = parser.getDevice()
+    const os = parser.getOS()
+    const browser = parser.getBrowser()
+
+    const deviceInfo =
+      `${browser.name} ${browser.version} sur ${os.name} ${os.version}` +
+      (device.model ? ` (${device.vendor || ''} ${device.model})` : '')
+
+    await sendNewLoginEmail(user, ipAddress, deviceInfo, location)
+
+    const userResponse = user.toMinimal()
+
+    return sendLocalizedSuccess(
+      res,
+      'success.2fa.backup_code_used',
+      {},
+      {
+        user: userResponse,
+      },
+    )
   } catch (error) {
     console.error("Erreur lors de l'utilisation du code de secours:", error)
     return sendLocalizedError(res, 500, 'errors.2fa.backup_code_error')
@@ -592,6 +695,7 @@ module.exports = {
   getStatus,
   enableTwoFactor,
   enableEmail2FA,
+  resendEmailCode,
   verifyAndEnableTwoFactor,
   verifyAndEnableEmail2FA,
   verifyLoginTwoFactor,

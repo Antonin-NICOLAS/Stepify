@@ -5,6 +5,10 @@ import GlobalLoader from '../../utils/GlobalLoader'
 //context
 import { useAuth } from '../../context/AuthContext'
 import { useTranslation } from 'react-i18next'
+// Components
+import PrimaryButton from '../../components/buttons/primaryBtn'
+import SecondaryButton from '../../components/buttons/secondaryBtn'
+import InputField from '../../components/InputField'
 //icons
 import {
   Mail,
@@ -13,6 +17,7 @@ import {
   KeyRound,
   LockKeyhole,
   HelpCircle,
+  AlertCircle,
 } from 'lucide-react'
 //CSS
 import './Forgot-pwd.css'
@@ -23,9 +28,14 @@ function ForgotPassword() {
   const { forgotPassword } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState('')
+  const [formError, setFormError] = useState('')
 
   const handleForgotPwd = async (e) => {
     e.preventDefault()
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setFormError(t('common.authcontext.forgotpassword.validemail'))
+      return
+    }
     setIsLoading(true)
     try {
       await forgotPassword(email, () => navigate('/email-sent'))
@@ -100,46 +110,41 @@ function ForgotPassword() {
               </div>
 
               <div className="auth-form-content">
-                <div className="auth-input-group">
-                  <label htmlFor="email">{t('common.email')}</label>
-                  <div className="auth-input-wrapper">
-                    <Mail className="auth-input-icon" />
-                    <input
-                      id="email"
-                      type="email"
-                      autoComplete="email"
-                      placeholder={t('auth.forgotpassword.form.enteremail')}
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+                {formError && (
+                  <div className="form-error">
+                    <AlertCircle size={16} />
+                    <span>{formError}</span>
                   </div>
-                </div>
+                )}
+                <InputField
+                  id="email"
+                  type="email"
+                  label={t('common.email')}
+                  placeholder={t('auth.login.form.login.enteremail')}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  icon={Mail}
+                  autoComplete="email"
+                  required={true}
+                  style={{ backgroundColor: 'transparent' }}
+                />
 
-                <button
-                  type="submit"
-                  className="auth-button auth-button-primary"
-                  disabled={isLoading}
-                >
+                <PrimaryButton type="submit" disabled={isLoading}>
                   <Send />
                   <span>
                     {isLoading
                       ? t('auth.forgotpassword.form.sendinprocess')
                       : t('auth.forgotpassword.form.send')}
                   </span>
-                </button>
-
-                <Link to="/login" className="auth-button auth-button-secondary">
-                  <ArrowLeft />
-                  <span>{t('auth.forgotpassword.form.return')}</span>
-                </Link>
+                </PrimaryButton>
               </div>
 
               <div className="auth-form-footer">
                 <span>{t('auth.forgotpassword.footer.question')}</span>
-                <Link to="/login">
-                  {t('auth.forgotpassword.footer.button')}
-                </Link>
+                <SecondaryButton onClick={() => navigate('/login')}>
+                  <ArrowLeft />
+                  <span>{t('auth.forgotpassword.form.return')}</span>
+                </SecondaryButton>
               </div>
             </form>
           </div>

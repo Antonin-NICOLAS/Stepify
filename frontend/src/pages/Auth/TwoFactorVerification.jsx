@@ -3,6 +3,9 @@ import { useNavigate, Link, useLocation } from 'react-router-dom'
 // Context
 import { use2FA } from '../../context/2FA'
 import { useTranslation } from 'react-i18next'
+// Components
+import PrimaryBtn from '../../components/buttons/primaryBtn'
+import { toast } from 'react-hot-toast'
 // Icons
 import {
   Shield,
@@ -12,13 +15,21 @@ import {
   CheckCircle2,
   Smartphone,
   ClockIcon as ClockFading,
+  Mail,
+  Fingerprint,
+  AlertTriangle,
 } from 'lucide-react'
 import './TwoFactorVerification.css'
 
 function TwoFactorVerification() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { verifyLoginTwoFactor } = use2FA()
+  const {
+    verifyLoginTwoFactor,
+    useBackupCode,
+    resendEmail2FACode,
+    authenticateWithWebAuthn,
+  } = use2FA()
   const { t } = useTranslation()
 
   // State variables
@@ -29,15 +40,17 @@ function TwoFactorVerification() {
   const [isVerified, setIsVerified] = useState(false)
   const [showBackupCode, setShowBackupCode] = useState(false)
   const [backupCode, setBackupCode] = useState('')
+  const [webauthnError, setWebauthnError] = useState(null)
   const inputRefs = useRef([])
 
   // Récupérer les paramètres de navigation
-  const { email, method, stayLoggedIn } = location.state || {}
+  const { email, method, stayLoggedIn, availableMethods } = location.state || {}
 
   // Rediriger si les paramètres sont manquants
   useEffect(() => {
     if (!email || !method) {
       navigate('/login')
+      toast.error(t('common.error'))
     }
   }, [email, method, navigate])
 
@@ -112,7 +125,9 @@ function TwoFactorVerification() {
     const otpCode = showBackupCode ? backupCode : otp.join('')
 
     if (
-      (!showBackupCode && otpCode.length !== 6) ||
+      ((method === 'email' || method === 'app') &&
+        !showBackupCode &&
+        otpCode.length !== 6) ||
       (showBackupCode && !backupCode.trim())
     ) {
       return
@@ -120,12 +135,32 @@ function TwoFactorVerification() {
 
     setIsLoading(true)
     try {
-      await verifyLoginTwoFactor(email, stayLoggedIn, otpCode, () => {
-        setIsVerified(true)
-        setTimeout(() => {
-          navigate('/dashboard')
-        }, 2000)
-      })
+      if (showBackupCode) {
+        useBackupCode(email, stayLoggedIn, backupCode, () => {
+          setIsVerified(true)
+          setTimeout(() => {
+            navigate('/dashboard')
+          }, 2000)
+        })
+      } else if (method === 'email' || method === 'app') {
+        await verifyLoginTwoFactor(email, stayLoggedIn, otpCode, method, () => {
+          setIsVerified(true)
+          setTimeout(() => {
+            navigate('/dashboard')
+          }, 2000)
+        })
+      } else if (method === 'webauthn') {
+        try {
+          setWebauthnError(null)
+          await authenticateWithWebAuthn(email, stayLoggedIn)
+          setIsVerified(true)
+          setTimeout(() => {
+            navigate('/dashboard')
+          }, 2000)
+        } catch (error) {
+          setWebauthnError(error.message || t('common.error'))
+        }
+      }
     } catch (error) {
       console.error('Error during verification:', error)
     } finally {
@@ -136,11 +171,94 @@ function TwoFactorVerification() {
   // Handle resend code
   const handleResend = async () => {
     if (resendDisabled) return
+    setIsLoading(true)
+    try {
+      if (method === 'email') {
+        await resendEmail2FACode(email)
+        setResendDisabled(true)
+        setCountdown(60)
+        setOtp(['', '', '', '', '', ''])
+        setBackupCode('')
+      }
+    } catch (error) {
+      console.error('Error resending code:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-    setResendDisabled(true)
-    setCountdown(60)
-    setOtp(['', '', '', '', '', ''])
-    setBackupCode('')
+  // Handle method switch
+  const handleMethodSwitch = async (newMethod) => {
+    navigate('/2fa-verification', {
+      state: {
+        email,
+        method: newMethod,
+        stayLoggedIn,
+        availableMethods,
+      },
+    })
+    if (newMethod === 'email') {
+      await resendEmail2FACode(email)
+      setResendDisabled(true)
+      setCountdown(60)
+      setOtp(['', '', '', '', '', ''])
+      setBackupCode('')
+    }
+  }
+
+  // Render alternative method buttons
+  const renderAlternativeMethods = () => {
+    const alternativeMethods = availableMethods.filter((m) => m !== method)
+    if (alternativeMethods.length === 0) return null
+
+    return (
+      <div className="alternative-methods">
+        <p>
+          {method === 'email'
+            ? t('auth.2fa.process.alternative-methods-email')
+            : method === 'app'
+            ? t('auth.2fa.process.alternative-methods-app')
+            : t('auth.2fa.process.alternative-methods-webauthn')}
+        </p>
+        <div className="alternative-methods-buttons">
+          {alternativeMethods.includes('app') && (
+            <button
+              type="button"
+              className="method-button"
+              onClick={() => handleMethodSwitch('app')}
+            >
+              <Smartphone size={20} />
+              <span>{t('auth.2fa.process.use-app')}</span>
+            </button>
+          )}
+          {alternativeMethods.includes('email') && (
+            <button
+              type="button"
+              className="method-button"
+              onClick={() => handleMethodSwitch('email')}
+              disabled={resendDisabled}
+            >
+              <Mail size={20} />
+              <span>
+                {resendDisabled
+                  ? `${t('auth.2fa.process.retry-in')} ${countdown}s`
+                  : t('auth.2fa.process.use-email')}
+              </span>
+            </button>
+          )}
+          {alternativeMethods.includes('webauthn') && (
+            <button
+              type="button"
+              className="method-button"
+              onClick={() => handleMethodSwitch('webauthn')}
+            >
+              <Fingerprint size={20} />
+              <span>{t('auth.2fa.process.use-webauthn')}</span>
+            </button>
+          )}
+        </div>
+      </div>
+    )
   }
 
   if (isVerified) {
@@ -223,13 +341,19 @@ function TwoFactorVerification() {
               </div>
               <div className="auth-stat-item">
                 <div className="auth-stat-icon">
-                  <Smartphone />
+                  {method === 'webauthn' ? <Fingerprint /> : <Smartphone />}
                 </div>
                 <div className="auth-stat-info">
-                  <h4>{t('auth.2fa.visual.step1')}</h4>
+                  <h4>
+                    {method === 'webauthn'
+                      ? t('auth.2fa.visual.step1-webauthn')
+                      : t('auth.2fa.visual.step1')}
+                  </h4>
                   <p>
                     {method === 'email'
                       ? t('auth.2fa.visual.step1description-mail')
+                      : method === 'webauthn'
+                      ? t('auth.2fa.visual.step1description-webauthn')
                       : t('auth.2fa.visual.step1description-app')}
                   </p>
                 </div>
@@ -244,6 +368,7 @@ function TwoFactorVerification() {
                 </div>
               </div>
             </div>
+            {renderAlternativeMethods()}
           </div>
         </div>
 
@@ -260,6 +385,8 @@ function TwoFactorVerification() {
                 <p className="auth-subtitle">
                   {method === 'email'
                     ? t('auth.2fa.process.subtitle-email')
+                    : method === 'webauthn'
+                    ? t('auth.2fa.process.subtitle-webauthn')
                     : t('auth.2fa.process.subtitle-app')}
                 </p>
               </div>
@@ -270,12 +397,34 @@ function TwoFactorVerification() {
                     {showBackupCode
                       ? t('auth.2fa.process.backup-message')
                       : method === 'email'
-                        ? t('auth.2fa.process.email-message')
-                        : t('auth.2fa.process.app-message')}
+                      ? t('auth.2fa.process.email-message')
+                      : method === 'webauthn'
+                      ? t('auth.2fa.process.webauthn-message')
+                      : t('auth.2fa.process.app-message')}
                   </p>
                 </div>
 
-                {!showBackupCode ? (
+                {method === 'webauthn' ? (
+                  <>
+                    {webauthnError && (
+                      <div className="error-message">
+                        <AlertTriangle size={16} />
+                        <span>{webauthnError}</span>
+                      </div>
+                    )}
+                    <PrimaryBtn
+                      onClick={handleVerification}
+                      disabled={isLoading}
+                    >
+                      <Fingerprint size={20} />
+                      <span>
+                        {isLoading
+                          ? t('auth.login.form.accesskey.verification')
+                          : t('auth.2fa.process.use-webauthn')}
+                      </span>
+                    </PrimaryBtn>
+                  </>
+                ) : !showBackupCode ? (
                   <div className="otp-container">
                     {otp.map((digit, index) => (
                       <input
@@ -283,7 +432,13 @@ function TwoFactorVerification() {
                         type="text"
                         maxLength={1}
                         value={digit}
-                        autoComplete="one-time-code"
+                        autoComplete={
+                          showBackupCode
+                            ? 'off'
+                            : method === 'app'
+                            ? 'one-time-code'
+                            : 'off'
+                        }
                         onChange={(e) => handleChange(index, e.target.value)}
                         onKeyDown={(e) => handleKeyDown(index, e)}
                         onPaste={index === 0 ? handlePaste : undefined}
@@ -317,22 +472,23 @@ function TwoFactorVerification() {
                   </div>
                 )}
 
-                <button
-                  type="submit"
-                  className="auth-button auth-button-primary"
-                  disabled={
-                    isLoading ||
-                    (!showBackupCode && otp.join('').length !== 6) ||
-                    (showBackupCode && !backupCode.trim())
-                  }
-                >
-                  <ShieldCheck />
-                  <span>
-                    {isLoading
-                      ? t('auth.login.form.accesskey.verification')
-                      : t('auth.emailverification.process.form.verify')}
-                  </span>
-                </button>
+                {method !== 'webauthn' && (
+                  <PrimaryBtn
+                    type="submit"
+                    disabled={
+                      isLoading ||
+                      (!showBackupCode && otp.join('').length !== 6) ||
+                      (showBackupCode && !backupCode.trim())
+                    }
+                  >
+                    <ShieldCheck />
+                    <span>
+                      {isLoading
+                        ? t('auth.login.form.accesskey.verification')
+                        : t('auth.emailverification.process.form.verify')}
+                    </span>
+                  </PrimaryBtn>
+                )}
 
                 <div className="auth-options">
                   <button
@@ -350,7 +506,9 @@ function TwoFactorVerification() {
                         <span>
                           {method === 'email'
                             ? t('auth.2fa.process.use-email-code')
-                            : t('auth.2fa.process.use-app-code')}
+                            : method === 'app'
+                            ? t('auth.2fa.process.use-app-code')
+                            : t('auth.2fa.process.use-webauthn-code')}
                         </span>
                       </>
                     ) : (
@@ -363,11 +521,7 @@ function TwoFactorVerification() {
 
                   {!showBackupCode && method === 'email' && (
                     <div className="resend-container">
-                      <p>
-                        {method === 'email'
-                          ? t('auth.2fa.process.resend-email')
-                          : t('auth.2fa.process.resend-app')}
-                      </p>
+                      <p>{t('auth.2fa.process.resend-email')}</p>
                       <button
                         type="button"
                         className={`resend-btn ${
@@ -399,7 +553,8 @@ function TwoFactorVerification() {
 
               <div className="auth-form-footer">
                 <span>{t('auth.2fa.process.question')}</span>
-                <Link to="/support">{t('common.contact-support')}</Link>
+                <Link to="#">{t('common.contact-support')}</Link>{' '}
+                {/* TODO: support link */}
               </div>
             </form>
           </div>

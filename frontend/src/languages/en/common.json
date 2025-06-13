@@ -5,16 +5,23 @@
   "authcontext": {
     "2fa": {
       "backup": {
-        "error": "Error during recovery by backup code"
+        "error": "Error during recovery by backup code",
+        "success": "You are connected. \nNew backup codes will be sent to you"
       },
       "disable": {
-        "error": "Error when deactivating the double authentication"
+        "error": "Error when deactivating the double authentication",
+        "success": "Double authentication by app is disabled"
+      },
+      "disableemail": {
+        "success": "Double email authentication is disabled"
       },
       "enable": {
-        "error": "Error when activating the double authentication by application"
+        "error": "Error when activating the double authentication by application",
+        "success": "The double authentication by authentication app is configured. \nFollow the necessary steps to activate it"
       },
       "enableemail": {
-        "error": "Error when activating the double authentication by email"
+        "error": "Error when activating the double authentication by email",
+        "success": "Double email authentication is configured follow the steps necessary to activate it."
       },
       "generatekey": {
         "error": "Error during the Webauthn configuration"
@@ -26,17 +33,24 @@
         "error": "Error when deleting the access key",
         "success": "The access key has been deleted"
       },
+      "resendemail": {
+        "error": "Error when sending a new authentication code",
+        "success": "A new code has been sent to your email address"
+      },
       "setpreferredmethod": {
-        "error": "An error occurred when changing the favorite double authentication method"
+        "error": "An error occurred when changing the favorite double authentication method",
+        "success": "Your favorite double authentication method has been updated"
       },
       "status": {
         "error": "Error when recovering active double authentication methods"
       },
       "verify": {
-        "error": "Error when checking the double authentication by application"
+        "error": "Error when checking the double authentication by application",
+        "success": "You can now use your app to connect"
       },
       "verifyemail": {
-        "error": "Error when checking the double authentication by email"
+        "error": "Error when checking the double authentication by email",
+        "success": "Double email authentication is now activated"
       },
       "verifyregisterkey": {
         "error": "Error when recording the key"
@@ -44,6 +58,7 @@
     },
     "changeverificationemail": {
       "error": "Error when changing email",
+      "success": "You have changed email",
       "validemail": "A valid email is required"
     },
     "deleteaccount": {
@@ -52,6 +67,7 @@
     },
     "forgotpassword": {
       "error": "Error when sending the email",
+      "success": "A reset email was sent to your email address",
       "validemail": "A valid email is required"
     },
     "login": {
@@ -59,6 +75,7 @@
       "fillallfields": "Please fill all fields",
       "notverifiederror": "Click on 'Return an email' to receive a new code",
       "notverifiedsuccess": "A code has been sent to you to check your email address",
+      "success": "You are connected",
       "validemail": "A valid email is required"
     },
     "logout": {
@@ -68,6 +85,7 @@
     "register": {
       "error": "Error when registering",
       "passwordmismatch": "Passwords do not match",
+      "success": "Your account has been created",
       "validemail": "A valid email is required",
       "validfirstname": "A valid first name (2 characters minimum) is required",
       "validlastname": "A valid name (2 characters minimum) is required",
@@ -75,16 +93,21 @@
       "validusername": "A valid username (3-30 alphanumeric characters) is required"
     },
     "resendverificationcode": {
-      "error": "Error when referring the verification email"
+      "error": "Error when referring the verification email",
+      "success": "A new verification email has been sent"
     },
     "resetpassword": {
       "error": "Error when resetting the password",
       "passwordmismatch": "Passwords do not match",
+      "success": "Your password has been modified",
       "validpassword": "A valid password (8 characters minimum) is required",
       "validtoken": "Invalid or expired link"
     },
+    "setpreferredmethod": {
+    },
     "verifyemail": {
       "error": "Error when checking the email",
+      "success": "Your email is verified",
       "validcode": "Please enter the full 6 -digit code"
     }
   },

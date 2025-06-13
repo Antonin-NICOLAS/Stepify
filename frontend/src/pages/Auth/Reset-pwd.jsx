@@ -5,10 +5,12 @@ import GlobalLoader from '../../utils/GlobalLoader'
 //context
 import { useAuth } from '../../context/AuthContext'
 import { useTranslation } from 'react-i18next'
+// Components
+import InputField from '../../components/InputField'
+import PrimaryButton from '../../components/buttons/primaryBtn'
+import PasswordStrengthMeter from '../../components/PasswordStrengthMeter'
 //icons
 import {
-  Eye,
-  EyeOff,
   Check,
   LockKeyhole,
   KeyRound,
@@ -17,31 +19,44 @@ import {
 } from 'lucide-react'
 //CSS
 import './Reset-pwd.css'
-import toast from 'react-hot-toast'
 
 function ResetPassword() {
   const { t } = useTranslation()
   const { resetPassword } = useAuth()
-
   const { token } = useParams()
-  const [isLoading, setIsLoading] = useState(false)
+
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [passwordStrength, setPasswordStrength] = useState({ score: 0 })
+  const [formError, setFormError] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleResetPwd = async (e) => {
+    setFormError('')
     e.preventDefault()
+    if (!token)
+      return setFormError(t('common.authcontext.resetpassword.validtoken'))
+    if (password.length < 8)
+      return setFormError(t('common.authcontext.resetpassword.validpassword'))
+    if (passwordStrength.score < 80) {
+      setFormError(t('account.password.weak'))
+      return
+    }
+    if (password !== confirmPassword)
+      return setFormError(
+        t('common.authcontext.resetpassword.passwordmismatch'),
+      )
     setIsLoading(true)
     try {
-      await resetPassword(token, password, confirmPassword, () => {
+      await resetPassword(token, password, () => {
         setPassword('')
         setConfirmPassword('')
         setIsSuccess(true)
       })
     } catch (error) {
       console.error('Error during password reset:', error)
+      setFormError(t('common.authcontext.resetpassword.error'))
     } finally {
       setIsLoading(false)
     }
@@ -174,92 +189,64 @@ function ResetPassword() {
               </div>
 
               <div className="auth-form-content">
+                {formError && (
+                  <div className="form-error">
+                    <AlertCircle size={16} />
+                    <span>{formError}</span>
+                  </div>
+                )}
                 {!token && (
-                  <div className="auth-alert auth-alert-error">
+                  <div className="form-error">
                     <AlertCircle />
-                    <p>{t('auth.resetpassword.form.invalidlink')}</p>
+                    <span>{t('auth.resetpassword.form.invalidlink')}</span>
                   </div>
                 )}
 
-                <div className="auth-input-group">
-                  <label htmlFor="password">{t('account.password.new')}</label>
-                  <div className="auth-input-wrapper">
-                    <LockKeyhole className="auth-input-icon" />
-                    <input
-                      id="password"
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder={t('auth.resetpassword.form.enterpassword')}
-                      autoComplete="new-password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      disabled={!token}
-                    />
-                    <button
-                      type="button"
-                      className="auth-input-action"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={
-                        showPassword
-                          ? t('auth.resetpassword.form.hidepassword')
-                          : t('auth.resetpassword.form.showpassword')
-                      }
-                    >
-                      {showPassword ? <EyeOff /> : <Eye />}
-                    </button>
-                  </div>
-                  <p className="password-hint">
-                    {t('auth.resetpassword.form.passwordhint')}
-                  </p>
-                </div>
+                <InputField
+                  id="password"
+                  type="password"
+                  className="without-margin"
+                  label={t('account.password.new')}
+                  placeholder={t('auth.resetpassword.form.enterpassword')}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  icon={LockKeyhole}
+                  autoComplete="new-password"
+                  required={true}
+                  disabled={!token}
+                  style={{ backgroundColor: 'transparent' }}
+                />
+                <PasswordStrengthMeter
+                  password={password}
+                  onStrengthChange={setPasswordStrength}
+                  showScore={true}
+                  showRequirements={true}
+                  style={{ marginTop: '0px', marginBottom: '0px' }}
+                />
 
-                <div className="auth-input-group">
-                  <label htmlFor="confirmPassword">
-                    {t('auth.resetpassword.form.confirmpassword')}
-                  </label>
-                  <div className="auth-input-wrapper">
-                    <LockKeyhole className="auth-input-icon" />
-                    <input
-                      id="confirmPassword"
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder={t(
-                        'auth.resetpassword.form.confirmyourpassword',
-                      )}
-                      autoComplete="new-password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                      disabled={!token}
-                    />
-                    <button
-                      type="button"
-                      className="auth-input-action"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      aria-label={
-                        showConfirmPassword
-                          ? t('auth.resetpassword.form.hidepassword')
-                          : t('auth.resetpassword.form.showpassword')
-                      }
-                    >
-                      {showConfirmPassword ? <EyeOff /> : <Eye />}
-                    </button>
-                  </div>
-                </div>
+                <InputField
+                  id="confirmpassword"
+                  type="password"
+                  className="without-margin"
+                  label={t('auth.resetpassword.form.confirmpassword')}
+                  placeholder={t('auth.resetpassword.form.confirmyourpassword')}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  icon={LockKeyhole}
+                  autoComplete="new-password"
+                  required={true}
+                  disabled={!token}
+                  style={{ backgroundColor: 'transparent' }}
+                />
 
-                <button
-                  type="submit"
-                  className="auth-button auth-button-primary"
-                  disabled={isLoading || !token}
-                >
+                <PrimaryButton type="submit" disabled={isLoading || !token}>
                   <LockKeyhole />
                   <span>
                     {isLoading
                       ? t('auth.resetpassword.form.loading')
                       : t('auth.resetpassword.form.submit')}
                   </span>
-                </button>
+                </PrimaryButton>
               </div>
 
               <div className="auth-form-footer">

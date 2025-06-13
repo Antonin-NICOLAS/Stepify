@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
-//loader
+import { useTranslation } from 'react-i18next'
+// components
 import GlobalLoader from '../../utils/GlobalLoader'
+import SendBtn from '../../components/buttons/SendBtn'
+import PrimaryBtn from '../../components/buttons/primaryBtn'
 //context
 import { useAuth } from '../../context/AuthContext'
 import { toast } from 'react-hot-toast'
@@ -19,6 +22,7 @@ import {
 import './EmailVerification.css'
 
 function EmailVerification() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { user, verifyEmail, resendVerificationCode } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
@@ -26,6 +30,7 @@ function EmailVerification() {
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [resendDisabled, setResendDisabled] = useState(false)
   const [countdown, setCountdown] = useState(0)
+  const [formError, setFormError] = useState('')
   const [isVerified, setIsVerified] = useState(false)
   const inputRefs = useRef([])
   const location = useLocation()
@@ -48,14 +53,11 @@ function EmailVerification() {
     }
   }, [countdown, resendDisabled])
 
-  // Handle input change and auto-focus next input
   const handleChange = (index, value) => {
     if (value.length > 1) {
-      // If pasting multiple digits, only take the first one
       value = value.slice(0, 1)
     }
 
-    // Only allow numbers
     if (value && !/^\d+$/.test(value)) {
       return
     }
@@ -64,7 +66,6 @@ function EmailVerification() {
     newOtp[index] = value
     setOtp(newOtp)
 
-    // Auto focus next input
     if (value && index < 5) {
       inputRefs.current[index + 1].focus()
     }
@@ -109,6 +110,9 @@ function EmailVerification() {
   const handleVerificationCode = async (e) => {
     e.preventDefault()
     const otpCode = otp.join('')
+    if (otpCode.length !== 6) {
+      return setFormError(t('common.authcontext.verifyemail.validcode'))
+    }
     setIsLoading(true)
     try {
       await verifyEmail(otpCode, () => {
@@ -291,7 +295,12 @@ function EmailVerification() {
                 <div className="verification-message">
                   <p>{t('auth.emailverification.process.form.message')}</p>
                 </div>
-
+                {formError && (
+                  <div className="form-error" style={{ marginBottom: '1rem' }}>
+                    <AlertCircle size={16} />
+                    <span>{formError}</span>
+                  </div>
+                )}
                 <div className="otp-container">
                   {otp.map((digit, index) => (
                     <input
@@ -310,9 +319,8 @@ function EmailVerification() {
                   ))}
                 </div>
 
-                <button
+                <PrimaryBtn
                   type="submit"
-                  className="auth-button auth-button-primary"
                   disabled={isLoading || otp.join('').length !== 6}
                 >
                   <ShieldCheck />
@@ -321,33 +329,27 @@ function EmailVerification() {
                       ? t('auth.login.form.accesskey.verification')
                       : t('auth.emailverification.process.form.verify')}
                   </span>
-                </button>
+                </PrimaryBtn>
 
                 <div className="resend-container">
                   <p>{t('auth.emailverification.process.form.resend')}</p>
-                  <button
+                  <SendBtn
                     type="button"
-                    className={`resend-btn ${resendDisabled ? 'disabled' : ''}`}
                     onClick={handleResend}
                     disabled={resendDisabled}
+                    icon={resendDisabled ? ClockFading : RefreshCcw}
                   >
                     {resendDisabled ? (
-                      <>
-                        <ClockFading />
-                        <span>
-                          {t('auth.emailverification.process.form.countdown')}{' '}
-                          {countdown}s
-                        </span>
-                      </>
+                      <span>
+                        {t('auth.emailverification.process.form.countdown')}{' '}
+                        {countdown}s
+                      </span>
                     ) : (
-                      <>
-                        <RefreshCcw />
-                        <span>
-                          {t('auth.emailverification.process.form.button')}
-                        </span>
-                      </>
+                      <span>
+                        {t('auth.emailverification.process.form.button')}
+                      </span>
                     )}
-                  </button>
+                  </SendBtn>
                 </div>
               </div>
 
@@ -356,7 +358,7 @@ function EmailVerification() {
                   {t('auth.emailverification.process.footer.question')}
                 </span>
                 <Link to="/change-email">
-                  t("auth.changeemail.visual.title')
+                  {t('auth.changeemail.visual.title')}
                 </Link>
               </div>
             </form>

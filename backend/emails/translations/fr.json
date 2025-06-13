@@ -67,6 +67,17 @@
     "bye": "A très bientôt sur Stepify !",
     "team_signature": "L'équipe **Stepify**"
   },
+  "email2FAcode": {
+    "title": "Votre code de double authentification",
+    "hello": "Bonjour ${firstName},",
+    "intro": "Votre code de vérification pour l'authentification à deux facteurs est :",
+    "code": "Votre code de vérification",
+    "expiration": "Ce code expire dans 10 minutes.",
+    "note": "Veuillez ne pas partager ce code avec qui que ce soit. Il est destiné à sécuriser votre compte Stepify.",
+    "ignore": "Si vous n'avez pas demandé ce code, veuillez ignorer cet email.",
+    "bye": "A très bientôt sur Stepify !",
+    "team_signature": "L'équipe **Stepify**"
+  },
   "footer": {
     "bloc1": "Vous recevez cet email car vous avez créé un compte sur Stepify. Si vous pensez avoir reçu cet email par erreur, vous pouvez ignorer ce message ou nous contacter à l'adresse suivante :",
     "bloc2_before": "Stepify s’engage à protéger vos données personnelles. Vous pouvez consulter notre ",

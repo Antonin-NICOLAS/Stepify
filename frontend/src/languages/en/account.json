@@ -79,7 +79,6 @@
       }
     },
     "preferred": "Your favorite method",
-    "preferred-method-updated": "Your favorite double authentication method has been updated",
     "set-preferred": "Change your favorite method",
     "setup-app": {
       "app-configured": "I configured the application",

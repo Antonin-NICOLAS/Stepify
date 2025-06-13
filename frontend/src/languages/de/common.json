@@ -5,16 +5,23 @@
   "authcontext": {
     "2fa": {
       "backup": {
-        "error": "Fehler während der Wiederherstellung durch Sicherungscode"
+        "error": "Fehler während der Wiederherstellung durch Sicherungscode",
+        "success": "Sie sind verbunden. Neue Sicherungscodes werden Ihnen gesendet"
       },
       "disable": {
-        "error": "Fehler beim Deaktivieren der Doppelauthentifizierung"
+        "error": "Fehler beim Deaktivieren der Doppelauthentifizierung",
+        "success": "Die Doppel -App -Authentifizierung ist deaktiviert"
+      },
+      "disableemail": {
+        "success": "Die doppelte E -Mail -Authentifizierung ist deaktiviert"
       },
       "enable": {
-        "error": "Fehler beim Aktivieren der Doppelauthentifizierung mit der Anwendung"
+        "error": "Fehler beim Aktivieren der Doppelauthentifizierung mit der Anwendung",
+        "success": "Die Doppelauthentifizierung nach Authentifizierungs -App ist konfiguriert. Befolgen Sie die erforderlichen Schritte, um es zu aktivieren"
       },
       "enableemail": {
-        "error": "Fehler beim Aktivieren der Doppelauthentifizierung per E -Mail"
+        "error": "Fehler beim Aktivieren der Doppelauthentifizierung per E -Mail",
+        "success": "Die doppelte E -Mail -Authentifizierung ist konfiguriert. Befolgen Sie die für die Aktivierung erforderlichen Schritte."
       },
       "generatekey": {
         "error": "Fehler während der WebAuthn -Konfiguration"
@@ -26,17 +33,24 @@
         "error": "Fehler beim Löschen der Zugriffstaste",
         "success": "Der Zugangsschlüssel wurde gelöscht"
       },
+      "resendemail": {
+        "error": "Fehler beim Senden eines neuen Authentifizierungscode",
+        "success": "Ein neuer Code wurde an Ihre E -Mail -Adresse gesendet"
+      },
       "setpreferredmethod": {
-        "error": "Bei der Änderung der bevorzugten Doppelauthentifizierungsmethode trat ein Fehler auf"
+        "error": "Bei der Änderung der bevorzugten Doppelauthentifizierungsmethode trat ein Fehler auf",
+        "success": "Ihre bevorzugte Doppelauthentifizierungsmethode wurde aktualisiert"
       },
       "status": {
         "error": "Fehler beim Wiederherstellen aktiver Doppelauthentifizierungsmethoden"
       },
       "verify": {
-        "error": "Fehler beim Überprüfen der Doppelauthentifizierung mit der Anwendung"
+        "error": "Fehler beim Überprüfen der Doppelauthentifizierung mit der Anwendung",
+        "success": "Sie können jetzt Ihre Anwendung verwenden, um eine Verbindung herzustellen"
       },
       "verifyemail": {
-        "error": "Fehler beim Überprüfen der Doppelauthentifizierung per E -Mail"
+        "error": "Fehler beim Überprüfen der Doppelauthentifizierung per E -Mail",
+        "success": "Die doppelte E -Mail -Authentifizierung ist jetzt aktiviert"
       },
       "verifyregisterkey": {
         "error": "Fehler beim Aufzeichnen des Schlüssels"
@@ -44,6 +58,7 @@
     },
     "changeverificationemail": {
       "error": "Fehler beim Ändern der E -Mail",
+      "success": "Sie haben die E -Mail geändert",
       "validemail": "Eine gültige E -Mail ist erforderlich"
     },
     "deleteaccount": {
@@ -52,6 +67,7 @@
     },
     "forgotpassword": {
       "error": "Fehler beim Senden der E -Mail",
+      "success": "Eine Reset -E -Mail wurde an Ihre E -Mail -Adresse gesendet",
       "validemail": "Eine gültige E -Mail ist erforderlich"
     },
     "login": {
@@ -59,6 +75,7 @@
       "fillallfields": "Bitte füllen Sie alle Felder aus",
       "notverifiederror": "Klicken Sie auf \"Eine E -Mail zurückgeben\", um einen neuen Code zu erhalten",
       "notverifiedsuccess": "Ein Code wurde an Sie gesendet, um Ihre E -Mail -Adresse zu überprüfen",
+      "success": "Sie sind verbunden",
       "validemail": "Eine gültige E -Mail ist erforderlich"
     },
     "logout": {
@@ -68,6 +85,7 @@
     "register": {
       "error": "Fehler bei der Registrierung",
       "passwordmismatch": "Passwörter stimmen nicht überein",
+      "success": "Ihr Konto wurde erstellt",
       "validemail": "Eine gültige E -Mail ist erforderlich",
       "validfirstname": "Ein gültiger Vorname (minimal 2 Zeichen) ist erforderlich",
       "validlastname": "Ein gültiger Name (minimal 2 Zeichen) ist erforderlich",
@@ -75,16 +93,21 @@
       "validusername": "Ein gültiger Benutzername (3-30 alphanumerische Zeichen) ist erforderlich"
     },
     "resendverificationcode": {
-      "error": "Fehler beim Überweisen der Überprüfungs -E -Mail"
+      "error": "Fehler beim Überweisen der Überprüfungs -E -Mail",
+      "success": "Eine neue Überprüfungs -E -Mail wurde gesendet"
     },
     "resetpassword": {
       "error": "Fehler beim Zurücksetzen des Passworts",
       "passwordmismatch": "Passwörter stimmen nicht überein",
+      "success": "Ihr Passwort wurde geändert",
       "validpassword": "Ein gültiges Passwort (Minimum von 8 Zeichen) ist erforderlich",
       "validtoken": "Ungültiger oder abgelaufener Link"
     },
+    "setpreferredmethod": {
+    },
     "verifyemail": {
       "error": "Fehler beim Überprüfen der E -Mail",
+      "success": "Ihre E -Mail wird verifiziert",
       "validcode": "Bitte geben Sie den vollständigen 6 -Digit -Code ein"
     }
   },

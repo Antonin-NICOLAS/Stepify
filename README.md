@@ -43,13 +43,13 @@ Stepify est une application web de suivi d'activité physique ludique. Marchez, 
   - [ ] Rewards
   - [ ] Steps
   - [ ] Friends
-- [ ] 💡 **Ajouter un layout modals** pour sortir en cliquant à l’extérieur :
+- [x] 💡 **Ajouter un layout modals** pour sortir en cliquant à l’extérieur :
   - [x] Challenge
   - [x] Leaderboard
   - [x] Rewards
   - [x] Steps
   - [x] Friends
-  - [ ] Settings & profile
+  - [x] Settings & profile
 - [ ] Remplacer les select html5 par les Select fait maison (cf components/Select)
 - [ ] Remplacer React Hot Toast par react toastify
 - [ ] 📊 **Remplacer les graphiques Highcharts** par Chart.js

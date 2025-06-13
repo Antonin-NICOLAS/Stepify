@@ -79,7 +79,6 @@
       }
     },
     "preferred": "Votre méthode préférée",
-    "preferred-method-updated": "Votre méthode de double authentification préférée a été mise à jour",
     "set-preferred": "Changer de méthode préférée",
     "setup-app": {
       "app-configured": "J'ai configuré l'application",
@@ -106,7 +105,6 @@
         "title": "Configuration de la clé de sécurité"
       }
     },
-    "success": {},
     "verify": {
       "activate": "Vérifier et activer",
       "label-code": "Code de vérification",

@@ -30,6 +30,7 @@ const {
   verifyAndEnableEmail2FA,
   setPreferredMethod,
   disableEmail2FA,
+  resendEmailCode,
 } = require('../controllers/TwoFactorController')
 
 const {
@@ -61,6 +62,7 @@ router.post('/forgot-password', authLimiter, forgotPassword)
 router.post('/reset-password/:token', resetPassword)
 
 router.post('/2fa/verify-login', verifyLoginTwoFactor)
+router.post('/2fa/email/resend-code', resendEmailCode)
 router.post('/2fa/use-backup', useBackupCode)
 router.post('/2fa/webauthn/generate-authentication', generateAuthenticationOpt)
 

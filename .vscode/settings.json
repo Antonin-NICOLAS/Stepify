@@ -9,6 +9,7 @@
     "frontend/src/languages",
     "./frontend/src/languages"
   ],
+  "i18n-ally.usage.scanningIgnore": ["backend/**/*.js"],
   "i18n-ally.pathMatcher": "{locale}/{namespace}.json",
   "i18n-ally.enabledFrameworks": ["react", "react-i18next"],
   "i18n-ally.sourceLanguage": "fr",

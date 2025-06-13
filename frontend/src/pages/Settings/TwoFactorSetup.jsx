@@ -836,7 +836,7 @@ function TwoFactorSettings() {
               id={`otp-${idx}`}
               className="otp-input"
               inputMode="numeric"
-              autoComplete="one-time-code"
+              autoComplete="off"
               onPaste={(e) => {
                 e.preventDefault()
                 const pasteData = e.clipboardData.getData('text')

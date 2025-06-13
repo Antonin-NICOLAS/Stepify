@@ -1,16 +1,16 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 // Contexts
-import { useAuth } from '../context/AuthContext'
-import { useUser } from '../context/UserContext'
+import { useAuth } from '../../context/AuthContext'
+import { useUser } from '../../context/UserContext'
 import { useTranslation } from 'react-i18next'
 // Components
-import PrimaryBtn from '../components/buttons/primaryBtn'
-import DangerBtn from '../components/buttons/dangerBtn'
-import BlueBtn from '../components/buttons/blueBtn'
-import Select from '../components/Selector'
+import PrimaryBtn from '../../components/buttons/primaryBtn'
+import DangerBtn from '../../components/buttons/dangerBtn'
+import BlueBtn from '../../components/buttons/blueBtn'
+import Select from '../../components/Selector'
 import { toast } from 'react-hot-toast'
-import GlobalLoader from '../utils/GlobalLoader'
+import GlobalLoader from '../../utils/GlobalLoader'
 // Icons
 import {
   Camera,

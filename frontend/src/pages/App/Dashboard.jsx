@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 //Context
-import { useAuth } from '../context/AuthContext'
-import GlobalLoader from '../utils/GlobalLoader'
+import { useAuth } from '../../context/AuthContext'
+import GlobalLoader from '../../utils/GlobalLoader'
 //Icons
 import {
   BarChart,

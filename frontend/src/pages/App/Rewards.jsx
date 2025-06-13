@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import Select from 'react-select'
 // Context
-import { useRewards } from '../hooks/useRewards'
-import { useAuth } from '../context/AuthContext'
-import { useTheme } from '../context/ThemeContext'
-import GlobalLoader from '../utils/GlobalLoader'
+import { useRewards } from '../../hooks/useRewards'
+import { useAuth } from '../../context/AuthContext'
+import { useTheme } from '../../context/ThemeContext'
+import GlobalLoader from '../../utils/GlobalLoader'
 // Icons & charts
 import {
   Icon,

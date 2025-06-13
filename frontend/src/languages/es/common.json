@@ -5,16 +5,23 @@
   "authcontext": {
     "2fa": {
       "backup": {
-        "error": "Error durante la recuperación por código de copia de seguridad"
+        "error": "Error durante la recuperación por código de copia de seguridad",
+        "success": "Estás conectado. Se le enviarán nuevos códigos de copia de seguridad"
       },
       "disable": {
-        "error": "Error al desactivar la doble autenticación"
+        "error": "Error al desactivar la doble autenticación",
+        "success": "La autenticación de doble aplicación está deshabilitada"
+      },
+      "disableemail": {
+        "success": "La autenticación de doble correo electrónico está deshabilitada"
       },
       "enable": {
-        "error": "Error al activar la doble autenticación por aplicación"
+        "error": "Error al activar la doble autenticación por aplicación",
+        "success": "La aplicación de autenticación doble por autenticación está configurado. Siga los pasos necesarios para activarlo"
       },
       "enableemail": {
-        "error": "Error al activar la doble autenticación por correo electrónico"
+        "error": "Error al activar la doble autenticación por correo electrónico",
+        "success": "La autenticación de doble correo electrónico está configurada Siga los pasos necesarios para activarlo."
       },
       "generatekey": {
         "error": "Error durante la configuración de WebAuthn"
@@ -26,17 +33,24 @@
         "error": "Error al eliminar la clave de acceso",
         "success": "La tecla de acceso se ha eliminado"
       },
+      "resendemail": {
+        "error": "Error al enviar un nuevo código de autenticación",
+        "success": "Se ha enviado un nuevo código a su dirección de correo electrónico"
+      },
       "setpreferredmethod": {
-        "error": "Se produjo un error al cambiar el método de autenticación doble favorito"
+        "error": "Se produjo un error al cambiar el método de autenticación doble favorito",
+        "success": "Su método de autenticación doble favorito se ha actualizado"
       },
       "status": {
         "error": "Error al recuperar métodos activos de autenticación doble"
       },
       "verify": {
-        "error": "Error al verificar la doble autenticación por aplicación"
+        "error": "Error al verificar la doble autenticación por aplicación",
+        "success": "Ahora puede usar su aplicación para conectarse"
       },
       "verifyemail": {
-        "error": "Error al verificar la doble autenticación por correo electrónico"
+        "error": "Error al verificar la doble autenticación por correo electrónico",
+        "success": "La autenticación de doble correo electrónico ahora se activa"
       },
       "verifyregisterkey": {
         "error": "Error al grabar la clave"
@@ -44,6 +58,7 @@
     },
     "changeverificationemail": {
       "error": "Error al cambiar el correo electrónico",
+      "success": "Has cambiado el correo electrónico",
       "validemail": "Se requiere un correo electrónico válido"
     },
     "deleteaccount": {
@@ -52,6 +67,7 @@
     },
     "forgotpassword": {
       "error": "Error al enviar el correo electrónico",
+      "success": "Se envió un correo electrónico de reinicio a su dirección de correo electrónico",
       "validemail": "Se requiere un correo electrónico válido"
     },
     "login": {
@@ -59,6 +75,7 @@
       "fillallfields": "Por favor llene todos los campos",
       "notverifiederror": "Haga clic en 'devolver un correo electrónico' para recibir un nuevo código",
       "notverifiedsuccess": "Se le ha enviado un código para verificar su dirección de correo electrónico",
+      "success": "Estás conectado",
       "validemail": "Se requiere un correo electrónico válido"
     },
     "logout": {
@@ -68,6 +85,7 @@
     "register": {
       "error": "Error al registrarse",
       "passwordmismatch": "Las contraseñas no coinciden",
+      "success": "Su cuenta ha sido creada",
       "validemail": "Se requiere un correo electrónico válido",
       "validfirstname": "Se requiere un nombre válido (mínimo de 2 caracteres)",
       "validlastname": "Se requiere un nombre válido (mínimo de 2 caracteres)",
@@ -75,16 +93,21 @@
       "validusername": "Se requiere un nombre de usuario válido (3-30 caracteres alfanuméricos)"
     },
     "resendverificationcode": {
-      "error": "Error al referir el correo electrónico de verificación"
+      "error": "Error al referir el correo electrónico de verificación",
+      "success": "Se ha enviado un nuevo correo electrónico de verificación"
     },
     "resetpassword": {
       "error": "Error al restablecer la contraseña",
       "passwordmismatch": "Las contraseñas no coinciden",
+      "success": "Su contraseña ha sido modificada",
       "validpassword": "Se requiere una contraseña válida (mínimo de 8 caracteres)",
       "validtoken": "Enlace no válido o caducado"
     },
+    "setpreferredmethod": {
+    },
     "verifyemail": {
       "error": "Error al verificar el correo electrónico",
+      "success": "Su correo electrónico está verificado",
       "validcode": "Ingrese el código completo de 6 dígitos"
     }
   },

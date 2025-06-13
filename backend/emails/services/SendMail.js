@@ -2,13 +2,13 @@ const nodemailer = require('nodemailer')
 const {
   TwoFactorSetupEmailTemplate,
   BackupCodesEmailTemplate,
-  TwoFactorEmailCodeTemplate,
 } = require('../templates/EmailTemplates')
 const { NewLoginEmailTemplate } = require('../templates/NewLoginEmail')
 const { EmailVerificationTemplate } = require('../templates/EmailVerification')
 const { WelcomeEmailTemplate } = require('../templates/Welcome')
 const { EmailPasswordResetTemplate } = require('../templates/PasswordReset')
 const { SucessfulResetTemplate } = require('../templates/SuccessfulReset')
+const { Email2FACodeTemplate } = require('../templates/Email2FACode')
 
 const { t, interpolate } = require('../services/i18n')
 // .env
@@ -168,12 +168,14 @@ const sendTwoFactorBackupCodesEmail = async (email, firstName, backupCodes) => {
 }
 
 // Envoyer un code 2FA par email
-const sendTwoFactorEmailCode = async (email, firstName, code) => {
+const sendTwoFactorEmailCode = async (user, code) => {
   const mailOptions = {
     from: process.env.EMAIL_FROM,
-    to: email,
+    to: user.email,
     subject: 'Code de vérification Stepify',
-    html: TwoFactorEmailCodeTemplate(firstName, code),
+    html: interpolate(Email2FACodeTemplate(code, user.languagePreference), {
+      firstName: user.firstName,
+    }),
   }
   try {
     await transporter.sendMail(mailOptions)

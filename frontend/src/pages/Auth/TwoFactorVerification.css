@@ -259,42 +259,6 @@
   box-shadow: 0 0 0 2px rgba(74, 145, 158, 0.2);
 }
 
-.twofactor-verification-page .auth-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition);
-  text-decoration: none;
-  border: none;
-  font-size: 1rem;
-}
-
-.twofactor-verification-page .auth-button svg {
-  width: 18px;
-  height: 18px;
-}
-
-.twofactor-verification-page .auth-button-primary {
-  background: linear-gradient(135deg, var(--Couleur1), var(--bleu));
-  color: white;
-}
-
-.twofactor-verification-page .auth-button-primary:hover {
-  background: linear-gradient(135deg, var(--bleu), var(--Couleur1));
-  transform: translateY(-2px);
-}
-
-.twofactor-verification-page .auth-button-primary:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
-}
-
 .twofactor-verification-page .auth-options {
   display: flex;
   flex-direction: column;
@@ -386,6 +350,73 @@
   text-align: center;
   color: var(--Noir);
   line-height: 1.6;
+}
+
+.twofactor-verification-page .alternative-methods {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.twofactor-verification-page .alternative-methods p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.twofactor-verification-page .alternative-methods-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.twofactor-verification-page .method-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.twofactor-verification-page .method-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.twofactor-verification-page .method-button:active {
+  transform: translateY(0);
+}
+
+.twofactor-verification-page .method-button svg {
+  color: var(--primary-color);
+}
+
+.twofactor-verification-page .error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: rgb(239, 68, 68);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.twofactor-verification-page .error-message svg {
+  flex-shrink: 0;
 }
 
 /* =================== RESPONSIVE STYLES =================== */

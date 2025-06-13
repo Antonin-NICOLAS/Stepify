@@ -1,0 +1,127 @@
+.component-demo {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-container {
+  max-width: 900px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.demo-container h2 {
+  text-align: center;
+  color: #1e293b;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.demo-container > p {
+  text-align: center;
+  color: #64748b;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 2rem;
+}
+
+.demo-section h3 {
+  color: #374151;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.strength-summary {
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.1) 0%,
+    rgba(168, 85, 247, 0.1) 100%
+  );
+  border-radius: 12px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.strength-summary h4 {
+  margin-bottom: 1rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+.strength-bar {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 auto;
+  max-width: 300px;
+}
+
+.strength-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.strength-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .component-demo {
+    padding: 1rem;
+  }
+
+  .demo-container {
+    padding: 1.5rem;
+  }
+
+  .demo-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .demo-container h2 {
+    font-size: 1.5rem;
+  }
+}

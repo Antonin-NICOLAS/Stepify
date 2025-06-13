@@ -10,16 +10,16 @@ import {
 } from './RoutesGuards.jsx'
 
 // Pages
-import Home from '../pages/Home.jsx'
-import Dashboard from '../pages/Dashboard.jsx'
+import Home from '../pages/App/Home.jsx'
+import Dashboard from '../pages/App/Dashboard.jsx'
 import Challenges from '../pages/Challenges/Challenges.jsx'
-import Steps from '../pages/Steps.jsx'
-import Leaderboard from '../pages/Leaderboard.jsx'
-import Rewards from '../pages/Rewards.jsx'
-import Friends from '../pages/Friends.jsx'
-import Profile from '../pages/Profile.jsx'
+import Steps from '../pages/App/Steps.jsx'
+import Leaderboard from '../pages/App/Leaderboard.jsx'
+import Rewards from '../pages/App/Rewards.jsx'
+import Friends from '../pages/App/Friends.jsx'
+import Profile from '../pages/App/Profile.jsx'
 import Settings from '../pages/Settings/Settings.jsx'
-import About from '../pages/About.jsx'
+import About from '../pages/App/About.jsx'
 //terms of services
 import TermsOfService from '../pages/Documents/TermsOfService.jsx'
 //AUTH

@@ -1,7 +1,7 @@
 .auth-button-secondary {
   background-color: transparent;
-  padding: calc(4px + 0.6vh) calc(4px + 0.6vw);
-  border: 3px solid var(--Couleur2);
+  padding: calc(6px + 0.6vh) calc(6px + 0.6vw);
+  border: 2px solid var(--Couleur2);
   color: var(--Couleur);
 }
 
