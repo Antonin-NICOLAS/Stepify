@@ -3,3 +3,4 @@ node_modules
 .vscode
 .VSCodeCounter
 .DS_Store
+.prettierrc.json
