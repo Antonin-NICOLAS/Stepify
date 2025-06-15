@@ -84,7 +84,6 @@
     },
     "register": {
       "error": "Fehler bei der Registrierung",
-      "passwordmismatch": "Passwörter stimmen nicht überein",
       "success": "Ihr Konto wurde erstellt",
       "validemail": "Eine gültige E -Mail ist erforderlich",
       "validfirstname": "Ein gültiger Vorname (minimal 2 Zeichen) ist erforderlich",
@@ -103,8 +102,7 @@
       "validpassword": "Ein gültiges Passwort (Minimum von 8 Zeichen) ist erforderlich",
       "validtoken": "Ungültiger oder abgelaufener Link"
     },
-    "setpreferredmethod": {
-    },
+    "setpreferredmethod": {},
     "verifyemail": {
       "error": "Fehler beim Überprüfen der E -Mail",
       "success": "Ihre E -Mail wird verifiziert",

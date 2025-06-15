@@ -189,7 +189,7 @@
       "len": "Au moins 8 caractères",
       "lowercase": "Une lettre minuscule",
       "number": "Un chiffre",
-      "title": "Exigences du mot de passe :",
+      "special": "Un caractère spécial",
       "uppercase": "Une lettre majuscule"
     },
     "current": "Mot de passe actuel",
@@ -199,6 +199,7 @@
     "new": "Nouveau mot de passe",
     "strong": "Fort",
     "very-low": "Très faible",
+    "very-strong": "Très fort",
     "weak": "Le mot de passe n'est pas assez fort"
   },
   "privacy": {
@@ -223,11 +224,14 @@
     "write-delete": "Veuillez taper 'SUPPRIMER' pour confirmer"
   },
   "sessions": {
+    "browser": "Navigateur utilisé :",
     "description": "Gérez vos connexions actives",
+    "device": "Appareil utilisé :",
     "loggedin": "Connecté :",
     "terminate-all": "Terminer toutes les sessions",
     "title": "Sessions actives",
-    "unknown-device": "Appareil inconnu"
+    "unknown-device": "Appareil inconnu",
+    "version": "Version du software :"
   },
   "settings": {
     "redirect": "Profil",

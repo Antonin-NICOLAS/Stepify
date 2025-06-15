@@ -84,7 +84,6 @@
     },
     "register": {
       "error": "Erreur lors de l'inscription",
-      "passwordmismatch": "Les mots de passe ne correspondent pas",
       "success": "Votre compte a été créé",
       "validemail": "Un email valide est requis",
       "validfirstname": "Un prénom valide (2 caractères minimum) est requis",
@@ -103,8 +102,7 @@
       "validpassword": "Un mot de passe valide (8 caractères minimum) est requis",
       "validtoken": "Lien invalide ou expiré"
     },
-    "setpreferredmethod": {
-    },
+    "setpreferredmethod": {},
     "verifyemail": {
       "error": "Erreur lors de la vérification de l'email",
       "success": "Votre email est vérifié",

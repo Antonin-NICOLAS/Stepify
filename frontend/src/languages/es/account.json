@@ -187,10 +187,8 @@
   "password": {
     "confirm": "Confirmar contraseña",
     "criterias": {
-      "len": "Al menos 8 caracteres",
       "lowercase": "Una pequeña carta",
       "number": "Una figura",
-      "title": "Requisitos de contraseña:",
       "uppercase": "Una letra mayúscula"
     },
     "current": "Contraseña actual",
@@ -200,6 +198,7 @@
     "new": "Nueva contraseña",
     "strong": "Fuerte",
     "very-low": "Muy débil",
+    "very-strong": "Acérrimo",
     "weak": "La contraseña no es lo suficientemente fuerte"
   },
   "privacy": {
@@ -224,11 +223,14 @@
     "write-delete": "Escriba 'Eliminar' para confirmar"
   },
   "sessions": {
+    "browser": "Navegador utilizado:",
     "description": "Administre sus conexiones activas",
+    "device": "Dispositivo utilizado:",
     "loggedin": "Conectado:",
     "terminate-all": "Terminar todas las sesiones",
     "title": "Sesiones activas",
-    "unknown-device": "Dispositivo desconocido"
+    "unknown-device": "Dispositivo desconocido",
+    "version": "Versión de software:"
   },
   "settings": {
     "redirect": "Perfil",

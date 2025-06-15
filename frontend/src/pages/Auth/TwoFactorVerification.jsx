@@ -217,8 +217,8 @@ function TwoFactorVerification() {
           {method === 'email'
             ? t('auth.2fa.process.alternative-methods-email')
             : method === 'app'
-            ? t('auth.2fa.process.alternative-methods-app')
-            : t('auth.2fa.process.alternative-methods-webauthn')}
+              ? t('auth.2fa.process.alternative-methods-app')
+              : t('auth.2fa.process.alternative-methods-webauthn')}
         </p>
         <div className="alternative-methods-buttons">
           {alternativeMethods.includes('app') && (
@@ -353,8 +353,8 @@ function TwoFactorVerification() {
                     {method === 'email'
                       ? t('auth.2fa.visual.step1description-mail')
                       : method === 'webauthn'
-                      ? t('auth.2fa.visual.step1description-webauthn')
-                      : t('auth.2fa.visual.step1description-app')}
+                        ? t('auth.2fa.visual.step1description-webauthn')
+                        : t('auth.2fa.visual.step1description-app')}
                   </p>
                 </div>
               </div>
@@ -386,8 +386,8 @@ function TwoFactorVerification() {
                   {method === 'email'
                     ? t('auth.2fa.process.subtitle-email')
                     : method === 'webauthn'
-                    ? t('auth.2fa.process.subtitle-webauthn')
-                    : t('auth.2fa.process.subtitle-app')}
+                      ? t('auth.2fa.process.subtitle-webauthn')
+                      : t('auth.2fa.process.subtitle-app')}
                 </p>
               </div>
 
@@ -397,10 +397,10 @@ function TwoFactorVerification() {
                     {showBackupCode
                       ? t('auth.2fa.process.backup-message')
                       : method === 'email'
-                      ? t('auth.2fa.process.email-message')
-                      : method === 'webauthn'
-                      ? t('auth.2fa.process.webauthn-message')
-                      : t('auth.2fa.process.app-message')}
+                        ? t('auth.2fa.process.email-message')
+                        : method === 'webauthn'
+                          ? t('auth.2fa.process.webauthn-message')
+                          : t('auth.2fa.process.app-message')}
                   </p>
                 </div>
 
@@ -436,8 +436,8 @@ function TwoFactorVerification() {
                           showBackupCode
                             ? 'off'
                             : method === 'app'
-                            ? 'one-time-code'
-                            : 'off'
+                              ? 'one-time-code'
+                              : 'off'
                         }
                         onChange={(e) => handleChange(index, e.target.value)}
                         onKeyDown={(e) => handleKeyDown(index, e)}
@@ -507,8 +507,8 @@ function TwoFactorVerification() {
                           {method === 'email'
                             ? t('auth.2fa.process.use-email-code')
                             : method === 'app'
-                            ? t('auth.2fa.process.use-app-code')
-                            : t('auth.2fa.process.use-webauthn-code')}
+                              ? t('auth.2fa.process.use-app-code')
+                              : t('auth.2fa.process.use-webauthn-code')}
                         </span>
                       </>
                     ) : (

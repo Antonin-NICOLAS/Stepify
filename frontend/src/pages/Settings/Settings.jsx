@@ -9,6 +9,8 @@ import { useTranslation, Trans } from 'react-i18next'
 // Components
 import Select from '../../components/Selector'
 import Modal from '../../components/Modal'
+import InputField from '../../components/InputField'
+import PasswordStrengthMeter from '../../components/PasswordStrengthMeter'
 import PrimaryBtn from '../../components/buttons/primaryBtn'
 import SecondaryBtn from '../../components/buttons/secondaryBtn'
 import DangerBtn from '../../components/buttons/dangerBtn'
@@ -143,13 +145,13 @@ const Settings = () => {
         </div>
         <div className="device-info">
           <p>
-            Appareil utilisé : {deviceVendor} {deviceModel}
+            {t('account.sessions.device')} {deviceVendor} {deviceModel}
           </p>
           <p>
-            Version du software : {osName} {osVersion}
+            {t('account.sessions.version')} {osName} {osVersion}
           </p>
           <p>
-            Navigateur utilisé : {browserName} {browserVersion}
+            {t('account.sessions.browser')} {browserName} {browserVersion}
           </p>
         </div>
       </div>
@@ -157,35 +159,28 @@ const Settings = () => {
   }
 
   // Password strength calculator
-  const calculatePasswordStrength = (password) => {
-    let strength = 0
-    if (password.length >= 8) strength += 25
-    if (password.match(/[a-z]/)) strength += 25
-    if (password.match(/[A-Z]/)) strength += 25
-    if (password.match(/[0-9]/)) strength += 25
-    if (password.match(/[^a-zA-Z0-9]/)) strength += 25
-    return Math.min(strength, 100)
-  }
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target
     setPasswordData((prev) => ({ ...prev, [name]: value }))
-
-    if (name === 'newPassword') {
-      setPasswordStrength(calculatePasswordStrength(value))
-    }
   }
 
   const savePassword = async (e) => {
     e.preventDefault()
 
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setErrors({ password: t('auth.login.form.error.passwordmismatch') })
+    if (!passwordData.currentPassword)
+      return toast.error('Mot de passe actuel requis')
+
+    if (passwordData.newPassword.length < 8)
+      return toast.error(t('auth.resetpassword.form.passwordhint'))
+
+    if (passwordStrength < 80) {
+      setErrors({ password: t('account.password.weak') })
       return
     }
 
-    if (passwordStrength < 75) {
-      setErrors({ password: t('account.password.weak') })
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setErrors({ password: t('auth.login.form.error.passwordmismatch') })
       return
     }
 
@@ -307,20 +302,6 @@ const Settings = () => {
     }
   }
 
-  const getPasswordStrengthColor = () => {
-    if (passwordStrength < 25) return '#ef4444'
-    if (passwordStrength < 50) return '#f59e0b'
-    if (passwordStrength < 75) return '#eab308'
-    return '#10b981'
-  }
-
-  const getPasswordStrengthText = () => {
-    if (passwordStrength < 25) return t('account.password.very-low')
-    if (passwordStrength < 50) return t('account.password.low')
-    if (passwordStrength < 75) return t('account.password.medium')
-    return t('account.password.strong')
-  }
-
   return (
     <div className="settings-container">
       {isLoading && <GlobalLoader />}
@@ -363,81 +344,53 @@ const Settings = () => {
                 )}
                 <form onSubmit={savePassword}>
                   <div className="password-fields">
-                    <input
+                    <InputField
                       type="password"
+                      id="currentPassword"
                       name="currentPassword"
-                      placeholder={t('account.password.current')}
+                      className="without-margin"
+                      autoComplete="current-password"
+                      label={t('account.password.current')}
+                      placeholder={t('auth.login.form.login.enterpassword')}
                       value={passwordData.currentPassword}
                       onChange={handlePasswordChange}
-                      required
+                      icon={Lock}
+                      required={true}
+                      style={{ backgroundColor: 'transparent' }}
                     />
-                    <div className="new-password-group">
-                      <input
-                        type="password"
-                        name="newPassword"
-                        placeholder={t('account.password.new')}
-                        value={passwordData.newPassword}
-                        onChange={handlePasswordChange}
-                        required
-                      />
-                      {passwordData.newPassword && (
-                        <div className="password-strength">
-                          <div className="strength-bar">
-                            <div
-                              className="strength-fill"
-                              style={{
-                                width: `${passwordStrength}%`,
-                                backgroundColor: getPasswordStrengthColor(),
-                              }}
-                            ></div>
-                          </div>
-                          <span style={{ color: getPasswordStrengthColor() }}>
-                            {getPasswordStrengthText()}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <input
+                    <InputField
                       type="password"
+                      id="newPassword"
+                      name="newPassword"
+                      className="without-margin"
+                      autoComplete="new-password"
+                      placeholder={t('auth.resetpassword.form.enterpassword')}
+                      label={t('account.password.new')}
+                      value={passwordData.newPassword}
+                      onChange={handlePasswordChange}
+                      icon={Lock}
+                      required={true}
+                      style={{ backgroundColor: 'transparent' }}
+                    />
+                    <PasswordStrengthMeter
+                      password={passwordData.newPassword}
+                      onStrengthChange={setPasswordStrength}
+                      showScore={true}
+                      showRequirements={true}
+                      style={{ marginTop: '0px', marginBottom: '0px' }}
+                    />
+                    <InputField
+                      type="password"
+                      id="confirmPassword"
                       name="confirmPassword"
+                      className="without-margin"
+                      autoComplete="new-password"
                       placeholder={t('account.password.confirm')}
                       value={passwordData.confirmPassword}
                       onChange={handlePasswordChange}
-                      required
+                      required={true}
+                      style={{ backgroundColor: 'transparent' }}
                     />
-                  </div>
-                  <div className="password-requirements">
-                    <h5>{t('account.password.criterias.title')}</h5>
-                    <ul>
-                      <li
-                        className={
-                          passwordData.newPassword.length >= 8 ? 'valid' : ''
-                        }
-                      >
-                        {t('account.password.criterias.len')}
-                      </li>
-                      <li
-                        className={
-                          /[a-z]/.test(passwordData.newPassword) ? 'valid' : ''
-                        }
-                      >
-                        {t('account.password.criterias.lowercase')}
-                      </li>
-                      <li
-                        className={
-                          /[A-Z]/.test(passwordData.newPassword) ? 'valid' : ''
-                        }
-                      >
-                        {t('account.password.criterias.uppercase')}
-                      </li>
-                      <li
-                        className={
-                          /[0-9]/.test(passwordData.newPassword) ? 'valid' : ''
-                        }
-                      >
-                        {t('account.password.criterias.number')}
-                      </li>
-                    </ul>
                   </div>
                   <div className="form-actions">
                     <DangerBtn

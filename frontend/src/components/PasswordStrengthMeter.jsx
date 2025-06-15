@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Shield, Check, X, AlertCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import './PasswordStrengthMeter.css'
 
 const PasswordStrengthMeter = ({
@@ -10,6 +11,7 @@ const PasswordStrengthMeter = ({
   className = '',
   ...props
 }) => {
+  const { t } = useTranslation()
   const [strength, setStrength] = useState({
     score: 0,
     level: 'very-weak',
@@ -22,6 +24,19 @@ const PasswordStrengthMeter = ({
       sequential: true, // true means no sequential characters
     },
   })
+
+  const halfFillRanges = [
+    { min: 5, max: 15, segment: 1 },
+    { min: 25, max: 35, segment: 2 },
+    { min: 45, max: 55, segment: 3 },
+    { min: 65, max: 75, segment: 4 },
+    { min: 85, max: 95, segment: 5 },
+  ]
+
+  const isHalfFilled = (segment, score) => {
+    const range = halfFillRanges.find((r) => r.segment === segment)
+    return range && score >= range.min && score <= range.max
+  }
 
   const calculatePasswordStrength = (pwd) => {
     if (!pwd) {
@@ -100,31 +115,31 @@ const PasswordStrengthMeter = ({
     const configs = {
       'very-weak': {
         color: '#ef4444',
-        text: 'Very Weak',
+        text: t('account.password.very-low'),
         icon: X,
         gradient: 'linear-gradient(90deg, #ef4444 0%, #f87171 100%)',
       },
       weak: {
         color: '#f97316',
-        text: 'Weak',
+        text: t('account.password.low'),
         icon: AlertCircle,
         gradient: 'linear-gradient(90deg, #f97316 0%, #fb923c 100%)',
       },
       medium: {
         color: '#eab308',
-        text: 'Medium',
+        text: t('account.password.medium'),
         icon: Shield,
-        gradient: 'linear-gradient(90deg, #eab308 0%, #fbbf24 100%)',
+        gradient: 'linear-gradient(90deg, #eab308 0%, #fbbf24)',
       },
       strong: {
         color: '#22c55e',
-        text: 'Strong',
+        text: t('account.password.strong'),
         icon: Shield,
         gradient: 'linear-gradient(90deg, #22c55e 0%, #4ade80 100%)',
       },
       'very-strong': {
         color: '#10b981',
-        text: 'Very Strong',
+        text: t('account.password.very-strong'),
         icon: Check,
         gradient: 'linear-gradient(90deg, #10b981 0%, #34d399 100%)',
       },
@@ -156,18 +171,26 @@ const PasswordStrengthMeter = ({
 
       {/* Visual strength bars */}
       <div className="strength-bars">
-        {[1, 2, 3, 4, 5].map((segment) => (
-          <div
-            key={segment}
-            className={`strength-segment ${
-              strength.score >= segment * 20 ? 'active' : ''
-            }`}
-            style={{
-              background:
-                strength.score >= segment * 20 ? config.gradient : '#e5e7eb',
-            }}
-          />
-        ))}
+        {[1, 2, 3, 4, 5].map((segment) => {
+          const isFull = strength.score >= segment * 20
+          const isHalf = isHalfFilled(segment, strength.score)
+
+          return (
+            <div
+              key={segment}
+              className={`strength-segment ${
+                isFull ? 'full' : isHalf ? 'half' : ''
+              }`}
+              style={{
+                background: isHalf
+                  ? `linear-gradient(to right, ${config.color} 50%, #e5e7eb 50%)`
+                  : isFull
+                    ? config.gradient
+                    : '#e5e7eb',
+              }}
+            />
+          )
+        })}
       </div>
 
       {/* Requirements checklist */}
@@ -183,7 +206,7 @@ const PasswordStrengthMeter = ({
             ) : (
               <X size={14} />
             )}
-            <span>At least 8 characters</span>
+            <span>{t('account.password.criterias.len')}</span>
           </div>
 
           <div
@@ -196,7 +219,7 @@ const PasswordStrengthMeter = ({
             ) : (
               <X size={14} />
             )}
-            <span>Lowercase letter</span>
+            <span>{t('account.password.criterias.lowercase')}</span>
           </div>
 
           <div
@@ -209,7 +232,7 @@ const PasswordStrengthMeter = ({
             ) : (
               <X size={14} />
             )}
-            <span>Uppercase letter</span>
+            <span>{t('account.password.criterias.uppercase')}</span>
           </div>
 
           <div
@@ -222,7 +245,7 @@ const PasswordStrengthMeter = ({
             ) : (
               <X size={14} />
             )}
-            <span>Number</span>
+            <span>{t('account.password.criterias.number')}</span>
           </div>
 
           <div
@@ -235,7 +258,7 @@ const PasswordStrengthMeter = ({
             ) : (
               <X size={14} />
             )}
-            <span>Special character</span>
+            <span>{t('account.password.criterias.special')}</span>
           </div>
         </div>
       )}

@@ -103,16 +103,7 @@ export const UserProvider = ({ children }) => {
 
   // --- Password ---
   const changePassword = useCallback(
-    async (
-      userId,
-      { currentPassword, newPassword, confirmPassword },
-      onSuccess,
-    ) => {
-      if (!currentPassword) return toast.error('Mot de passe actuel requis')
-      if (newPassword.length < 8) return toast.error('8 caractères minimum')
-      if (newPassword !== confirmPassword)
-        return toast.error('Mots de passe différents')
-
+    async (userId, { currentPassword, newPassword }, onSuccess) => {
       try {
         const { data } = await axios.patch(`${API_USER}/${userId}/password`, {
           currentPassword,

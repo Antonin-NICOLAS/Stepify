@@ -34,7 +34,6 @@ import {
   UploadCloud,
   Zap,
   Check,
-  Fingerprint,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react'
@@ -1145,27 +1144,45 @@ const Steps = () => {
             <thead>
               <tr>
                 <th>
-                  <Calendar size={16} /> Date
+                  <div>
+                    <Calendar size={16} /> Date
+                  </div>
                 </th>
                 <th>
-                  <Fingerprint size={16} /> Pas
+                  <div>
+                    <Footprints size={16} /> Pas
+                  </div>
                 </th>
                 <th>
-                  <Spline size={16} /> Distance
+                  <div>
+                    <Spline size={16} /> Distance
+                  </div>
                 </th>
                 <th>
-                  <Flame size={16} /> Calories
+                  <div>
+                    <Flame size={16} /> Calories
+                  </div>
                 </th>
                 <th>
-                  <Globe size={16} /> Mode
+                  <div>
+                    <Globe size={16} /> Mode
+                  </div>
                 </th>
                 <th>
-                  <Clock size={16} /> Temps actif
+                  <div>
+                    <Clock size={16} /> Temps actif
+                  </div>
                 </th>
                 <th>
-                  <Check size={16} /> Vérifié
+                  <div>
+                    <Check size={16} /> Vérifié
+                  </div>
                 </th>
-                <th>Actions</th>
+                <th>
+                  <div>
+                    <Edit size={16} /> Actions
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>

@@ -178,7 +178,9 @@
     height: 100%;
     padding: 1.5rem;
     overflow-y: auto;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transition:
+      transform 0.3s ease-in-out,
+      opacity 0.3s ease-in-out;
   }
 
   .show-login .login-form {

@@ -494,6 +494,13 @@
   background-color: rgba(74, 145, 158, 0.1);
 }
 
+.steps-container .entries-table th div {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+}
+
 .steps-container .entries-table tr:hover {
   background-color: rgba(74, 145, 158, 0.05);
 }

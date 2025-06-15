@@ -607,9 +607,13 @@ const Challenges = () => {
                         <Clock size={16} />
                         <span>
                           {getDaysRemaining(challenge.endDate) > 0
-                            ? `${getDaysRemaining(
-                                challenge.endDate,
-                              )} jours restants`
+                            ? getDaysRemaining(challenge.endDate) === 1
+                              ? `${getDaysRemaining(
+                                  challenge.endDate,
+                                )} jour restant`
+                              : `${getDaysRemaining(
+                                  challenge.endDate,
+                                )} jours restants`
                             : 'Dernier jour !'}
                         </span>
                       </div>

@@ -187,10 +187,8 @@
   "password": {
     "confirm": "Confirm password",
     "criterias": {
-      "len": "At least 8 characters",
       "lowercase": "A tiny letter",
       "number": "A figure",
-      "title": "Password requirements:",
       "uppercase": "A capital letter"
     },
     "current": "Current password",
@@ -200,6 +198,7 @@
     "new": "New password",
     "strong": "Strong",
     "very-low": "Very weak",
+    "very-strong": "Very strong",
     "weak": "The password is not strong enough"
   },
   "privacy": {
@@ -224,11 +223,14 @@
     "write-delete": "Please type 'delete' to confirm"
   },
   "sessions": {
+    "browser": "Browser used:",
     "description": "Manage your active connections",
+    "device": "Device used:",
     "loggedin": "Connected:",
     "terminate-all": "Finish all sessions",
     "title": "Active sessions",
-    "unknown-device": "Unknown device"
+    "unknown-device": "Unknown device",
+    "version": "Software version:"
   },
   "settings": {
     "redirect": "Profile",

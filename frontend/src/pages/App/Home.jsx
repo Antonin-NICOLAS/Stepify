@@ -122,10 +122,10 @@ function Home() {
                   passwordStrength.score >= 70
                     ? '#10b981'
                     : passwordStrength.score >= 50
-                    ? '#eab308'
-                    : passwordStrength.score >= 25
-                    ? '#f97316'
-                    : '#ef4444',
+                      ? '#eab308'
+                      : passwordStrength.score >= 25
+                        ? '#f97316'
+                        : '#ef4444',
               }}
             />
           </div>

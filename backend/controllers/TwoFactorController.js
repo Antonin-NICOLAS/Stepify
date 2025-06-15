@@ -161,7 +161,7 @@ const resendEmailCode = async (req, res) => {
 
     return sendLocalizedSuccess(res, 'success.2fa.email_code_sent')
   } catch (error) {
-    console.error('Erreur lors de la récupération de l\'utilisateur:', error)
+    console.error("Erreur lors de la récupération de l'utilisateur:", error)
     return sendLocalizedError(res, 500, 'errors.generic.enable_error')
   }
 }
@@ -527,8 +527,8 @@ const disableTwoFactor = async (req, res) => {
       user.twoFactorAuth.preferredMethod = user.twoFactorAuth.emailEnabled
         ? 'email'
         : user.twoFactorAuth.webauthnEnabled
-        ? 'webauthn'
-        : undefined
+          ? 'webauthn'
+          : undefined
     }
 
     if (
@@ -580,8 +580,8 @@ const disableEmail2FA = async (req, res) => {
       user.twoFactorAuth.preferredMethod = user.twoFactorAuth.appEnabled
         ? 'app'
         : user.twoFactorAuth.webauthnEnabled
-        ? 'webauthn'
-        : undefined
+          ? 'webauthn'
+          : undefined
     }
 
     if (!user.twoFactorAuth.appEnabled && !user.twoFactorAuth.webauthnEnabled) {

@@ -187,10 +187,8 @@
   "password": {
     "confirm": "Wachtwoord bevestigen",
     "criterias": {
-      "len": "Mindestens 8 Zeichen",
       "lowercase": "Ein winziger Brief",
       "number": "Eine Figur",
-      "title": "Passwortanforderungen:",
       "uppercase": "Ein Großbuchstaben"
     },
     "current": "Huidig wachtwoord",
@@ -200,6 +198,7 @@
     "new": "Nieuw wachtwoord",
     "strong": "Stark",
     "very-low": "Sehr schwach",
+    "very-strong": "Sehr stark",
     "weak": "Das Passwort ist nicht stark genug"
   },
   "privacy": {
@@ -224,11 +223,14 @@
     "write-delete": "Bitte geben Sie 'Löschen' ein, um zu bestätigen"
   },
   "sessions": {
+    "browser": "Browser verwendet:",
     "description": "Verwalten Sie Ihre aktiven Verbindungen",
+    "device": "Gerät verwendet:",
     "loggedin": "Verbunden:",
     "terminate-all": "Beenden Sie alle Sitzungen",
     "title": "Aktive Sitzungen",
-    "unknown-device": "Unbekanntes Gerät"
+    "unknown-device": "Unbekanntes Gerät",
+    "version": "Softwareversion:"
   },
   "settings": {
     "redirect": "Profil",

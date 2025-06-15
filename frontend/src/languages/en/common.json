@@ -84,7 +84,6 @@
     },
     "register": {
       "error": "Error when registering",
-      "passwordmismatch": "Passwords do not match",
       "success": "Your account has been created",
       "validemail": "A valid email is required",
       "validfirstname": "A valid first name (2 characters minimum) is required",
@@ -103,8 +102,7 @@
       "validpassword": "A valid password (8 characters minimum) is required",
       "validtoken": "Invalid or expired link"
     },
-    "setpreferredmethod": {
-    },
+    "setpreferredmethod": {},
     "verifyemail": {
       "error": "Error when checking the email",
       "success": "Your email is verified",
