@@ -20,7 +20,8 @@ import Friends from '../pages/App/Friends.jsx'
 import Profile from '../pages/App/Profile.jsx'
 import Settings from '../pages/Settings/Settings.jsx'
 import About from '../pages/App/About.jsx'
-//terms of services
+// Documents
+import PrivacyPolicy from '../pages/Documents/PrivacyPolicy.jsx'
 import TermsOfService from '../pages/Documents/TermsOfService.jsx'
 //AUTH
 import Login from '../pages/Auth/Login.jsx'
@@ -204,7 +205,7 @@ export default function AppRoutes() {
           </AuthenticatedUserRoute>
         }
       />
-      {/* TODO : <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
     </Routes>
   )
 }

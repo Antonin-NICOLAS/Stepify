@@ -156,11 +156,7 @@ const verifyRegistration = async (req, res) => {
       ) {
         const backupCodes = await generateBackupCodes()
         user.twoFactorAuth.backupCodes = backupCodes
-        await sendTwoFactorBackupCodesEmail(
-          user.email,
-          user.firstName,
-          backupCodes,
-        )
+        await sendTwoFactorBackupCodesEmail(user, backupCodes)
       }
 
       if (!user.twoFactorAuth.preferredMethod) {
@@ -373,8 +369,8 @@ const removeWebAuthnCredential = async (req, res) => {
         user.twoFactorAuth.preferredMethod = user.twoFactorAuth.appEnabled
           ? 'app'
           : user.twoFactorAuth.emailEnabled
-            ? 'email'
-            : undefined
+          ? 'email'
+          : undefined
       }
 
       if (!user.twoFactorAuth.appEnabled && !user.twoFactorAuth.emailEnabled) {

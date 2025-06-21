@@ -53,11 +53,11 @@ Stepify est une application web de suivi d'activité physique ludique. Marchez, 
 - [ ] Remplacer les select html5 par les Select fait maison (cf components/Select)
 - [ ] Remplacer React Hot Toast par react toastify
 - [ ] 📊 **Remplacer les graphiques Highcharts** par Chart.js
-- [ ] 🚨 **Ajout de vérification de mot de passe côté frontend**: — — — — —
+- [x] 🚨 **Ajout de vérification de mot de passe côté frontend**: — — — — —
   - [x] Change password
-  - [ ] Forgot password
-  - [ ] Register
-- [ ] Ajouter la méthode préférée en 2FA et adapter l'affichage en fonction des méthodes activées + mieux gérer les backup codes + vérifier fonction backup codes + vérifier fonction suppression de clé d'accès + faire les emails de 2FA au propre et dans les 4 langues
+  - [x] Forgot password
+  - [x] Register
+- [x] Ajouter la méthode préférée en 2FA et adapter l'affichage en fonction des méthodes activées + mieux gérer les backup codes + vérifier fonction backup codes + vérifier fonction suppression de clé d'accès + faire les emails de 2FA au propre et dans les 4 langues
 - [ ] 📈 **Nouveau record** : informer l'utilisateur quand il bat son record personnel
 - [ ] ⏳ **Date réelle d’obtention des récompenses** (pas la date de vérification)
 - [ ] 📊 **Fonction “Comparer” dans la page Récompenses**

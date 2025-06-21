@@ -557,7 +557,7 @@ function Auth() {
           <Link tabIndex="-1" to="#">
             {t('auth.login.footer.help')}
           </Link>
-          <Link tabIndex="-1" to="#">
+          <Link tabIndex="-1" to="/privacy-policy">
             {t('auth.login.footer.privacy')}
           </Link>{' '}
           {/*TODO: privacy and help pages */}

@@ -68,6 +68,7 @@
     "team_signature": "L'équipe **Stepify**"
   },
   "email2FAcode": {
+    "subject": "Votre code de double authentification - Stepify",
     "title": "Votre code de double authentification",
     "hello": "Bonjour ${firstName},",
     "intro": "Votre code de vérification pour l'authentification à deux facteurs est :",
@@ -75,6 +76,16 @@
     "expiration": "Ce code expire dans 10 minutes.",
     "note": "Veuillez ne pas partager ce code avec qui que ce soit. Il est destiné à sécuriser votre compte Stepify.",
     "ignore": "Si vous n'avez pas demandé ce code, veuillez ignorer cet email.",
+    "bye": "A très bientôt sur Stepify !",
+    "team_signature": "L'équipe **Stepify**"
+  },
+  "backupcodes": {
+    "subject": "Vos codes de sauvegarde - Stepify",
+    "title": "Vos codes de sauvegarde",
+    "hello": "Bonjour ${firstName},",
+    "intro": "Voici vos codes de sauvegarde pour l'authentification à deux facteurs. Conservez-les en lieu sûr, car ils vous permettront d'accéder à votre compte si vous perdez l'accès à votre méthode d'authentification.",
+    "expiration": "Ces codes n'expirent jamais mais ils sont regénérés à chaque fois que vous en utilisez un.",
+    "alert": "Si vous n'avez pas activé la double authentification sur votre compte et que vous recevez ce mail, veuillez contacter le support avec une preuve que ce compte vous appartient pour le récupérer.",
     "bye": "A très bientôt sur Stepify !",
     "team_signature": "L'équipe **Stepify**"
   },

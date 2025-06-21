@@ -1,14 +1,12 @@
 const nodemailer = require('nodemailer')
-const {
-  TwoFactorSetupEmailTemplate,
-  BackupCodesEmailTemplate,
-} = require('../templates/EmailTemplates')
+const { TwoFactorSetupEmailTemplate } = require('../templates/EmailTemplates')
 const { NewLoginEmailTemplate } = require('../templates/NewLoginEmail')
 const { EmailVerificationTemplate } = require('../templates/EmailVerification')
 const { WelcomeEmailTemplate } = require('../templates/Welcome')
 const { EmailPasswordResetTemplate } = require('../templates/PasswordReset')
 const { SucessfulResetTemplate } = require('../templates/SuccessfulReset')
 const { Email2FACodeTemplate } = require('../templates/Email2FACode')
+const { BackupCodesEmailTemplate } = require('../templates/BackupCodesEmail')
 
 const { t, interpolate } = require('../services/i18n')
 // .env
@@ -149,12 +147,17 @@ const sendTwoFactorSetupEmail = async (email, firstName) => {
 }
 
 // Email des codes de secours 2FA
-const sendTwoFactorBackupCodesEmail = async (email, firstName, backupCodes) => {
+const sendTwoFactorBackupCodesEmail = async (user, backupCodes) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: email,
-    subject: "Vos codes de secours pour l'authentification à deux facteurs",
-    html: BackupCodesEmailTemplate(firstName, backupCodes),
+    to: user.email,
+    subject: t('backupcodes.subject', user.languagePreference),
+    html: interpolate(
+      BackupCodesEmailTemplate(backupCodes, user.languagePreference),
+      {
+        firstName: user.firstName,
+      },
+    ),
   }
 
   try {
@@ -172,7 +175,7 @@ const sendTwoFactorEmailCode = async (user, code) => {
   const mailOptions = {
     from: process.env.EMAIL_FROM,
     to: user.email,
-    subject: 'Code de vérification Stepify',
+    subject: t('email2FAcode.subject', user.languagePreference),
     html: interpolate(Email2FACodeTemplate(code, user.languagePreference), {
       firstName: user.firstName,
     }),

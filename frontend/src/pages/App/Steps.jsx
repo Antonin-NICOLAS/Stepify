@@ -6,6 +6,8 @@ import { useAuth } from '../../context/AuthContext'
 import { useSteps } from '../../hooks/useSteps'
 import { useStepsFilters } from '../../hooks/useStepsFilters'
 import { useStepsStats } from '../../hooks/useStepsStats'
+//Components
+import DefaultHeader from '../../components/DefaultHeader'
 import GlobalLoader from '../../components/GlobalLoader'
 //CHARTS
 import { Line } from 'react-chartjs-2'
@@ -782,7 +784,10 @@ const Steps = () => {
         </>
       )}
       <div className="steps-header">
-        <h1>Mes Pas</h1>
+        <DefaultHeader
+          title="Mes Pas"
+          description="Enregistrez vos activités quotidiennes et suivez vos progrès."
+        />
 
         <div className="stats-summary">
           <div className="stat-item">

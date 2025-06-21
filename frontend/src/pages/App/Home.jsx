@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 //Context
 import { useTheme } from '../../context/ThemeContext'
 // Components
@@ -32,6 +33,8 @@ import './Home.css'
 
 const Home = () => {
   const { theme, toggleTheme } = useTheme()
+  const navigate = useNavigate()
+
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const { scrollYProgress } = useScroll()
@@ -303,6 +306,7 @@ const Home = () => {
               className="btn-primary"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/login')}
             >
               <UserPlus size={24} />
               Commencer l'Aventure
@@ -569,9 +573,10 @@ const Home = () => {
                 className="btn-primary"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/login')}
               >
                 <UserPlus size={28} />
-                Commencer Gratuitement
+                S'inscrire
               </motion.button>
 
               <motion.button

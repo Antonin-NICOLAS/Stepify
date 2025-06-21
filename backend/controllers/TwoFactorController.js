@@ -199,11 +199,7 @@ const verifyAndEnableTwoFactor = async (req, res) => {
     ) {
       const backupCodes = await generateBackupCodes()
       user.twoFactorAuth.backupCodes = backupCodes
-      await sendTwoFactorBackupCodesEmail(
-        user.email,
-        user.firstName,
-        backupCodes,
-      )
+      await sendTwoFactorBackupCodesEmail(user, backupCodes)
     }
 
     if (!user.twoFactorAuth.preferredMethod) {
@@ -274,11 +270,7 @@ const verifyAndEnableEmail2FA = async (req, res) => {
     ) {
       const backupCodes = await generateBackupCodes()
       user.twoFactorAuth.backupCodes = backupCodes
-      await sendTwoFactorBackupCodesEmail(
-        user.email,
-        user.firstName,
-        backupCodes,
-      )
+      await sendTwoFactorBackupCodesEmail(user, backupCodes)
     }
 
     if (!user.twoFactorAuth.preferredMethod) {
@@ -527,8 +519,8 @@ const disableTwoFactor = async (req, res) => {
       user.twoFactorAuth.preferredMethod = user.twoFactorAuth.emailEnabled
         ? 'email'
         : user.twoFactorAuth.webauthnEnabled
-          ? 'webauthn'
-          : undefined
+        ? 'webauthn'
+        : undefined
     }
 
     if (
@@ -580,8 +572,8 @@ const disableEmail2FA = async (req, res) => {
       user.twoFactorAuth.preferredMethod = user.twoFactorAuth.appEnabled
         ? 'app'
         : user.twoFactorAuth.webauthnEnabled
-          ? 'webauthn'
-          : undefined
+        ? 'webauthn'
+        : undefined
     }
 
     if (!user.twoFactorAuth.appEnabled && !user.twoFactorAuth.webauthnEnabled) {

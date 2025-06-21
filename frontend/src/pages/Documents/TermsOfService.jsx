@@ -5,7 +5,7 @@ function TermsOfService() {
   return (
     <div className="terms-container">
       <h1>Conditions Générales d’Utilisation de Stepify</h1>
-      <p className="last-update">Dernière mise à jour : 15 août 2024</p>
+      <p className="last-update">Dernière mise à jour : 15 juin 2025</p>
 
       <section>
         <h2>1. Introduction</h2>

@@ -5,8 +5,8 @@ import Select from 'react-select'
 import { useRewards } from '../../hooks/useRewards'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
-import GlobalLoader from '../../components/GlobalLoader'
 // Components
+import GlobalLoader from '../../components/GlobalLoader'
 import DefaultHeader from '../../components/DefaultHeader'
 // Icons & charts
 import {
