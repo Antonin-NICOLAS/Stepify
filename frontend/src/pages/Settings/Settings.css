@@ -1,7 +1,11 @@
+.hide-sidebar ~ .main .settings-container {
+  padding-left: 130px;
+}
 .settings-container {
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 2rem 2rem 360px;
   background-color: var(--body-color);
+  transition: var(--sidebar);
   min-height: 100vh;
 
   .settings-header {

@@ -95,10 +95,6 @@
     flex-shrink: 0;
   }
 
-  .auth-stat-icon.success {
-    background-color: rgba(190, 211, 195, 0.3);
-  }
-
   .auth-stat-info {
     flex: 1;
   }

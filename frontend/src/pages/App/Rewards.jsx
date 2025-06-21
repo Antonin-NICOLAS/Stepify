@@ -6,6 +6,8 @@ import { useRewards } from '../../hooks/useRewards'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import GlobalLoader from '../../utils/GlobalLoader'
+// Components
+import DefaultHeader from '../../components/DefaultHeader'
 // Icons & charts
 import {
   Icon,
@@ -125,8 +127,8 @@ const Rewards = () => {
       borderColor: state.isFocused
         ? '#80bdff'
         : theme === 'dark'
-          ? '#555'
-          : '#ccc',
+        ? '#555'
+        : '#ccc',
       boxShadow: state.isFocused ? '0 0 0 0.2rem rgba(0,123,255,.25)' : null,
       '&:hover': {
         borderColor: state.isFocused ? '#80bdff' : '#aaa',
@@ -146,8 +148,8 @@ const Rewards = () => {
       background: state.isFocused
         ? '#007bff'
         : theme === 'dark'
-          ? '#333'
-          : 'white',
+        ? '#333'
+        : 'white',
       color: state.isFocused ? 'white' : theme === 'dark' ? 'white' : 'black',
       '&:hover': {
         background: '#007bff',
@@ -226,12 +228,12 @@ const Rewards = () => {
             (reward.tier === 'bronze'
               ? 10
               : reward.tier === 'silver'
-                ? 5
-                : reward.tier === 'gold'
-                  ? 3
-                  : reward.tier === 'platinum'
-                    ? 2
-                    : 1),
+              ? 5
+              : reward.tier === 'gold'
+              ? 3
+              : reward.tier === 'platinum'
+              ? 2
+              : 1),
         }
       })
 
@@ -2121,13 +2123,10 @@ const Rewards = () => {
   return (
     <div className="rewards-container">
       {isLoading && <GlobalLoader />}
-      <div className="rewards-header">
-        <h1>Mes Récompenses</h1>
-        <p>
-          Découvrez et suivez votre progression à travers les différentes
-          récompenses
-        </p>
-      </div>
+      <DefaultHeader
+        title="Mes Récompenses"
+        description="Découvrez et suivez votre progression à travers les differentes récompenses"
+      />
 
       <div className="rewards-tabs">
         <button

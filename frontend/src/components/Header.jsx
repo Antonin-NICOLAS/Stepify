@@ -130,12 +130,12 @@ function Header() {
             </div>
             {user ? (
               <NavLink to="/profile" className="sidebar__info">
-                <h3>{user ? `${user.fullName}` : 'Guest'}</h3>
+                <h3>{user && user.fullName}</h3>
                 <span>{user && user.email}</span>
               </NavLink>
             ) : (
               <div className="sidebar__info">
-                <h3>{user ? `${user.fullName}` : 'Guest'}</h3>
+                <h3>{user ? `${user.fullName}` : t('common.header.guest')}</h3>
                 <span>{user && user.email}</span>
               </div>
             )}
@@ -159,7 +159,9 @@ function Header() {
                 <NavLink
                   to="/dashboard"
                   onClick={handleNavClick}
-                  className="sidebar__link"
+                  className={({ isActive }) =>
+                    `sidebar__link ${isActive ? 'active' : ''}`
+                  }
                 >
                   <LayoutDashboard />
                   <span>{t('common.header.dashboard')}</span>
@@ -167,7 +169,9 @@ function Header() {
                 <NavLink
                   to="/steps"
                   onClick={handleNavClick}
-                  className="sidebar__link"
+                  className={({ isActive }) =>
+                    `sidebar__link ${isActive ? 'active' : ''}`
+                  }
                 >
                   <Footprints />
                   <span>{t('common.header.steps')}</span>
@@ -175,7 +179,9 @@ function Header() {
                 <NavLink
                   to="/challenges"
                   onClick={handleNavClick}
-                  className="sidebar__link"
+                  className={({ isActive }) =>
+                    `sidebar__link ${isActive ? 'active' : ''}`
+                  }
                 >
                   <Dumbbell />
                   <span>{t('common.header.challenges')}</span>
@@ -183,7 +189,9 @@ function Header() {
                 <NavLink
                   to="/rewards"
                   onClick={handleNavClick}
-                  className="sidebar__link"
+                  className={({ isActive }) =>
+                    `sidebar__link ${isActive ? 'active' : ''}`
+                  }
                 >
                   <Award />
                   <span>{t('common.header.rewards')}</span>
@@ -191,7 +199,9 @@ function Header() {
                 <NavLink
                   to="/leaderboard"
                   onClick={handleNavClick}
-                  className="sidebar__link"
+                  className={({ isActive }) =>
+                    `sidebar__link ${isActive ? 'active' : ''}`
+                  }
                 >
                   <AlignStartVertical />
                   <span>{t('common.header.leaderboard')}</span>
@@ -199,7 +209,9 @@ function Header() {
                 <NavLink
                   to="/friends"
                   onClick={handleNavClick}
-                  className="sidebar__link"
+                  className={({ isActive }) =>
+                    `sidebar__link ${isActive ? 'active' : ''}`
+                  }
                 >
                   <Users />
                   <span>{t('common.header.friends')}</span>
@@ -214,7 +226,9 @@ function Header() {
                   <NavLink
                     to="/settings"
                     onClick={handleNavClick}
-                    className="sidebar__link"
+                    className={({ isActive }) =>
+                      `sidebar__link ${isActive ? 'active' : ''}`
+                    }
                   >
                     <Settings />
                     <span>{t('common.header.settings')}</span>
@@ -223,7 +237,9 @@ function Header() {
                 <NavLink
                   to="/about"
                   onClick={handleNavClick}
-                  className="sidebar__link"
+                  className={({ isActive }) =>
+                    `sidebar__link ${isActive ? 'active' : ''}`
+                  }
                 >
                   <Info />
                   <span>{t('common.header.about')}</span>

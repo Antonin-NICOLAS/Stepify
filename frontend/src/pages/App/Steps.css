@@ -5,9 +5,13 @@
 
 /* Steps Container */
 .steps-container {
-  padding: 2rem;
+  padding: 0 2rem 2rem 360px;
   background-color: var(--body-color);
-  transition: var(--transition);
+  transition: var(--sidebar);
+}
+
+.hide-sidebar ~ .main .steps-container {
+  padding-left: 130px;
 }
 
 /* Header Styles */

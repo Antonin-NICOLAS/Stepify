@@ -105,7 +105,8 @@
         "title": "Safety key configuration"
       }
     },
-    "success": {},
+    "success": {
+    },
     "verify": {
       "activate": "Check and activate",
       "label-code": "Verification code",
@@ -187,8 +188,10 @@
   "password": {
     "confirm": "Confirm password",
     "criterias": {
+      "len": "At least 8 characters",
       "lowercase": "A tiny letter",
       "number": "A figure",
+      "special": "A special character",
       "uppercase": "A capital letter"
     },
     "current": "Current password",
@@ -262,6 +265,7 @@
     "lastName": "Last name",
     "membersince": "Member since",
     "preferences": "Preferences",
-    "status": {}
+    "status": {
+    }
   }
 }

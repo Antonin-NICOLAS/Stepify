@@ -105,7 +105,8 @@
         "title": "Configuración de clave de seguridad"
       }
     },
-    "success": {},
+    "success": {
+    },
     "verify": {
       "activate": "Verificar y activar",
       "label-code": "Código de verificación",
@@ -187,8 +188,10 @@
   "password": {
     "confirm": "Confirmar contraseña",
     "criterias": {
+      "len": "Al menos 8 caracteres",
       "lowercase": "Una pequeña carta",
       "number": "Una figura",
+      "special": "Un personaje especial",
       "uppercase": "Una letra mayúscula"
     },
     "current": "Contraseña actual",
@@ -262,6 +265,7 @@
     "lastName": "Appellido",
     "membersince": "Miembro desde el",
     "preferences": "Preferencias",
-    "status": {}
+    "status": {
+    }
   }
 }

@@ -8,6 +8,8 @@ import { useNotifications } from '../../hooks/useNotifications'
 import { useChallengesFilters } from '../../hooks/useChallengesFilters'
 import FiltersPanel from './FiltersPanel'
 import ChallengeDetailModal from './ChallengeDetailModal'
+//Components
+import DefaultHeader from '../../components/DefaultHeader'
 // Loader
 import GlobalLoader from '../../utils/GlobalLoader'
 // Icons
@@ -226,8 +228,8 @@ const Challenges = () => {
       backgroundColor: state.isSelected
         ? 'var(--Couleur1)'
         : state.isFocused
-          ? 'var(--Couleur2)'
-          : 'transparent',
+        ? 'var(--Couleur2)'
+        : 'transparent',
       color: state.isSelected ? 'white' : 'var(--Noir)',
       '&:hover': {
         backgroundColor: 'var(--Couleur2)',
@@ -1254,12 +1256,10 @@ const Challenges = () => {
   return (
     <div className="challenges-container">
       {isLoading && <GlobalLoader />}
-      <div className="challenges-header">
-        <h1>Défis</h1>
-        <p>
-          Participez à des défis pour vous motiver et comparer vos performances
-        </p>
-      </div>
+      <DefaultHeader
+        title="Défis"
+        description="Participez à des défis pour vous motiver et comparer vos performances"
+      ></DefaultHeader>
 
       <div className="challenges-quick-actions">
         <button

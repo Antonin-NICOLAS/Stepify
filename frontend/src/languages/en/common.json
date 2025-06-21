@@ -1,6 +1,6 @@
 {
   "activityTypes": {
-    "steps": "Not"
+    "steps": "steps"
   },
   "authcontext": {
     "2fa": {
@@ -102,7 +102,8 @@
       "validpassword": "A valid password (8 characters minimum) is required",
       "validtoken": "Invalid or expired link"
     },
-    "setpreferredmethod": {},
+    "setpreferredmethod": {
+    },
     "verifyemail": {
       "error": "Error when checking the email",
       "success": "Your email is verified",
@@ -122,6 +123,7 @@
     "close": "Close the menu",
     "dashboard": "Dashboard",
     "friends": "Friends",
+    "guest": "Guest",
     "leaderboard": "Classification",
     "login": "Connection",
     "logout": "Logout",

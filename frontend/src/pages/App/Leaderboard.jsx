@@ -8,7 +8,9 @@ import { useLeaderboard } from '../../hooks/useLeaderboard'
 import { useFriends } from '../../hooks/useFriends'
 import { useAuth } from '../../context/AuthContext'
 import { useUser } from '../../context/UserContext'
+// Components
 import GlobalLoader from '../../utils/GlobalLoader'
+import DefaultHeader from '../../components/DefaultHeader'
 // Icons
 import {
   Trophy,
@@ -196,54 +198,54 @@ const Leaderboard = () => {
             timeFrame === 'today'
               ? a.dailyXP
               : timeFrame === 'week'
-                ? a.weeklyXP
-                : timeFrame === 'month'
-                  ? a.monthlyXP
-                  : a.totalXP
+              ? a.weeklyXP
+              : timeFrame === 'month'
+              ? a.monthlyXP
+              : a.totalXP
           bValue =
             timeFrame === 'today'
               ? b.dailyXP
               : timeFrame === 'week'
-                ? b.weeklyXP
-                : timeFrame === 'month'
-                  ? b.monthlyXP
-                  : b.totalXP
+              ? b.weeklyXP
+              : timeFrame === 'month'
+              ? b.monthlyXP
+              : b.totalXP
           break
         case 'steps':
           aValue =
             timeFrame === 'today'
               ? a.dailySteps
               : timeFrame === 'week'
-                ? a.weeklySteps
-                : timeFrame === 'month'
-                  ? a.monthlySteps
-                  : a.totalSteps
+              ? a.weeklySteps
+              : timeFrame === 'month'
+              ? a.monthlySteps
+              : a.totalSteps
           bValue =
             timeFrame === 'today'
               ? b.dailySteps
               : timeFrame === 'week'
-                ? b.weeklySteps
-                : timeFrame === 'month'
-                  ? b.monthlySteps
-                  : b.totalSteps
+              ? b.weeklySteps
+              : timeFrame === 'month'
+              ? b.monthlySteps
+              : b.totalSteps
           break
         case 'distance':
           aValue =
             timeFrame === 'today'
               ? a.dailyDistance
               : timeFrame === 'week'
-                ? a.weeklyDistance
-                : timeFrame === 'month'
-                  ? a.monthlyDistance
-                  : a.totalDistance
+              ? a.weeklyDistance
+              : timeFrame === 'month'
+              ? a.monthlyDistance
+              : a.totalDistance
           bValue =
             timeFrame === 'today'
               ? b.dailyDistance
               : timeFrame === 'week'
-                ? b.weeklyDistance
-                : timeFrame === 'month'
-                  ? b.monthlyDistance
-                  : b.totalDistance
+              ? b.weeklyDistance
+              : timeFrame === 'month'
+              ? b.monthlyDistance
+              : b.totalDistance
           break
         case 'challenges':
           aValue = a.totalChallengesCompleted
@@ -337,26 +339,26 @@ const Leaderboard = () => {
         return timeFrame === 'today'
           ? user.dailyXP
           : timeFrame === 'week'
-            ? user.weeklyXP
-            : timeFrame === 'month'
-              ? user.monthlyXP
-              : user.totalXP
+          ? user.weeklyXP
+          : timeFrame === 'month'
+          ? user.monthlyXP
+          : user.totalXP
       case 'steps':
         return timeFrame === 'today'
           ? user.dailySteps
           : timeFrame === 'week'
-            ? user.weeklySteps
-            : timeFrame === 'month'
-              ? user.monthlySteps
-              : user.totalSteps
+          ? user.weeklySteps
+          : timeFrame === 'month'
+          ? user.monthlySteps
+          : user.totalSteps
       case 'distance':
         return timeFrame === 'today'
           ? user.dailyDistance
           : timeFrame === 'week'
-            ? user.weeklyDistance
-            : timeFrame === 'month'
-              ? user.monthlyDistance
-              : user.totalDistance
+          ? user.weeklyDistance
+          : timeFrame === 'month'
+          ? user.monthlyDistance
+          : user.totalDistance
       case 'challenges':
         return user.totalChallengesCompleted
       case 'streak':
@@ -616,8 +618,8 @@ const Leaderboard = () => {
       backgroundColor: state.isSelected
         ? 'var(--Couleur1)'
         : state.isFocused
-          ? 'var(--Couleur2)'
-          : 'transparent',
+        ? 'var(--Couleur2)'
+        : 'transparent',
       color: state.isSelected ? 'white' : 'var(--Noir)',
       '&:hover': {
         backgroundColor: 'var(--Couleur2)',
@@ -1101,12 +1103,10 @@ const Leaderboard = () => {
       {isLoading && <GlobalLoader />}
       {user ? (
         <>
-          <div className="leaderboard-header">
-            <h1>Classements</h1>
-            <p>
-              Découvrez où vous vous situez par rapport aux autres utilisateurs
-            </p>
-          </div>
+          <DefaultHeader
+            title="Classements"
+            description="Découvrez où vous vous situez par rapport aux autres utilisateurs"
+          />
 
           {/* Your Position Card */}
           <div className="your-position-card">

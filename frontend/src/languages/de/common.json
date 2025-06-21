@@ -1,6 +1,6 @@
 {
   "activityTypes": {
-    "steps": "Nicht"
+    "steps": "schritte"
   },
   "authcontext": {
     "2fa": {
@@ -102,7 +102,8 @@
       "validpassword": "Ein gültiges Passwort (Minimum von 8 Zeichen) ist erforderlich",
       "validtoken": "Ungültiger oder abgelaufener Link"
     },
-    "setpreferredmethod": {},
+    "setpreferredmethod": {
+    },
     "verifyemail": {
       "error": "Fehler beim Überprüfen der E -Mail",
       "success": "Ihre E -Mail wird verifiziert",
@@ -122,6 +123,7 @@
     "close": "Besteigen die Speisekarte",
     "dashboard": "Armaturenbrett",
     "friends": "Freunde",
+    "guest": "Gast",
     "leaderboard": "Einstufung",
     "login": "Verbindung",
     "logout": "Trennung",

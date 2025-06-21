@@ -102,7 +102,8 @@
       "validpassword": "Un mot de passe valide (8 caractères minimum) est requis",
       "validtoken": "Lien invalide ou expiré"
     },
-    "setpreferredmethod": {},
+    "setpreferredmethod": {
+    },
     "verifyemail": {
       "error": "Erreur lors de la vérification de l'email",
       "success": "Votre email est vérifié",
@@ -122,6 +123,7 @@
     "close": "Fermer le menu",
     "dashboard": "Tableau de bord",
     "friends": "Amis",
+    "guest": "Invité",
     "leaderboard": "Classement",
     "login": "Connexion",
     "logout": "Déconnexion",

@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 //Context
 import { useAuth } from '../../context/AuthContext'
+// Components
 import GlobalLoader from '../../utils/GlobalLoader'
+import DefaultHeader from '../../components/DefaultHeader'
 //Icons
 import {
   BarChart,
@@ -326,20 +328,16 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <div className="dashboard-header">
-        <h1>Tableau de Bord</h1>
-        <div className="date-display">
-          <Calendar size={20} />
-          <span>
-            {new Date().toLocaleDateString('fr-FR', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </span>
-        </div>
-      </div>
+      <DefaultHeader
+        title="Tableau de Bord"
+        icon={<Calendar size={16} />}
+        description={new Date().toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}
+      />
 
       <div className="dashboard-content">
         {/* Daily Summary Section */}
@@ -428,8 +426,8 @@ const Dashboard = () => {
                   {mockDailyStats.mode === 'walk'
                     ? 'Marche'
                     : mockDailyStats.mode === 'run'
-                      ? 'Course'
-                      : 'Vélo'}
+                    ? 'Course'
+                    : 'Vélo'}
                 </span>
               </div>
             </div>
@@ -504,8 +502,8 @@ const Dashboard = () => {
                       chartType === 'steps'
                         ? 'Pas'
                         : chartType === 'distance'
-                          ? 'Distance (km)'
-                          : 'Calories'
+                        ? 'Distance (km)'
+                        : 'Calories'
                     }
                     fill="var(--Couleur1)"
                     radius={[4, 4, 0, 0]}
@@ -534,8 +532,8 @@ const Dashboard = () => {
                       chartType === 'steps'
                         ? 'Pas'
                         : chartType === 'distance'
-                          ? 'Distance (km)'
-                          : 'Calories'
+                        ? 'Distance (km)'
+                        : 'Calories'
                     }
                     stroke="var(--Couleur1)"
                     strokeWidth={2}
@@ -578,8 +576,8 @@ const Dashboard = () => {
                 {chartType === 'steps'
                   ? ' pas'
                   : chartType === 'distance'
-                    ? ' km'
-                    : ' kcal'}
+                  ? ' km'
+                  : ' kcal'}
               </div>
             </div>
             <div className="activity-summary-item">
@@ -595,8 +593,8 @@ const Dashboard = () => {
                 {chartType === 'steps'
                   ? ' pas'
                   : chartType === 'distance'
-                    ? ' km'
-                    : ' kcal'}
+                  ? ' km'
+                  : ' kcal'}
               </div>
             </div>
             <div className="activity-summary-item">
@@ -612,8 +610,8 @@ const Dashboard = () => {
                 {chartType === 'steps'
                   ? ' pas'
                   : chartType === 'distance'
-                    ? ' km'
-                    : ' kcal'}
+                  ? ' km'
+                  : ' kcal'}
               </div>
             </div>
           </div>
@@ -717,10 +715,10 @@ const Dashboard = () => {
                       {goal.type === 'steps'
                         ? `${formatNumber(goal.target)} pas`
                         : goal.type === 'distance'
-                          ? `${goal.target} km`
-                          : goal.type === 'calories'
-                            ? `${formatNumber(goal.target)} calories`
-                            : `${goal.target} minutes actives`}
+                        ? `${goal.target} km`
+                        : goal.type === 'calories'
+                        ? `${formatNumber(goal.target)} calories`
+                        : `${goal.target} minutes actives`}
                     </div>
                     <div className="goal-deadline">
                       {goal.isCompleted ? (
@@ -760,12 +758,12 @@ const Dashboard = () => {
                             goal.target,
                           )} pas`
                         : goal.type === 'distance'
-                          ? `${goal.current} / ${goal.target} km`
-                          : goal.type === 'calories'
-                            ? `${formatNumber(goal.current)} / ${formatNumber(
-                                goal.target,
-                              )} calories`
-                            : `${goal.current} / ${goal.target} minutes`}
+                        ? `${goal.current} / ${goal.target} km`
+                        : goal.type === 'calories'
+                        ? `${formatNumber(goal.current)} / ${formatNumber(
+                            goal.target,
+                          )} calories`
+                        : `${goal.current} / ${goal.target} minutes`}
                     </div>
                     <div className="goal-remaining">
                       {!goal.isCompleted && (
@@ -775,12 +773,12 @@ const Dashboard = () => {
                                 goal.target - goal.current,
                               )} pas restants`
                             : goal.type === 'distance'
-                              ? `${goal.target - goal.current} km restants`
-                              : goal.type === 'calories'
-                                ? `${formatNumber(
-                                    goal.target - goal.current,
-                                  )} calories restantes`
-                                : `${goal.target - goal.current} minutes restantes`}
+                            ? `${goal.target - goal.current} km restants`
+                            : goal.type === 'calories'
+                            ? `${formatNumber(
+                                goal.target - goal.current,
+                              )} calories restantes`
+                            : `${goal.target - goal.current} minutes restantes`}
                         </>
                       )}
                     </div>
@@ -893,8 +891,8 @@ const Dashboard = () => {
                         {challenge.status === 'active'
                           ? 'En cours'
                           : challenge.status === 'completed'
-                            ? 'Terminé'
-                            : 'À venir'}
+                          ? 'Terminé'
+                          : 'À venir'}
                       </span>
                     </div>
                   </div>

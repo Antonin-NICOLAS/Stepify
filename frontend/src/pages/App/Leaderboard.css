@@ -1,32 +1,13 @@
+.hide-sidebar ~ .main .leaderboard-container {
+  padding-left: 130px;
+}
+
 /* Leaderboard Container */
 .leaderboard-container {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 2rem 2rem 360px;
   background-color: var(--body-color);
-  transition: var(--transition);
-
-  /* Header Styles */
-  .leaderboard-header {
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-
-  .leaderboard-header h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--Couleur);
-    background: linear-gradient(135deg, var(--Couleur1), var(--turquoise));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 0.5rem;
-  }
-
-  .leaderboard-header p {
-    color: var(--Gris);
-    font-size: 1.1rem;
-  }
+  transition: var(--sidebar);
 
   /* Your Position Card */
   .your-position-card {

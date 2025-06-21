@@ -1,10 +1,13 @@
+.hide-sidebar ~ .main .friends-container {
+  padding-left: 130px;
+}
+
 /* Friends Container */
 .friends-container {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 2rem 2rem 360px;
   background-color: var(--body-color);
-  transition: var(--transition);
+  transition: var(--sidebar);
 
   /* Header Styles */
   .friends-header {

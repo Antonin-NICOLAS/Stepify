@@ -1,6 +1,6 @@
 node_modules
 .env
-.vscode
+.vscode/*
 .VSCodeCounter
 .DS_Store
 .prettierrc.json

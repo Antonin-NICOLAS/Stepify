@@ -101,10 +101,6 @@
     flex-shrink: 0;
   }
 
-  .auth-stat-icon.success {
-    background-color: rgba(190, 211, 195, 0.3);
-  }
-
   .auth-stat-info {
     flex: 1;
   }
@@ -125,13 +121,6 @@
     flex-direction: column;
   }
 
-  .auth-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 100%;
-  }
-
   .auth-form-header {
     text-align: center;
     margin-bottom: 1rem;
@@ -143,10 +132,6 @@
     margin-bottom: 1.5rem;
   }
 
-  .auth-icon-container.success .auth-icon {
-    background: linear-gradient(135deg, var(--Couleur2), var(--turquoise));
-  }
-
   .auth-icon {
     display: flex;
     align-items: center;
@@ -154,7 +139,7 @@
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--Couleur1), var(--bleu));
+    background: linear-gradient(135deg, var(--Couleur2), var(--turquoise));
     color: white;
   }
 
@@ -176,51 +161,43 @@
 
   .auth-form-content {
     display: flex;
+    text-align: center;
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  .auth-input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  .email-sent-message {
+    line-height: 1.6;
+    color: var(--Noir);
+    margin-bottom: 1.5rem;
   }
 
-  .auth-input-group label {
-    font-size: 0.9rem;
+  .email-sent-info {
+    background-color: rgba(74, 145, 158, 0.1);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-align: left;
+    margin-bottom: 1.5rem;
+  }
+
+  .email-sent-info p {
     font-weight: 600;
+    margin-bottom: 0.75rem;
     color: var(--Couleur);
   }
 
-  .auth-input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
+  .email-sent-info ul {
+    padding-left: 1.5rem;
+    margin: 0;
   }
 
-  .auth-input-icon {
-    position: absolute;
-    left: 1rem;
+  .email-sent-info li {
+    margin-bottom: 0.5rem;
     color: var(--Gris);
-    width: 18px;
-    height: 18px;
   }
 
-  .auth-input-wrapper input {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
-    border: 1px solid var(--Couleur2);
-    border-radius: var(--radius);
-    background-color: var(--background);
-    color: var(--Noir);
-    font-size: 1rem;
-    transition: var(--transition);
-  }
-
-  .auth-input-wrapper input:focus {
-    outline: none;
-    border-color: var(--Couleur1);
-    box-shadow: 0 0 0 2px rgba(74, 145, 158, 0.2);
+  .email-sent-info li:last-child {
+    margin-bottom: 0;
   }
 
   .auth-form-footer {
@@ -274,46 +251,5 @@
       align-items: center;
       gap: 0.5rem;
     }
-  }
-}
-
-/* =================== EMAIL SENT SPECIFIC STYLES =================== */
-.email-sent-page {
-  .auth-form-content {
-    text-align: center;
-  }
-
-  .email-sent-message {
-    line-height: 1.6;
-    color: var(--Noir);
-    margin-bottom: 1.5rem;
-  }
-
-  .email-sent-info {
-    background-color: rgba(74, 145, 158, 0.1);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-    text-align: left;
-    margin-bottom: 1.5rem;
-  }
-
-  .email-sent-info p {
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-    color: var(--Couleur);
-  }
-
-  .email-sent-info ul {
-    padding-left: 1.5rem;
-    margin: 0;
-  }
-
-  .email-sent-info li {
-    margin-bottom: 0.5rem;
-    color: var(--Gris);
-  }
-
-  .email-sent-info li:last-child {
-    margin-bottom: 0;
   }
 }

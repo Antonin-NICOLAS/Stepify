@@ -38,6 +38,7 @@
     "frontend/src/pages/Settings/Settings.jsx": [
       "\n                    Tapez ",
       " pour confirmer :\n                  "
-    ]
+    ],
+    "frontend/src/components/Header.jsx": ["Logo"]
   }
 }

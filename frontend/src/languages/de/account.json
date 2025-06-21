@@ -105,7 +105,8 @@
         "title": "Sicherheitsschlüsselkonfiguration"
       }
     },
-    "success": {},
+    "success": {
+    },
     "verify": {
       "activate": "Überprüfen und aktivieren",
       "label-code": "Bestätigungscode",
@@ -187,8 +188,10 @@
   "password": {
     "confirm": "Wachtwoord bevestigen",
     "criterias": {
+      "len": "Mindestens 8 Zeichen",
       "lowercase": "Ein winziger Brief",
       "number": "Eine Figur",
+      "special": "Ein besonderer Charakter",
       "uppercase": "Ein Großbuchstaben"
     },
     "current": "Huidig wachtwoord",
@@ -262,6 +265,7 @@
     "lastName": "Nom",
     "membersince": "Mitglied seit",
     "preferences": "Voorkeuren",
-    "status": {}
+    "status": {
+    }
   }
 }

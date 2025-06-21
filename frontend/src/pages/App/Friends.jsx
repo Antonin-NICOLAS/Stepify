@@ -5,7 +5,9 @@ import { useAuth } from '../../context/AuthContext'
 import { useFriends } from '../../hooks/useFriends'
 import { useNotifications } from '../../hooks/useNotifications'
 import { useUser } from '../../context/UserContext'
+// Components
 import GlobalLoader from '../../utils/GlobalLoader'
+import DefaultHeader from '../../components/DefaultHeader'
 // Icons
 import {
   Users,
@@ -766,11 +768,10 @@ const Friends = () => {
   return (
     <div className="friends-container">
       {isLoading && <GlobalLoader />}
-      <div className="friends-header">
-        <h1>Mes Amis</h1>
-        <p>Connectez-vous avec d'autres utilisateurs et partagez vos progrès</p>
-      </div>
-
+      <DefaultHeader
+        title="Mes Amis"
+        description="Connectez-vous avec d'autres utilisateurs et partagez vos progrès"
+      />
       <div className="friends-tabs">
         <button
           className={activeTab === 'friends' ? 'active' : ''}

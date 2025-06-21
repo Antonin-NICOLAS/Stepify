@@ -12,10 +12,13 @@
 }
 
 .dashboard-container {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  transition: var(--transition);
+  padding: 2rem 2rem 2rem 360px;
+  transition: var(--sidebar);
+}
+
+.hide-sidebar ~ .main .dashboard-container {
+  padding-left: 130px;
 }
 
 .dashboard-container .dashboard-header {

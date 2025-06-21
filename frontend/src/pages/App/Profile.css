@@ -1,7 +1,12 @@
+.hide-sidebar ~ .main .profile-container {
+  padding-left: 130px;
+}
+
 .profile-container {
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 2rem 2rem 360px;
   background-color: var(--body-color);
+  transition: var(--sidebar);
 
   .profile-header {
     margin-bottom: 2rem;

@@ -42,9 +42,9 @@ export default function AppRoutes() {
         <Route
           path="/"
           element={
-            <RequireEmailVerification>
+            <AuthenticatedUserRoute>
               <Home />
-            </RequireEmailVerification>
+            </AuthenticatedUserRoute>
           }
         />
         <Route

@@ -1,6 +1,6 @@
 {
   "activityTypes": {
-    "steps": "No"
+    "steps": "pasos"
   },
   "authcontext": {
     "2fa": {
@@ -102,7 +102,8 @@
       "validpassword": "Se requiere una contraseña válida (mínimo de 8 caracteres)",
       "validtoken": "Enlace no válido o caducado"
     },
-    "setpreferredmethod": {},
+    "setpreferredmethod": {
+    },
     "verifyemail": {
       "error": "Error al verificar el correo electrónico",
       "success": "Su correo electrónico está verificado",
@@ -122,6 +123,7 @@
     "close": "Sube el menú",
     "dashboard": "Panel",
     "friends": "Amigos",
+    "guest": "Invitado",
     "leaderboard": "Clasificación",
     "login": "Conexión",
     "logout": "Desconexión",
