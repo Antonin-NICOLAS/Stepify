@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 // components
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 import SendBtn from '../../components/buttons/SendBtn'
 import PrimaryBtn from '../../components/buttons/primaryBtn'
 //context

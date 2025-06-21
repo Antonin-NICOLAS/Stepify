@@ -10,7 +10,7 @@ import DangerBtn from '../../components/buttons/dangerBtn'
 import BlueBtn from '../../components/buttons/blueBtn'
 import Select from '../../components/Selector'
 import { toast } from 'react-hot-toast'
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 // Icons
 import {
   Camera,

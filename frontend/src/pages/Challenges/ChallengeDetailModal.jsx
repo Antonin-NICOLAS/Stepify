@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNotifications } from '../../hooks/useNotifications'
 // loader
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 // icons
 import {
   Icon,

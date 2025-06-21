@@ -9,7 +9,7 @@ import { useFriends } from '../../hooks/useFriends'
 import { useAuth } from '../../context/AuthContext'
 import { useUser } from '../../context/UserContext'
 // Components
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 import DefaultHeader from '../../components/DefaultHeader'
 // Icons
 import {

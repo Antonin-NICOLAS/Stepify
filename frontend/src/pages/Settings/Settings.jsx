@@ -14,7 +14,7 @@ import PasswordStrengthMeter from '../../components/PasswordStrengthMeter'
 import PrimaryBtn from '../../components/buttons/primaryBtn'
 import SecondaryBtn from '../../components/buttons/secondaryBtn'
 import DangerBtn from '../../components/buttons/dangerBtn'
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 // Icons
 import {
   Globe,

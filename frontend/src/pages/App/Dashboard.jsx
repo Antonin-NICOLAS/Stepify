@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 //Context
 import { useAuth } from '../../context/AuthContext'
 // Components
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 import DefaultHeader from '../../components/DefaultHeader'
 //Icons
 import {

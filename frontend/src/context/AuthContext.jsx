@@ -9,7 +9,7 @@ import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import i18n from './i18n'
 import { useTranslation } from 'react-i18next'
-import GlobalLoader from '../utils/GlobalLoader'
+import GlobalLoader from '../components/GlobalLoader'
 
 const API_AUTH = process.env.NODE_ENV === 'production' ? '/api/auth' : '/auth'
 

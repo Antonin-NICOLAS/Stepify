@@ -40,14 +40,6 @@ export default function AppRoutes() {
       {/* Pages avec header et sidebar */}
       <Route element={<MainLayout />}>
         <Route
-          path="/"
-          element={
-            <AuthenticatedUserRoute>
-              <Home />
-            </AuthenticatedUserRoute>
-          }
-        />
-        <Route
           path="/dashboard"
           element={
             <RequireEmailVerification>
@@ -137,6 +129,15 @@ export default function AppRoutes() {
       </Route>
 
       {/* Pages sans header/sidebar */}
+      <Route
+        path="/"
+        element={
+          <AuthenticatedUserRoute>
+            <Home />
+          </AuthenticatedUserRoute>
+        }
+      />
+
       <Route
         path="/login"
         element={

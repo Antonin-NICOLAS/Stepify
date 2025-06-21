@@ -11,7 +11,7 @@ import ChallengeDetailModal from './ChallengeDetailModal'
 //Components
 import DefaultHeader from '../../components/DefaultHeader'
 // Loader
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 // Icons
 import {
   Icon,

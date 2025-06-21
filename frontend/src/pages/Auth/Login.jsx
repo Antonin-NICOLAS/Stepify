@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Spline from '@splinetool/react-spline'
 //loader
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 //context
 import { useAuth } from '../../context/AuthContext'
 import { useTranslation } from 'react-i18next'

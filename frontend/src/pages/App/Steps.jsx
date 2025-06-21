@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useSteps } from '../../hooks/useSteps'
 import { useStepsFilters } from '../../hooks/useStepsFilters'
 import { useStepsStats } from '../../hooks/useStepsStats'
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 //CHARTS
 import { Line } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
@@ -243,8 +243,8 @@ const Steps = () => {
       backgroundColor: state.isSelected
         ? 'var(--Couleur1)'
         : state.isFocused
-          ? 'var(--Couleur2)'
-          : 'transparent',
+        ? 'var(--Couleur2)'
+        : 'transparent',
       color: state.isSelected ? 'white' : 'var(--Noir)',
       '&:hover': {
         backgroundColor: 'var(--Couleur2)',

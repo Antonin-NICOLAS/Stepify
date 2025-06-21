@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import GlobalLoader from '../utils/GlobalLoader'
+import GlobalLoader from '../components/GlobalLoader'
 
 // Protected route for authenticated users
 export const ProtectRoute = ({ children }) => {

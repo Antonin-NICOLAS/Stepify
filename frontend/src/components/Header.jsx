@@ -101,7 +101,11 @@ function Header() {
     <>
       <header className={`header ${sidebarOpen ? 'left-pd' : ''}`} id="header">
         <div className="header__container">
-          <NavLink to="/" onClick={handleNavClick} className="header__logo">
+          <NavLink
+            to={user ? '/dashboard' : '/'}
+            onClick={handleNavClick}
+            className="header__logo"
+          >
             <img src={Logo} alt="Logo" className="logo" />
             <span>Stepify</span>
           </NavLink>

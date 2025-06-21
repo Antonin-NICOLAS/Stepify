@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 // components
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 import InputField from '../../components/InputField'
 import PrimaryBtn from '../../components/buttons/primaryBtn'
 import SecondaryBtn from '../../components/buttons/secondaryBtn'

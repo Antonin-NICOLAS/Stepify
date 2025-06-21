@@ -6,7 +6,7 @@ import { useFriends } from '../../hooks/useFriends'
 import { useNotifications } from '../../hooks/useNotifications'
 import { useUser } from '../../context/UserContext'
 // Components
-import GlobalLoader from '../../utils/GlobalLoader'
+import GlobalLoader from '../../components/GlobalLoader'
 import DefaultHeader from '../../components/DefaultHeader'
 // Icons
 import {
